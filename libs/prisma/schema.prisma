@@ -103,10 +103,10 @@ model inventoryLot {
     inventoryStockId Int?            @map("inventory_stock_id")
     orderLot         orderLot[]
     fileRecieve      fileRecieve[]
-    venderId         Int?            @map("vender_id")
-    venderName       String?         @map("vender_name") @db.VarChar(100)
-    brandId          Int?            @map("brand_id")
-    brandName        String?         @map("brand_name") @db.VarChar(100)
+    // venderId         Int?            @map("vender_id")
+    // venderName       String?         @map("vender_name") @db.VarChar(100)
+    // brandId          Int?            @map("brand_id")
+    // brandName        String?         @map("brand_name") @db.VarChar(100)
     ownerGroup       String?         @map("owner_group") @db.VarChar(50)
     InventorylotId   String?         @unique @default(uuid()) @map("inventorylot_id")
 
@@ -217,26 +217,31 @@ model masterPosition {
 }
 
 model masterProduct {
-    id                         Int                          @unique @default(autoincrement()) @map("id")
-    productCode                String?                      @map("product_code") @db.VarChar(50)
-    details                    Json?                        @map("details")
-    chemicalFormula            String                       @map("chemical_formula") @db.Text
-    casNo                      String                       @unique @map("cas_no") @db.VarChar(20)
-    undertaker                 String?                      @map("undertaker") @db.VarChar(100)
-    description                String?                      @map("description") @db.Text
-    hyperlink                  String?                      @map("hyperlink") @db.Text
-    minimumStock               Float?                       @default(0) @map("minumum_stock")
-    maximumStock               Float?                       @default(0) @map("maximum_stock")
-    beforeExpiry               Float?                       @default(0) @map("before_expiry")
-    notiExpiry                 Boolean                      @default(true) @map("noti_expiry") @db.Boolean
-    updatedByName              String?                      @map("updated_by_name") @db.Text
-    updatedById                String?                      @map("updated_by_id") @db.VarChar(50)
-    createdAt                  DateTime                     @default(now()) @map("created_at")
-    updatedAt                  DateTime                     @default(now()) @map("updated_at")
-    unit                       unit?                        @relation(fields: [unitId], references: [id])
-    unitId                     Int?                         @map("unit_id")
-    masterProductGroup         masterProductGroup?          @relation(fields: [masterProductGroupId], references: [id])
-    masterProductGroupId       Int?                         @map("master_product_group_id") @db.Integer
+    id                   Int                 @unique @default(autoincrement()) @map("id")
+    productCode          String?             @map("product_code") @db.VarChar(50)
+    details              Json?               @map("details")
+    chemicalFormula      String              @map("chemical_formula") @db.Text
+    casNo                String              @map("cas_no") @db.VarChar(20)
+    venderId             Int?                @map("vender_id")
+    venderName           String?             @map("vender_name") @db.VarChar(100)
+    brandId              Int?                @map("brand_id")
+    brandName            String?             @map("brand_name") @db.VarChar(100)
+    undertaker           String?             @map("undertaker") @db.VarChar(100)
+    description          String?             @map("description") @db.Text
+    hyperlink            String?             @map("hyperlink") @db.Text
+    minimumStock         Float?              @default(0) @map("minumum_stock")
+    maximumStock         Float?              @default(0) @map("maximum_stock")
+    beforeExpiry         Float?              @default(0) @map("before_expiry")
+    notiExpiry           Boolean             @default(true) @map("noti_expiry") @db.Boolean
+    updatedByName        String?             @map("updated_by_name") @db.Text
+    updatedById          String?             @map("updated_by_id") @db.VarChar(50)
+    createdAt            DateTime            @default(now()) @map("created_at")
+    updatedAt            DateTime            @default(now()) @map("updated_at")
+    unit                 unit?               @relation(fields: [unitId], references: [id])
+    unitId               Int?                @map("unit_id")
+    masterProductGroup   masterProductGroup? @relation(fields: [masterProductGroupId], references: [id])
+    masterProductGroupId Int?                @map("master_product_group_id") @db.Integer
+
     inventoryStock             inventoryStock[]
     masterProductGhsMap        masterProductGhsMap[]
     masterProductImages        masterProductImages[]
@@ -246,7 +251,7 @@ model masterProduct {
     masterProductDetails       masterProductDetails[]
     masterProductHazardtypeMap masterProductHazardtypeMap[]
     masterHazardtype           masterHazardtype?            @relation(fields: [masterHazardtypeId], references: [id])
-    masterHazardtypeId         Int?
+    masterHazardtypeId         Int?                         @map("master_hazardtype_id")
 
     @@map("master_product")
 }

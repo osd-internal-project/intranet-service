@@ -18,7 +18,6 @@ export class MasterProductService {
 
   create(data: Prisma.masterProductCreateInput) {
     const condition = { data: data } as Prisma.masterProductCreateArgs;
-    Logger.debug(data);
     return this.masterProductRepo.create(condition);
   }
 
