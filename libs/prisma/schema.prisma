@@ -1,0 +1,688 @@
+generator client {
+    provider        = "prisma-client-js"
+    previewFeatures = ["interactiveTransactions"]
+    binaryTargets   = ["native"]
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model brand {
+    id        Int      @unique @default(autoincrement()) @map("id")
+    name      String   @map("name") @db.VarChar(200)
+    status    Boolean  @default(true) @map("status") @db.Boolean
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @default(now()) @map("updated_at")
+}
+
+model contact {
+    id           Int     @unique @default(autoincrement()) @map("id")
+    contactID    String  @unique @default(uuid()) @map("contact_id")
+    contact_name String? @default("") @map("contact_name") @db.VarChar(100)
+    phoneNumber  String? @default("") @map("phone_number") @db.VarChar(20)
+    fax_number   String? @default("") @map("fax_number") @db.VarChar(20)
+    email        String? @default("") @map("email") @db.VarChar(100)
+    description  String? @default("") @map("description") @db.VarChar(100)
+    vender       vender? @relation(fields: [venderID], references: [venderID], onDelete: Cascade)
+    venderID     String? @map("vender_id")
+}
+
+model fileRecieve {
+    id             Int           @unique @default(autoincrement())
+    idfile         String?       @db.VarChar(200)
+    path           String?       @db.VarChar(200)
+    namefile       String?       @db.VarChar(200)
+    createdAt      DateTime      @default(now())
+    updatedAt      DateTime?     @db.Timestamp()
+    inventoryLot   inventoryLot? @relation(fields: [inventoryLotId], references: [InventorylotId])
+    inventoryLotId String?       @map("inventory_lot_id")
+
+    @@map("file_recieve")
+}
+
+model imagesLocation {
+    id              Int       @unique @default(autoincrement())
+    idfile          String?   @db.VarChar(200)
+    path            String?   @db.VarChar(200)
+    namefile        String?   @db.VarChar(200)
+    createdAt       DateTime  @default(now())
+    updatedAt       DateTime? @db.Timestamp()
+    location        location? @relation(fields: [images_location], references: [id])
+    images_location Int?      @map("location_id")
+
+    @@map("images_location")
+}
+
+model imagesGhs {
+    id            Int            @unique @default(autoincrement())
+    idfile        String?        @db.VarChar(200)
+    path          String?        @db.VarChar(200)
+    namefile      String?        @db.VarChar(200)
+    createdAt     DateTime       @default(now())
+    updatedAt     DateTime?      @db.Timestamp()
+    masterGhsType masterGhsType? @relation(fields: [imagesGhsId], references: [ghsId])
+    imagesGhsId   String?        @map("images_ghs_id")
+
+    @@map("images_ghs")
+}
+
+model inventory {
+    id              Int              @unique @default(autoincrement()) @map("id")
+    inventoryId     String           @unique @default(uuid()) @map("inventory_id")
+    inventoryNumber String           @default("") @map("inventory_number")
+    inventoryName   String           @default("") @map("inventory_name") @db.VarChar(100)
+    status          Boolean?         @default(true) @map("status") @db.Boolean
+    locationPlace   String?          @default("") @map("location_place") @db.VarChar(100)
+    phoneNumber     String?          @default("") @map("phone_number") @db.VarChar(20)
+    createdAt       DateTime?        @default(now())
+    updatedAt       DateTime?        @db.Timestamp()
+    location        location?        @relation(fields: [locationId], references: [id])
+    locationId      Int?             @map("location_id")
+    inventoryStock  inventoryStock[]
+    order           order[]
+}
+
+model inventoryLot {
+    id               Int             @unique @default(autoincrement()) @map("id")
+    lotNo            String          @map("lot_no") @db.VarChar()
+    qty              Float?          @map("qty")
+    remain           Float?          @map("remain")
+    price            Float           @default(0.00) @map("price")
+    totalPrice       Float           @default(0.00) @map("total_price")
+    updateId         String?         @map("update_id") @db.VarChar(50)
+    updateName       String?         @map("update_name") @db.VarChar(200)
+    receiptDate      DateTime?       @map("receipt_date")
+    detail           String?         @map("detail") @db.Text
+    notiExpiryStatus Boolean?        @map("noti_expiry_status")
+    notiExpiryDate   DateTime?       @map("noti_expiry_date")
+    expiryDate       DateTime?       @map("expiry_date")
+    productionDate   DateTime?       @map("production_date")
+    inventoryStock   inventoryStock? @relation(fields: [inventoryStockId], references: [id], onDelete: Cascade)
+    inventoryStockId Int?            @map("inventory_stock_id")
+    orderLot         orderLot[]
+    fileRecieve      fileRecieve[]
+    venderId         Int?            @map("vender_id")
+    venderName       String?         @map("vender_name") @db.VarChar(100)
+    brandId          Int?            @map("brand_id")
+    brandName        String?         @map("brand_name") @db.VarChar(100)
+    ownerGroup       String?         @map("owner_group") @db.VarChar(50)
+    InventorylotId   String?         @unique @default(uuid()) @map("inventorylot_id")
+
+    @@map("inventory_lot")
+}
+
+model inventoryStock {
+    id              Int            @unique @default(autoincrement()) @map("id")
+    totalQty        Float?         @map("total_qty")
+    totalRemain     Float?         @map("total_remain")
+    cost            Int?           @default(0) @map("cost")
+    price           Float?         @default(0.00) @map("price")
+    updateId        String?        @map("update_id") @db.VarChar(50)
+    updateAt        DateTime?      @default(now()) @map("update_at")
+    updateName      String?        @default("") @map("update_name")
+    inventoryLot    inventoryLot[]
+    inventory       inventory?     @relation(fields: [inventoryId], references: [id])
+    inventoryId     Int?           @map("inventory_id")
+    masterProduct   masterProduct? @relation(fields: [masterProductId], references: [id], onDelete: Cascade)
+    masterProductId Int?           @map("master_product_id")
+    ownerGroup      String?        @map("owner_group") @db.VarChar(50)
+
+    @@map("inventory_stock")
+}
+
+model location {
+    id                       Int                        @unique @default(autoincrement()) @map("id")
+    locationId               String                     @unique @default(uuid()) @map("location_id")
+    numberOfInventory        String?                    @default("") @map("number_of_inventory")
+    locationName             String                     @map("location_name") @db.VarChar(200)
+    status                   Boolean                    @default(true) @map("status") @db.Boolean
+    description              String?                    @default("") @map("description") @db.VarChar(100)
+    locationPlace            String?                    @default("") @map("location_place") @db.VarChar(100)
+    createdAt                DateTime?                  @default(now())
+    updatedAt                DateTime?                  @default(now()) @db.Timestamp()
+    imagesLocation           imagesLocation[]
+    inventory                inventory[]
+    masterProductLocationMap masterProductLocationMap[]
+    locationUserGroupMap     locationUserGroupMap[]
+}
+
+model locationUserGroupMap {
+    id          Int        @unique @default(autoincrement()) @map("id")
+    userGroup   userGroup? @relation(fields: [userGroupId], references: [groupId], onDelete: Cascade)
+    userGroupId String?    @map("user_group_id") @db.VarChar()
+    location    location?  @relation(fields: [locationId], references: [id], onDelete: Cascade)
+    locationId  Int?       @map("location_id")
+
+    @@map("location_user_group_map")
+}
+
+model masterActionStatus {
+    id      Int       @unique @default(autoincrement()) @map("id")
+    nameEn  String    @map("name_th") @db.VarChar(100)
+    nameTh  String    @map("name_en") @db.VarChar(100)
+    request request[]
+
+    @@map("master_action_status")
+}
+
+model masterGhsType {
+    id                  Int                   @unique @default(autoincrement()) @map("id")
+    ghsId               String                @unique @default(uuid()) @map("ghs_id")
+    nameGhs             String                @map("name_ghs") @db.VarChar(100)
+    status              Boolean               @default(true) @map("status") @db.Boolean
+    createdAt           DateTime?             @default(now())
+    updatedAt           DateTime?             @default(now()) @db.Timestamp()
+    detail              String                @default("") @db.Text
+    imagesGhs           imagesGhs[]
+    masterProductGhsMap masterProductGhsMap[]
+
+    @@map("master_ghs_type")
+}
+
+model masterHazardtype {
+    id                         Int                          @unique @default(autoincrement()) @map("id")
+    nameHazard                 String                       @map("name_hazard") @db.VarChar(200)
+    description                String?                      @default("") @map("description") @db.VarChar(250)
+    createdAt                  DateTime?                    @default(now())
+    updatedAt                  DateTime?                    @default(now()) @db.Timestamp()
+    status                     Boolean                      @default(true) @map("status") @db.Boolean
+    masterProductHazardtypeMap masterProductHazardtypeMap[]
+    masterProduct              masterProduct[]
+
+    @@map("master_hazard_type")
+}
+
+model masterObjective {
+    id          Int      @unique @default(autoincrement()) @map("id")
+    name        String   @map("name") @db.VarChar(50)
+    status      Boolean  @default(true) @map("status") @db.Boolean
+    description String   @default("") @map("description") @db.Text
+    createdAt   DateTime @default(now()) @map("created_at")
+    updatedAt   DateTime @default(now()) @map("updated_at")
+
+    @@map("master_objective")
+}
+
+model masterPosition {
+    id        Int       @unique @default(autoincrement()) @map("id")
+    nameTh    String    @default("") @map("name_th") @db.VarChar(100)
+    nameEn    String    @default("") @map("name_en") @db.VarChar(100)
+    createdAt DateTime? @default(now()) @map("created_at")
+    updatedAt DateTime? @default(now()) @map("updated_at")
+    user      user[]
+
+    @@map("master_position")
+}
+
+model masterProduct {
+    id                         Int                          @unique @default(autoincrement()) @map("id")
+    productCode                String?                      @map("product_code") @db.VarChar(50)
+    details                    Json?                        @map("details")
+    chemicalFormula            String                       @map("chemical_formula") @db.Text
+    casNo                      String                       @unique @map("cas_no") @db.VarChar(20)
+    undertaker                 String?                      @map("undertaker") @db.VarChar(100)
+    description                String?                      @map("description") @db.Text
+    hyperlink                  String?                      @map("hyperlink") @db.Text
+    minimumStock               Float?                       @default(0) @map("minumum_stock")
+    maximumStock               Float?                       @default(0) @map("maximum_stock")
+    beforeExpiry               Float?                       @default(0) @map("before_expiry")
+    notiExpiry                 Boolean                      @default(true) @map("noti_expiry") @db.Boolean
+    updatedByName              String?                      @map("updated_by_name") @db.Text
+    updatedById                String?                      @map("updated_by_id") @db.VarChar(50)
+    createdAt                  DateTime                     @default(now()) @map("created_at")
+    updatedAt                  DateTime                     @default(now()) @map("updated_at")
+    unit                       unit?                        @relation(fields: [unitId], references: [id])
+    unitId                     Int?                         @map("unit_id")
+    masterProductGroup         masterProductGroup?          @relation(fields: [masterProductGroupId], references: [id])
+    masterProductGroupId       Int?                         @map("master_product_group_id") @db.Integer
+    inventoryStock             inventoryStock[]
+    masterProductGhsMap        masterProductGhsMap[]
+    masterProductImages        masterProductImages[]
+    masterProductLocationMap   masterProductLocationMap[]
+    masterProductFiles         masterProductFiles[]
+    orderLot                   orderLot[]
+    masterProductDetails       masterProductDetails[]
+    masterProductHazardtypeMap masterProductHazardtypeMap[]
+    masterHazardtype           masterHazardtype?            @relation(fields: [masterHazardtypeId], references: [id])
+    masterHazardtypeId         Int?
+
+    @@map("master_product")
+}
+
+model masterProductCategories {
+    id                 Int                  @unique @default(autoincrement()) @map("id")
+    categoryCode       String               @unique @map("category_code") @db.VarChar(20)
+    categoryName       String               @map("category_name") @db.VarChar(200)
+    status             Boolean              @default(true) @map("status") @db.Boolean
+    createdAt          DateTime             @default(now()) @map("created_at")
+    updatedAt          DateTime             @default(now()) @map("updated_at")
+    masterProductGroup masterProductGroup[]
+
+    @@map("master_product_categories")
+}
+
+model masterProductDetails {
+    id              Int            @unique @default(autoincrement()) @map("id")
+    name            String         @map("name")
+    masterProduct   masterProduct? @relation(fields: [masterProductId], references: [id])
+    masterProductId Int?           @map("master_product_id")
+
+    @@map("master_product_details")
+}
+
+model masterProductImages {
+    id            Int            @unique @default(autoincrement())
+    idfile        String?        @db.VarChar(200)
+    path          String?        @db.VarChar(200)
+    namefile      String?        @db.VarChar(200)
+    createdAt     DateTime       @default(now())
+    updatedAt     DateTime?      @db.Timestamp()
+    masterProduct masterProduct? @relation(fields: [productId], references: [id], onDelete: Cascade)
+    productId     Int?           @map("product_id")
+
+    @@map("master_product_images")
+}
+
+model masterProductFiles {
+    id            Int            @unique @default(autoincrement())
+    idfile        String?        @db.VarChar(200)
+    path          String?        @db.VarChar(200)
+    namefile      String?        @db.VarChar(200)
+    createdAt     DateTime       @default(now())
+    updatedAt     DateTime?      @db.Timestamp()
+    masterProduct masterProduct? @relation(fields: [productId], references: [id], onDelete: Cascade)
+    productId     Int?           @map("product_id")
+
+    @@map("master_product_files")
+}
+
+model masterProductGhsMap {
+    id              Int            @unique @default(autoincrement()) @map("id")
+    masterGhsType   masterGhsType? @relation(fields: [ghsId], references: [id], onDelete: Cascade)
+    ghsId           Int?           @map("ghs_id")
+    masterProduct   masterProduct? @relation(fields: [masterProductId], references: [id], onDelete: Cascade)
+    masterProductId Int?           @map("master_product_id")
+
+    @@map("master_product_ghs_map")
+}
+
+model masterProductHazardtypeMap {
+    id               Int               @unique @default(autoincrement()) @map("id")
+    masterHazardtype masterHazardtype? @relation(fields: [hazardId], references: [id], onDelete: Cascade)
+    hazardId         Int?              @map("hazrd_id")
+    masterProduct    masterProduct?    @relation(fields: [masterProductId], references: [id], onDelete: Cascade)
+    masterProductId  Int?
+
+    @@map("master_product_hazard_map")
+}
+
+model masterProductGroup {
+    id          Int      @unique @default(autoincrement()) @map("id")
+    groupCode   String   @unique @map("group_code") @db.VarChar(20)
+    groupName   String   @map("group_name") @db.VarChar(200)
+    status      Boolean  @default(true) @map("status") @db.Boolean
+    description String?  @map("description") @db.Text
+    createdAt   DateTime @default(now()) @map("created_at")
+    updatedAt   DateTime @default(now()) @map("updated_at")
+
+    masterProductCategories   masterProductCategories?    @relation(fields: [masterProductCategoriesId], references: [id], onDelete: Cascade)
+    masterProductCategoriesId Int?                        @map("master_product_categories_id")
+    masterProductGroupMapType masterProductGroupMapType[]
+    masterProduct             masterProduct[]
+
+    @@map("master_product_group")
+}
+
+model masterProductGroupMapType {
+    id                   Int                 @unique @default(autoincrement()) @map("id")
+    typeCode             String              @map("type_code") @db.VarChar(20)
+    typeName             String              @map("type_name") @db.VarChar(200)
+    createdAt            DateTime            @default(now()) @map("created_at")
+    updatedAt            DateTime            @default(now()) @map("updated_at")
+    masterProductGroup   masterProductGroup? @relation(fields: [masterProductGroupId], references: [id], onDelete: Cascade)
+    masterProductGroupId Int?                @map("master_product_group_id")
+
+    @@map("master_product_group_map_type")
+}
+
+model masterProductLocationMap {
+    id              Int            @unique @default(autoincrement()) @map("id")
+    location        location?      @relation(fields: [locationId], references: [id])
+    locationId      Int?           @map("location_id")
+    masterProduct   masterProduct? @relation(fields: [masterProductId], references: [id])
+    masterProductId Int?           @map("master_product_id")
+
+    @@map("master_product_location_map")
+}
+
+model masterProductType {
+    id           Int      @unique @default(autoincrement()) @map("id")
+    typeCode     String   @unique @map("type_code") @db.VarChar(20)
+    typeName     String   @map("type_name") @db.VarChar(200)
+    activeStatus Boolean  @default(true) @map("active_status") @db.Boolean
+    typeDesc     String?  @map("type_desc") @db.Text
+    createdAt    DateTime @default(now()) @map("created_at")
+    updatedAt    DateTime @default(now()) @map("updated_at")
+
+    @@map("master_product_type")
+}
+
+model masterRole {
+    id       Int    @unique @default(autoincrement()) @map("id")
+    roleCode String @map("role_code") @db.VarChar(20)
+    roleName String @map("role_name") @db.VarChar(50)
+
+    @@map("master_role")
+}
+
+model masterUnit {
+    id   Int    @unique @default(autoincrement()) @map("id")
+    name String @map("name") @db.VarChar(10)
+    type String @map("type") @db.Char(2)
+
+    @@map("master_unit")
+}
+
+model request {
+    id                   Int                 @unique @default(autoincrement()) @map("id")
+    requestId            String              @map("request_id") @db.VarChar(100)
+    createdAt            DateTime            @default(now()) @map("created_at")
+    updatedAt            DateTime            @default(now()) @map("updated_at")
+    createdBy            Int                 @map("created_by")
+    user                 user                @relation(fields: [createdBy], references: [id])
+    requestPrice         Float               @map("request_price")
+    requestQty           Int?                @default(0) @map("request_qty")
+    objective            String?             @map("objective")
+    remark               String?             @map("remark") @db.Text()
+    requestList          requestList[]
+    masterActionStatus   masterActionStatus? @relation(fields: [masterActionStatusId], references: [id])
+    masterActionStatusId Int?                @map("master_actionstatus_id")
+}
+
+model requestList {
+    id        Int      @unique @default(autoincrement()) @map("id")
+    request   request? @relation(fields: [requestId], references: [id])
+    requestId Int?     @map("request_id")
+    qty       Int?     @map("total_cancel")
+    amount    Int      @map("amount") @db.Integer
+
+    @@map("request_list")
+}
+
+model masterRule {
+    id             Int              @unique @default(autoincrement()) @map("id")
+    ruleCode       String           @unique @default(uuid()) @map("rule_code") @db.VarChar(50)
+    ruleName       String           @map("rule_name") @db.VarChar(50)
+    createdAt      DateTime         @default(now()) @map("created_at")
+    updatedAt      DateTime         @default(now()) @map("updated_at")
+    description    String           @default("") @map("description") @db.Text
+    profileRuleMap profileRuleMap[]
+
+    @@map("master_rule")
+}
+
+model order {
+    id                 Int        @unique @default(autoincrement()) @map("id")
+    orderId            String?    @map("order_id") @db.VarChar(50)
+    status             String?    @map("status") @db.VarChar(10)
+    createdById        String     @map("created_by_id") @db.VarChar(50)
+    createdByName      String     @map("created_by_name") @db.VarChar(200)
+    objectiveId        Int        @map("objective_id")
+    objectiveName      String     @map("objective_name")
+    requestDate        DateTime?  @map("request_date") @db.Date
+    requesterId        String?    @map("requester_id") @db.VarChar(50)
+    requesterName      String?    @map("requester_name")
+    requesterGroupId   String?    @map("requester_group_id") @db.VarChar(50)
+    requesterGroupName String?    @map("requester_group_name") @db.VarChar(200)
+    remark             String     @default("") @map("remark") @db.Text
+    createdAt          DateTime   @default(now()) @map("created_at")
+    updatedAt          DateTime   @default(now()) @map("updated_at")
+    inventory          inventory? @relation(fields: [inventoryId], references: [id])
+    inventoryId        Int?       @map("inventory_id")
+    inventoryName      String?    @map("inventory_name")
+    locationId         Int?       @map("location_id")
+    locationName       String?    @map("location_name")
+    totalQty           Float?     @default(0.00) @map("total_qty")
+    totalPrice         Float?     @default(0.00) @map("total_price")
+    ownerGroup         String?    @map("owner_group") @db.VarChar(50)
+
+    orderLot orderLot[]
+}
+
+model orderLot {
+    id              Int            @unique @default(autoincrement()) @map("id")
+    lotNo           String?        @map("lot_no") @db.VarChar(20)
+    status          String?        @db.VarChar(10)
+    productCode     String?        @map("product_code") @db.VarChar(50)
+    productName     String         @map("product_name") @db.VarChar(200)
+    casNo           String?        @map("cas_no") @db.VarChar(50)
+    groupName       String?        @map("group_name") @db.VarChar(50)
+    qty             Float?         @map("qty")
+    price           Float          @default(0.00) @map("price")
+    totalPrice      Float          @default(0.00) @map("total_price")
+    createdAt       DateTime       @default(now()) @map("created_at")
+    order           order?         @relation(fields: [orderId], references: [id])
+    orderId         Int?           @map("order_id")
+    unit            String?        @map("unit") @db.VarChar(20)
+    expiredStatus   Boolean?       @default(true) @map("expired_status")
+    masterProduct   masterProduct? @relation(fields: [masterProductId], references: [id])
+    masterProductId Int?           @map("master_product_id")
+    inventoryLot    inventoryLot?  @relation(fields: [inventoryLotId], references: [id])
+    ownerGroup      String?        @map("owner_group") @db.VarChar(50)
+    inventoryLotId  Int?           @map("inventory_lot_id")
+    detailLot       String?        @map("detail_lot") @db.VarChar(250)
+
+    @@map("order_lot")
+}
+
+model organized {
+    id            Int         @unique @default(autoincrement()) @map("id")
+    organizedId   String      @unique @default(uuid()) @map("organized_id") @db.VarChar(50)
+    organizedName String      @map("organized_name") @db.VarChar(50)
+    description   String      @default("") @map("description") @db.Text
+    createdAt     DateTime    @default(now()) @map("created_at")
+    updatedAt     DateTime    @default(now()) @map("updated_at")
+    userGroup     userGroup[]
+    userRole      userRole[]
+}
+
+model profileRule {
+    id               Int              @unique @default(autoincrement()) @map("id")
+    profileId        String           @unique @default(uuid()) @map("profile_id") @db.VarChar(50)
+    profileName      String           @map("profile_name") @db.VarChar(50)
+    createdAt        DateTime         @default(now()) @map("created_at")
+    updatedAt        DateTime         @default(now()) @map("updated_at")
+    description      String           @default("") @map("description") @db.Text
+    roleProfileMap   roleProfileMap[]
+    profileRuleMap   profileRuleMap[]
+    organizedGroupId String?          @map("organized_group_id")
+
+    @@map("profile_rule")
+}
+
+model profileRuleMap {
+    id            Int          @unique @default(autoincrement()) @map("id")
+    masterRule    masterRule?  @relation(fields: [masterRuleId], references: [ruleCode], onDelete: Cascade)
+    masterRuleId  String?      @map("master_rule_id")
+    profileRule   profileRule? @relation(fields: [profileRuleId], references: [profileId], onDelete: Cascade)
+    profileRuleId String?      @map("profile_rule_id")
+
+    @@map("profile_rule_map")
+}
+
+model roleProfileMap {
+    id            Int          @unique @default(autoincrement()) @map("id")
+    userRole      userRole?    @relation(fields: [userRoleId], references: [roleId], onDelete: Cascade)
+    userRoleId    String?      @map("user_role_id")
+    profileRule   profileRule? @relation(fields: [profileRuleId], references: [profileId], onDelete: Cascade)
+    profileRuleId String?      @map("profile_rule_id")
+    user          user?        @relation(fields: [userId], references: [id])
+    userId        Int?         @map("user_id")
+
+    @@map("role_profile_map")
+}
+
+model transaction {
+    id                 Int       @unique @default(autoincrement()) @map("id")
+    productName        String    @map("product_name") @db.VarChar(200)
+    productCode        String?   @map("product_code") @db.VarChar(20)
+    casNo              String?   @map("cas_no") @db.VarChar(20)
+    location           String    @map("location") @db.VarChar(200)
+    locationId         Int?      @map("location_id")
+    inventory          String    @map("inventory") @db.VarChar(200)
+    inventoryId        Int?      @map("inventory_id")
+    chemicalFormula    String    @map("chemical_formula") @db.VarChar(20)
+    groupId            String    @map("group_id") @db.VarChar(30)
+    groupName          String    @map("group_name") @db.VarChar(30)
+    vender             String    @map("vender") @db.VarChar(200)
+    brand              String    @map("brand") @db.VarChar(200)
+    status             String    @map("status") @db.VarChar(10)
+    qty                Float?    @map("qty")
+    orderStatus        String?   @map("order_status") @db.VarChar(10)
+    objective          String?   @map("objective") @db.VarChar(200)
+    orderId            Int?      @map("order_id")
+    price              Float?    @map("price")
+    unit               String    @map("unit") @db.VarChar(20)
+    updatedAt          DateTime  @map("updated_at") @db.Timestamptz()
+    expiredDate        DateTime? @map("expired_date") @db.Timestamptz()
+    updatedById        String    @map("updated_by_id") @db.VarChar(50)
+    updatedByName      String    @map("updated_by_name") @db.VarChar(100)
+    ownerGroup         String?   @map("owner_group") @db.VarChar(50)
+    requesterId        String?   @map("requester_id") @db.VarChar(50)
+    requesterName      String?   @map("requester_name")
+    requesterGroupId   String?   @map("requester_group_id") @db.VarChar(50)
+    requesterGroupName String?   @map("requester_group_name") @db.VarChar(200)
+    detailLot          String?   @map("detail_lot") @db.VarChar(250)
+}
+
+model vender {
+    id           Int       @unique @default(autoincrement()) @map("id")
+    venderName   String    @map("vender_name") @db.VarChar(100)
+    status       Boolean   @default(true) @map("status") @db.Boolean
+    description  String?   @default("") @map("description") @db.VarChar(100)
+    venderID     String    @unique @default(uuid()) @map("vender_id")
+    house_number String?   @default("") @map("house_number") @db.VarChar(10)
+    group        String?   @default("") @map("group") @db.VarChar(10)
+    village      String?   @default("") @map("village") @db.VarChar(100)
+    alley        String?   @default("") @map("alley") @db.VarChar(50)
+    road         String?   @default("") @map("road") @db.VarChar(50)
+    sub_district String?   @default("") @map("sub_district") @db.VarChar(50)
+    district     String?   @default("") @map("district") @db.VarChar(50)
+    province     String?   @default("") @map("province") @db.VarChar(50)
+    post_code    String?   @default("") @map("post_code") @db.VarChar(20)
+    phoneNumber  String?   @default("") @map("phone_number") @db.VarChar(20)
+    fax_number   String?   @default("") @map("fax_number") @db.VarChar(20)
+    email        String?   @default("") @map("email") @db.VarChar(100)
+    IDcard       String?   @default("") @map("id_card") @db.VarChar(100)
+    createdAt    DateTime  @default(now()) @map("created_at")
+    updatedAt    DateTime  @default(now()) @map("updated_at")
+    contact      contact[]
+}
+
+model unit {
+    id            Int             @unique @default(autoincrement()) @map("id")
+    unitID        String          @unique @default(uuid()) @map("unit_id")
+    unitName      String          @default("") @map("unit_name") @db.VarChar(100)
+    status        Boolean?        @default(true) @map("active") @db.Boolean
+    createdAt     DateTime        @default(now()) @map("created_at")
+    updatedAt     DateTime        @default(now()) @map("updated_at")
+    masterProduct masterProduct[]
+}
+
+model user {
+    id               Int              @unique @default(autoincrement()) @map("id")
+    userId           String           @unique @default(uuid()) @map("user_id") @db.VarChar(50)
+    username         String           @map("username") @db.VarChar(100)
+    password         String           @map("password") @db.Text
+    firstNameTh      String?          @map("first_name_th") @db.VarChar(100)
+    lastNameTh       String?          @map("last_name_th") @db.VarChar(100)
+    firstNameEn      String?          @map("first_name_en") @db.VarChar(100)
+    lastNameEn       String?          @map("last_name_en") @db.VarChar(100)
+    email            String?          @map("email") @db.VarChar(100)
+    phoneNumber      String?          @map("phone_number") @db.VarChar(50)
+    activeStatus     Boolean          @default(true) @map("active_status") @db.Boolean
+    clientId         String?          @map("client_id") @db.VarChar(50)
+    createdAt        DateTime         @default(now()) @map("created_at")
+    updatedAt        DateTime         @default(now()) @map("updated_at")
+    masterPosition   masterPosition?  @relation(fields: [masterPositionId], references: [id])
+    masterPositionId Int?             @map("master_position_id")
+    userGroupMap     userGroupMap[]
+    roleProfileMap   roleProfileMap[]
+    userRoleMap      userRoleMap[]
+    organizedGroupId String?          @map("organized_group_id") @db.VarChar(50)
+    refreshToken     String?          @map("refresh_token")
+    ownerGroupId     String?          @map("owner_group_id") @db.VarChar(50)
+    ownerGroup       userGroup?       @relation(fields: [ownerGroupId], references: [groupId])
+    request          request[]
+    // userOwner        userOwner[]
+}
+
+// model userOwner {
+//     id               Int        @unique @default(autoincrement()) @map("id")
+//     user             user?      @relation(fields: [userId], references: [userId])
+//     userId           String?    @map("user_id")
+//     userGroup        userGroup? @relation(fields: [userGroupId], references: [groupId])
+//     userGroupId      String?    @map("user_group_id")
+//     organizedGroupId String?    @map("organized_group_id")
+
+//     @@map("user_owner")
+// }
+
+model userGroup {
+    id                   Int                    @unique @default(autoincrement()) @map("id")
+    groupId              String                 @unique @default(uuid()) @map("group_id") @db.VarChar(50)
+    groupName            String                 @map("group_name") @db.VarChar(200) //Text waiting update
+    createdAt            DateTime               @default(now()) @map("created_at")
+    updatedAt            DateTime               @default(now()) @map("updated_at")
+    parent               userGroup?             @relation("ChildGroup", fields: [parentGroupId], references: [groupId])
+    parentGroupId        String?                @map("parent_group_id") @db.VarChar(50)
+    userGroup            userGroup[]            @relation("ChildGroup")
+    userGroupMap         userGroupMap[]
+    organized            organized?             @relation(fields: [organizedGroupId], references: [organizedId])
+    organizedGroupId     String?                @map("organized_group_id")
+    description          String                 @default("") @map("description") @db.Text
+    locationUserGroupMap locationUserGroupMap[]
+    // userOwner            userOwner[]
+    user                 user[]
+
+    @@map("user_group")
+}
+
+model userGroupMap {
+    id               Int        @unique @default(autoincrement()) @map("id")
+    user             user?      @relation(fields: [userId], references: [userId], onDelete: Cascade)
+    userId           String?    @map("user_id")
+    userGroup        userGroup? @relation(fields: [userGroupId], references: [groupId], onDelete: Cascade)
+    userGroupId      String?    @map("user_group_id")
+    organizedGroupId String?    @map("organized_group_id")
+
+    @@map("user_group_map")
+}
+
+model userRole {
+    id               Int           @unique @default(autoincrement()) @map("id")
+    roleId           String        @unique @default(uuid()) @map("role_id") @db.VarChar(50)
+    roleName         String        @map("role_name") @db.VarChar(50)
+    createdAt        DateTime      @default(now()) @map("created_at")
+    updatedAt        DateTime      @default(now()) @map("updated_at")
+    description      String        @default("") @map("description") @db.Text
+    userRoleMap      userRoleMap[]
+    organized        organized?    @relation(fields: [organizedGroupId], references: [organizedId])
+    organizedGroupId String?       @map("organized_group_id")
+
+    roleProfileMap roleProfileMap[]
+
+    @@map("user_role")
+}
+
+model userRoleMap {
+    id         Int       @unique @default(autoincrement()) @map("id")
+    userRole   userRole? @relation(fields: [userRoleId], references: [roleId], onDelete: Cascade)
+    userRoleId String?   @map("user_role_id")
+    user       user?     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+    userId     String?   @map("user_id")
+
+    @@map("user_role_map")
+}

@@ -1,0 +1,70 @@
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Delete,
+  Param,
+  Logger,
+} from '@nestjs/common';
+import { UserGroupService } from './user-group.service';
+import { Prisma } from '@prisma/client';
+@Controller('user-group')
+export class UserGroupController {
+  constructor(private readonly userGroupService: UserGroupService) {}
+
+  @Post()
+  create(@Body('data') data: Prisma.userGroupCreateInput) {
+    return this.userGroupService.create(data);
+  }
+
+  @Get()
+  findAll() {
+    return this.userGroupService.findAll();
+  }
+
+  @Post('condition')
+  findByCondition(@Body('condition') condition: Prisma.userGroupFindManyArgs) {
+    return this.userGroupService.findByCondition(condition);
+  }
+  @Post('condition-first')
+  async findOneByCondition(
+    @Body('condition') condition: Prisma.userGroupFindFirstArgs,
+  ) {
+    const data = await this.userGroupService.findOneByCondition(condition);
+    return data;
+  }
+
+  @Patch()
+  update(
+    @Body('groupId') groupId: string,
+    @Body('data') data: Prisma.userGroupUpdateInput,
+  ) {
+    return this.userGroupService.update(groupId, data);
+  }
+
+  @Delete(':groupId')
+  async remove(@Param('groupId') groupId: string) {
+    const checkParent = await this.userGroupService.findChildGroupByGropId(
+      groupId,
+    );
+
+    const checkUsed = await this.userGroupService.findUserByGropId(groupId);
+    if (checkParent.length > 0) {
+      return {
+        status: 401,
+        message: `ไม่สามารถลบได้เนื่องจากมีกลุ่มย่อยอยู่`,
+      };
+    } else if (checkUsed.length > 0) {
+      console.log(checkUsed);
+      return {
+        status: 401,
+        message: `ไม่สามารถลบได้เนื่องจากมีผู้ใช้อยู่ในกลุ่ม`,
+      };
+    } else {
+      console.log(1);
+      return this.userGroupService.remove(groupId);
+    }
+  }
+}
