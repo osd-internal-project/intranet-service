@@ -109,8 +109,6 @@ export class InventoryLotService {
         id: true,
         lotNo: true,
         detail: true,
-        brandName: true,
-        venderName: true,
         inventoryStock: {
           select: {
             id: true,
@@ -121,6 +119,8 @@ export class InventoryLotService {
                 unit: { select: { unitName: true } },
                 masterProductGroup: { select: { id: true, groupName: true } },
                 chemicalFormula: true,
+                brandName: true,
+                venderName: true,
               },
             },
           },

@@ -45,9 +45,9 @@ export class MasterProductController {
     return this.masterProductService.findMany(condition);
   }
 
-  @Post('find-by-casno')
-  findByCasNo(@Body('casno') casNo: string) {
-    return this.masterProductService.findByCasNo(casNo);
+  @Post('find-by-id')
+  findById(@Body('id') id: string) {
+    return this.masterProductService.findById(+id);
   }
 
   @Post('inventory')
@@ -83,12 +83,12 @@ export class MasterProductController {
     );
   }
 
-  @Patch(':casno')
+  @Patch(':pid')
   update(
-    @Param('casno') casNo: string,
+    @Param('pid') pid: string,
     @Body('data') data: Prisma.masterProductUpdateInput,
   ) {
-    return this.masterProductService.update(casNo, data);
+    return this.masterProductService.update(+pid, data);
   }
 
   @Delete(':id')
