@@ -1,6 +1,6 @@
 export default () => ({
   env: process.env.NODE_ENV ?? 'local',
-  port: process.env.PORT_USER || 4003,
-  id24Url: process.env.ID24_URL || 'http://192.168.59.191:8815',
+  port: process.env.PORT || 4003,
+  id24Url: process.env.ID24_URL,
   id24TokenPublicKey: process.env.ID24_TOKEN_PUBLIC_KEY,
 });

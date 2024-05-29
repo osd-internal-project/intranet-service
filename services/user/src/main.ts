@@ -40,6 +40,6 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   await app.listen(PORT);
-  console.log(`service start on port : ${PORT}`);
+  console.log(`service user start on port : ${PORT}`);
 }
 bootstrap();
