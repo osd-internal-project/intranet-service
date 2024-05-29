@@ -104,4 +104,14 @@ export class UserRoleService {
     const condition = { data: data } as Prisma.roleProfileMapCreateManyArgs;
     return this.roleProfileMapRepo.createMany(condition);
   }
+
+  setRole() {
+    return this.userRoleRepo.create({
+      data: {
+        roleId: 'role0',
+        roleName: 'all',
+        roleProfileMap: { create: { profileRuleId: 'profile0' } },
+      },
+    });
+  }
 }

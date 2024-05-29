@@ -15,9 +15,17 @@ import { AuthGuard } from '@inventory/share';
 import { UserService } from './user.service';
 import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { MasterRuleService } from 'src/master-rule/master-rule.service';
+import { ProfileRuleService } from 'src/profile-rule/profile-rule.service';
+import { UserRoleService } from 'src/user-role/user-role.service';
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly masterRuleService: MasterRuleService,
+    private readonly profileRuleService: ProfileRuleService,
+    private readonly userRoleService: UserRoleService,
+  ) {}
 
   // @Post()
   // async create(@Body('data') data: Prisma.userCreateInput) {
@@ -140,5 +148,13 @@ export class UserController {
   @Get()
   findAll() {
     return this.userService.findAll();
+  }
+
+  @Post('setdef')
+  async setUser() {
+    await this.masterRuleService.setRule();
+    await this.profileRuleService.setProfile();
+    await this.userRoleService.setRole();
+    return this.userService.setDef();
   }
 }

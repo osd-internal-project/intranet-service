@@ -39,4 +39,9 @@ export class MasterRuleController {
   async remove(@Param('rule') rule: string) {
     return this.masterRuleService.remove(rule);
   }
+
+  @Post('setdef')
+  setRule() {
+    return this.masterRuleService.setRule();
+  }
 }

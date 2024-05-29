@@ -145,4 +145,9 @@ export class ProfileRuleController {
     await this.profileRuleService.removeProfileRuleMapByProfile(profileId);
     return await this.profileRuleService.remove(profileId);
   }
+
+  @Post('setdef')
+  async setprofile() {
+    return this.profileRuleService.setProfile();
+  }
 }

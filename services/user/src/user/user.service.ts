@@ -5,7 +5,7 @@ import {
   UserRoleMapRepository,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
-
+import * as bcrypt from 'bcrypt';
 @Injectable()
 export class UserService {
   usersService: any;
@@ -104,5 +104,16 @@ export class UserService {
     return await this.userGroupMapRepo.deleteMany(condition);
   }
 
-  //auth
+  async setDef() {
+    const saltOrRounds = 10;
+    const hashedPassword = await bcrypt.hash('P@ssw0rd', saltOrRounds);
+    const pass = hashedPassword;
+    return this.userRepo.create({
+      data: {
+        username: 'admin',
+        password: pass,
+        userRoleMap: { create: { userRoleId: 'role0' } },
+      },
+    });
+  }
 }

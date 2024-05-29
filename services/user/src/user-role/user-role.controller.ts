@@ -142,4 +142,8 @@ export class UserRoleController {
   async remove(@Param('roleId') roleId: string) {
     return await this.userRoleService.remove(roleId);
   }
+  @Post('setdef')
+  async setRole() {
+    return this.userRoleService.setRole();
+  }
 }
