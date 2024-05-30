@@ -31,6 +31,9 @@ import {
   LocationUserGroupMapRepository,
   VenderRepository,
   UnitRepository,
+  FloorRepository,
+  HouseKeeperRepository,
+  ResultCleanlinessRepository,
 
   //Auth
   MasterPositionRepository,
@@ -77,6 +80,9 @@ const services = [
   LocationRepository,
   LocationUserGroupMapRepository,
   UnitRepository,
+  FloorRepository,
+  HouseKeeperRepository,
+  ResultCleanlinessRepository,
   //Auth
   MasterPositionRepository,
   MasterRuleRepository,

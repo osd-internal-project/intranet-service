@@ -27,6 +27,9 @@ import { UnitModule } from './unit/unit.module';
 import { MasterGhsTypeModule } from './master-ghs-type/master-ghs-type.module';
 import { ImageLocationModule } from './image-location/image-location.module';
 import { MasterObjectiveModule } from './master-objective/master-objective.module';
+import { FloorModule } from './floor/floor.module';
+import { HousekeeperModule } from './housekeeper/housekeeper.module';
+import { ResultCleanlinesModule } from './result-cleanlines/result-cleanlines.module';
 
 @Module({
   imports: [
@@ -54,6 +57,9 @@ import { MasterObjectiveModule } from './master-objective/master-objective.modul
     UnitModule,
     MasterGhsTypeModule,
     MasterObjectiveModule,
+    FloorModule,
+    HousekeeperModule,
+    ResultCleanlinesModule,
   ],
   controllers: [EvoteController],
   providers: [EvoteService],

@@ -691,3 +691,36 @@ model userRoleMap {
 
     @@map("user_role_map")
 }
+
+model floor {
+    id                Int                 @unique @default(autoincrement()) @map("id")
+    floorId           Int                 @unique @default(autoincrement()) @map("floor_id") @db.Integer()
+    floorName         String              @map("floor_name") @db.VarChar(20)
+    createdAt         DateTime            @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt         DateTime            @updatedAt @map("updated_at") @db.Timestamptz()
+    resultCleanliness resultCleanliness[]
+}
+
+model houseKeeper {
+    id                Int                 @unique @default(autoincrement()) @map("id")
+    houseKeeperId     Int                 @unique @default(autoincrement()) @map("housekeeper_id") @db.Integer()
+    houseKeepName     String              @map("housekeeper_name") @db.VarChar(20)
+    quitYourJob       Boolean             @default(false) @map("quit_your_job") @db.Boolean()
+    createdAt         DateTime            @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt         DateTime            @updatedAt @map("updated_at") @db.Timestamptz()
+    resultCleanliness resultCleanliness[]
+
+    @@map("house_keeper")
+}
+
+model resultCleanliness {
+    id            Int         @unique @default(autoincrement()) @map("id")
+    floorId       Int         @default(autoincrement()) @map("floor_id") @db.Integer
+    houseKeeperId Int         @map("housekeeper_id") @db.Integer
+    duration      String      @map("duration") @db.VarChar(20)
+    result        Int         @map("result") @db.Integer
+    floors        floor       @relation(fields: [floorId], references: [floorId])
+    houseKeepers  houseKeeper @relation(fields: [houseKeeperId], references: [houseKeeperId])
+
+    @@map("result_cleanliness")
+}

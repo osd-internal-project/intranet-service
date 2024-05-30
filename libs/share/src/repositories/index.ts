@@ -22,6 +22,9 @@ export * from './order.repository';
 export * from './orderLot.repository';
 export * from './request.repository';
 export * from './requestList.repository';
+export * from './floor.repository';
+export * from './houseKeeper.repository';
+export * from './resultCleanliness.repository';
 
 export * from './masterUnit.repository';
 export * from './location.repository';
