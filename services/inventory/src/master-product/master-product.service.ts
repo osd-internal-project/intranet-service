@@ -80,6 +80,10 @@ export class MasterProductService {
         chemicalFormula: true,
         description: true,
         casNo: true,
+        venderId: true,
+        venderName: true,
+        brandId: true,
+        brandName: true,
         masterProductGhsMap: {
           select: {
             masterGhsType: {
@@ -129,11 +133,11 @@ export class MasterProductService {
     return data;
   }
 
-  async findByCasNo(casNo: string) {
-    if (casNo === undefined || null) return null;
+  async findById(id: number) {
+    if (id === undefined || null) return null;
     const base = {
       where: {
-        casNo: casNo,
+        id: id,
         // details: { path: ['name[*]'], arr: 'oxigen' },
       },
       select: {
@@ -142,6 +146,8 @@ export class MasterProductService {
         chemicalFormula: true,
         description: true,
         casNo: true,
+        venderId: true,
+        brandId: true,
         undertaker: true,
         masterProductLocationMap: true,
         masterProductHazardtypeMap: {
@@ -223,6 +229,8 @@ export class MasterProductService {
         chemicalFormula: true,
         description: true,
         casNo: true,
+        brandName: true,
+        venderName: true,
         hyperlink: true,
         masterProductGhsMap: {
           select: {
@@ -236,6 +244,7 @@ export class MasterProductService {
             },
           },
         },
+        masterHazardtype: true,
         unit: { select: { unitName: true } },
         masterProductGroup: {
           select: {
@@ -330,6 +339,8 @@ export class MasterProductService {
         masterProductDetails: true,
         chemicalFormula: true,
         description: true,
+        venderName: true,
+        brandName: true,
         casNo: true,
         hyperlink: true,
         masterProductHazardtypeMap: {
@@ -444,9 +455,9 @@ export class MasterProductService {
     return await this.masterProductRepo.findOne(base);
   }
 
-  async update(casNo: string, data: Prisma.masterProductUpdateInput) {
+  async update(id: number, data: Prisma.masterProductUpdateInput) {
     const condition = {
-      where: { casNo: casNo },
+      where: { id: id },
       data: data,
     } as Prisma.masterProductUpdateArgs;
     return await this.masterProductRepo.update(condition);
