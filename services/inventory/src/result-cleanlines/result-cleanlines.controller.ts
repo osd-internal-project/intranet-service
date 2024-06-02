@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ResultCleanlinesService } from './result-cleanlines.service';
 import { CreateResultCleanlineDto } from './dto/create-result-cleanline.dto';
@@ -25,6 +26,11 @@ export class ResultCleanlinesController {
   @Get()
   findAll() {
     return this.resultCleanlinesService.findAll();
+  }
+
+  @Get('query')
+  findMany(@Query() query: any) {
+    return this.resultCleanlinesService.findMany(query);
   }
 
   @Get(':id')

@@ -1,1 +1,4 @@
-export class CreateHousekeeperDto {}
+export class CreateHousekeeperDto {
+  houseKeeperId?: number;
+  houseKeepName: string;
+}
