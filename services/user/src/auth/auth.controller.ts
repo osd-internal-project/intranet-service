@@ -20,6 +20,7 @@ import {
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { AuthguardService, AuthGuard } from '@inventory/share';
+import { authenticate } from 'ldap-authentication';
 import { jwtConfig } from './config';
 import * as bcrypt from 'bcrypt';
 
@@ -30,7 +31,7 @@ export class AuthController {
     private readonly userGroupMapService: UserGroupMapService,
     private readonly userRoleMapService: UserRoleMapService,
     private readonly authguardService: AuthguardService,
-  ) {}
+  ) { }
 
   @UseGuards(AuthGuard)
   @Get('/profile')
@@ -45,55 +46,54 @@ export class AuthController {
     const condition = {
       where: { username: signInDto.username, activeStatus: true },
     } as Prisma.userFindFirstArgs;
-    const user = await this.userService.findOneByCondition(condition);
 
-    if (!user) {
-      throw new NotFoundException();
-    }
-    const comparePassowrd = await bcrypt.compare(
-      signInDto.password,
-      user.password,
-    );
+    const createTokenAndReturn = async (user: any) => {
+      const { userId, username, firstNameTh, lastNameTh, email, phoneNumber, ownerGroupId } = user;
+      const payload = { userId, username, firstNameTh, lastNameTh, email, phoneNumber, ownerGroup: ownerGroupId };
+      const token = this.authguardService.createToken(payload);
+      await this.userService.updateRefreshToken(user.userId, token.refreshToken);
 
-    if (!comparePassowrd) {
-      throw new UnauthorizedException();
-    }
-    const {
-      userId,
-      username,
-      firstNameTh,
-      lastNameTh,
-      email,
-      phoneNumber,
-      ownerGroupId,
-    } = user;
-
-    const payload = {
-      userId,
-      username,
-      firstNameTh,
-      lastNameTh,
-      email,
-      phoneNumber,
-      ownerGroup: ownerGroupId,
+      return { accessToken: token.accessToken, refreshToken: token.refreshToken };
     };
-    const token = this.authguardService.createToken(payload);
-    // const accessToken = this.jwtService.sign(payload, {
-    //   secret: jwtConfig.secret,
-    //   expiresIn: jwtConfig.expires,
-    // });
 
-    // const refreshToken = this.jwtService.sign(payload, {
-    //   secret: jwtConfig.secret,
-    //   expiresIn: jwtConfig.refreshExpires,
-    // });
-    await this.userService.updateRefreshToken(user.userId, token.refreshToken);
+    if (signInDto.type === "ldap") {
+      const authenticated = await authenticate({
+        ldapOpts: { url: 'ldap://192.168.99.1' },
+        userDn: `${signInDto.username}@osd.co.th`,
+        userPassword: signInDto.password,
+      });
 
-    return {
-      accessToken: token.accessToken,
-      refreshToken: token.refreshToken,
-    };
+      if (authenticated) {
+        const user = await this.userService.findOneByCondition(condition);
+
+        if (!user) {
+          const createUserData = { username: signInDto.username };
+          const newUser = await this.userService.defaultUser(createUserData);
+          return createTokenAndReturn(newUser);
+        }
+
+        return createTokenAndReturn(user);
+      } else {
+        throw new UnauthorizedException('LDAP authentication failed.');
+      }
+    } else {
+      const user = await this.userService.findOneByCondition(condition);
+
+      if (!user) {
+        throw new NotFoundException();
+      }
+
+      const comparePassword = await bcrypt.compare(signInDto.password, user.password);
+
+      if (!comparePassword) {
+        throw new UnauthorizedException();
+      }
+
+      return createTokenAndReturn(user);
+    }
   }
+
+
   @Get('/permission/:userid')
   async getPermission(@Param('userid') userId: string) {
     const grouplist = await this.userGroupMapService.findGrouplistByUserId(

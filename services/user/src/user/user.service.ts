@@ -116,4 +116,16 @@ export class UserService {
       },
     });
   }
+
+  async defaultUser(userDetails: { username: string }) {
+    const saltOrRounds = 10;
+    const hashedPassword = await bcrypt.hash('P@ssw0rd', saltOrRounds);
+    const pass = hashedPassword;
+    return this.userRepo.create({
+      data: {
+        username: userDetails.username,
+        password: pass,
+      },
+    });
+  }
 }
