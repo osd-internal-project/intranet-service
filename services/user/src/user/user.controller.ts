@@ -150,11 +150,14 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @Post('setdef')
+  @Post('set-defualt-admin')
   async setUser() {
-    await this.masterRuleService.setRule();
-    await this.profileRuleService.setProfile();
-    await this.userRoleService.setRole();
+    const rules = await this.masterRuleService.setRule();
+    Logger.debug(rules);
+    const ruleGroup = await this.profileRuleService.setProfile();
+    Logger.debug(ruleGroup);
+    const roles = await this.userRoleService.setRole();
+    Logger.debug(roles);
     return this.userService.setDef();
   }
 }

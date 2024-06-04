@@ -31,7 +31,7 @@ export class AuthController {
     private readonly userGroupMapService: UserGroupMapService,
     private readonly userRoleMapService: UserRoleMapService,
     private readonly authguardService: AuthguardService,
-  ) { }
+  ) {}
 
   @UseGuards(AuthGuard)
   @Get('/profile')
@@ -48,15 +48,37 @@ export class AuthController {
     } as Prisma.userFindFirstArgs;
 
     const createTokenAndReturn = async (user: any) => {
-      const { userId, username, firstNameTh, lastNameTh, email, phoneNumber, ownerGroupId } = user;
-      const payload = { userId, username, firstNameTh, lastNameTh, email, phoneNumber, ownerGroup: ownerGroupId };
+      const {
+        userId,
+        username,
+        firstNameTh,
+        lastNameTh,
+        email,
+        phoneNumber,
+        ownerGroupId,
+      } = user;
+      const payload = {
+        userId,
+        username,
+        firstNameTh,
+        lastNameTh,
+        email,
+        phoneNumber,
+        ownerGroup: ownerGroupId,
+      };
       const token = this.authguardService.createToken(payload);
-      await this.userService.updateRefreshToken(user.userId, token.refreshToken);
+      await this.userService.updateRefreshToken(
+        user.userId,
+        token.refreshToken,
+      );
 
-      return { accessToken: token.accessToken, refreshToken: token.refreshToken };
+      return {
+        accessToken: token.accessToken,
+        refreshToken: token.refreshToken,
+      };
     };
 
-    if (signInDto.type === "ldap") {
+    if (signInDto.type === 'ldap') {
       const authenticated = await authenticate({
         ldapOpts: { url: 'ldap://192.168.99.1' },
         userDn: `${signInDto.username}@osd.co.th`,
@@ -83,7 +105,10 @@ export class AuthController {
         throw new NotFoundException();
       }
 
-      const comparePassword = await bcrypt.compare(signInDto.password, user.password);
+      const comparePassword = await bcrypt.compare(
+        signInDto.password,
+        user.password,
+      );
 
       if (!comparePassword) {
         throw new UnauthorizedException();
@@ -92,7 +117,6 @@ export class AuthController {
       return createTokenAndReturn(user);
     }
   }
-
 
   @Get('/permission/:userid')
   async getPermission(@Param('userid') userId: string) {
