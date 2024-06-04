@@ -32,39 +32,6 @@ export class ResultCleanlinesService {
     });
   }
 
-  async findReport(query) {
-    let startTrackDate;
-    let endTrackDate;
-    if (query.monthYear) {
-      startTrackDate = this.startOfDate(
-        query.monthYear[0].replace(/"/g, ''),
-      ).toISOString();
-      endTrackDate = this.endOfDate(
-        query.monthYear[1].replace(/"/g, ''),
-      ).toISOString();
-    }
-    let sql = `select
-    rc.housekeeper_id,
-    hk.housekeeper_name ,
-    rc."result",
-    count(rc."result") as score
-  from
-    result_cleanliness rc
-  left join house_keeper hk on
-    hk.housekeeper_id = rc.housekeeper_id
-  where rc.wrapup_date between '${startTrackDate}' and '${endTrackDate}'`;
-    query.result ? (sql += ` and rc."result" =${query.result}`) : ``;
-    query.duration ? (sql += ` and rc.duration =${query.duration}`) : ``;
-    sql += `group by
-    rc.housekeeper_id,
-    hk.housekeeper_name ,
-    rc."result"
-  order by
-    rc.housekeeper_id`;
-    const result = await prisma.$queryRaw(Prisma.raw(sql));
-    return result;
-  }
-
   findAll() {
     return this.resultCleanlinessRepo.findAll();
   }
