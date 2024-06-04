@@ -30,6 +30,8 @@ import { MasterObjectiveModule } from './master-objective/master-objective.modul
 import { FloorModule } from './floor/floor.module';
 import { HousekeeperModule } from './housekeeper/housekeeper.module';
 import { ResultCleanlinesModule } from './result-cleanlines/result-cleanlines.module';
+import { MaTaskModule } from './ma-task/ma-task.module';
+import { MaTypeModule } from './ma-type/ma-type.module';
 
 @Module({
   imports: [
@@ -60,6 +62,8 @@ import { ResultCleanlinesModule } from './result-cleanlines/result-cleanlines.mo
     FloorModule,
     HousekeeperModule,
     ResultCleanlinesModule,
+    MaTaskModule,
+    MaTypeModule,
   ],
   controllers: [EvoteController],
   providers: [EvoteService],
