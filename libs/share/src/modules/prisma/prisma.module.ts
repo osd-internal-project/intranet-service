@@ -47,6 +47,9 @@ import {
   UserRepository,
   UserRoleRepository,
   UserRoleMapRepository,
+  //MA
+  MaTaskRepository,
+  MaTypeRepository,
 } from 'src/repositories';
 
 const services = [
@@ -96,6 +99,9 @@ const services = [
   VenderRepository,
   UserGroupRepository,
   UserGroupMapRepository,
+  //MA
+  MaTaskRepository,
+  MaTypeRepository,
 ];
 @Module({
   providers: [...services],
