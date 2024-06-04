@@ -694,7 +694,7 @@ model userRoleMap {
 
 model floor {
     id                Int                 @unique @default(autoincrement()) @map("id")
-    floorId           Int                 @unique @default(autoincrement()) @map("floor_id") @db.Integer()
+    floorId           Int                 @unique @map("floor_id") @db.Integer()
     floorName         String              @map("floor_name") @db.VarChar(20)
     createdAt         DateTime            @default(now()) @map("created_at") @db.Timestamptz()
     updatedAt         DateTime            @updatedAt @map("updated_at") @db.Timestamptz()
@@ -715,10 +715,11 @@ model houseKeeper {
 
 model resultCleanliness {
     id            Int         @unique @default(autoincrement()) @map("id")
-    floorId       Int         @default(autoincrement()) @map("floor_id") @db.Integer
+    floorId       Int         @map("floor_id") @db.Integer
     houseKeeperId Int         @map("housekeeper_id") @db.Integer
     duration      String      @map("duration") @db.VarChar(20)
     result        Int         @map("result") @db.Integer
+    wrapupDate    DateTime    @map("wrapup_date") @db.Timestamptz()
     floors        floor       @relation(fields: [floorId], references: [floorId])
     houseKeepers  houseKeeper @relation(fields: [houseKeeperId], references: [houseKeeperId])
 

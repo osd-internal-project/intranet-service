@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { FloorService } from './floor.service';
 import { CreateFloorDto } from './dto/create-floor.dto';
@@ -25,14 +26,27 @@ export class FloorController {
     return this.floorService.findAll();
   }
 
+  @Get('query')
+  findMany(@Query() query: any) {
+    return this.floorService.findMany(query);
+  }
+
+  @Get('count')
+  findCount(@Query() query: any) {
+    return this.floorService.findCount(query);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.floorService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFloorDto: UpdateFloorDto) {
-    return this.floorService.update(+id, updateFloorDto);
+  @Patch(':floorId')
+  update(
+    @Param('floorId') floorId: string,
+    @Body() updateHousekeeperDto: UpdateFloorDto,
+  ) {
+    return this.floorService.update(+floorId, updateHousekeeperDto);
   }
 
   @Delete(':id')

@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { HousekeeperService } from './housekeeper.service';
 import { CreateHousekeeperDto } from './dto/create-housekeeper.dto';
@@ -25,17 +26,27 @@ export class HousekeeperController {
     return this.housekeeperService.findAll();
   }
 
+  @Get('query')
+  findMany(@Query() query: any) {
+    return this.housekeeperService.findMany(query);
+  }
+
+  @Get('count')
+  findCount(@Query() query: any) {
+    return this.housekeeperService.findCount(query);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.housekeeperService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Patch(':houseKeeperId')
   update(
-    @Param('id') id: string,
+    @Param('houseKeeperId') houseKeeperId: string,
     @Body() updateHousekeeperDto: UpdateHousekeeperDto,
   ) {
-    return this.housekeeperService.update(+id, updateHousekeeperDto);
+    return this.housekeeperService.update(+houseKeeperId, updateHousekeeperDto);
   }
 
   @Delete(':id')
