@@ -1,7 +1,7 @@
 export class CreateResultCleanlineDto {
   duration: string;
   result: number;
-  floors: number;
-  houseKeepers: number;
+  floor: number[];
+  housekeeper: number;
   wrapupDate: string;
 }

@@ -705,7 +705,7 @@ model houseKeeper {
     id                Int                 @unique @default(autoincrement()) @map("id")
     houseKeeperId     Int                 @unique @default(autoincrement()) @map("housekeeper_id") @db.Integer()
     houseKeepName     String              @map("housekeeper_name") @db.VarChar(20)
-    quitYourJob       Boolean             @default(false) @map("quit_your_job") @db.Boolean()
+    quitYourJob       Boolean             @default(true) @map("quit_your_job") @db.Boolean()
     createdAt         DateTime            @default(now()) @map("created_at") @db.Timestamptz()
     updatedAt         DateTime            @updatedAt @map("updated_at") @db.Timestamptz()
     resultCleanliness resultCleanliness[]

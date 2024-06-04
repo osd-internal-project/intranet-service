@@ -28,6 +28,11 @@ export class ResultCleanlinesController {
     return this.resultCleanlinesService.findAll();
   }
 
+  @Get('report')
+  findReport(@Query() query: any) {
+    return this.resultCleanlinesService.findReport(query);
+  }
+
   @Get('query')
   findMany(@Query() query: any) {
     return this.resultCleanlinesService.findMany(query);
