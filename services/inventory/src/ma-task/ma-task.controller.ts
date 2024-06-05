@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { MaTaskService } from './ma-task.service';
 import { Prisma } from '@prisma/client';
@@ -16,16 +17,6 @@ export class MaTaskController {
   @Post()
   create(@Body() createMaTaskDto: Prisma.maTaskCreateInput) {
     return this.maTaskService.create(createMaTaskDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.maTaskService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('condition') condition: Prisma.maTaskFindFirstArgs) {
-    return this.maTaskService.findOne(condition);
   }
 
   @Patch(':id')
@@ -39,5 +30,17 @@ export class MaTaskController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.maTaskService.remove(+id);
+  }
+  @Get('data-table')
+  findDataTable(@Query() query) {
+    return this.maTaskService.findDataTable(query);
+  }
+  @Get(':id')
+  findOneById(@Param('id') id: string) {
+    return this.maTaskService.findOneById(+id);
+  }
+  @Get()
+  findAll() {
+    return this.maTaskService.findAll();
   }
 }
