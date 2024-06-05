@@ -48,3 +48,6 @@ export * from './userRoleMap.repository';
 
 export * from './maTask.repository';
 export * from './maType.repository';
+
+// type data leave
+export * from './masterTypeLeave.repository';

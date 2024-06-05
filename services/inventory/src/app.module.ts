@@ -32,6 +32,7 @@ import { HousekeeperModule } from './housekeeper/housekeeper.module';
 import { ResultCleanlinesModule } from './result-cleanlines/result-cleanlines.module';
 import { MaTaskModule } from './ma-task/ma-task.module';
 import { MaTypeModule } from './ma-type/ma-type.module';
+import { MasterTypeLeaveModule } from './master-type-leave/master-type-leave.module';
 
 @Module({
   imports: [
@@ -64,6 +65,7 @@ import { MaTypeModule } from './ma-type/ma-type.module';
     ResultCleanlinesModule,
     MaTaskModule,
     MaTypeModule,
+    MasterTypeLeaveModule,
   ],
   controllers: [EvoteController],
   providers: [EvoteService],
