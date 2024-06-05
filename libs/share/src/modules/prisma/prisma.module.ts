@@ -50,6 +50,8 @@ import {
   //MA
   MaTaskRepository,
   MaTypeRepository,
+  //Room
+  MasterRoomeRepository,
 } from 'src/repositories';
 
 const services = [
@@ -102,6 +104,8 @@ const services = [
   //MA
   MaTaskRepository,
   MaTypeRepository,
+  //Room
+  MasterRoomeRepository
 ];
 @Module({
   providers: [...services],
