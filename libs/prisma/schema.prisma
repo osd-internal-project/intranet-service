@@ -229,6 +229,8 @@ model masterTypeleave {
     typeEveryDay     Int?    @map("type_everyday") @db.Integer
     typeNameEn       String? @map("type_name_en") @db.VarChar(250)
     typeNameTh       String? @map("type_name_th") @db.VarChar(250)
+
+    @@map("master_typeleave")
 }
 
 model masterProduct {
