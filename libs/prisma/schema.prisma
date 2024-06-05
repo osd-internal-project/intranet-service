@@ -766,7 +766,7 @@ model maTask {
     refTask       maTask?   @relation("TaskRelation", fields: [refTaskId], references: [id])
     nextTask      maTask?   @relation("TaskRelation")
 
-    @@map("ma-task")
+    @@map("ma_task")
 }
 
 model maType {
