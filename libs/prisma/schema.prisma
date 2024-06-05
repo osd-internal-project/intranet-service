@@ -216,6 +216,23 @@ model masterPosition {
     @@map("master_position")
 }
 
+model masterTypeleave {
+    id               Int     @unique @default(autoincrement()) @map("id")
+    typeId           Int?    @map("type_id") @db.Integer
+    typeName         String? @map("type_name") @db.VarChar(250)
+    forwardLeave     String? @map("forward_leave") @db.VarChar(250)
+    limitLeaveOne    String? @map("limit_leave1") @db.VarChar(250)
+    limitLeaveTwo    String? @map("limit_leave2") @db.VarChar(250)
+    limitLeaveThree  String? @map("limit_leave3") @db.VarChar(250)
+    limitLeaveFour   String? @map("limit_leave4") @db.VarChar(250)
+    descriptionLeave String? @map("description_leave") @db.VarChar(250)
+    typeEveryDay     Int?    @map("type_everyday") @db.Integer
+    typeNameEn       String? @map("type_name_en") @db.VarChar(250)
+    typeNameTh       String? @map("type_name_th") @db.VarChar(250)
+
+    @@map("master_typeleave")
+}
+
 model masterProduct {
     id                   Int                 @unique @default(autoincrement()) @map("id")
     productCode          String?             @map("product_code") @db.VarChar(50)
