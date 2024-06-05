@@ -225,7 +225,7 @@ model masterTypeleave {
     limitLeaveTwo    String? @map("limit_leave2") @db.VarChar(250)
     limitLeaveThree  String? @map("limit_leave3") @db.VarChar(250)
     limitLeaveFour   String? @map("limit_leave4") @db.VarChar(250)
-    descriptionLeave String? @map("description_leave") @db.VarChar(250)
+    descriptionLeave String? @map("description_leave") @db.Text
     typeEveryDay     Int?    @map("type_everyday") @db.Integer
     typeNameEn       String? @map("type_name_en") @db.VarChar(250)
     typeNameTh       String? @map("type_name_th") @db.VarChar(250)
@@ -237,7 +237,6 @@ model masterProduct {
     id                   Int                 @unique @default(autoincrement()) @map("id")
     productCode          String?             @map("product_code") @db.VarChar(50)
     details              Json?               @map("details")
-    chemicalFormula      String              @map("chemical_formula") @db.Text
     casNo                String              @map("cas_no") @db.VarChar(20)
     venderId             Int?                @map("vender_id")
     venderName           String?             @map("vender_name") @db.VarChar(100)
@@ -555,7 +554,6 @@ model transaction {
     locationId         Int?      @map("location_id")
     inventory          String    @map("inventory") @db.VarChar(200)
     inventoryId        Int?      @map("inventory_id")
-    chemicalFormula    String    @map("chemical_formula") @db.VarChar(20)
     groupId            String    @map("group_id") @db.VarChar(30)
     groupName          String    @map("group_name") @db.VarChar(30)
     vender             String    @map("vender") @db.VarChar(200)
