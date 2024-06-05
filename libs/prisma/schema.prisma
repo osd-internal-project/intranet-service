@@ -237,6 +237,7 @@ model masterProduct {
     id                   Int                 @unique @default(autoincrement()) @map("id")
     productCode          String?             @map("product_code") @db.VarChar(50)
     details              Json?               @map("details")
+    chemicalFormula      String              @map("chemical_formula") @db.Text
     casNo                String              @map("cas_no") @db.VarChar(20)
     venderId             Int?                @map("vender_id")
     venderName           String?             @map("vender_name") @db.VarChar(100)
@@ -554,6 +555,7 @@ model transaction {
     locationId         Int?      @map("location_id")
     inventory          String    @map("inventory") @db.VarChar(200)
     inventoryId        Int?      @map("inventory_id")
+    chemicalFormula    String    @map("chemical_formula") @db.VarChar(20)
     groupId            String    @map("group_id") @db.VarChar(30)
     groupName          String    @map("group_name") @db.VarChar(30)
     vender             String    @map("vender") @db.VarChar(200)
@@ -720,7 +722,7 @@ model houseKeeper {
     id                Int                 @unique @default(autoincrement()) @map("id")
     houseKeeperId     Int                 @unique @default(autoincrement()) @map("housekeeper_id") @db.Integer()
     houseKeepName     String              @map("housekeeper_name") @db.VarChar(20)
-    quitYourJob       Boolean             @default(true) @map("quit_your_job") @db.Boolean()
+    quitYourJob       Boolean             @default(false) @map("quit_your_job") @db.Boolean()
     createdAt         DateTime            @default(now()) @map("created_at") @db.Timestamptz()
     updatedAt         DateTime            @updatedAt @map("updated_at") @db.Timestamptz()
     resultCleanliness resultCleanliness[]
@@ -777,9 +779,9 @@ model maType {
 }
 
 model masterRoom {
-    id               Int            @unique @default(autoincrement()) @map("id")
-    roomName         String         @map("room_name") @db.VarChar(255)
-    roomDescription  String         @map("room_description") @db.VarChar(255)
+    id               Int             @unique @default(autoincrement()) @map("id")
+    roomName         String          @map("room_name") @db.VarChar(255)
+    roomDescription  String          @map("room_description") @db.VarChar(255)
     masterRoomTypeId Int?            @map("master_room_typeid") @db.Integer()
     masterRoomType   masterRoomType? @relation(fields: [masterRoomTypeId], references: [id])
 
