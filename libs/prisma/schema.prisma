@@ -775,3 +775,23 @@ model maType {
 
     @@map("ma-type")
 }
+
+model masterRoom {
+    id               Int            @unique @default(autoincrement()) @map("id")
+    roomName         String         @map("room_name") @db.VarChar(255)
+    roomDescription  String         @map("room_description") @db.VarChar(255)
+    masterRoomTypeId Int?            @map("master_room_typeid") @db.Integer()
+    masterRoomType   masterRoomType? @relation(fields: [masterRoomTypeId], references: [id])
+
+    @@map("master_room")
+}
+
+model masterRoomType {
+    id         Int          @unique @default(autoincrement()) @map("id")
+    name       String       @map("name") @db.VarChar(255)
+    createdAt  DateTime     @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt  DateTime     @default(now()) @map("updated_at") @db.Timestamptz()
+    masterRoom masterRoom[]
+
+    @@map("master_room_type")
+}
