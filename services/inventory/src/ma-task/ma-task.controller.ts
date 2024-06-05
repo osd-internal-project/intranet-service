@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  Logger,
 } from '@nestjs/common';
 import { MaTaskService } from './ma-task.service';
 import { Prisma } from '@prisma/client';
@@ -24,6 +25,7 @@ export class MaTaskController {
     @Param('id') id: string,
     @Body('data') data: Prisma.maTaskUpdateInput,
   ) {
+    Logger.debug(data);
     return this.maTaskService.update(+id, data);
   }
 
