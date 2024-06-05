@@ -745,25 +745,26 @@ model resultCleanliness {
 
 //MA
 model maTask {
-    id            Int      @unique @default(autoincrement()) @map("id")
-    maName        String   @map("ma-name") @db.VarChar(255)
-    maTypeId      Int      @map("ma-type-id") @db.Integer
-    maTypeName    String   @map("ma-type-name") @db.VarChar(255)
-    maDate        DateTime @map("ma-date") @db.Timestamptz()
-    maStatus      String   @map("ma-status") @db.VarChar(10)
-    detail        String?  @map("detail") @db.Text()
-    contact       String?  @map("contact") @db.Text()
-    solution      String?  @map("solution") @db.Text()
-    createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt     DateTime @default(now()) @map("updated_at") @db.Timestamptz()
-    createdById   String?  @map("created_by_id") @db.VarChar(50)
-    createdByName String?  @map("created_by_name") @db.VarChar(255)
-    updatedById   String?  @map("updated_by_id") @db.VarChar(50)
-    updatedByName String?  @map("updated_by_name") @db.VarChar(255)
-    ownerGroup    String?  @map("owner_group") @db.VarChar(50)
-    refTaskId     Int?     @unique
-    refTask       maTask?  @relation("TaskRelation", fields: [refTaskId], references: [id])
-    nextTask      maTask?  @relation("TaskRelation")
+    id            Int       @unique @default(autoincrement()) @map("id")
+    maName        String    @map("ma_name") @db.VarChar(255)
+    maTypeId      Int       @map("ma_type_id") @db.Integer
+    maTypeName    String    @map("ma_type_name") @db.VarChar(255)
+    maDate        DateTime  @map("ma_date") @db.Timestamptz()
+    maStatus      String    @map("ma_status") @db.VarChar(10)
+    detail        String?   @map("detail") @db.Text()
+    contact       String?   @map("contact") @db.Text()
+    actionDate    DateTime? @map("action_date") @db.Timestamptz()
+    solution      String?   @map("solution") @db.Text()
+    createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+    createdById   String?   @map("created_by_id") @db.VarChar(50)
+    createdByName String?   @map("created_by_name") @db.VarChar(255)
+    updatedAt     DateTime? @map("updated_at") @db.Timestamptz()
+    updatedById   String?   @map("updated_by_id") @db.VarChar(50)
+    updatedByName String?   @map("updated_by_name") @db.VarChar(255)
+    ownerGroup    String?   @map("owner_group") @db.VarChar(50)
+    refTaskId     Int?      @unique
+    refTask       maTask?   @relation("TaskRelation", fields: [refTaskId], references: [id])
+    nextTask      maTask?   @relation("TaskRelation")
 
     @@map("ma-task")
 }
@@ -771,11 +772,11 @@ model maTask {
 model maType {
     id           Int      @unique @default(autoincrement()) @map("id")
     name         String   @map("name") @db.VarChar(255)
-    activeStatus Boolean  @map("active-status") @db.Boolean
+    activeStatus Boolean  @map("active_status") @db.Boolean
     createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz()
     updatedAt    DateTime @default(now()) @map("updated_at") @db.Timestamptz()
 
-    @@map("ma-type")
+    @@map("ma_type")
 }
 
 model masterRoom {
