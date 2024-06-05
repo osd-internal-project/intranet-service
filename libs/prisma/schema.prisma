@@ -216,6 +216,23 @@ model masterPosition {
     @@map("master_position")
 }
 
+model masterTypeleave {
+    id               Int     @unique @default(autoincrement()) @map("id")
+    typeId           Int?    @map("type_id") @db.Integer
+    typeName         String? @map("type_name") @db.VarChar(250)
+    forwardLeave     String? @map("forward_leave") @db.VarChar(250)
+    limitLeaveOne    String? @map("limit_leave1") @db.VarChar(250)
+    limitLeaveTwo    String? @map("limit_leave2") @db.VarChar(250)
+    limitLeaveThree  String? @map("limit_leave3") @db.VarChar(250)
+    limitLeaveFour   String? @map("limit_leave4") @db.VarChar(250)
+    descriptionLeave String? @map("description_leave") @db.Text
+    typeEveryDay     Int?    @map("type_everyday") @db.Integer
+    typeNameEn       String? @map("type_name_en") @db.VarChar(250)
+    typeNameTh       String? @map("type_name_th") @db.VarChar(250)
+
+    @@map("master_typeleave")
+}
+
 model masterProduct {
     id                   Int                 @unique @default(autoincrement()) @map("id")
     productCode          String?             @map("product_code") @db.VarChar(50)
@@ -759,4 +776,24 @@ model maType {
     updatedAt    DateTime @default(now()) @map("updated_at") @db.Timestamptz()
 
     @@map("ma-type")
+}
+
+model masterRoom {
+    id               Int             @unique @default(autoincrement()) @map("id")
+    roomName         String          @map("room_name") @db.VarChar(255)
+    roomDescription  String          @map("room_description") @db.VarChar(255)
+    masterRoomTypeId Int?            @map("master_room_typeid") @db.Integer()
+    masterRoomType   masterRoomType? @relation(fields: [masterRoomTypeId], references: [id])
+
+    @@map("master_room")
+}
+
+model masterRoomType {
+    id         Int          @unique @default(autoincrement()) @map("id")
+    name       String       @map("name") @db.VarChar(255)
+    createdAt  DateTime     @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt  DateTime     @default(now()) @map("updated_at") @db.Timestamptz()
+    masterRoom masterRoom[]
+
+    @@map("master_room_type")
 }

@@ -48,3 +48,5 @@ export * from './userRoleMap.repository';
 
 export * from './maTask.repository';
 export * from './maType.repository';
+
+export * from './masterRoom.repository';
