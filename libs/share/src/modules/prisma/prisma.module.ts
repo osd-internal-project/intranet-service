@@ -53,7 +53,7 @@ import {
   // Data Leave
   MasterTypeLeaveRepository,
   //Room
-  MasterRoomeRepository,
+  // MasterRoomeRepository,
 } from 'src/repositories';
 
 const services = [
@@ -109,7 +109,7 @@ const services = [
   // data Leave
   MasterTypeLeaveRepository,
   //Room
-  MasterRoomeRepository
+  // MasterRoomeRepository,
 ];
 @Module({
   providers: [...services],

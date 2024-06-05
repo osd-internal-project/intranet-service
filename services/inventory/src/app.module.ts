@@ -33,6 +33,7 @@ import { ResultCleanlinesModule } from './result-cleanlines/result-cleanlines.mo
 import { MaTaskModule } from './ma-task/ma-task.module';
 import { MaTypeModule } from './ma-type/ma-type.module';
 import { MasterRoomModule } from './master-room/master-room.module';
+import { MasterTypeLeaveModule } from './master-type-leave/master-type-leave.module';
 
 @Module({
   imports: [
@@ -66,6 +67,7 @@ import { MasterRoomModule } from './master-room/master-room.module';
     MaTaskModule,
     MaTypeModule,
     MasterRoomModule,
+    MasterTypeLeaveModule,
   ],
   controllers: [EvoteController],
   providers: [EvoteService],
