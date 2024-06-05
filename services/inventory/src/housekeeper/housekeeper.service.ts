@@ -112,7 +112,10 @@ export class HousekeeperService {
   update(houseKeeperId: number, updateHousekeeperDto: UpdateHousekeeperDto) {
     return this.houseKeeperRepo.update({
       where: { houseKeeperId: houseKeeperId },
-      data: { houseKeepName: updateHousekeeperDto.houseKeepName },
+      data: {
+        houseKeepName: updateHousekeeperDto.houseKeepName,
+        quitYourJob: updateHousekeeperDto.quitYourJob,
+      },
     });
   }
 

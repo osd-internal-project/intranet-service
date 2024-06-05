@@ -3,29 +3,32 @@ import { CreateResultCleanlineDto } from './dto/create-result-cleanline.dto';
 import { UpdateResultCleanlineDto } from './dto/update-result-cleanline.dto';
 import { ResultCleanlinessRepository } from '@inventory/share';
 import * as moment from 'moment';
+import { Prisma, PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
 
 @Injectable()
 export class ResultCleanlinesService {
   constructor(private resultCleanlinessRepo: ResultCleanlinessRepository) {}
 
   startOfDate(date: string) {
-    const dateset = new Date(date).setUTCDate(1);
-    return new Date(dateset).setUTCHours(0, 0, 0, 0);
+    const dateset = new Date(date).setUTCHours(0, 0, 0, 0);
+    return new Date(dateset);
   }
 
   endOfDate(date: string) {
-    const dateset = new Date(date).setUTCDate(31);
-    return new Date(dateset).setUTCHours(23, 59, 59, 59);
+    const dateset = new Date(date).setUTCHours(23, 59, 59, 59);
+    return new Date(dateset);
   }
+
   create(createResultCleanlineDto: CreateResultCleanlineDto) {
-    return this.resultCleanlinessRepo.create({
-      data: {
+    return this.resultCleanlinessRepo.createMany({
+      data: createResultCleanlineDto.floor.map((item: number) => ({
         duration: createResultCleanlineDto.duration,
         result: createResultCleanlineDto.result,
-        floorId: createResultCleanlineDto.floors,
-        houseKeeperId: createResultCleanlineDto.houseKeepers,
+        floorId: item,
+        houseKeeperId: createResultCleanlineDto.housekeeper,
         wrapupDate: new Date(createResultCleanlineDto.wrapupDate),
-      },
+      })),
     });
   }
 

@@ -10,16 +10,17 @@ import { ReportTransactionModule } from './report-transaction/report-transaction
 import { ReportWithdrawRankingModule } from './report-withdraw-ranking/report-withdraw-ranking.module';
 import { ReportTransactionExpiredModule } from './report-transaction-expired/report-transaction-expired.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { ReportHouseKeeperModule } from './report-house-keeper/report-house-keeper.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
-
     //Report
     ReportTransactionModule,
     ReportTransactionExpiredModule,
     ReportWithdrawRankingModule,
     DashboardModule,
+    ReportHouseKeeperModule,
     //Auth
   ],
   controllers: [EvoteController],
