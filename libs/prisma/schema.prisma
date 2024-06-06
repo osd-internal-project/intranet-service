@@ -784,6 +784,7 @@ model maType {
 model masterRoom {
     id               Int             @unique @default(autoincrement()) @map("id")
     roomName         String          @map("room_name") @db.VarChar(255)
+    roomsStatus      Boolean         @default(true) @map("status") @db.Boolean
     roomDescription  String          @map("room_description") @db.VarChar(255)
     masterRoomType   masterRoomType? @relation(fields: [masterRoomTypeId], references: [id])
     masterRoomTypeId Int?
