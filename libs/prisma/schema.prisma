@@ -736,6 +736,7 @@ model resultCleanliness {
     houseKeeperId Int         @map("housekeeper_id") @db.Integer
     duration      String      @map("duration") @db.VarChar(20)
     result        Int         @map("result") @db.Integer
+    remark        String?      @map("remark") @db.Text
     wrapupDate    DateTime    @map("wrapup_date") @db.Timestamptz()
     floors        floor       @relation(fields: [floorId], references: [floorId])
     houseKeepers  houseKeeper @relation(fields: [houseKeeperId], references: [houseKeeperId])

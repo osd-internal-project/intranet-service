@@ -4,4 +4,5 @@ export class CreateResultCleanlineDto {
   floor: number[];
   housekeeper: number;
   wrapupDate: string;
+  remark: string;
 }

@@ -28,6 +28,7 @@ export class ResultCleanlinesService {
         floorId: item,
         houseKeeperId: createResultCleanlineDto.housekeeper,
         wrapupDate: new Date(createResultCleanlineDto.wrapupDate),
+        remark: createResultCleanlineDto.remark,
       })),
     });
   }
@@ -60,6 +61,7 @@ export class ResultCleanlinesService {
         result: true,
         duration: true,
         wrapupDate: true,
+        remark: true,
       },
     });
   }
