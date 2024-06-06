@@ -34,6 +34,7 @@ import { MaTaskModule } from './ma-task/ma-task.module';
 import { MaTypeModule } from './ma-type/ma-type.module';
 import { MasterRoomModule } from './master-room/master-room.module';
 import { MasterTypeLeaveModule } from './master-type-leave/master-type-leave.module';
+import { BookingRoomModule } from './booking-room/booking-room.module';
 
 @Module({
   imports: [
@@ -68,6 +69,7 @@ import { MasterTypeLeaveModule } from './master-type-leave/master-type-leave.mod
     MaTypeModule,
     MasterRoomModule,
     MasterTypeLeaveModule,
+    BookingRoomModule,
   ],
   controllers: [EvoteController],
   providers: [EvoteService],

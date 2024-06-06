@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import {
-  MasterRoomeRepository,
+  MasterRoomRepository,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class MasterRoomService {
   constructor(
-    private masterRoomeRepository: MasterRoomeRepository,
+    private masterRoomeRepository: MasterRoomRepository,
   ) { }
   create(data: Prisma.masterRoomCreateInput) {
     console.log(data);
