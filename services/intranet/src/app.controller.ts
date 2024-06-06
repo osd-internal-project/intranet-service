@@ -1,0 +1,10 @@
+import { Controller, UseFilters } from '@nestjs/common';
+import { AppErrorExceptionFilter } from '@inventory/share';
+import { IntranetService } from './app.service';
+import { HousekeeperModule } from './housekeeper/housekeeper.module';
+
+@UseFilters(AppErrorExceptionFilter)
+@Controller('intranet')
+export class IntranetController {
+  constructor(private intranetService: IntranetService) {}
+}

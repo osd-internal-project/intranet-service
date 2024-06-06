@@ -738,7 +738,7 @@ model resultCleanliness {
     houseKeeperId Int         @map("housekeeper_id") @db.Integer
     duration      String      @map("duration") @db.VarChar(20)
     result        Int         @map("result") @db.Integer
-    remark        String?      @map("remark") @db.Text
+    remark        String?     @map("remark") @db.Text
     wrapupDate    DateTime    @map("wrapup_date") @db.Timestamptz()
     floors        floor       @relation(fields: [floorId], references: [floorId])
     houseKeepers  houseKeeper @relation(fields: [houseKeeperId], references: [houseKeeperId])
@@ -823,4 +823,12 @@ model bookingRoom {
     updatedAt        DateTime @default(now()) @map("updated_at") @db.Timestamptz()
 
     @@map("booking_room")
+}
+
+model departMent {
+    id         Int      @unique @default(autoincrement()) @map("id")
+    departId   Int      @unique @map("depart_id") @db.Integer
+    departName String   @unique @map("depart_name") @db.VarChar(100)
+    createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt  DateTime @default(now()) @map("updated_at") @db.Timestamptz()
 }
