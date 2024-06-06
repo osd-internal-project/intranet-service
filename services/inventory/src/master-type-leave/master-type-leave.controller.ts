@@ -26,10 +26,10 @@ export class MasterTypeLeaveController {
   }
 
   @Post('condition')
-  findByCondition(
+  async findByCondition(
     @Body('condition') condition: Prisma.masterTypeleaveFindManyArgs,
   ) {
-    return this.mastertypeleaveService.findByCondition(condition);
+    return await this.mastertypeleaveService.findByCondition(condition);
   }
 
   @Post('condition-first')

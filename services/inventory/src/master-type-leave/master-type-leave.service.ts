@@ -15,7 +15,7 @@ export class MasterTypeLeaveService {
     return this.mastertypeleaveRepo.findAll();
   }
 
-  findByCondition(condition: Prisma.masterTypeleaveFindManyArgs) {
+  async findByCondition(condition: Prisma.masterTypeleaveFindManyArgs) {
     condition = {
       ...condition,
       orderBy: [
@@ -24,7 +24,7 @@ export class MasterTypeLeaveService {
         },
       ],
     };
-    return this.mastertypeleaveRepo.findMany(condition);
+    return await this.mastertypeleaveRepo.findMany(condition);
   }
   findOneByCondition(condition: Prisma.masterTypeleaveFindFirstArgsBase) {
     condition = {
