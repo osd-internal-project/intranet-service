@@ -782,7 +782,7 @@ model maType {
 }
 
 model masterRoom {
-    id               Int             @unique @default(autoincrement()) @map("id")
+    id               Int             @id @default(autoincrement()) @map("id")
     roomId           String          @unique @default(uuid()) @map("room_id") @db.VarChar(50)
     roomName         String          @map("room_name") @db.VarChar(255)
     roomsStatus      Boolean         @default(true) @map("status") @db.Boolean
