@@ -782,11 +782,13 @@ model maType {
 }
 
 model masterRoom {
-    id               Int             @unique @default(autoincrement()) @map("id")
+    id               Int             @id @default(autoincrement()) @map("id")
+    roomId           String          @unique @default(uuid()) @map("room_id") @db.VarChar(50)
     roomName         String          @map("room_name") @db.VarChar(255)
+    roomsStatus      Boolean         @default(true) @map("status") @db.Boolean
     roomDescription  String          @map("room_description") @db.VarChar(255)
-    masterRoomTypeId Int?            @map("master_room_typeid") @db.Integer()
     masterRoomType   masterRoomType? @relation(fields: [masterRoomTypeId], references: [id])
+    masterRoomTypeId Int?
 
     @@map("master_room")
 }
@@ -799,4 +801,25 @@ model masterRoomType {
     masterRoom masterRoom[]
 
     @@map("master_room_type")
+}
+
+model bookingRoom {
+    id               Int      @unique @default(autoincrement()) @map("id")
+    roomId           String?  @map("room_id") @db.VarChar(255)
+    roomName         String   @map("room_name") @db.VarChar(255)
+    roomType         String   @map("room_type") @db.VarChar(255)
+    bookerName       String   @map("booker_name") @db.VarChar(255)
+    bookerPhone      String   @map("booker_phone") @db.VarChar(255)
+    bookerDepartment String   @map("booker_department") @db.VarChar(255)
+    title            String   @map("title") @db.VarChar(255)
+    startDate        DateTime @default(now()) @map("start_date") @db.Timestamptz()
+    endDate          DateTime @default(now()) @map("end_date") @db.Timestamptz()
+    bookingStatus    String   @map("booking_status") @db.VarChar(255)
+    member           String   @map("member") @db.VarChar(255)
+    outSider         String   @map("out_sider") @db.VarChar(255)
+    note             String   @map("note") @db.VarChar(255)
+    createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt        DateTime @default(now()) @map("updated_at") @db.Timestamptz()
+
+    @@map("booking_room")
 }

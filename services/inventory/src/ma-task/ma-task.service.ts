@@ -36,7 +36,10 @@ export class MaTaskService {
   }
 
   update(id: number, data: Prisma.maTaskUpdateInput) {
-    return this.maTaskRepo.update({ where: { id: id }, data: data });
+    return this.maTaskRepo.update({
+      where: { id: id },
+      data: { ...data, updatedAt: new Date() },
+    });
   }
 
   remove(id: number) {
