@@ -800,3 +800,20 @@ model masterRoomType {
 
     @@map("master_room_type")
 }
+
+model bookingRoom {
+    id          Int      @unique @default(autoincrement()) @map("id")
+    roomName    String   @map("room_name") @db.VarChar(255)
+    roomType    String   @map("room_type") @db.VarChar(255)
+    bookerName  String   @map("booker_name") @db.VarChar(255)
+    bookerPhone String   @map("booker_phone") @db.VarChar(255)
+    startDate   DateTime @default(now()) @map("start_date") @db.Timestamptz()
+    endDate     DateTime @default(now()) @map("end_date") @db.Timestamptz()
+    member      String   @map("member") @db.VarChar(255)
+    outSider    String   @map("out_sider") @db.VarChar(255)
+    note        String   @map("note") @db.VarChar(255)
+    createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt   DateTime @default(now()) @map("updated_at") @db.Timestamptz()
+
+    @@map("booking_room")
+}
