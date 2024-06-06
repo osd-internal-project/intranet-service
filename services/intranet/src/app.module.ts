@@ -8,6 +8,8 @@ import { ResultCleanlinesModule } from './result-cleanlines/result-cleanlines.mo
 import { HousekeeperModule } from './housekeeper/housekeeper.module';
 import { FloorModule } from './floor/floor.module';
 import { MaTypeModule } from './ma-type/ma-type.module';
+import { MasterRoomModule } from './master-room/master-room.module';
+import { BookingRoomModule } from './booking-room/booking-room.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { MaTypeModule } from './ma-type/ma-type.module';
     ResultCleanlinesModule,
     FloorModule,
     MaTypeModule,
+    MasterRoomModule,
+    BookingRoomModule,
   ],
   controllers: [IntranetController],
   providers: [IntranetService],
