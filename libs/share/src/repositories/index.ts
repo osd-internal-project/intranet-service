@@ -53,5 +53,6 @@ export * from './maType.repository';
 
 // type data leave
 export * from './masterTypeLeave.repository';
+export * from './masterHolidays.repository';
 export * from './masterRoom.repository';
 export * from './bookingRoom.repository';
