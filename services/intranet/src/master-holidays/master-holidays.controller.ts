@@ -37,7 +37,7 @@ export class MasterHolidaysController {
     return this.masterHolidaysService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Patch()
   update(@Body('condition') condition: Prisma.masterHolidaysUpdateArgs) {
     return this.masterHolidaysService.update(condition);
   }

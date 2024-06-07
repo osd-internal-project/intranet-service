@@ -7,8 +7,9 @@ import { Prisma } from '@prisma/client';
 @Injectable()
 export class MasterHolidaysService {
   constructor(private readonly masterHolidaysRepo: MasterHolidaysRepository) {}
-  create(createMasterHolidayDto: CreateMasterHolidayDto) {
-    return 'This action adds a new masterHoliday';
+
+  async create(createMasterHolidayDto: Prisma.masterHolidaysCreateArgs) {
+    return await this.masterHolidaysRepo.create(createMasterHolidayDto);
   }
 
   async findAll() {
