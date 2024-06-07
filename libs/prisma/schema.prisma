@@ -217,7 +217,7 @@ model masterPosition {
 
 model masterTypeleave {
     id               Int       @unique @default(autoincrement()) @map("id")
-    typeId           Int?      @map("type_id") @db.Integer
+    typeId           Int?      @default(autoincrement()) @map("type_id") @db.Integer
     typeName         String?   @map("type_name") @db.VarChar(250)
     forwardLeave     String?   @map("forward_leave") @db.VarChar(250)
     limitLeaveOne    String?   @map("limit_leave1") @db.VarChar(250)

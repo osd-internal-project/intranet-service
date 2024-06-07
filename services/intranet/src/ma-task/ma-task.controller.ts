@@ -25,7 +25,6 @@ export class MaTaskController {
     @Param('id') id: string,
     @Body('data') data: Prisma.maTaskUpdateInput,
   ) {
-    Logger.debug(data);
     return this.maTaskService.update(+id, data);
   }
 

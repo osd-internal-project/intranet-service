@@ -125,6 +125,7 @@ export class UserService {
       data: {
         username: userDetails.username,
         password: pass,
+        email: `${userDetails.username}@osd.co.th`
       },
     });
   }

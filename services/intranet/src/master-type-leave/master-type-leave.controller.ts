@@ -21,8 +21,9 @@ export class MasterTypeLeaveController {
   }
 
   @Post()
-  create(@Body('data') data: Prisma.masterTypeleaveCreateInput) {
-    return this.mastertypeleaveService.create(data);
+  create(@Body('condition') condition: Prisma.masterTypeleaveCreateInput) {
+    console.log(condition);
+    return this.mastertypeleaveService.create(condition);
   }
 
   @Post('condition')
@@ -40,15 +41,12 @@ export class MasterTypeLeaveController {
   }
 
   @Patch()
-  update(
-    @Body('id') id: number,
-    @Body('data') data: Prisma.masterTypeleaveUpdateInput,
-  ) {
-    return this.mastertypeleaveService.update(id, data);
+  update(@Body('condition') condition: Prisma.masterTypeleaveUpdateArgs) {
+    return this.mastertypeleaveService.update(condition);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.mastertypeleaveService.remove(Number(id));
+    return this.mastertypeleaveService.remove(+id);
   }
 }
