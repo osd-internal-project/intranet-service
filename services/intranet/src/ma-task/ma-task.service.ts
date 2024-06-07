@@ -4,6 +4,15 @@ import { Prisma } from '@prisma/client';
 @Injectable()
 export class MaTaskService {
   constructor(private readonly maTaskRepo: MaTaskRepository) {}
+  startOfDate(date: string) {
+    const dateset = new Date(date).setUTCHours(0, 0, 0, 0);
+    return new Date(dateset);
+  }
+
+  endOfDate(date: string) {
+    const dateset = new Date(date).setUTCHours(23, 59, 59, 59);
+    return new Date(dateset);
+  }
   create(data: Prisma.maTaskCreateInput) {
     const condition = {
       data: data,
@@ -25,8 +34,24 @@ export class MaTaskService {
     });
   }
   async findDataTable(query: any) {
-    const { take, skip } = query;
-    const data = await this.maTaskRepo.findMany({ take: +take, skip: +skip });
+    console.log(query);
+    const { take, skip, typeid, maName, maDate, contact } = query;
+    const data = await this.maTaskRepo.findMany({
+      where: {
+        ...(typeid && { maTypeId: Number(typeid) }),
+        ...(maName && { maName: { contains: maName } }),
+        ...(maDate && {
+          maDate: {
+            gte: this.startOfDate(maDate[0]),
+            lte: this.endOfDate(maDate[1]),
+          },
+        }),
+        ...(contact && { contact: { contains: contact } }),
+      },
+      orderBy: [{ createdAt: 'desc' }],
+      take: +take,
+      skip: +skip,
+    });
     const count = await this.maTaskRepo.count({});
     return { data: data, count: count };
   }
