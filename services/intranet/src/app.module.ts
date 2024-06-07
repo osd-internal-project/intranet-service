@@ -12,6 +12,7 @@ import { MaTaskModule } from './ma-task/ma-task.module';
 import { DepartmentModule } from './department/department.module';
 import { MasterRoomModule } from './master-room/master-room.module';
 import { BookingRoomModule } from './booking-room/booking-room.module';
+import { OrganizeChartModule } from './organize-chart/organize-chart.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { BookingRoomModule } from './booking-room/booking-room.module';
     DepartmentModule,
     MasterRoomModule,
     BookingRoomModule,
+    OrganizeChartModule,
   ],
   controllers: [IntranetController],
   providers: [IntranetService],

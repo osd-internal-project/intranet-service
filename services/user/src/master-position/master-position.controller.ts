@@ -6,7 +6,7 @@ export class MasterPositionController {
   constructor(private readonly masterPositionService: MasterPositionService) {}
 
   @Post()
-  create(@Body('data') data: Prisma.masterPositionCreateInput) {
+  create(@Body() data: Prisma.masterPositionCreateInput) {
     return this.masterPositionService.create(data);
   }
 

@@ -7,8 +7,7 @@ export class MasterPositionService {
   constructor(private masterPositionRepo: MasterPositionRepository) {}
 
   create(data: Prisma.masterPositionCreateInput) {
-    const condition = { data: data } as Prisma.masterPositionCreateArgs;
-    return this.masterPositionRepo.create(condition);
+    return this.masterPositionRepo.create({ data: data });
   }
 
   findAll() {
