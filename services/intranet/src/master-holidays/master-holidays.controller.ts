@@ -10,20 +10,21 @@ import {
 import { Prisma } from '@prisma/client';
 import { MasterHolidaysService } from './master-holidays.service';
 import { CreateMasterHolidayDto } from './dto/create-master-holiday.dto';
-import { UpdateMasterHolidayDto } from './dto/update-master-holiday.dto';
 
 @Controller('master-holidays')
 export class MasterHolidaysController {
   constructor(private readonly masterHolidaysService: MasterHolidaysService) {}
 
   @Post()
-  create(@Body('condition') condition: CreateMasterHolidayDto) {
+  create(@Body('condition') condition: Prisma.masterHolidaysCreateManyArgs) {
     return this.masterHolidaysService.create(condition);
   }
 
   @Post('condition')
-  findBycondition(@Body('condition') condition: CreateMasterHolidayDto) {
-    return this.masterHolidaysService.findAll();
+  findBycondition(
+    @Body('condition') condition: Prisma.masterHolidaysFindManyArgs,
+  ) {
+    return this.masterHolidaysService.findMany(condition);
   }
 
   @Get()
@@ -37,7 +38,7 @@ export class MasterHolidaysController {
   }
 
   @Patch(':id')
-  update(@Body('condition') condition: UpdateMasterHolidayDto) {
+  update(@Body('condition') condition: Prisma.masterHolidaysUpdateArgs) {
     return this.masterHolidaysService.update(condition);
   }
 
