@@ -28,8 +28,8 @@ import { MasterGhsTypeModule } from './master-ghs-type/master-ghs-type.module';
 import { ImageLocationModule } from './image-location/image-location.module';
 import { MasterObjectiveModule } from './master-objective/master-objective.module';
 import { MasterRoomModule } from './master-room/master-room.module';
+import { MaTaskModule } from './ma-task/ma-task.module';
 import { MasterTypeLeaveModule } from './master-type-leave/master-type-leave.module';
-import { BookingRoomModule } from './booking-room/booking-room.module';
 
 @Module({
   imports: [
@@ -58,8 +58,8 @@ import { BookingRoomModule } from './booking-room/booking-room.module';
     MasterGhsTypeModule,
     MasterObjectiveModule,
     MasterRoomModule,
+    MaTaskModule,
     MasterTypeLeaveModule,
-    BookingRoomModule,
   ],
   controllers: [EvoteController],
   providers: [EvoteService],

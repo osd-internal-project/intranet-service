@@ -10,6 +10,8 @@ import { FloorModule } from './floor/floor.module';
 import { MaTypeModule } from './ma-type/ma-type.module';
 import { MaTaskModule } from './ma-task/ma-task.module';
 import { DepartmentModule } from './department/department.module';
+import { MasterRoomModule } from './master-room/master-room.module';
+import { BookingRoomModule } from './booking-room/booking-room.module';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { DepartmentModule } from './department/department.module';
     MaTypeModule,
     MaTaskModule,
     DepartmentModule,
+    MasterRoomModule,
+    BookingRoomModule,
   ],
   controllers: [IntranetController],
   providers: [IntranetService],
