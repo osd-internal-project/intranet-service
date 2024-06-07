@@ -10,6 +10,7 @@ import { FloorModule } from './floor/floor.module';
 import { MaTypeModule } from './ma-type/ma-type.module';
 import { MasterRoomModule } from './master-room/master-room.module';
 import { BookingRoomModule } from './booking-room/booking-room.module';
+import { MasterTypeLeaveModule } from './master-type-leave/master-type-leave.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { BookingRoomModule } from './booking-room/booking-room.module';
     MaTypeModule,
     MasterRoomModule,
     BookingRoomModule,
+    MasterTypeLeaveModule,
   ],
   controllers: [IntranetController],
   providers: [IntranetService],
