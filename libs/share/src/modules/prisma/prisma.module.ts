@@ -34,6 +34,7 @@ import {
   FloorRepository,
   HouseKeeperRepository,
   ResultCleanlinessRepository,
+  DepartMentRepository,
 
   //Auth
   MasterPositionRepository,
@@ -54,7 +55,7 @@ import {
   MasterTypeLeaveRepository,
   //Room
   MasterRoomRepository,
-  BookingRoomRepository
+  BookingRoomRepository,
 } from 'src/repositories';
 
 const services = [
@@ -91,6 +92,7 @@ const services = [
   FloorRepository,
   HouseKeeperRepository,
   ResultCleanlinessRepository,
+  DepartMentRepository,
   //Auth
   MasterPositionRepository,
   MasterRuleRepository,
@@ -111,7 +113,7 @@ const services = [
   MasterTypeLeaveRepository,
   //Room
   MasterRoomRepository,
-  BookingRoomRepository
+  BookingRoomRepository,
 ];
 @Module({
   providers: [...services],

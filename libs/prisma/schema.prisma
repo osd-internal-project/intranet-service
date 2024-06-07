@@ -206,12 +206,14 @@ model masterObjective {
 }
 
 model masterPosition {
-    id        Int       @unique @default(autoincrement()) @map("id")
-    nameTh    String    @default("") @map("name_th") @db.VarChar(100)
-    nameEn    String    @default("") @map("name_en") @db.VarChar(100)
-    createdAt DateTime? @default(now()) @map("created_at")
-    updatedAt DateTime? @default(now()) @map("updated_at")
-    user      user[]
+    id           Int        @unique @default(autoincrement()) @map("id")
+    nameTh       String     @default("") @map("name_th") @db.VarChar(100)
+    nameEn       String     @default("") @map("name_en") @db.VarChar(100)
+    departMent   departMent @relation(fields: [departMentId], references: [departId])
+    createdAt    DateTime?  @default(now()) @map("created_at")
+    updatedAt    DateTime?  @default(now()) @map("updated_at")
+    departMentId Int        @map("department_id")
+    user         user[]
 
     @@map("master_position")
 }
@@ -630,15 +632,17 @@ model user {
     clientId         String?          @map("client_id") @db.VarChar(50)
     createdAt        DateTime         @default(now()) @map("created_at")
     updatedAt        DateTime         @default(now()) @map("updated_at")
-    masterPosition   masterPosition?  @relation(fields: [masterPositionId], references: [id])
     masterPositionId Int?             @map("master_position_id")
-    userGroupMap     userGroupMap[]
-    roleProfileMap   roleProfileMap[]
-    userRoleMap      userRoleMap[]
     organizedGroupId String?          @map("organized_group_id") @db.VarChar(50)
     refreshToken     String?          @map("refresh_token")
     ownerGroupId     String?          @map("owner_group_id") @db.VarChar(50)
+    departMentId     Int?             @map("depart_ment_id")
     ownerGroup       userGroup?       @relation(fields: [ownerGroupId], references: [groupId])
+    masterPosition   masterPosition?  @relation(fields: [masterPositionId], references: [id], onDelete: SetNull)
+    department       departMent?      @relation(fields: [departMentId], references: [departId])
+    userGroupMap     userGroupMap[]
+    roleProfileMap   roleProfileMap[]
+    userRoleMap      userRoleMap[]
     request          request[]
     // userOwner        userOwner[]
 }
@@ -826,9 +830,13 @@ model bookingRoom {
 }
 
 model departMent {
-    id         Int      @unique @default(autoincrement()) @map("id")
-    departId   Int      @unique @map("depart_id") @db.Integer
-    departName String   @unique @map("depart_name") @db.VarChar(100)
-    createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt  DateTime @default(now()) @map("updated_at") @db.Timestamptz()
+    id             Int              @unique @default(autoincrement()) @map("id")
+    departId       Int              @unique @map("depart_id") @db.Integer
+    departName     String           @unique @map("depart_name") @db.VarChar(100)
+    createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt      DateTime         @default(now()) @map("updated_at") @db.Timestamptz()
+    user           user[]
+    masterPosition masterPosition[]
+
+    @@map("depart_ment")
 }
