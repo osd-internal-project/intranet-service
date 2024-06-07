@@ -13,6 +13,7 @@ import { MaTaskModule } from './ma-task/ma-task.module';
 import { DepartmentModule } from './department/department.module';
 import { MasterRoomModule } from './master-room/master-room.module';
 import { BookingRoomModule } from './booking-room/booking-room.module';
+import { OrganizeChartModule } from './organize-chart/organize-chart.module';
 import { MasterTypeLeaveModule } from './master-type-leave/master-type-leave.module';
 
 @Module({
@@ -27,6 +28,7 @@ import { MasterTypeLeaveModule } from './master-type-leave/master-type-leave.mod
     DepartmentModule,
     MasterRoomModule,
     BookingRoomModule,
+    OrganizeChartModule,
     MasterTypeLeaveModule,
   ],
   controllers: [IntranetController],

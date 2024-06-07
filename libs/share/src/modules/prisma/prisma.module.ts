@@ -35,7 +35,7 @@ import {
   HouseKeeperRepository,
   ResultCleanlinessRepository,
   DepartMentRepository,
-
+  OrganizedChartRepository,
   //Auth
   MasterPositionRepository,
   MasterRuleRepository,
@@ -93,6 +93,7 @@ const services = [
   HouseKeeperRepository,
   ResultCleanlinessRepository,
   DepartMentRepository,
+  OrganizedChartRepository,
   //Auth
   MasterPositionRepository,
   MasterRuleRepository,
