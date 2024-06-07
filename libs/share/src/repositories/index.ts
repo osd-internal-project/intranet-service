@@ -25,6 +25,7 @@ export * from './requestList.repository';
 export * from './floor.repository';
 export * from './houseKeeper.repository';
 export * from './resultCleanliness.repository';
+export * from './department.repository';
 
 export * from './masterUnit.repository';
 export * from './location.repository';
