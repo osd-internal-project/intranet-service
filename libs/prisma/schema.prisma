@@ -237,6 +237,16 @@ model masterTypeleave {
     @@map("master_typeleave")
 }
 
+model masterHolidays {
+    id           Int       @unique @default(autoincrement()) @map("id")
+    holidaysName String?   @map("holidays_name") @db.VarChar(250)
+    holidaysDate DateTime? @map("holidays_date")
+    createdAt    DateTime? @default(now()) @map("created_at")
+    updatedAt    DateTime? @default(now()) @map("updated_at")
+
+    @@map("master_holidays")
+}
+
 model masterProduct {
     id                   Int                 @unique @default(autoincrement()) @map("id")
     productCode          String?             @map("product_code") @db.VarChar(50)
