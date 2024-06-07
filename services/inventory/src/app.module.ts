@@ -27,9 +27,6 @@ import { UnitModule } from './unit/unit.module';
 import { MasterGhsTypeModule } from './master-ghs-type/master-ghs-type.module';
 import { ImageLocationModule } from './image-location/image-location.module';
 import { MasterObjectiveModule } from './master-objective/master-objective.module';
-import { MasterRoomModule } from './master-room/master-room.module';
-import { MaTaskModule } from './ma-task/ma-task.module';
-
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
@@ -56,8 +53,6 @@ import { MaTaskModule } from './ma-task/ma-task.module';
     UnitModule,
     MasterGhsTypeModule,
     MasterObjectiveModule,
-    MasterRoomModule,
-    MaTaskModule,
   ],
   controllers: [EvoteController],
   providers: [EvoteService],
