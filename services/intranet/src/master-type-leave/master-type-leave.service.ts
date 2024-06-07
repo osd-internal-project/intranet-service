@@ -32,12 +32,7 @@ export class MasterTypeLeaveService {
     };
     return this.mastertypeleaveRepo.findOne(condition);
   }
-  async update(id: number, data: Prisma.masterTypeleaveUpdateInput) {
-    const condition = {
-      where: { id: id },
-      data: data,
-    } as Prisma.masterTypeleaveUpdateArgs;
-
+  async update(condition: Prisma.masterTypeleaveUpdateArgs) {
     return await this.mastertypeleaveRepo.update(condition);
   }
 
