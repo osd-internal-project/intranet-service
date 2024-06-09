@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { OrganizeChartService } from './organize-chart.service';
 import { CreateOrganizeChartDto } from './dto/create-organize-chart.dto';
@@ -25,9 +26,19 @@ export class OrganizeChartController {
     return this.organizeChartService.findAll();
   }
 
+  @Get('findChildrenById/:rootId')
+  findChildrenById(@Param('rootId') rootId: any) {
+    return this.organizeChartService.findChildrenById(rootId);
+  }
+
+  @Get('query')
+  findByQuery(@Query() query: any) {
+    return this.organizeChartService.findMany(query);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.organizeChartService.findOne(+id);
+    return this.organizeChartService.findOne(id);
   }
 
   @Patch(':id')
@@ -35,11 +46,11 @@ export class OrganizeChartController {
     @Param('id') id: string,
     @Body() updateOrganizeChartDto: UpdateOrganizeChartDto,
   ) {
-    return this.organizeChartService.update(+id, updateOrganizeChartDto);
+    return this.organizeChartService.update(id, updateOrganizeChartDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.organizeChartService.remove(+id);
+    return this.organizeChartService.remove(id);
   }
 }

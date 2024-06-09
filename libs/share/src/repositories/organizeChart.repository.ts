@@ -11,6 +11,15 @@ export class OrganizedChartRepository {
     const prisma = option?.prisma ?? this.prisma;
     return prisma.organizedChart.findMany();
   }
+
+  async findFrist(
+    condition: Prisma.organizedChartFindFirstArgs,
+    option?: { prisma?: TQueryClient },
+  ) {
+    const prisma = option?.prisma ?? this.prisma;
+    return prisma.organizedChart.findFirst(condition);
+  }
+
   async findMany(
     condition: Prisma.organizedChartFindFirstArgsBase,
     option?: { prisma?: TQueryClient },

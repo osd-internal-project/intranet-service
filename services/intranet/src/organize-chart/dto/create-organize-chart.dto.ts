@@ -1,4 +1,5 @@
 export class CreateOrganizeChartDto {
-  organizedName: string;
-  description?: string;
+  parentPositionId: string;
+  positionName: string;
+  description: string;
 }
