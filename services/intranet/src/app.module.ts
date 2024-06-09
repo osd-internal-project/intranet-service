@@ -9,12 +9,12 @@ import { HousekeeperModule } from './housekeeper/housekeeper.module';
 import { FloorModule } from './floor/floor.module';
 import { MaTaskModule } from './ma-task/ma-task.module';
 import { MaTypeModule } from './ma-type/ma-type.module';
-import { MaTaskModule } from './ma-task/ma-task.module';
 import { DepartmentModule } from './department/department.module';
 import { MasterRoomModule } from './master-room/master-room.module';
 import { BookingRoomModule } from './booking-room/booking-room.module';
 import { OrganizeChartModule } from './organize-chart/organize-chart.module';
 import { MasterTypeLeaveModule } from './master-type-leave/master-type-leave.module';
+import { MasterHolidaysModule } from './master-holidays/master-holidays.module';
 
 @Module({
   imports: [
@@ -30,6 +30,7 @@ import { MasterTypeLeaveModule } from './master-type-leave/master-type-leave.mod
     BookingRoomModule,
     OrganizeChartModule,
     MasterTypeLeaveModule,
+    MasterHolidaysModule,
   ],
   controllers: [IntranetController],
   providers: [IntranetService],

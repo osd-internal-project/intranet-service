@@ -34,8 +34,7 @@ export class MaTaskService {
     });
   }
   async findDataTable(query: any) {
-    console.log(query);
-    const { take, skip, typeid, maName, maDate, contact } = query;
+    const { take, skip, typeid, maName, maDate, contact, maStatus } = query;
     const data = await this.maTaskRepo.findMany({
       where: {
         ...(typeid && { maTypeId: Number(typeid) }),
@@ -47,6 +46,7 @@ export class MaTaskService {
           },
         }),
         ...(contact && { contact: { contains: contact } }),
+        ...(maStatus && { maStatus: maStatus }),
       },
       orderBy: [{ createdAt: 'desc' }],
       take: +take,
