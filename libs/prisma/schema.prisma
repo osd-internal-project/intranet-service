@@ -852,6 +852,7 @@ model organizedChart {
     positionId           String                 @unique @default(uuid()) @map("position_id") @db.VarChar(50)
     description          String?                @map("description") @db.Text
     positionName         String                 @map("position_name") @db.VarChar(100)
+    type                 String?                @map("type") @db.VarChar(20)
     parentPositions      organizedChart?        @relation("ChildGroup", fields: [parentPositionId], references: [positionId])
     organizedChart       organizedChart[]       @relation("ChildGroup")
     parentPositionId     String?                @map("parent_position_id") @db.VarChar(50)
