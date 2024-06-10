@@ -218,20 +218,21 @@ model masterPosition {
 }
 
 model masterTypeleave {
-    id               Int       @unique @default(autoincrement()) @map("id")
-    typeId           Int?      @default(autoincrement()) @map("type_id") @db.Integer
-    typeName         String?   @map("type_name") @db.VarChar(250)
-    forwardLeave     String?   @map("forward_leave") @db.VarChar(250)
-    limitLeaveOne    String?   @map("limit_leave1") @db.VarChar(250)
-    limitLeaveTwo    String?   @map("limit_leave2") @db.VarChar(250)
-    limitLeaveThree  String?   @map("limit_leave3") @db.VarChar(250)
-    limitLeaveFour   String?   @map("limit_leave4") @db.VarChar(250)
-    descriptionLeave String?   @map("description_leave") @db.Text
-    typeEveryDay     Boolean?  @default(false) @map("type_everyday") @db.Boolean
-    typeNameEn       String?   @map("type_name_en") @db.VarChar(250)
-    typeNameTh       String?   @map("type_name_th") @db.VarChar(250)
-    createdAt        DateTime? @default(now()) @map("created_at")
-    updatedAt        DateTime? @default(now()) @map("updated_at")
+    id                   Int                    @unique @default(autoincrement()) @map("id")
+    typeId               Int?                   @default(autoincrement()) @map("type_id") @db.Integer
+    typeName             String?                @map("type_name") @db.VarChar(250)
+    forwardLeave         String?                @map("forward_leave") @db.VarChar(250)
+    limitLeaveOne        String?                @map("limit_leave1") @db.VarChar(250)
+    limitLeaveTwo        String?                @map("limit_leave2") @db.VarChar(250)
+    limitLeaveThree      String?                @map("limit_leave3") @db.VarChar(250)
+    limitLeaveFour       String?                @map("limit_leave4") @db.VarChar(250)
+    descriptionLeave     String?                @map("description_leave") @db.Text
+    typeEveryDay         Boolean?               @default(false) @map("type_everyday") @db.Boolean
+    typeNameEn           String?                @map("type_name_en") @db.VarChar(250)
+    typeNameTh           String?                @map("type_name_th") @db.VarChar(250)
+    createdAt            DateTime?              @default(now()) @map("created_at")
+    updatedAt            DateTime?              @default(now()) @map("updated_at")
+    typeLeaveDisabledMap typeLeaveDisabledMap[]
 
     @@map("master_typeleave")
 }
@@ -559,6 +560,16 @@ model roleProfileMap {
     @@map("role_profile_map")
 }
 
+model typeLeaveDisabledMap {
+    id                Int              @unique @default(autoincrement()) @map("id")
+    user              user?            @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId            Int?             @map("user_id")
+    masterTypeleave   masterTypeleave? @relation(fields: [masterTypeleaveId], references: [id], onDelete: Cascade)
+    masterTypeleaveId Int?             @map("master_type_leave_id")
+
+    @@map("type_leave_disabled_map")
+}
+
 model transaction {
     id                 Int       @unique @default(autoincrement()) @map("id")
     productName        String    @map("product_name") @db.VarChar(200)
@@ -653,6 +664,7 @@ model user {
     // userOwner        userOwner[]
     positionId           Int?
     userMapOrganizeChart userMapOrganizeChart[]
+    typeLeaveDisabledMap typeLeaveDisabledMap[]
 }
 
 // model userOwner {
