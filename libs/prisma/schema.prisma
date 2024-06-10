@@ -207,10 +207,12 @@ model masterObjective {
 
 model masterPosition {
     id        Int       @unique @default(autoincrement()) @map("id")
-    nameTh    String    @default("") @map("name_th") @db.VarChar(100)
-    nameEn    String    @default("") @map("name_en") @db.VarChar(100)
+    posId     Int       @unique @default(autoincrement()) @map("pos_id")
+    nameTh    String?   @default("") @map("name_th") @db.VarChar(100)
+    nameEn    String?   @default("") @map("name_en") @db.VarChar(100)
     createdAt DateTime? @default(now()) @map("created_at")
     updatedAt DateTime? @default(now()) @map("updated_at")
+    user      user[]
 
     @@map("master_position")
 }
@@ -643,12 +645,13 @@ model user {
     refreshToken         String?                @map("refresh_token")
     ownerGroupId         String?                @map("owner_group_id") @db.VarChar(50)
     ownerGroup           userGroup?             @relation(fields: [ownerGroupId], references: [groupId])
+    masterPosition       masterPosition?        @relation(fields: [positionId], references: [id])
     userGroupMap         userGroupMap[]
     roleProfileMap       roleProfileMap[]
     userRoleMap          userRoleMap[]
     request              request[]
     // userOwner        userOwner[]
-    positionId           String?
+    positionId           Int?
     userMapOrganizeChart userMapOrganizeChart[]
 }
 
