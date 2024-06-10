@@ -70,7 +70,7 @@ export class AuthController {
         email,
         phoneNumber,
         ownerGroup: ownerGroupId,
-        position: masterPosition?.nameEn,
+        position: masterPosition,
       };
       const token = this.authguardService.createToken(payload);
       await this.userService.updateRefreshToken(
@@ -191,7 +191,7 @@ export class AuthController {
         email,
         phoneNumber,
         ownerGroup: ownerGroupId,
-        position: masterPosition?.nameEn,
+        position: masterPosition,
         firstNameEn,
         lastNameEn,
       };
