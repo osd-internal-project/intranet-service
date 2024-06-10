@@ -52,6 +52,36 @@ export class MaTaskService {
       take: +take,
       skip: +skip,
     });
+    const count = await this.maTaskRepo.count({
+      where: {
+        ...(typeid && { maTypeId: Number(typeid) }),
+        ...(maName && { maName: { contains: maName } }),
+        ...(maDate && {
+          maDate: {
+            gte: this.startOfDate(maDate[0]),
+            lte: this.endOfDate(maDate[1]),
+          },
+        }),
+        ...(contact && { contact: { contains: contact } }),
+        ...(maStatus && { maStatus: maStatus }),
+      },
+    });
+    return { data: data, count: count };
+  }
+
+  async findRangeEvent(query: any) {
+    const { maDate } = query;
+    const data = await this.maTaskRepo.findMany({
+      where: {
+        ...(maDate && {
+          maDate: {
+            gte: this.startOfDate(maDate[0]),
+            lte: this.endOfDate(maDate[1]),
+          },
+        }),
+      },
+      orderBy: [{ createdAt: 'desc' }],
+    });
     const count = await this.maTaskRepo.count({});
     return { data: data, count: count };
   }

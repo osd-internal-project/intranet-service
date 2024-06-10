@@ -36,6 +36,11 @@ export class MaTaskController {
   findDataTable(@Query() query) {
     return this.maTaskService.findDataTable(query);
   }
+  @Get('range-event')
+  findRangeEvent(@Query() query) {
+    return this.maTaskService.findRangeEvent(query);
+  }
+
   @Get(':id')
   findOneById(@Param('id') id: string) {
     return this.maTaskService.findOneById(+id);

@@ -54,17 +54,17 @@ export class MaTaskRepository {
     return prisma.maTask.delete(condition);
   }
   async count(
-    condition: Prisma.inventoryLotCountArgs,
+    condition: Prisma.maTaskCountArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.inventoryLot.count(condition);
+    return prisma.maTask.count(condition);
   }
   async aggregate(
-    condition: Prisma.InventoryLotAggregateArgs,
+    condition: Prisma.MaTaskAggregateArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.inventoryLot.aggregate(condition);
+    return prisma.maTask.aggregate(condition);
   }
 }
