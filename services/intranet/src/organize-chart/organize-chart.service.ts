@@ -28,6 +28,13 @@ export class OrganizeChartService {
     return this.organizedChartRepo.findMany({});
   }
 
+  findByType(type: string) {
+    return this.organizedChartRepo.findMany({
+      where: { type: type },
+      orderBy: { id: 'asc' },
+    });
+  }
+
   findChildrenById(rootId: string) {
     const sql = `WITH RECURSIVE OrgChartCTE AS (
       SELECT
@@ -54,6 +61,51 @@ export class OrganizeChartService {
       FROM
           organize_chart oc
       INNER JOIN OrgChartCTE cte ON cte.position_id = oc.parent_position_id
+  )
+  SELECT
+      *
+  FROM
+      OrgChartCTE;`;
+    return prisma.$queryRaw(Prisma.raw(sql));
+  }
+
+  findChildrenUserById(rootId) {
+    const sql = `WITH RECURSIVE OrgChartCTE AS (
+      SELECT
+          oc.id,
+          oc.position_id,
+          oc.position_name,
+          oc.parent_position_id,
+          umoc."userId",
+          u.username,
+          u.first_name_en ,
+          u.last_name_en  ,
+          u.email,
+          oc.type
+      FROM
+          organize_chart oc
+      left join user_map_organize_chart umoc on umoc."positionId" = oc.position_id
+      left join "user" u on u.user_id = umoc."userId"
+      WHERE
+          position_id = '${rootId}'
+      UNION ALL
+      SELECT
+          oc.id,
+          oc.position_id,
+          oc.position_name,
+          oc.parent_position_id,
+          umoc."userId",
+          u.username,
+          u.first_name_en ,
+          u.last_name_en  ,
+          u.email,
+          oc.type
+      FROM
+          organize_chart oc
+      left join user_map_organize_chart umoc on umoc."positionId" = oc.position_id
+      left join "user" u on u.user_id = umoc."userId"
+      INNER JOIN OrgChartCTE cte ON cte.position_id = oc.parent_position_id
+      where oc."type" = 'position'
   )
   SELECT
       *

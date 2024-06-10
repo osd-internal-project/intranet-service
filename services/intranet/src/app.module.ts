@@ -15,6 +15,7 @@ import { BookingRoomModule } from './booking-room/booking-room.module';
 import { OrganizeChartModule } from './organize-chart/organize-chart.module';
 import { MasterTypeLeaveModule } from './master-type-leave/master-type-leave.module';
 import { MasterHolidaysModule } from './master-holidays/master-holidays.module';
+import { UserMapOrganizeModule } from './user-map-organize/user-map-organize.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { MasterHolidaysModule } from './master-holidays/master-holidays.module';
     OrganizeChartModule,
     MasterTypeLeaveModule,
     MasterHolidaysModule,
+    UserMapOrganizeModule,
   ],
   controllers: [IntranetController],
   providers: [IntranetService],
