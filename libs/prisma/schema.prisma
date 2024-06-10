@@ -625,31 +625,31 @@ model unit {
 }
 
 model user {
-    id               Int              @unique @default(autoincrement()) @map("id")
-    userId           String           @unique @default(uuid()) @map("user_id") @db.VarChar(50)
-    username         String           @map("username") @db.VarChar(100)
-    password         String           @map("password") @db.Text
-    firstNameTh      String?          @map("first_name_th") @db.VarChar(100)
-    lastNameTh       String?          @map("last_name_th") @db.VarChar(100)
-    firstNameEn      String?          @map("first_name_en") @db.VarChar(100)
-    lastNameEn       String?          @map("last_name_en") @db.VarChar(100)
-    email            String?          @map("email") @db.VarChar(100)
-    phoneNumber      String?          @map("phone_number") @db.VarChar(50)
-    activeStatus     Boolean          @default(true) @map("active_status") @db.Boolean
-    clientId         String?          @map("client_id") @db.VarChar(50)
-    createdAt        DateTime         @default(now()) @map("created_at")
-    updatedAt        DateTime         @default(now()) @map("updated_at")
-    organizedGroupId String?          @map("organized_group_id") @db.VarChar(50)
-    refreshToken     String?          @map("refresh_token")
-    ownerGroupId     String?          @map("owner_group_id") @db.VarChar(50)
-    organizedChartId String?          @map("organized_chart_id")
-    ownerGroup       userGroup?       @relation(fields: [ownerGroupId], references: [groupId])
-    organizedChart   organizedChart?  @relation(fields: [organizedChartId], references: [positionId])
-    userGroupMap     userGroupMap[]
-    roleProfileMap   roleProfileMap[]
-    userRoleMap      userRoleMap[]
-    request          request[]
+    id                   Int                    @unique @default(autoincrement()) @map("id")
+    userId               String                 @unique @default(uuid()) @map("user_id") @db.VarChar(50)
+    username             String                 @map("username") @db.VarChar(100)
+    password             String                 @map("password") @db.Text
+    firstNameTh          String?                @map("first_name_th") @db.VarChar(100)
+    lastNameTh           String?                @map("last_name_th") @db.VarChar(100)
+    firstNameEn          String?                @map("first_name_en") @db.VarChar(100)
+    lastNameEn           String?                @map("last_name_en") @db.VarChar(100)
+    email                String?                @map("email") @db.VarChar(100)
+    phoneNumber          String?                @map("phone_number") @db.VarChar(50)
+    activeStatus         Boolean                @default(true) @map("active_status") @db.Boolean
+    clientId             String?                @map("client_id") @db.VarChar(50)
+    createdAt            DateTime               @default(now()) @map("created_at")
+    updatedAt            DateTime               @default(now()) @map("updated_at")
+    organizedGroupId     String?                @map("organized_group_id") @db.VarChar(50)
+    refreshToken         String?                @map("refresh_token")
+    ownerGroupId         String?                @map("owner_group_id") @db.VarChar(50)
+    ownerGroup           userGroup?             @relation(fields: [ownerGroupId], references: [groupId])
+    userGroupMap         userGroupMap[]
+    roleProfileMap       roleProfileMap[]
+    userRoleMap          userRoleMap[]
+    request              request[]
     // userOwner        userOwner[]
+    positionId           String?
+    userMapOrganizeChart userMapOrganizeChart[]
 }
 
 // model userOwner {
@@ -845,16 +845,26 @@ model departMent {
 }
 
 model organizedChart {
-    id               Int              @unique @default(autoincrement()) @map("id")
-    positionId       String           @unique @default(uuid()) @map("position_id") @db.VarChar(50)
-    description      String?          @map("description") @db.Text
-    positionName     String           @map("position_name") @db.VarChar(100)
-    parentPositions  organizedChart?   @relation("ChildGroup", fields: [parentPositionId], references: [positionId])
-    organizedChart   organizedChart[] @relation("ChildGroup")
-    parentPositionId String?           @map("parent_position_id") @db.VarChar(50)
-    createdAt        DateTime         @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt        DateTime         @updatedAt @map("updated_at") @db.Timestamptz()
-    user             user[]
+    id                   Int                    @unique @default(autoincrement()) @map("id")
+    positionId           String                 @unique @default(uuid()) @map("position_id") @db.VarChar(50)
+    description          String?                @map("description") @db.Text
+    positionName         String                 @map("position_name") @db.VarChar(100)
+    parentPositions      organizedChart?        @relation("ChildGroup", fields: [parentPositionId], references: [positionId])
+    organizedChart       organizedChart[]       @relation("ChildGroup")
+    parentPositionId     String?                @map("parent_position_id") @db.VarChar(50)
+    createdAt            DateTime               @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt            DateTime               @updatedAt @map("updated_at") @db.Timestamptz()
+    userMapOrganizeChart userMapOrganizeChart[]
 
     @@map("organize_chart")
+}
+
+model userMapOrganizeChart {
+    id         Int             @unique @default(autoincrement()) @map("id")
+    positions  organizedChart? @relation(fields: [positionId], references: [positionId])
+    users      user?           @relation(fields: [userId], references: [userId])
+    positionId String?
+    userId     String?
+
+    @@map("user_map_organize_chart")
 }
