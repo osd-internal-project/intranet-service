@@ -36,6 +36,7 @@ import {
   ResultCleanlinessRepository,
   DepartMentRepository,
   OrganizedChartRepository,
+  UserMapOrganizeChartRepository,
   //Auth
   MasterPositionRepository,
   MasterRuleRepository,
@@ -95,6 +96,7 @@ const services = [
   ResultCleanlinessRepository,
   DepartMentRepository,
   OrganizedChartRepository,
+  UserMapOrganizeChartRepository,
   //Auth
   MasterPositionRepository,
   MasterRuleRepository,
