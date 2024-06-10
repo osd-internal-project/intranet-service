@@ -56,15 +56,21 @@ export class AuthController {
         email,
         phoneNumber,
         ownerGroupId,
+        firstNameEn,
+        lastNameEn,
+        masterPosition,
       } = user;
       const payload = {
         userId,
         username,
         firstNameTh,
         lastNameTh,
+        firstNameEn,
+        lastNameEn,
         email,
         phoneNumber,
         ownerGroup: ownerGroupId,
+        position: masterPosition?.nameEn,
       };
       const token = this.authguardService.createToken(payload);
       await this.userService.updateRefreshToken(
@@ -173,6 +179,9 @@ export class AuthController {
         email,
         phoneNumber,
         ownerGroupId,
+        masterPosition,
+        firstNameEn,
+        lastNameEn,
       } = payload;
       const newPayload = {
         userId,
@@ -182,6 +191,9 @@ export class AuthController {
         email,
         phoneNumber,
         ownerGroup: ownerGroupId,
+        position: masterPosition?.nameEn,
+        firstNameEn,
+        lastNameEn,
       };
 
       const token = this.authguardService.createToken(newPayload);
