@@ -645,7 +645,7 @@ model user {
     refreshToken         String?                @map("refresh_token")
     ownerGroupId         String?                @map("owner_group_id") @db.VarChar(50)
     ownerGroup           userGroup?             @relation(fields: [ownerGroupId], references: [groupId])
-    masterPosition       masterPosition?        @relation(fields: [positionId], references: [id])
+    masterPosition       masterPosition?        @relation(fields: [positionId], references: [posId])
     userGroupMap         userGroupMap[]
     roleProfileMap       roleProfileMap[]
     userRoleMap          userRoleMap[]

@@ -82,8 +82,7 @@ export class MaTaskService {
       },
       orderBy: [{ createdAt: 'desc' }],
     });
-    const count = await this.maTaskRepo.count({});
-    return { data: data, count: count };
+    return data;
   }
 
   findMany(condition: Prisma.maTaskFindManyArgs) {

@@ -48,6 +48,9 @@ export class UserService {
   findOneByCondition(condition: Prisma.userFindFirstArgs) {
     condition = {
       ...condition,
+      include: {
+        masterPosition: true,
+      },
       orderBy: [
         {
           createdAt: 'asc',
@@ -56,7 +59,6 @@ export class UserService {
     };
     return this.userRepo.findOne(condition);
   }
-
   findByUsername(username: string) {
     const condition = { where: { username: username } } as Prisma.userArgs;
     return this.userRepo.findOne(condition);
