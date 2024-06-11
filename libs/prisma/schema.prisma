@@ -657,11 +657,11 @@ model user {
     ownerGroupId         String?                @map("owner_group_id") @db.VarChar(50)
     ownerGroup           userGroup?             @relation(fields: [ownerGroupId], references: [groupId])
     masterPosition       masterPosition?        @relation(fields: [positionId], references: [posId])
+    startWork            DateTime?              @map("start_work")
     userGroupMap         userGroupMap[]
     roleProfileMap       roleProfileMap[]
     userRoleMap          userRoleMap[]
     request              request[]
-    // userOwner        userOwner[]
     positionId           Int?
     userMapOrganizeChart userMapOrganizeChart[]
     typeLeaveDisabledMap typeLeaveDisabledMap[]
