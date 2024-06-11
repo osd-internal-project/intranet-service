@@ -81,7 +81,8 @@ export class OrganizeChartService {
           u.first_name_en ,
           u.last_name_en  ,
           u.email,
-          oc.type
+          oc.type,
+          u.image_id
       FROM
           organize_chart oc
       left join user_map_organize_chart umoc on umoc."positionId" = oc.position_id
@@ -99,7 +100,8 @@ export class OrganizeChartService {
           u.first_name_en ,
           u.last_name_en  ,
           u.email,
-          oc.type
+          oc.type,
+          u.image_id
       FROM
           organize_chart oc
       left join user_map_organize_chart umoc on umoc."positionId" = oc.position_id
