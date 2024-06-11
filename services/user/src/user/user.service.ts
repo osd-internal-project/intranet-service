@@ -48,6 +48,9 @@ export class UserService {
   findOneByCondition(condition: Prisma.userFindFirstArgs) {
     condition = {
       ...condition,
+      include: {
+        masterPosition: true,
+      },
       orderBy: [
         {
           createdAt: 'asc',
