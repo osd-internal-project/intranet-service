@@ -27,6 +27,7 @@ export * from './houseKeeper.repository';
 export * from './resultCleanliness.repository';
 export * from './department.repository';
 export * from './organizeChart.repository';
+export * from './userMapOrganize.repository';
 
 export * from './masterUnit.repository';
 export * from './location.repository';

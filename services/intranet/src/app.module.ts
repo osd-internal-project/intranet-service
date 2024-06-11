@@ -16,6 +16,7 @@ import { OrganizeChartModule } from './organize-chart/organize-chart.module';
 import { MasterTypeLeaveModule } from './master-type-leave/master-type-leave.module';
 import { MasterHolidaysModule } from './master-holidays/master-holidays.module';
 import { MaTaskFilesModule } from './ma-task-files/ma-task-files.module';
+import { UserMapOrganizeModule } from './user-map-organize/user-map-organize.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { MaTaskFilesModule } from './ma-task-files/ma-task-files.module';
     MasterTypeLeaveModule,
     MasterHolidaysModule,
     MaTaskFilesModule,
+    UserMapOrganizeModule,
   ],
   controllers: [IntranetController],
   providers: [IntranetService],

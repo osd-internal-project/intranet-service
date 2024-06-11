@@ -26,9 +26,19 @@ export class OrganizeChartController {
     return this.organizeChartService.findAll();
   }
 
+  @Get('type/:type')
+  findByType(@Param('type') type: string) {
+    return this.organizeChartService.findByType(type);
+  }
+
   @Get('findChildrenById/:rootId')
-  findChildrenById(@Param('rootId') rootId: any) {
+  findChildrenById(@Param('rootId') rootId: string) {
     return this.organizeChartService.findChildrenById(rootId);
+  }
+
+  @Get('findChildrenUserById/:rootId')
+  findChildrenUserById(@Param('rootId') rootId: string) {
+    return this.organizeChartService.findChildrenUserById(rootId);
   }
 
   @Get('query')
