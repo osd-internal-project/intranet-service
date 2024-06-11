@@ -7,7 +7,7 @@ export class MasterTypeLeaveService {
   constructor(private mastertypeleaveRepo: MasterTypeLeaveRepository) {}
 
   create(data: Prisma.masterTypeleaveCreateInput) {
-    const condition = { data: data } as Prisma.masterHazardtypeCreateArgs;
+    const condition = { data: data } as Prisma.masterTypeleaveCreateArgs;
     return this.mastertypeleaveRepo.create(condition);
   }
 
@@ -32,6 +32,7 @@ export class MasterTypeLeaveService {
     };
     return this.mastertypeleaveRepo.findOne(condition);
   }
+
   async update(condition: Prisma.masterTypeleaveUpdateArgs) {
     return await this.mastertypeleaveRepo.update(condition);
   }
