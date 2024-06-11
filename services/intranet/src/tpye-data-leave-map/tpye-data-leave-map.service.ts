@@ -1,15 +1,23 @@
 import { Injectable } from '@nestjs/common';
-import { CreateTpyeDataLeaveMapDto } from './dto/create-tpye-data-leave-map.dto';
 import { UpdateTpyeDataLeaveMapDto } from './dto/update-tpye-data-leave-map.dto';
+import { Prisma } from '@prisma/client';
+import { MasterTypeLeaveMapRepository } from '@inventory/share';
 
 @Injectable()
 export class TpyeDataLeaveMapService {
-  create(createTpyeDataLeaveMapDto: CreateTpyeDataLeaveMapDto) {
-    return 'This action adds a new tpyeDataLeaveMap';
+  constructor(
+    private readonly masterTypeLeaveMapRepo: MasterTypeLeaveMapRepository,
+  ) {}
+  async create(condition: Prisma.typeLeaveDisabledMapCreateArgs) {
+    return await this.masterTypeLeaveMapRepo.create(condition);
   }
 
   findAll() {
     return `This action returns all tpyeDataLeaveMap`;
+  }
+
+  async findMany(condition: Prisma.typeLeaveDisabledMapFindManyArgs) {
+    return await this.masterTypeLeaveMapRepo.findMany(condition);
   }
 
   findOne(id: number) {

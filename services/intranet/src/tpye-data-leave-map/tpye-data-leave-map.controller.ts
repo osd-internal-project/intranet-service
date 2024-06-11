@@ -8,8 +8,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import { TpyeDataLeaveMapService } from './tpye-data-leave-map.service';
-import { CreateTpyeDataLeaveMapDto } from './dto/create-tpye-data-leave-map.dto';
-import { UpdateTpyeDataLeaveMapDto } from './dto/update-tpye-data-leave-map.dto';
+import { Prisma } from '@prisma/client';
 
 @Controller('tpye-data-leave-map')
 export class TpyeDataLeaveMapController {
@@ -18,8 +17,15 @@ export class TpyeDataLeaveMapController {
   ) {}
 
   @Post()
-  create(@Body() createTpyeDataLeaveMapDto: CreateTpyeDataLeaveMapDto) {
-    return this.tpyeDataLeaveMapService.create(createTpyeDataLeaveMapDto);
+  create(@Body('condition') condition: Prisma.typeLeaveDisabledMapCreateArgs) {
+    return this.tpyeDataLeaveMapService.create(condition);
+  }
+
+  @Post('condition')
+  findMany(
+    @Body('condition') condition: Prisma.typeLeaveDisabledMapFindManyArgs,
+  ) {
+    return this.tpyeDataLeaveMapService.findMany(condition);
   }
 
   @Get()
@@ -35,7 +41,7 @@ export class TpyeDataLeaveMapController {
   @Patch(':id')
   update(
     @Param('id') id: string,
-    @Body() updateTpyeDataLeaveMapDto: UpdateTpyeDataLeaveMapDto,
+    @Body() updateTpyeDataLeaveMapDto: Prisma.typeLeaveDisabledMapUpdateArgs,
   ) {
     return this.tpyeDataLeaveMapService.update(+id, updateTpyeDataLeaveMapDto);
   }
