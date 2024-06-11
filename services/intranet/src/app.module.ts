@@ -17,6 +17,7 @@ import { MasterTypeLeaveModule } from './master-type-leave/master-type-leave.mod
 import { MasterHolidaysModule } from './master-holidays/master-holidays.module';
 import { MaTaskFilesModule } from './ma-task-files/ma-task-files.module';
 import { UserMapOrganizeModule } from './user-map-organize/user-map-organize.module';
+import { TpyeDataLeaveMapModule } from './tpye-data-leave-map/tpye-data-leave-map.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { UserMapOrganizeModule } from './user-map-organize/user-map-organize.mod
     MasterHolidaysModule,
     MaTaskFilesModule,
     UserMapOrganizeModule,
+    TpyeDataLeaveMapModule,
   ],
   controllers: [IntranetController],
   providers: [IntranetService],
