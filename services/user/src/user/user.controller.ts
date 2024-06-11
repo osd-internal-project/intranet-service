@@ -30,6 +30,7 @@ import { extname } from 'path';
 // import { config } from 'rxjs';
 import config from '../configs';
 import { Response } from 'express';
+import * as fs from 'fs';
 const pathMountDirUpload = config().pathMountDirUpload;
 @Controller('user')
 export class UserController {
@@ -175,6 +176,14 @@ export class UserController {
     @Param('userId') userId: string,
     @UploadedFiles() files: Express.Multer.File[],
   ) {
+    const { imageId } = await this.userService.findByUserId(userId);
+    const imagePath = join(`${pathMountDirUpload}users-image`, `${imageId}`);
+    if (imageId !== null) {
+      fs.unlink(imagePath, (err) => {
+        return err;
+      });
+      await this.userService.update(userId, { imageId: null });
+    }
     return this.userService.uploadImage(userId, files[0]);
   }
 
@@ -191,7 +200,6 @@ export class UserController {
         return null;
       }
       const imagePath = join(`${pathMountDirUpload}users-image`, `${imageId}`);
-      console.log(imagePath);
       res.sendFile(`${imagePath}`, { root: './' });
     } catch (error) {
       res
