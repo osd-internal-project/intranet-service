@@ -787,9 +787,10 @@ model maTask {
 
 model maTaskFiles {
     id        Int       @unique @default(autoincrement())
-    idfile    String?   @db.VarChar(200)
+    fileCode  String?   @map("file_code") @db.VarChar(200)
     path      String?   @db.VarChar(200)
-    namefile  String?   @db.VarChar(200)
+    fileName  String?   @map("file_name") @db.VarChar(200)
+    fileType  String?   @map("file_type") @db.VarChar(200)
     type      String?   @db.VarChar(10)
     createdAt DateTime  @default(now())
     updatedAt DateTime? @db.Timestamp()

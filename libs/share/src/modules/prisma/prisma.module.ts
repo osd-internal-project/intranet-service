@@ -57,6 +57,7 @@ import {
   //Room
   MasterRoomRepository,
   BookingRoomRepository,
+  MaTaskFilesRepository,
 } from 'src/repositories';
 
 const services = [
@@ -110,6 +111,7 @@ const services = [
   UserGroupMapRepository,
   //MA
   MaTaskRepository,
+  MaTaskFilesRepository,
   MaTypeRepository,
   // data Leave
   MasterTypeLeaveRepository,

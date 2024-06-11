@@ -48,7 +48,9 @@ export * from './userGroupMap.repository';
 export * from './userRole.repository';
 export * from './userRoleMap.repository';
 
+//MA
 export * from './maTask.repository';
+export * from './maTaskFiles.repository';
 export * from './maType.repository';
 
 // type data leave
