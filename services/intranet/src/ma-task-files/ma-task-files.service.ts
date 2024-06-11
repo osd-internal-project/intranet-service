@@ -14,7 +14,7 @@ export class MaTaskFilesService {
   }
 
   findOne(condition: Prisma.maTaskFilesFindFirstArgs) {
-    return this.maTaskFilesRepo.findAll(condition);
+    return this.maTaskFilesRepo.findOne(condition);
   }
   findMany(condition: Prisma.maTaskFilesFindManyArgs) {
     return this.maTaskFilesRepo.findAll(condition);

@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { MaTaskRepository } from '@inventory/share';
+import { MaTaskFilesRepository, MaTaskRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 @Injectable()
 export class MaTaskService {
-  constructor(private readonly maTaskRepo: MaTaskRepository) {}
+  constructor(
+    private readonly maTaskRepo: MaTaskRepository,
+    private readonly maTaskFilesRepo: MaTaskFilesRepository,
+  ) {}
   startOfDate(date: string) {
     const dateset = new Date(date).setUTCHours(0, 0, 0, 0);
     return new Date(dateset);
@@ -27,11 +30,26 @@ export class MaTaskService {
   findOne(condition: Prisma.maTaskFindFirstArgs) {
     return this.maTaskRepo.findOne(condition);
   }
-  findOneById(id: number) {
-    return this.maTaskRepo.findOne({
+  async findOneById(id: number) {
+    const task = await this.maTaskRepo.findOne({
       where: { id: id },
       include: { refTask: true, nextTask: true },
     });
+    const imageList = await this.maTaskFilesRepo.findMany({
+      where: {
+        maTaskId: task.id,
+        type: 'image',
+      },
+    });
+
+    // Fetch the draft posts
+    const fileList = await this.maTaskFilesRepo.findMany({
+      where: {
+        maTaskId: task.id,
+        type: 'attend',
+      },
+    });
+    return { ...task, fileList: fileList, imageList: imageList };
   }
   async findDataTable(query: any) {
     const { take, skip, typeid, maName, maDate, contact, maStatus } = query;

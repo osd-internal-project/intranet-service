@@ -9,15 +9,18 @@ import {
   UseInterceptors,
   UploadedFiles,
   Logger,
+  Query,
+  Res,
 } from '@nestjs/common';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { Response } from 'express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { MaTaskFilesService } from './ma-task-files.service';
 import { CreateMaTaskFileDto } from './dto/create-ma-task-file.dto';
 import { UpdateMaTaskFileDto } from './dto/update-ma-task-file.dto';
 import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import { Prisma } from '@prisma/client';
-import { extname } from 'path';
+import { extname, join } from 'path';
 @Controller('ma-task-files')
 export class MaTaskFilesController {
   constructor(private readonly maTaskFilesService: MaTaskFilesService) {}
@@ -40,15 +43,13 @@ export class MaTaskFilesController {
     @UploadedFiles() files: Express.Multer.File[],
     @Body('type') type,
   ) {
-    Logger.debug(id, type, files);
-    // Logger.debug(id, body, files);
     if (id && type && files.length > 0) {
       const data = {
         maTaskId: +id,
         path: files[0].path,
         type: type,
         fileCode: files[0].filename,
-        fileType: extname(files[0].path),
+        fileType: files[0].mimetype,
         fileName: files[0].originalname,
       } as Prisma.maTaskFilesCreateInput;
       return this.maTaskFilesService.create(data);
@@ -61,9 +62,22 @@ export class MaTaskFilesController {
   findMany(@Param() query: object) {
     return this.maTaskFilesService.findMany(query);
   }
-  @Get()
-  findAll() {
-    return this.maTaskFilesService.findAll();
+  @Get('/get-file/:id')
+  @UseInterceptors(FileInterceptor('files'))
+  async getfilesByFileName(@Param('id') id: string, @Res() res: Response) {
+    try {
+      const file = await this.maTaskFilesService.findOne({
+        where: { id: +id },
+      });
+      const filesPath = join(`${file.path}`);
+      console.log(filesPath);
+      res.sendFile(`${filesPath}`, { root: './' });
+    } catch (error) {
+      Logger.debug(error);
+      res
+        .status(404)
+        .sendFile('path/to/default/files.jpg', { root: './public' });
+    }
   }
 
   @Get(':id')
