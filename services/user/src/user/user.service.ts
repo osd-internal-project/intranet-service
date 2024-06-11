@@ -48,9 +48,6 @@ export class UserService {
   findOneByCondition(condition: Prisma.userFindFirstArgs) {
     condition = {
       ...condition,
-      include: {
-        masterPosition: true,
-      },
       orderBy: [
         {
           createdAt: 'asc',
@@ -59,14 +56,17 @@ export class UserService {
     };
     return this.userRepo.findOne(condition);
   }
+
   findByUsername(username: string) {
     const condition = { where: { username: username } } as Prisma.userArgs;
     return this.userRepo.findOne(condition);
   }
+
   findByUserId(userId: string) {
     const condition = { where: { userId: userId } } as Prisma.userArgs;
     return this.userRepo.findOne(condition);
   }
+
   async update(userId: string, data: Prisma.userUpdateInput) {
     const condition = {
       where: { userId: userId },
@@ -128,6 +128,17 @@ export class UserService {
         username: userDetails.username,
         password: pass,
         email: `${userDetails.username}@osd.co.th`,
+      },
+    });
+  }
+
+  async uploadImage(userId: string, files: Express.Multer.File) {
+    return this.userRepo.update({
+      where: {
+        userId: userId,
+      },
+      data: {
+        imageId: files.filename,
       },
     });
   }

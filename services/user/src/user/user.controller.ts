@@ -10,6 +10,10 @@ import {
   UseGuards,
   Param,
   Logger,
+  UseInterceptors,
+  UploadedFile,
+  UploadedFiles,
+  Res,
 } from '@nestjs/common';
 import { AuthGuard } from '@inventory/share';
 import { UserService } from './user.service';
@@ -18,6 +22,16 @@ import * as bcrypt from 'bcrypt';
 import { MasterRuleService } from 'src/master-rule/master-rule.service';
 import { ProfileRuleService } from 'src/profile-rule/profile-rule.service';
 import { UserRoleService } from 'src/user-role/user-role.service';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { v4 as uuidv4 } from 'uuid';
+import { join } from 'path';
+import { extname } from 'path';
+// import { config } from 'rxjs';
+import config from '../configs';
+import { Response } from 'express';
+import * as fs from 'fs';
+const pathMountDirUpload = config().pathMountDirUpload;
 @Controller('user')
 export class UserController {
   constructor(
@@ -145,9 +159,53 @@ export class UserController {
     return this.userService.findOneByCondition(condition);
   }
 
+  @Post('/upload-image/:userId')
+  @UseInterceptors(
+    FilesInterceptor('files', 1, {
+      storage: diskStorage({
+        destination: `${pathMountDirUpload}users-image`,
+        filename: (req, file, callback) => {
+          const fileCode = `${uuidv4()}`;
+          const fileType = extname(file.originalname);
+          callback(null, `${fileCode}${fileType}`);
+        },
+      }),
+    }),
+  )
+  async uploadImage(
+    @Param('userId') userId: string,
+    @UploadedFiles() files: Express.Multer.File[],
+  ) {
+    const { imageId } = await this.userService.findByUserId(userId);
+    const imagePath = join(`${pathMountDirUpload}users-image`, `${imageId}`);
+    if (imageId !== null) {
+      fs.unlink(imagePath, (err) => {
+        return err;
+      });
+      await this.userService.update(userId, { imageId: null });
+    }
+    return this.userService.uploadImage(userId, files[0]);
+  }
+
   @Get()
   findAll() {
     return this.userService.findAll();
+  }
+
+  @Get('/upload-image/:userId')
+  async getimage(@Param('userId') userId: any, @Res() res: Response) {
+    try {
+      const { imageId } = await this.userService.findByUserId(userId);
+      if (imageId === null) {
+        return null;
+      }
+      const imagePath = join(`${pathMountDirUpload}users-image`, `${imageId}`);
+      res.sendFile(`${imagePath}`, { root: './' });
+    } catch (error) {
+      res
+        .status(404)
+        .sendFile('path/to/default/image.jpg', { root: './public' });
+    }
   }
 
   @Post('set-defualt-admin')
