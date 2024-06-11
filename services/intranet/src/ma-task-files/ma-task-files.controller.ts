@@ -70,10 +70,8 @@ export class MaTaskFilesController {
         where: { id: +id },
       });
       const filesPath = join(`${file.path}`);
-      console.log(filesPath);
       res.sendFile(`${filesPath}`, { root: './' });
     } catch (error) {
-      Logger.debug(error);
       res
         .status(404)
         .sendFile('path/to/default/files.jpg', { root: './public' });

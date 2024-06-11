@@ -88,15 +88,16 @@ export class MaTaskService {
   }
 
   async findRangeEvent(query: any) {
-    const { maDate } = query;
+    const { start, end } = query;
     const data = await this.maTaskRepo.findMany({
       where: {
-        ...(maDate && {
-          maDate: {
-            gte: this.startOfDate(maDate[0]),
-            lte: this.endOfDate(maDate[1]),
-          },
-        }),
+        ...(start &&
+          end && {
+            maDate: {
+              gte: this.startOfDate(start),
+              lte: this.endOfDate(end),
+            },
+          }),
       },
       orderBy: [{ createdAt: 'desc' }],
     });
