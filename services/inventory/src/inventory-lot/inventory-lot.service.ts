@@ -136,9 +136,9 @@ export class InventoryLotService {
     return this.inventoryLotRepo.findMany(condition);
   }
 
-  async findBeforeExpired(departmentIdList: number[]) {
+  async findBeforeExpired(locationIdList: number[]) {
     const inventoryList = await this.inventoryRepo.findMany({
-      where: { locationId: { in: departmentIdList } },
+      where: { locationId: { in: locationIdList } },
     });
     const inventoryIdList = inventoryList.map((inv) => inv.id);
     const condition = {

@@ -130,8 +130,8 @@ export class LocationService {
 
   async remove(locationId: string, id: number) {
     const condition = { where: { id: id } } as Prisma.locationDeleteArgs;
-    const deleteDepartment = await this.locationRepo.delete(condition);
-    if (deleteDepartment) {
+    const deleteLocation = await this.locationRepo.delete(condition);
+    if (deleteLocation) {
       const conditioniamge = {
         where: { images_location: locationId },
       } as Prisma.imagesLocationDeleteManyArgs;
@@ -140,7 +140,7 @@ export class LocationService {
       );
       return deleteImage;
     }
-    return deleteDepartment;
+    return deleteLocation;
   }
 
   async removeImage(images_location: string) {

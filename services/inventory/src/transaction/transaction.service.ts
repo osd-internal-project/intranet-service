@@ -82,7 +82,7 @@ export class TransactionService {
     const transfer = (await data).map((d) => ({
       'CAS NO.': d.casNo,
       'PRODUCT NAME': d.productName,
-      DEPARTMENT: d.location,
+      LOCATION: d.location,
       INVENTORY: d.inventory,
       'CHEMICAL FORMULA': d.chemicalFormula,
       GROUP: d.groupName,

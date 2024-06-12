@@ -81,8 +81,8 @@ export class InventoryLotController {
   }
 
   @Post('find-before-expired')
-  findBeforeExpired(@Body('department') departmentIdList: number[]) {
-    return this.inventoryLotService.findBeforeExpired(departmentIdList);
+  findBeforeExpired(@Body('location') locationIdList: number[]) {
+    return this.inventoryLotService.findBeforeExpired(locationIdList);
   }
 
   @Post('count-before-expired')
