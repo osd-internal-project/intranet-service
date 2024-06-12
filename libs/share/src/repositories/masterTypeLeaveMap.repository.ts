@@ -47,10 +47,10 @@ export class MasterTypeLeaveMapRepository {
     return prisma.typeLeaveDisabledMap.update(data);
   }
   async delete(
-    condition: Prisma.typeLeaveDisabledMapDeleteArgs,
+    condition: Prisma.typeLeaveDisabledMapDeleteManyArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.typeLeaveDisabledMap.delete(condition);
+    return prisma.typeLeaveDisabledMap.deleteMany(condition);
   }
 }
