@@ -198,12 +198,12 @@ export class UserController {
     const { imageId } = await this.userService.findByUserId(userId);
     let imagePath;
     if (imageId === null) {
-      imagePath = join(`${pathMountDirUpload}users-image`, `default.jpg`);
+      imagePath = join(`${pathMountDirUpload}`, `emp-avatar.png`);
     } else {
       imagePath = join(`${pathMountDirUpload}users-image`, `${imageId}`);
     }
     if (!fs.existsSync(imagePath)) {
-      imagePath = join(`${pathMountDirUpload}users-image`, `default.jpg`);
+      imagePath = join(`${pathMountDirUpload}`, `emp-avatar.png`);
     }
     res.sendFile(`${imagePath}`, { root: './' });
   }
