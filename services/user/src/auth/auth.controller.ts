@@ -44,7 +44,13 @@ export class AuthController {
   @Post('login')
   async logIn(@Body() signInDto: Record<string, any>) {
     const condition = {
-      where: { username: signInDto.username, activeStatus: true },
+      where: {
+        username: signInDto.username,
+        activeStatus: true,
+        include: {
+          masterposition: true,
+        },
+      },
     } as Prisma.userFindFirstArgs;
 
     const createTokenAndReturn = async (user: any) => {
