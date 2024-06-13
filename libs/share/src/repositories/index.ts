@@ -60,3 +60,4 @@ export * from './masterHolidays.repository';
 export * from './masterRoom.repository';
 export * from './bookingRoom.repository';
 export * from './masterTypeLeaveMap.repository';
+export * from './dataLeave.repository';

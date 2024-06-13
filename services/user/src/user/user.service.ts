@@ -28,6 +28,7 @@ export class UserService {
     const condition = { data: data } as Prisma.userGroupMapCreateManyArgs;
     return this.userGroupMapRepo.createMany(condition);
   }
+
   findAll() {
     return this.userRepo.findAll();
   }
@@ -48,9 +49,6 @@ export class UserService {
   findOneByCondition(condition: Prisma.userFindFirstArgs) {
     condition = {
       ...condition,
-      include: {
-        masterPosition: true,
-      },
       orderBy: [
         {
           createdAt: 'asc',
@@ -80,12 +78,12 @@ export class UserService {
     } as Prisma.userUpdateArgs;
     return await this.userRepo.update(condition);
   }
+
   async updateRefreshToken(userId: string, refreshToken: string) {
     const condition = {
       where: { userId: userId },
       data: { refreshToken: refreshToken },
     } as Prisma.userUpdateArgs;
-    // Logger.warn(condition);
     return await this.userRepo.update(condition);
   }
 
@@ -135,7 +133,7 @@ export class UserService {
     });
   }
 
-  async uploadImage(userId: string, files: Express.Multer.File) {
+  async uploadImageV1(userId: string, files: Express.Multer.File) {
     return this.userRepo.update({
       where: {
         userId: userId,
