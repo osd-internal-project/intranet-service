@@ -8,8 +8,6 @@ import {
   Delete,
 } from '@nestjs/common';
 import { DataLeaveService } from './data-leave.service';
-import { CreateDataLeaveDto } from './dto/create-data-leave.dto';
-import { UpdateDataLeaveDto } from './dto/update-data-leave.dto';
 import { Prisma } from '@prisma/client';
 
 @Controller('data-leave')
@@ -17,8 +15,8 @@ export class DataLeaveController {
   constructor(private readonly dataLeaveService: DataLeaveService) {}
 
   @Post()
-  create(@Body() createDataLeaveDto: Prisma.dataLeaveCreateArgs) {
-    return this.dataLeaveService.create(createDataLeaveDto);
+  create(@Body('condition') condition: Prisma.dataLeaveCreateArgs) {
+    return this.dataLeaveService.create(condition);
   }
 
   @Post()

@@ -39,15 +39,15 @@ model dataLeave {
     typeId       Int?      @map("type_id") @db.Integer
     typeName     String?   @default("") @map("type_name") @db.VarChar(100)
     startDate    DateTime? @default(now()) @map("start_date") @db.Timestamp()
-    startTime    String?   @default("") @map("start_time") @db.VarChar(10)
+    startTime    String?   @map("start_time") @db.VarChar(10)
     endDate      DateTime? @default(now()) @map("end_date") @db.Timestamp()
-    endTime      String?   @default("") @map("end_time") @db.VarChar(10)
+    endTime      String?   @map("end_time") @db.VarChar(10)
     leaveHour    Int?      @default(0) @map("leave_hour") @db.Integer
     detail       String?   @default("") @map("detail") @db.Text
     phoneNumber  String    @default("") @map("phone_number") @db.VarChar(50)
     status       String?   @default("") @map("status") @db.VarChar(50)
-    approvedDate DateTime? @default(now()) @map("approved_date") @db.Timestamp()
-    userApproved String?   @default("") @map("user_approved") @db.VarChar(100)
+    approvedDate DateTime? @map("approved_date") @db.Timestamp()
+    userApproved String?   @map("user_approved") @db.VarChar(100)
     attrachFile  String?   @map("attrach_file") @db.VarChar(250)
     createdAt    DateTime? @default(now()) @map("created_at") @db.Timestamp()
     updatedAt    DateTime? @default(now()) @map("updated_at") @db.Timestamp()
