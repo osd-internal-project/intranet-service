@@ -29,7 +29,7 @@ export class MasterGhsTypeController {
   async getimage(@Query('image') image: any, @Res() res: Response) {
     try {
       const imagePath = join(
-        `${process.env.PATH_MOUNTDIR_IMAGES_GHS}`,
+        `${process.env.PATH_MOUNTDIR_UPLOAD}/ghs`,
         `${image}`,
       );
       res.sendFile(`${imagePath}`);
@@ -43,7 +43,7 @@ export class MasterGhsTypeController {
   @UseInterceptors(
     FilesInterceptor('images', 10, {
       storage: diskStorage({
-        destination: `${process.env.PATH_MOUNTDIR_IMAGES_GHS}`,
+        destination: `${process.env.PATH_MOUNTDIR_UPLOAD}/ghs`,
         filename: (req, file, callback) => {
           const filename = `${uuidv4()}}`;
           callback(null, filename);

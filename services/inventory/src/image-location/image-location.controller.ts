@@ -27,7 +27,7 @@ export class ImageLocationController {
   @UseInterceptors(
     FilesInterceptor('images', 10, {
       storage: diskStorage({
-        destination: `${process.env.PATH_MOUNTDIR_IMAGES}`,
+        destination: `${process.env.PATH_MOUNTDIR_UPLOAD}/location`,
         filename: (req, file, callback) => {
           const filename = `${uuidv4()}}`;
           callback(null, filename);

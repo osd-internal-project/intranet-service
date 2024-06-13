@@ -30,8 +30,11 @@ export class LocationController {
   @UseInterceptors(FileInterceptor('image'))
   async getimage(@Query('image') image: any, @Res() res: Response) {
     try {
-      const imagePath = join(`${process.env.PATH_MOUNTDIR_IMAGES}`, `${image}`);
-      res.sendFile(`${imagePath}`);
+      const imagePath = join(
+        `${process.env.PATH_MOUNTDIR_UPLOAD}/location`,
+        `${image}`,
+      );
+      res.sendFile(`${imagePath}`, { root: './' });
     } catch (error) {
       res
         .status(404)
@@ -42,7 +45,7 @@ export class LocationController {
   @UseInterceptors(
     FilesInterceptor('images', 10, {
       storage: diskStorage({
-        destination: `${process.env.PATH_MOUNTDIR_IMAGES}`,
+        destination: `${process.env.PATH_MOUNTDIR_UPLOAD}/location`,
         filename: (req, file, callback) => {
           const filename = `${uuidv4()}`;
           callback(null, filename);
