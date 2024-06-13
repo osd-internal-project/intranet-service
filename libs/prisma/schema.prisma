@@ -51,6 +51,8 @@ model dataLeave {
     attrachFile  String?   @map("attrach_file") @db.VarChar(250)
     createdAt    DateTime? @default(now()) @map("created_at") @db.Timestamp()
     updatedAt    DateTime? @default(now()) @map("updated_at") @db.Timestamp()
+
+    @@map("data_leave")
 }
 
 model fileRecieve {
