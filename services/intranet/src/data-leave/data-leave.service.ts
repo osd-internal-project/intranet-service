@@ -1,14 +1,14 @@
+import { DataLeaveRepository } from '@inventory/share';
 import { Injectable } from '@nestjs/common';
-import { CreateDataLeaveDto } from './dto/create-data-leave.dto';
-import { UpdateDataLeaveDto } from './dto/update-data-leave.dto';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class DataLeaveService {
-  create(createDataLeaveDto: CreateDataLeaveDto) {
-    return 'This action adds a new dataLeave';
-  }
+  constructor(private readonly dataleaveRepo: DataLeaveRepository) {}
 
+  async create(condition: Prisma.dataLeaveCreateArgs) {
+    return await this.dataleaveRepo.create(condition);
+  }
   findAll() {
     return `This action returns all dataLeave`;
   }

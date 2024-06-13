@@ -103,7 +103,7 @@ export class InventoryLotController {
         `${process.env.PATH_MOUNTDIR_UPLOAD}/file-recieve`,
         `${data.idfile}`,
       );
-      res.sendFile(`${filesPath}`);
+      res.sendFile(`${filesPath}`, { root: './' });
     } catch (error) {
       res
         .status(404)
