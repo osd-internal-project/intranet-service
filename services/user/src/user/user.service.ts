@@ -133,7 +133,7 @@ export class UserService {
     });
   }
 
-  async uploadImageV1(userId: string, files: Express.Multer.File) {
+  async uploadImags(userId: string, files: Express.Multer.File) {
     return this.userRepo.update({
       where: {
         userId: userId,
