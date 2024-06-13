@@ -185,7 +185,7 @@ export class UserController {
       });
       await this.userService.update(userId, { imageId: null });
     }
-    return this.userService.uploadImage(userId, files[0]);
+    return this.userService.uploadImags(userId, files[0]);
   }
 
   @Get()
