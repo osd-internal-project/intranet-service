@@ -46,7 +46,7 @@ import {
   RoleProfileMapRepository,
   UserGroupRepository,
   UserGroupMapRepository,
-  UserRepository,
+  UsersRepository,
   UserRoleRepository,
   UserRoleMapRepository,
   //MA
@@ -109,7 +109,7 @@ const services = [
   RoleProfileMapRepository,
   UserRoleRepository,
   UserRoleMapRepository,
-  UserRepository,
+  UsersRepository,
   VenderRepository,
   UserGroupRepository,
   UserGroupMapRepository,

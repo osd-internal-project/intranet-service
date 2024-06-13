@@ -4,53 +4,53 @@ import { TQueryClient } from '../modules/prisma/types';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
-export class UserRepository {
+export class UsersRepository {
   constructor(private prisma: PrismaService) {}
 
   async findAll(option?: { prisma?: TQueryClient }) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.user.findMany();
+    return prisma.users.findMany();
   }
   async findByCondition(
-    condition: Prisma.userFindFirstArgsBase,
+    condition: Prisma.usersFindFirstArgsBase,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.user.findMany(condition);
+    return prisma.users.findMany(condition);
   }
   async findOne(
-    condition: Prisma.userFindFirstArgsBase,
+    condition: Prisma.usersFindFirstArgsBase,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.user.findFirst(condition);
+    return prisma.users.findFirst(condition);
   }
   async create(
-    condition: Prisma.userCreateArgs,
+    condition: Prisma.usersCreateArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.user.create(condition);
+    return prisma.users.create(condition);
   }
   async createMany(
-    data: Prisma.userCreateManyArgs,
+    data: Prisma.usersCreateManyArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.user.createMany(data);
+    return prisma.users.createMany(data);
   }
   async update(
-    data: Prisma.userUpdateArgs,
+    data: Prisma.usersUpdateArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.user.update(data);
+    return prisma.users.update(data);
   }
   async delete(
-    condition: Prisma.userDeleteArgs,
+    condition: Prisma.usersDeleteArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.user.delete(condition);
+    return prisma.users.delete(condition);
   }
 }

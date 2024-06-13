@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import {
-  UserRepository,
+  UsersRepository,
   UserGroupMapRepository,
   UserRoleMapRepository,
 } from '@inventory/share';
@@ -10,14 +10,14 @@ import * as bcrypt from 'bcrypt';
 export class UserService {
   usersService: any;
   constructor(
-    private userRepo: UserRepository,
+    private usersRepo: UsersRepository,
     private userRoleMapRepo: UserRoleMapRepository,
     private userGroupMapRepo: UserGroupMapRepository,
   ) {}
 
-  create(data: Prisma.userCreateInput) {
-    const condition = { data: data } as Prisma.userCreateArgs;
-    return this.userRepo.create(condition);
+  create(data: Prisma.usersCreateInput) {
+    const condition = { data: data } as Prisma.usersCreateArgs;
+    return this.usersRepo.create(condition);
   }
   async createUserRoleMapByUserId(data: Prisma.userRoleMapCreateManyInput[]) {
     const condition = { data: data } as Prisma.userRoleMapCreateManyArgs;
@@ -30,10 +30,10 @@ export class UserService {
   }
 
   findAll() {
-    return this.userRepo.findAll();
+    return this.usersRepo.findAll();
   }
 
-  findByCondition(condition: Prisma.userFindManyArgs) {
+  findByCondition(condition: Prisma.usersFindManyArgs) {
     condition = {
       ...condition,
       orderBy: [
@@ -43,10 +43,10 @@ export class UserService {
       ],
     };
 
-    return this.userRepo.findByCondition(condition);
+    return this.usersRepo.findByCondition(condition);
   }
 
-  findOneByCondition(condition: Prisma.userFindFirstArgs) {
+  findOneByCondition(condition: Prisma.usersFindFirstArgs) {
     condition = {
       ...condition,
       orderBy: [
@@ -55,42 +55,42 @@ export class UserService {
         },
       ],
     };
-    return this.userRepo.findOne(condition);
+    return this.usersRepo.findOne(condition);
   }
 
   findByUsername(username: string) {
-    const condition = { where: { username: username } } as Prisma.userArgs;
-    return this.userRepo.findOne(condition);
+    const condition = { where: { username: username } } as Prisma.usersArgs;
+    return this.usersRepo.findOne(condition);
   }
 
   findByUserId(userId: string) {
-    const condition = { where: { userId: userId } } as Prisma.userArgs;
-    return this.userRepo.findOne(condition);
+    const condition = { where: { userId: userId } } as Prisma.usersArgs;
+    return this.usersRepo.findOne(condition);
   }
 
-  async update(userId: string, data: Prisma.userUpdateInput) {
+  async update(userId: string, data: Prisma.usersUpdateInput) {
     const condition = {
       where: { userId: userId },
       data: {
         ...data,
         updatedAt: new Date(),
       },
-    } as Prisma.userUpdateArgs;
-    return await this.userRepo.update(condition);
+    } as Prisma.usersUpdateArgs;
+    return await this.usersRepo.update(condition);
   }
 
   async updateRefreshToken(userId: string, refreshToken: string) {
     const condition = {
       where: { userId: userId },
       data: { refreshToken: refreshToken },
-    } as Prisma.userUpdateArgs;
-    return await this.userRepo.update(condition);
+    } as Prisma.usersUpdateArgs;
+    return await this.usersRepo.update(condition);
   }
 
   async remove(userId: string) {
-    const condition = { where: { userId: userId } } as Prisma.userDeleteArgs;
+    const condition = { where: { userId: userId } } as Prisma.usersDeleteArgs;
     console.log(condition);
-    return await this.userRepo.delete(condition);
+    return await this.usersRepo.delete(condition);
   }
 
   async removeUserRoleMapByUserId(userId: string) {
@@ -111,7 +111,7 @@ export class UserService {
     const saltOrRounds = 10;
     const hashedPassword = await bcrypt.hash('P@ssw0rd', saltOrRounds);
     const pass = hashedPassword;
-    return this.userRepo.create({
+    return this.usersRepo.create({
       data: {
         username: 'admin',
         password: pass,
@@ -124,7 +124,7 @@ export class UserService {
     const saltOrRounds = 10;
     const hashedPassword = await bcrypt.hash('P@ssw0rd', saltOrRounds);
     const pass = hashedPassword;
-    return this.userRepo.create({
+    return this.usersRepo.create({
       data: {
         username: userDetails.username,
         password: pass,
@@ -134,7 +134,7 @@ export class UserService {
   }
 
   async uploadImags(userId: string, files: Express.Multer.File) {
-    return this.userRepo.update({
+    return this.usersRepo.update({
       where: {
         userId: userId,
       },

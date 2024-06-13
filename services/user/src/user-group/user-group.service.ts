@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { UserGroupRepository, UserRepository } from '@inventory/share';
+import { UserGroupRepository, UsersRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class UserGroupService {
   constructor(
     private userGroupRepo: UserGroupRepository,
-    private userRepo: UserRepository,
+    private usersRepo: UsersRepository,
   ) {}
 
   create(data: Prisma.userGroupCreateInput) {
@@ -45,7 +45,7 @@ export class UserGroupService {
   }
 
   findUserByGropId(groupId: string) {
-    return this.userRepo.findByCondition({ where: { ownerGroupId: groupId } });
+    return this.usersRepo.findByCondition({ where: { ownerGroupId: groupId } });
   }
 
   async update(groupId: string, data: Prisma.userGroupUpdateInput) {

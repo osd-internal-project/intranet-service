@@ -51,7 +51,7 @@ export class AuthController {
       include: {
         masterPosition: true,
       },
-    } as Prisma.userFindFirstArgs;
+    } as Prisma.usersFindFirstArgs;
 
     const createTokenAndReturn = async (user: any) => {
       const {

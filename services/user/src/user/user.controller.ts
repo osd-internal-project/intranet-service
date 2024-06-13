@@ -27,11 +27,10 @@ import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import { join } from 'path';
 import { extname } from 'path';
-// import { config } from 'rxjs';
 import config from '../configs';
 import { Response } from 'express';
 import * as fs from 'fs';
-import { error } from 'console';
+
 const pathMountDirUpload = config().pathMountDirUpload;
 @Controller('user')
 export class UserController {
@@ -51,7 +50,7 @@ export class UserController {
   // }
 
   @Post()
-  async create(@Body('data') data: Prisma.userCreateInput) {
+  async create(@Body('data') data: Prisma.usersCreateInput) {
     const checkuser = await this.userService.findOneByCondition({
       where: {
         username: data.username.trim(),
@@ -76,18 +75,18 @@ export class UserController {
 
   @Post('condition')
   @UseGuards(AuthGuard)
-  findByCondition(@Body('condition') condition: Prisma.userFindManyArgs) {
+  findByCondition(@Body('condition') condition: Prisma.usersFindManyArgs) {
     return this.userService.findByCondition(condition);
   }
   @Post('condition-first')
-  findOneByCondition(@Body('condition') condition: Prisma.userFindManyArgs) {
+  findOneByCondition(@Body('condition') condition: Prisma.usersFindManyArgs) {
     return this.userService.findOneByCondition(condition);
   }
 
   @Patch()
   update(
     @Body('userId') userId: string,
-    @Body('data') data: Prisma.userUpdateInput,
+    @Body('data') data: Prisma.usersUpdateInput,
   ) {
     return this.userService.update(userId, data);
   }
@@ -128,7 +127,7 @@ export class UserController {
       );
       const ownerCondition = {
         ownerGroupId: ownerGroupId,
-      } as Prisma.userUpdateInput;
+      } as Prisma.usersUpdateInput;
       await this.userService.update(userId, ownerCondition);
 
       const mapGroup = group.map((item) => ({
@@ -156,7 +155,7 @@ export class UserController {
         },
         username: username.trim(),
       },
-    } as Prisma.userFindFirstArgs;
+    } as Prisma.usersFindFirstArgs;
     return this.userService.findOneByCondition(condition);
   }
 
