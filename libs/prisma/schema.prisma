@@ -31,7 +31,7 @@ model contact {
 
 model dataLeave {
     id           Int       @unique @default(autoincrement()) @map("id")
-    userId       Int?      @map("user_id") @db.Integer
+    userId       String?   @map("user_id") @db.VarChar(100)
     firstName    String?   @default("") @map("first_name") @db.VarChar(100)
     lastName     String?   @default("") @map("last_name") @db.VarChar(100)
     positionId   Int?      @map("position_id") @db.Integer
@@ -48,6 +48,9 @@ model dataLeave {
     status       String?   @default("") @map("status") @db.VarChar(50)
     approvedDate DateTime? @default(now()) @map("approved_date") @db.Timestamp()
     userApproved String?   @default("") @map("user_approved") @db.VarChar(100)
+    attrachFile  String?   @map("attrach_file") @db.VarChar(250)
+    createdAt    DateTime? @default(now()) @map("created_at") @db.Timestamp()
+    updatedAt    DateTime? @default(now()) @map("updated_at") @db.Timestamp()
 }
 
 model fileRecieve {
