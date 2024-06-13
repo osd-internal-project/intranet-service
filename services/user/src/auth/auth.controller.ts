@@ -47,9 +47,6 @@ export class AuthController {
       where: {
         username: signInDto.username,
         activeStatus: true,
-        include: {
-          masterposition: true,
-        },
       },
     } as Prisma.userFindFirstArgs;
 
