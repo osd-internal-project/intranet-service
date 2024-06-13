@@ -31,6 +31,7 @@ import { extname } from 'path';
 import config from '../configs';
 import { Response } from 'express';
 import * as fs from 'fs';
+import { error } from 'console';
 const pathMountDirUpload = config().pathMountDirUpload;
 @Controller('user')
 export class UserController {
@@ -194,18 +195,17 @@ export class UserController {
 
   @Get('/upload-image/:userId')
   async getimage(@Param('userId') userId: any, @Res() res: Response) {
-    try {
-      const { imageId } = await this.userService.findByUserId(userId);
-      if (imageId === null) {
-        return null;
-      }
-      const imagePath = join(`${pathMountDirUpload}users-image`, `${imageId}`);
-      res.sendFile(`${imagePath}`, { root: './' });
-    } catch (error) {
-      res
-        .status(404)
-        .sendFile('path/to/default/image.jpg', { root: './public' });
+    const { imageId } = await this.userService.findByUserId(userId);
+    let imagePath;
+    if (imageId === null) {
+      imagePath = join(`${pathMountDirUpload}users-image`, `default.jpg`);
+    } else {
+      imagePath = join(`${pathMountDirUpload}users-image`, `${imageId}`);
     }
+    if (!fs.existsSync(imagePath)) {
+      imagePath = join(`${pathMountDirUpload}users-image`, `default.jpg`);
+    }
+    res.sendFile(`${imagePath}`, { root: './' });
   }
 
   @Post('set-defualt-admin')
