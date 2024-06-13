@@ -48,6 +48,9 @@ export class AuthController {
         username: signInDto.username,
         activeStatus: true,
       },
+      include: {
+        masterPosition: true,
+      },
     } as Prisma.userFindFirstArgs;
 
     const createTokenAndReturn = async (user: any) => {
