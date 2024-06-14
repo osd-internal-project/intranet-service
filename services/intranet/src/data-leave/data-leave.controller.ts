@@ -19,8 +19,8 @@ export class DataLeaveController {
     return this.dataLeaveService.create(condition);
   }
 
-  @Post()
-  findMany(@Body('condition') condition: Prisma.dataLeaveFindFirstArgs) {
+  @Post('condition')
+  findMany(@Body('condition') condition: Prisma.dataLeaveFindManyArgs) {
     return this.dataLeaveService.findMany(condition);
   }
 
