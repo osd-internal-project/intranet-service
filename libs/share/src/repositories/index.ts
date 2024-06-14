@@ -69,3 +69,4 @@ export * from './publicizeSlideImages.repository';
 export * from './customerDetail.repository';
 export * from './customerFiles.repository';
 export * from './customerGroup.repository';
+export * from './dataLeaveFiles.repository';

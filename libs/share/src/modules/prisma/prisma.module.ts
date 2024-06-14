@@ -57,6 +57,7 @@ import {
   MasterHolidaysRepository,
   MasterTypeLeaveMapRepository,
   DataLeaveRepository,
+  dataLeaveFilesRepository,
   //Room
   MasterRoomRepository,
   BookingRoomRepository,
@@ -125,6 +126,7 @@ const services = [
   MasterHolidaysRepository,
   MasterTypeLeaveMapRepository,
   DataLeaveRepository,
+  dataLeaveFilesRepository,
   //Room
   MasterRoomRepository,
   BookingRoomRepository,

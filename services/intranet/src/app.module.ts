@@ -20,6 +20,7 @@ import { UserMapOrganizeModule } from './user-map-organize/user-map-organize.mod
 import { TpyeDataLeaveMapModule } from './tpye-data-leave-map/tpye-data-leave-map.module';
 import { DataLeaveModule } from './data-leave/data-leave.module';
 import { PublicizeSlideImagesModule } from './publicize-slide-images/publicize-slide-images.module';
+import { DataLeaveFileModule } from './data-leave-file/data-leave-file.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { PublicizeSlideImagesModule } from './publicize-slide-images/publicize-s
     TpyeDataLeaveMapModule,
     DataLeaveModule,
     PublicizeSlideImagesModule,
+    DataLeaveFileModule,
   ],
   controllers: [IntranetController],
   providers: [IntranetService],
