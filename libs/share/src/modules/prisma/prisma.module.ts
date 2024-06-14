@@ -61,8 +61,8 @@ import {
   MasterRoomRepository,
   BookingRoomRepository,
   MaTaskFilesRepository,
+  PublicizeSlideImagesRepository,
 } from 'src/repositories';
-
 const services = [
   PrismaService,
   BrandRepository,
@@ -125,6 +125,8 @@ const services = [
   //Room
   MasterRoomRepository,
   BookingRoomRepository,
+  //publicize
+  PublicizeSlideImagesRepository,
 ];
 @Module({
   providers: [...services],

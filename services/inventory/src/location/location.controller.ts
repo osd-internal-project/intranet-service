@@ -91,7 +91,7 @@ export class LocationController {
 
   @Delete()
   remove(@Body('locationId') locationId: string, @Body('id') id: number) {
-    return this.locationService.remove(locationId, id);
+    return this.locationService.remove(+locationId, id);
   }
   @Delete('/delete-image')
   removeImage(@Body('images_location') images_location: string) {

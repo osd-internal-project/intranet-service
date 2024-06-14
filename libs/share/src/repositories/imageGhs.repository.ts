@@ -11,7 +11,20 @@ export class ImageGhsRepository {
     const prisma = option?.prisma ?? this.prisma;
     return prisma.imagesGhs.findMany();
   }
-
+  async findMany(
+    condition: Prisma.imagesGhsFindFirstArgsBase,
+    option?: { prisma?: TQueryClient },
+  ) {
+    const prisma = option?.prisma ?? this.prisma;
+    return prisma.imagesGhs.findMany(condition);
+  }
+  async findOne(
+    condition: Prisma.imagesGhsFindFirstArgsBase,
+    option?: { prisma?: TQueryClient },
+  ) {
+    const prisma = option?.prisma ?? this.prisma;
+    return prisma.imagesGhs.findFirst(condition);
+  }
   async create(
     condition: Prisma.imagesGhsCreateArgs,
     option?: { prisma?: TQueryClient },
