@@ -42,7 +42,7 @@ model dataLeave {
     startTime    String?   @map("start_time") @db.VarChar(10)
     endDate      DateTime? @default(now()) @map("end_date") @db.Timestamp()
     endTime      String?   @map("end_time") @db.VarChar(10)
-    leaveHour    Int?      @default(0) @map("leave_hour") @db.Integer
+    leaveHour    Float?    @default(0.00) @map("leave_hour")
     detail       String?   @default("") @map("detail") @db.Text
     phoneNumber  String    @default("") @map("phone_number") @db.VarChar(50)
     status       String?   @default("") @map("status") @db.VarChar(50)
