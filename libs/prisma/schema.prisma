@@ -758,7 +758,7 @@ model userGroup {
     parentGroupId             String?                     @map("parent_group_id") @db.VarChar(50)
     userGroup                 userGroup[]                 @relation("ChildGroup")
     userGroupMap              userGroupMap[]
-    organized                 organized?                  @relation(fields: [organizedGroupId], references: [organizedId])
+    organized                 organized?                  @relation(fields: [organizedGroupId], references: [organizedId], onDelete: Cascade)
     organizedGroupId          String?                     @map("organized_group_id")
     description               String                      @default("") @map("description") @db.Text
     locationUserGroupMap      locationUserGroupMap[]

@@ -163,7 +163,7 @@ export class UserController {
   @UseInterceptors(
     FilesInterceptor('files', 1, {
       storage: diskStorage({
-        destination: `${pathMountDirUpload}users-image`,
+        destination: `${pathMountDirUpload}/users-image`,
         filename: (req, file, callback) => {
           const fileCode = `${uuidv4()}`;
           const fileType = extname(file.originalname);
@@ -177,7 +177,7 @@ export class UserController {
     @UploadedFiles() files: Express.Multer.File[],
   ) {
     const { imageId } = await this.userService.findByUserId(userId);
-    const imagePath = join(`${pathMountDirUpload}users-image`, `${imageId}`);
+    const imagePath = join(`${pathMountDirUpload}/users-image`, `${imageId}`);
     if (imageId !== null) {
       fs.unlink(imagePath, (err) => {
         return err;
@@ -199,7 +199,7 @@ export class UserController {
     if (imageId === null) {
       imagePath = join(`${pathMountDirUpload}`, `emp-avatar.png`);
     } else {
-      imagePath = join(`${pathMountDirUpload}users-image`, `${imageId}`);
+      imagePath = join(`${pathMountDirUpload}/users-image`, `${imageId}`);
     }
     if (!fs.existsSync(imagePath)) {
       imagePath = join(`${pathMountDirUpload}`, `emp-avatar.png`);

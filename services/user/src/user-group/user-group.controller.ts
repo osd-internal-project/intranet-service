@@ -15,13 +15,18 @@ export class UserGroupController {
   constructor(private readonly userGroupService: UserGroupService) {}
 
   @Post()
-  create(@Body('data') data: Prisma.userGroupCreateInput) {
+  create(@Body('data') data: any) {
     return this.userGroupService.create(data);
   }
 
   @Get()
   findAll() {
     return this.userGroupService.findAll();
+  }
+
+  @Get(':organizeid')
+  findByOrganizeId(@Param('organizeid') organizeId: string) {
+    return this.userGroupService.findByOrganizeId(organizeId);
   }
 
   @Post('condition')
