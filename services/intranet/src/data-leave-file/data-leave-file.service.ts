@@ -5,8 +5,8 @@ import { Prisma } from '@prisma/client';
 @Injectable()
 export class DataLeaveFileService {
   constructor(private readonly dataleavefilesRepo: dataLeaveFilesRepository) {}
-  create(condition: Prisma.dataLeaveFilesCreateArgs) {
-    return 'This action adds a new dataLeaveFile';
+  create(condition: Prisma.dataLeaveFilesCreateInput) {
+    return this.dataleavefilesRepo.create({ data: condition });
   }
 
   findAll() {
@@ -17,8 +17,8 @@ export class DataLeaveFileService {
     return `This action returns all dataLeaveFile`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} dataLeaveFile`;
+  findOne(condition: Prisma.dataLeaveFilesFindFirstArgs) {
+    return this.dataleavefilesRepo.findOne(condition);
   }
 
   update(condition: Prisma.dataLeaveFilesUpdateArgs) {
