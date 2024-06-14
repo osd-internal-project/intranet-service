@@ -64,3 +64,8 @@ export * from './dataLeave.repository';
 
 //News
 export * from './publicizeSlideImages.repository';
+
+//CRM
+export * from './customerDetail.repository';
+export * from './customerFiles.repository';
+export * from './customerGroup.repository';

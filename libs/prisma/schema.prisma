@@ -877,8 +877,8 @@ model maTaskFiles {
     fileName  String?   @map("file_name") @db.VarChar(200)
     fileType  String?   @map("file_type") @db.VarChar(200)
     type      String?   @db.VarChar(10)
-    createdAt DateTime  @default(now())
-    updatedAt DateTime? @db.Timestamp()
+    createdAt DateTime  @default(now()) @map("created_at")
+    updatedAt DateTime? @map("updated_at") @db.Timestamp()
     maTask    maTask?   @relation(fields: [maTaskId], references: [id])
     maTaskId  Int?      @map("ma_task_id")
 
@@ -975,7 +975,7 @@ model userMapOrganizeChart {
 }
 
 //CRM 
-model customers {
+model customerDetail {
     //detail
     id                 Int       @unique @default(autoincrement()) @map("id")
     customerCode       String    @map("customer_code") @db.VarChar(50)
@@ -1052,36 +1052,36 @@ model customers {
     updatedByName String?   @map("updated_by_name") @db.VarChar(255)
     ownerGroup    String?   @map("owner_group") @db.VarChar(50)
 
-    branchStatus   String           @map("branch_status") @db.VarChar(10)
-    mainBranchId   Int?             @map("main_branch_id")
-    mainBranch     customers?       @relation("branchRelation", fields: [mainBranchId], references: [id])
-    branch         customers[]      @relation("branchRelation")
-    customersFiles customersFiles[]
+    branchStatus  String           @map("branch_status") @db.VarChar(10)
+    mainBranchId  Int?             @map("main_branch_id")
+    mainBranch    customerDetail?  @relation("branchRelation", fields: [mainBranchId], references: [id])
+    branch        customerDetail[] @relation("branchRelation")
+    customerFiles customerFiles[]
 
-    @@map("customers")
+    @@map("customer_detail")
 }
 
-model customersFiles {
-    id         Int        @unique @default(autoincrement())
-    fileCode   String?    @map("file_code") @db.VarChar(200)
-    path       String?    @db.VarChar(200)
-    fileName   String?    @map("file_name") @db.VarChar(200)
-    fileType   String?    @map("file_type") @db.VarChar(200)
-    type       String?    @db.VarChar(10)
-    createdAt  DateTime   @default(now())
-    updatedAt  DateTime?  @db.Timestamp()
-    customers  customers? @relation(fields: [customerId], references: [id])
-    customerId Int?       @map("customer_id")
+model customerFiles {
+    id             Int             @unique @default(autoincrement())
+    fileCode       String?         @map("file_code") @db.VarChar(200)
+    path           String?         @db.VarChar(200)
+    fileName       String?         @map("file_name") @db.VarChar(200)
+    fileType       String?         @map("file_type") @db.VarChar(200)
+    type           String?         @db.VarChar(10)
+    createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamp()
+    updatedAt      DateTime?       @map("updated_at") @db.Timestamp()
+    customerDetail customerDetail? @relation(fields: [customerId], references: [id])
+    customerId     Int?            @map("customer_id")
 
     @@map("customers_files")
 }
 
-model customersGroup {
+model customerGroup {
     id           Int      @unique @default(autoincrement()) @map("id")
     name         String   @map("name") @db.VarChar(255)
     activeStatus Boolean  @map("active_status") @db.Boolean
     createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz()
     updatedAt    DateTime @default(now()) @map("updated_at") @db.Timestamptz()
 
-    @@map("customers_group")
+    @@map("customer_group")
 }
