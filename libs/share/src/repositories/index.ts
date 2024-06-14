@@ -29,6 +29,8 @@ export * from './department.repository';
 export * from './organizeChart.repository';
 export * from './userMapOrganize.repository';
 export * from './userGroupUserRoleMap.repository';
+export * from './userMapOrganizeGroup.repository';
+export * from './userMapOrganizeGroupOwner.repository';
 
 export * from './masterUnit.repository';
 export * from './location.repository';

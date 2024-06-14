@@ -3,6 +3,8 @@ import {
   UsersRepository,
   UserGroupMapRepository,
   UserRoleMapRepository,
+  UserMapOrganizeGroupRepository,
+  UserMapOrganizeGroupOwnerRepository,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
@@ -13,6 +15,8 @@ export class UserService {
     private usersRepo: UsersRepository,
     private userRoleMapRepo: UserRoleMapRepository,
     private userGroupMapRepo: UserGroupMapRepository,
+    private userMapOrganizeGroupRepo: UserMapOrganizeGroupRepository,
+    private userMapOrganizeGroupOwnerRepo: UserMapOrganizeGroupOwnerRepository,
   ) {}
 
   create(data: Prisma.usersCreateInput) {
@@ -141,6 +145,61 @@ export class UserService {
       data: {
         imageId: files.filename,
       },
+    });
+  }
+
+  async assignGroups(
+    userId: string,
+    assignGroup: {
+      organizeId?: string;
+      groups?: string[];
+    },
+  ) {
+    await this.userMapOrganizeGroupRepo.deleteMany({
+      where: { usersId: userId, organizedId: assignGroup.organizeId },
+    });
+
+    const dataCreate = assignGroup.groups.map((item: string) => {
+      return {
+        usersId: userId,
+        organizedId: assignGroup.organizeId,
+        groupId: item,
+      };
+    });
+
+    return this.userMapOrganizeGroupRepo.createMany({
+      data: dataCreate,
+    });
+  }
+
+  async assignOwnerGroups(
+    userId: string,
+    assignOwnerGroup: {
+      organizeId?: string;
+      groupOwnerId?: string;
+    },
+  ) {
+    await this.userMapOrganizeGroupOwnerRepo.deleteMany({
+      where: { usersId: userId, organizedId: assignOwnerGroup.organizeId },
+    });
+    return this.userMapOrganizeGroupOwnerRepo.create({
+      data: {
+        usersId: userId,
+        organizedId: assignOwnerGroup.organizeId,
+        ownerGroupId: assignOwnerGroup.groupOwnerId,
+      },
+    });
+  }
+
+  findAssignGroups(userId: string, organizeId: string) {
+    return this.userMapOrganizeGroupRepo.findMany({
+      where: { usersId: userId, organizedId: organizeId },
+    });
+  }
+
+  findAssignOwnerGroups(userId: string, organizeId: string) {
+    return this.userMapOrganizeGroupOwnerRepo.findOne({
+      where: { usersId: userId, organizedId: organizeId },
     });
   }
 }
