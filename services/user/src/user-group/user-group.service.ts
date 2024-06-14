@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {
   OrganizedRepository,
   UserGroupRepository,
+  UserGroupUserRoleMapRepository,
   UsersRepository,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
@@ -12,6 +13,7 @@ export class UserGroupService {
     private userGroupRepo: UserGroupRepository,
     private usersRepo: UsersRepository,
     private organizedRepo: OrganizedRepository,
+    private userGroupUserRoleMapRepo: UserGroupUserRoleMapRepository,
   ) {}
 
   create(data: any) {
@@ -68,10 +70,32 @@ export class UserGroupService {
     return this.usersRepo.findByCondition({ where: { ownerGroupId: groupId } });
   }
 
-  async update(groupId: string, data: Prisma.userGroupUpdateInput) {
+  async update(
+    groupId: string,
+    data: {
+      groupId: string;
+      groupName: string;
+      description?: string;
+      userRole: string[];
+    },
+  ) {
+    await this.userGroupUserRoleMapRepo.deleteMany({
+      where: { userGroupId: groupId },
+    });
+    await this.userGroupUserRoleMapRepo.createMany({
+      data: data.userRole.map((item: string) => ({
+        userGroupId: groupId,
+        roleId: item,
+      })),
+    });
+
     const condition = {
       where: { groupId: groupId },
-      data: { ...data, updatedAt: new Date() },
+      data: {
+        groupName: data.groupName,
+        description: data.description,
+        updatedAt: new Date(),
+      },
     } as Prisma.userGroupUpdateArgs;
     return await this.userGroupRepo.update(condition);
   }
