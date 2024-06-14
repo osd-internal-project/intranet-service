@@ -29,28 +29,44 @@ model contact {
     venderID     String? @map("vender_id")
 }
 
+model dataLeaveFiles {
+    id          Int        @unique @default(autoincrement())
+    fileCode    String?    @map("file_code") @db.VarChar(200)
+    path        String?    @db.VarChar(200)
+    fileName    String?    @map("file_name") @db.VarChar(200)
+    fileType    String?    @map("file_type") @db.VarChar(200)
+    type        String?    @db.VarChar(10)
+    createdAt   DateTime   @default(now())
+    updatedAt   DateTime?  @db.Timestamp()
+    dataLeave   dataLeave? @relation(fields: [dataLeaveId], references: [id])
+    dataLeaveId Int?       @map("data_leave_id")
+
+    @@map("data_leave_file")
+}
+
 model dataLeave {
-    id           Int       @unique @default(autoincrement()) @map("id")
-    userId       String?   @map("user_id") @db.VarChar(100)
-    firstName    String?   @default("") @map("first_name") @db.VarChar(100)
-    lastName     String?   @default("") @map("last_name") @db.VarChar(100)
-    positionId   Int?      @map("position_id") @db.Integer
-    position     String?   @default("") @map("position") @db.VarChar(100)
-    typeId       Int?      @map("type_id") @db.Integer
-    typeName     String?   @default("") @map("type_name") @db.VarChar(100)
-    startDate    DateTime? @default(now()) @map("start_date") @db.Timestamp()
-    startTime    String?   @map("start_time") @db.VarChar(10)
-    endDate      DateTime? @default(now()) @map("end_date") @db.Timestamp()
-    endTime      String?   @map("end_time") @db.VarChar(10)
-    leaveHour    Float?    @default(0.00) @map("leave_hour")
-    detail       String?   @default("") @map("detail") @db.Text
-    phoneNumber  String    @default("") @map("phone_number") @db.VarChar(50)
-    status       String?   @default("") @map("status") @db.VarChar(50)
-    approvedDate DateTime? @map("approved_date") @db.Timestamp()
-    userApproved String?   @map("user_approved") @db.VarChar(100)
-    attrachFile  String?   @map("attrach_file") @db.VarChar(250)
-    createdAt    DateTime? @default(now()) @map("created_at") @db.Timestamp()
-    updatedAt    DateTime? @default(now()) @map("updated_at") @db.Timestamp()
+    id             Int              @unique @default(autoincrement()) @map("id")
+    userId         String?          @map("user_id") @db.VarChar(100)
+    firstName      String?          @default("") @map("first_name") @db.VarChar(100)
+    lastName       String?          @default("") @map("last_name") @db.VarChar(100)
+    positionId     Int?             @map("position_id") @db.Integer
+    position       String?          @default("") @map("position") @db.VarChar(100)
+    typeId         Int?             @map("type_id") @db.Integer
+    typeName       String?          @default("") @map("type_name") @db.VarChar(100)
+    startDate      DateTime?        @default(now()) @map("start_date") @db.Timestamp()
+    startTime      String?          @map("start_time") @db.VarChar(10)
+    endDate        DateTime?        @default(now()) @map("end_date") @db.Timestamp()
+    endTime        String?          @map("end_time") @db.VarChar(10)
+    leaveHour      Float?           @default(0.00) @map("leave_hour")
+    detail         String?          @default("") @map("detail") @db.Text
+    phoneNumber    String           @default("") @map("phone_number") @db.VarChar(50)
+    status         String?          @default("") @map("status") @db.VarChar(50)
+    approvedDate   DateTime?        @map("approved_date") @db.Timestamp()
+    userApproved   String?          @map("user_approved") @db.VarChar(100)
+    attrachFile    String?          @map("attrach_file") @db.VarChar(250)
+    createdAt      DateTime?        @default(now()) @map("created_at") @db.Timestamp()
+    updatedAt      DateTime?        @default(now()) @map("updated_at") @db.Timestamp()
+    dataLeaveFiles dataLeaveFiles[]
 
     @@map("data_leave")
 }
