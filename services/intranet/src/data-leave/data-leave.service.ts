@@ -19,8 +19,8 @@ export class DataLeaveService {
     return await this.dataleaveRepo.findMany(condition);
   }
 
-  update(condition: Prisma.dataLeaveUpdateArgs) {
-    return `This action updates a #${condition} dataLeave`;
+  async update(condition: Prisma.dataLeaveUpdateArgs) {
+    return await this.dataleaveRepo.update(condition);
   }
 
   remove(id: number) {
