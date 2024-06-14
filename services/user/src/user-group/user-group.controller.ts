@@ -41,10 +41,16 @@ export class UserGroupController {
     return data;
   }
 
-  @Patch()
+  @Patch(':groupId')
   update(
-    @Body('groupId') groupId: string,
-    @Body('data') data: Prisma.userGroupUpdateInput,
+    @Param('groupId') groupId: string,
+    @Body()
+    data: {
+      groupId: string;
+      groupName: string;
+      description?: string;
+      userRole: string[];
+    },
   ) {
     return this.userGroupService.update(groupId, data);
   }

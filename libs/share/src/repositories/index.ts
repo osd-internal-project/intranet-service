@@ -28,6 +28,7 @@ export * from './resultCleanliness.repository';
 export * from './department.repository';
 export * from './organizeChart.repository';
 export * from './userMapOrganize.repository';
+export * from './userGroupUserRoleMap.repository';
 
 export * from './masterUnit.repository';
 export * from './location.repository';
@@ -69,3 +70,4 @@ export * from './publicizeSlideImages.repository';
 export * from './customerDetail.repository';
 export * from './customerFiles.repository';
 export * from './customerGroup.repository';
+export * from './dataLeaveFiles.repository';

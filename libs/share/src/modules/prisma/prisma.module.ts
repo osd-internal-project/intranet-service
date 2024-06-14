@@ -49,6 +49,7 @@ import {
   UsersRepository,
   UserRoleRepository,
   UserRoleMapRepository,
+  UserGroupUserRoleMapRepository,
   //MA
   MaTaskRepository,
   MaTypeRepository,
@@ -57,6 +58,7 @@ import {
   MasterHolidaysRepository,
   MasterTypeLeaveMapRepository,
   DataLeaveRepository,
+  dataLeaveFilesRepository,
   //Room
   MasterRoomRepository,
   BookingRoomRepository,
@@ -116,6 +118,7 @@ const services = [
   VenderRepository,
   UserGroupRepository,
   UserGroupMapRepository,
+  UserGroupUserRoleMapRepository,
   //MA
   MaTaskRepository,
   MaTaskFilesRepository,
@@ -125,6 +128,7 @@ const services = [
   MasterHolidaysRepository,
   MasterTypeLeaveMapRepository,
   DataLeaveRepository,
+  dataLeaveFilesRepository,
   //Room
   MasterRoomRepository,
   BookingRoomRepository,

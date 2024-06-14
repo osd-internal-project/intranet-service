@@ -1,10 +1,16 @@
-import { DataLeaveRepository } from '@inventory/share';
+import {
+  DataLeaveRepository,
+  dataLeaveFilesRepository,
+} from '@inventory/share';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class DataLeaveService {
-  constructor(private readonly dataleaveRepo: DataLeaveRepository) {}
+  constructor(
+    private readonly dataleaveRepo: DataLeaveRepository,
+    private readonly dataleavefileRepo: dataLeaveFilesRepository,
+  ) {}
 
   async create(condition: Prisma.dataLeaveCreateArgs) {
     return await this.dataleaveRepo.create(condition);
