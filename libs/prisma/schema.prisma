@@ -702,7 +702,7 @@ model users {
 model userMapOrganizeGroup {
     id          Int        @unique @default(autoincrement()) @map("id")
     users       users?     @relation(fields: [usersId], references: [userId])
-    usersId     String?       @map("user_id")
+    usersId     String?    @map("user_id")
     organized   organized? @relation(fields: [organizedId], references: [organizedId], onDelete: Cascade)
     organizedId String?    @map("organized_id")
     group       userGroup? @relation(fields: [groupId], references: [groupId], onDelete: Cascade)
@@ -714,7 +714,7 @@ model userMapOrganizeGroup {
 model userMapOrganizeGroupOwner {
     id           Int        @unique @default(autoincrement()) @map("id")
     users        users?     @relation(fields: [usersId], references: [userId], onDelete: Cascade)
-    usersId      String?       @map("user_id")
+    usersId      String?    @map("user_id")
     organized    organized? @relation(fields: [organizedId], references: [organizedId])
     organizedId  String?    @map("organized_id")
     group        userGroup? @relation(fields: [ownerGroupId], references: [groupId], onDelete: Cascade)
@@ -743,7 +743,7 @@ model userGroup {
     parentGroupId             String?                     @map("parent_group_id") @db.VarChar(50)
     userGroup                 userGroup[]                 @relation("ChildGroup")
     userGroupMap              userGroupMap[]
-    organized                 organized?                  @relation(fields: [organizedGroupId], references: [organizedId])
+    organized                 organized?                  @relation(fields: [organizedGroupId], references: [organizedId], onDelete: Cascade)
     organizedGroupId          String?                     @map("organized_group_id")
     description               String                      @default("") @map("description") @db.Text
     locationUserGroupMap      locationUserGroupMap[]

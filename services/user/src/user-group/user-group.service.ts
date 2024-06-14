@@ -1,5 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { UserGroupRepository, UsersRepository } from '@inventory/share';
+import {
+  OrganizedRepository,
+  UserGroupRepository,
+  UsersRepository,
+} from '@inventory/share';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
@@ -7,10 +11,19 @@ export class UserGroupService {
   constructor(
     private userGroupRepo: UserGroupRepository,
     private usersRepo: UsersRepository,
+    private organizedRepo: OrganizedRepository,
   ) {}
 
-  create(data: Prisma.userGroupCreateInput) {
-    const condition = { data: data } as Prisma.userGroupCreateArgs;
+  create(data: any) {
+    const condition = {
+      data: {
+        groupName: data.groupName,
+        description: data.description,
+        parentGroupId: data.parentGroupId,
+        organizedGroupId: data.organizeId,
+        organizeMapGroup: { create: { organizedId: data.organizeId } },
+      },
+    } as Prisma.userGroupCreateArgs;
     return this.userGroupRepo.create(condition);
   }
 
@@ -28,6 +41,13 @@ export class UserGroupService {
       ],
     };
     return this.userGroupRepo.findByCondition(condition);
+  }
+
+  findByOrganizeId(organizeId: string) {
+    return this.organizedRepo.findOne({
+      where: { organizedId: organizeId },
+      select: { organizeMapGroup: { select: { group: true } } },
+    });
   }
 
   findOneByCondition(condition: Prisma.userGroupFindFirstArgs) {
@@ -60,6 +80,6 @@ export class UserGroupService {
     const condition = {
       where: { groupId: groupId },
     } as Prisma.userGroupDeleteArgs;
-    return await this.userGroupRepo.delete(condition);
+    await this.userGroupRepo.delete(condition);
   }
 }
