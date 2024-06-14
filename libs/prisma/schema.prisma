@@ -752,6 +752,7 @@ model userGroup {
     userMapOrganizeGroup      userMapOrganizeGroup[]
     userMapOrganizeGroupOwner userMapOrganizeGroupOwner[]
     organizeMapGroup          organizeMapGroup[]
+    userGroupUserRoleMap      userGroupUserRoleMap[]
 
     @@map("user_group")
 }
@@ -767,6 +768,16 @@ model userGroupMap {
     @@map("user_group_map")
 }
 
+model userGroupUserRoleMap {
+    id          Int       @unique @default(autoincrement()) @map("id")
+    userGroup   userGroup @relation(fields: [userGroupId], references: [groupId], onDelete: Cascade)
+    userRole    userRole  @relation(fields: [roleId], references: [roleId], onDelete: Cascade)
+    userGroupId String    @map("user_group_id")
+    roleId      String    @map("role_id")
+
+    @@map("user_group_user_role_map")
+}
+
 model userRole {
     id               Int           @unique @default(autoincrement()) @map("id")
     roleId           String        @unique @default(uuid()) @map("role_id") @db.VarChar(50)
@@ -778,7 +789,8 @@ model userRole {
     organized        organized?    @relation(fields: [organizedGroupId], references: [organizedId])
     organizedGroupId String?       @map("organized_group_id")
 
-    roleProfileMap roleProfileMap[]
+    roleProfileMap       roleProfileMap[]
+    userGroupUserRoleMap userGroupUserRoleMap[]
 
     @@map("user_role")
 }
