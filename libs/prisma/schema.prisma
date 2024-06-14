@@ -29,28 +29,44 @@ model contact {
     venderID     String? @map("vender_id")
 }
 
+model dataLeaveFiles {
+    id          Int        @unique @default(autoincrement())
+    fileCode    String?    @map("file_code") @db.VarChar(200)
+    path        String?    @db.VarChar(200)
+    fileName    String?    @map("file_name") @db.VarChar(200)
+    fileType    String?    @map("file_type") @db.VarChar(200)
+    type        String?    @db.VarChar(10)
+    createdAt   DateTime   @default(now())
+    updatedAt   DateTime?  @db.Timestamp()
+    dataLeave   dataLeave? @relation(fields: [dataLeaveId], references: [id])
+    dataLeaveId Int?       @map("data_leave_id")
+
+    @@map("data_leave_file")
+}
+
 model dataLeave {
-    id           Int       @unique @default(autoincrement()) @map("id")
-    userId       String?   @map("user_id") @db.VarChar(100)
-    firstName    String?   @default("") @map("first_name") @db.VarChar(100)
-    lastName     String?   @default("") @map("last_name") @db.VarChar(100)
-    positionId   Int?      @map("position_id") @db.Integer
-    position     String?   @default("") @map("position") @db.VarChar(100)
-    typeId       Int?      @map("type_id") @db.Integer
-    typeName     String?   @default("") @map("type_name") @db.VarChar(100)
-    startDate    DateTime? @default(now()) @map("start_date") @db.Timestamp()
-    startTime    String?   @map("start_time") @db.VarChar(10)
-    endDate      DateTime? @default(now()) @map("end_date") @db.Timestamp()
-    endTime      String?   @map("end_time") @db.VarChar(10)
-    leaveHour    Int?      @default(0) @map("leave_hour") @db.Integer
-    detail       String?   @default("") @map("detail") @db.Text
-    phoneNumber  String    @default("") @map("phone_number") @db.VarChar(50)
-    status       String?   @default("") @map("status") @db.VarChar(50)
-    approvedDate DateTime? @map("approved_date") @db.Timestamp()
-    userApproved String?   @map("user_approved") @db.VarChar(100)
-    attrachFile  String?   @map("attrach_file") @db.VarChar(250)
-    createdAt    DateTime? @default(now()) @map("created_at") @db.Timestamp()
-    updatedAt    DateTime? @default(now()) @map("updated_at") @db.Timestamp()
+    id             Int              @unique @default(autoincrement()) @map("id")
+    userId         String?          @map("user_id") @db.VarChar(100)
+    firstName      String?          @default("") @map("first_name") @db.VarChar(100)
+    lastName       String?          @default("") @map("last_name") @db.VarChar(100)
+    positionId     Int?             @map("position_id") @db.Integer
+    position       String?          @default("") @map("position") @db.VarChar(100)
+    typeId         Int?             @map("type_id") @db.Integer
+    typeName       String?          @default("") @map("type_name") @db.VarChar(100)
+    startDate      DateTime?        @default(now()) @map("start_date") @db.Timestamp()
+    startTime      String?          @map("start_time") @db.VarChar(10)
+    endDate        DateTime?        @default(now()) @map("end_date") @db.Timestamp()
+    endTime        String?          @map("end_time") @db.VarChar(10)
+    leaveHour      Float?           @default(0.00) @map("leave_hour")
+    detail         String?          @default("") @map("detail") @db.Text
+    phoneNumber    String           @default("") @map("phone_number") @db.VarChar(50)
+    status         String?          @default("") @map("status") @db.VarChar(50)
+    approvedDate   DateTime?        @map("approved_date") @db.Timestamp()
+    userApproved   String?          @map("user_approved") @db.VarChar(100)
+    attrachFile    String?          @map("attrach_file") @db.VarChar(250)
+    createdAt      DateTime?        @default(now()) @map("created_at") @db.Timestamp()
+    updatedAt      DateTime?        @default(now()) @map("updated_at") @db.Timestamp()
+    dataLeaveFiles dataLeaveFiles[]
 
     @@map("data_leave")
 }
@@ -577,6 +593,21 @@ model profileRuleMap {
     @@map("profile_rule_map")
 }
 
+model publicizeSlideImages {
+    id           Int       @unique @default(autoincrement())
+    fileCode     String?   @map("file_code") @db.VarChar(200)
+    path         String?   @db.VarChar(200)
+    fileName     String?   @map("file_name") @db.VarChar(200)
+    fileType     String?   @map("file_type") @db.VarChar(200)
+    name         String?   @map("name") @db.VarChar(200)
+    activeStatus Boolean   @default(false) @map("active_status") @db.Boolean
+    type         String?   @db.VarChar(10)
+    createdAt    DateTime  @default(now())
+    updatedAt    DateTime? @db.Timestamp()
+
+    @@map("publicize_slide_images")
+}
+
 model roleProfileMap {
     id            Int          @unique @default(autoincrement()) @map("id")
     userRole      userRole?    @relation(fields: [userRoleId], references: [roleId], onDelete: Cascade)
@@ -874,8 +905,8 @@ model maTaskFiles {
     fileName  String?   @map("file_name") @db.VarChar(200)
     fileType  String?   @map("file_type") @db.VarChar(200)
     type      String?   @db.VarChar(10)
-    createdAt DateTime  @default(now())
-    updatedAt DateTime? @db.Timestamp()
+    createdAt DateTime  @default(now()) @map("created_at")
+    updatedAt DateTime? @map("updated_at") @db.Timestamp()
     maTask    maTask?   @relation(fields: [maTaskId], references: [id])
     maTaskId  Int?      @map("ma_task_id")
 
@@ -969,4 +1000,116 @@ model userMapOrganizeChart {
     userId     String?
 
     @@map("user_map_organize_chart")
+}
+
+//CRM 
+model customerDetail {
+    //detail
+    id                 Int       @unique @default(autoincrement()) @map("id")
+    customerCode       String    @map("customer_code") @db.VarChar(50)
+    referenceCode      String?   @map("reference_code") @db.VarChar(50)
+    departmentCode     String?   @map("department_code") @db.VarChar(50)
+    prefixTh           String?   @map("prefix_th") @db.VarChar(10)
+    prefixEn           String?   @map("prefix_en") @db.VarChar(10)
+    firstNameTh        String?   @map("first_name_th") @db.VarChar(200)
+    firstNameEn        String?   @map("first_name_en") @db.VarChar(200)
+    lastNameTh         String?   @map("last_name_th") @db.VarChar(200)
+    lastNameEn         String?   @map("last_name_en") @db.VarChar(200)
+    CompanyRegisNumber String?   @map("company_regis_number") @db.VarChar(50)
+    RegisDate          DateTime? @map("regis_date") @db.Timestamptz()
+    customerGroupId    Int       @map("customer_group_id") @db.Integer
+    customerGroupName  String    @map("customer_group_name") @db.VarChar(255)
+    grade              String    @map("grade") @db.VarChar(5)
+    responsibleId      String    @map("responsible_id") @db.VarChar(50)
+    responsibleName    String    @map("responsible_name") @db.VarChar(200)
+    activeStatus       Boolean   @map("active_status") @db.Boolean
+
+    //ที่อยู่ใบกำกับภาษี
+    taxHouseNumber String? @map("tax_house_number") @db.VarChar(10)
+    taxRoomNumber  String? @map("tax_room_number") @db.VarChar(10)
+    taxBuilding    String? @map("tax_building") @db.VarChar(150)
+    taxFloor       String? @map("tax_floor") @db.VarChar(5)
+    taxAlley       String? @map("tax_alley") @db.VarChar(150)
+    taxVillage     String? @map("tax_village") @db.VarChar(5)
+    taxRoad        String? @map("tax_road") @db.VarChar(150)
+    taxSubDistrict String? @map("tax_sub_district") @db.VarChar(150)
+    taxDistrict    String? @map("tax_district") @db.VarChar(150)
+    taxProvince    String? @map("tax_province") @db.VarChar(150)
+    taxZipCode     String? @map("tax_zip_code") @db.VarChar(10)
+
+    //ที่อยู่การจัดส่งบริการ
+    deliveryHouseNumber String? @map("delivery_house_number") @db.VarChar(10)
+    deliveryRoomNumber  String? @map("delivery_room_number") @db.VarChar(10)
+    deliveryBuilding    String? @map("delivery_building") @db.VarChar(150)
+    deliveryFloor       String? @map("delivery_floor") @db.VarChar(5)
+    deliveryAlley       String? @map("delivery_alley") @db.VarChar(150)
+    deliveryVillage     String? @map("delivery_village") @db.VarChar(5)
+    deliveryRoad        String? @map("delivery_road") @db.VarChar(150)
+    deliverySubDistrict String? @map("delivery_sub_district") @db.VarChar(150)
+    deliveryDistrict    String? @map("delivery_district") @db.VarChar(150)
+    deliveryProvince    String? @map("delivery_province") @db.VarChar(150)
+    deliveryZipCode     String? @map("delivery_zip_code") @db.VarChar(10)
+
+    //ที่อยู่จัดส่งใบแจ้งบริการ
+    notiHouseNumber String? @map("noti_house_number") @db.VarChar(10)
+    notiRoomNumber  String? @map("noti_room_number") @db.VarChar(10)
+    notiBuilding    String? @map("noti_building") @db.VarChar(150)
+    notiFloor       String? @map("noti_floor") @db.VarChar(5)
+    notiAlley       String? @map("noti_alley") @db.VarChar(150)
+    notiVillage     String? @map("noti_village") @db.VarChar(5)
+    notiRoad        String? @map("noti_road") @db.VarChar(150)
+    notiSubDistrict String? @map("noti_sub_district") @db.VarChar(150)
+    notiDistrict    String? @map("noti_district") @db.VarChar(150)
+    notiProvince    String? @map("noti_province") @db.VarChar(150)
+    notiZipCode     String? @map("noti_zip_code") @db.VarChar(10)
+    notiPhone       String? @map("noti_phone") @db.VarChar(20)
+    notiFax         String? @map("noti_fax") @db.VarChar(20)
+    notiEmail       String? @map("noti_email") @db.VarChar(30)
+    notiMap         String? @map("noti_map") @db.VarChar(20)
+
+    businessCategory String?  @map("business_category") @db.Text
+    objective        String?  @map("objective") @db.Text
+    //Action By
+    createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+    createdById   String?   @map("created_by_id") @db.VarChar(50)
+    ownerGroupId  String?   @map("owner_group_id") @db.VarChar(50)
+    createdByName String?   @map("created_by_name") @db.VarChar(255)
+    updatedAt     DateTime? @map("updated_at") @db.Timestamptz()
+    updatedById   String?   @map("updated_by_id") @db.VarChar(50)
+    updatedByName String?   @map("updated_by_name") @db.VarChar(255)
+    ownerGroup    String?   @map("owner_group") @db.VarChar(50)
+
+    branchStatus  String           @map("branch_status") @db.VarChar(10)
+    mainBranchId  Int?             @map("main_branch_id")
+    mainBranch    customerDetail?  @relation("branchRelation", fields: [mainBranchId], references: [id])
+    branch        customerDetail[] @relation("branchRelation")
+    customerFiles customerFiles[]
+
+    @@map("customer_detail")
+}
+
+model customerFiles {
+    id             Int             @unique @default(autoincrement())
+    fileCode       String?         @map("file_code") @db.VarChar(200)
+    path           String?         @db.VarChar(200)
+    fileName       String?         @map("file_name") @db.VarChar(200)
+    fileType       String?         @map("file_type") @db.VarChar(200)
+    type           String?         @db.VarChar(10)
+    createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamp()
+    updatedAt      DateTime?       @map("updated_at") @db.Timestamp()
+    customerDetail customerDetail? @relation(fields: [customerId], references: [id])
+    customerId     Int?            @map("customer_id")
+
+    @@map("customers_files")
+}
+
+model customerGroup {
+    id           Int      @unique @default(autoincrement()) @map("id")
+    name         String   @map("name") @db.VarChar(255)
+    activeStatus Boolean  @map("active_status") @db.Boolean
+    createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt    DateTime @default(now()) @map("updated_at") @db.Timestamptz()
+
+    @@map("customer_group")
 }

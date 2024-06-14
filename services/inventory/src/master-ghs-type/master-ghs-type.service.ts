@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ImageGhsRepository, MasterGhsTypeRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
-
+import { promises as fsPromises } from 'fs';
 @Injectable()
 export class MasterGhsTypeService {
   constructor(
@@ -63,18 +63,35 @@ export class MasterGhsTypeService {
     const condition = { where: { id: id } } as Prisma.masterGhsTypeDeleteArgs;
     const deleteGSH = await this.MasterGhsTypeRepo.delete(condition);
     if (deleteGSH) {
-      const conditioniamge = {
+      const conditionImage = {
         where: { imagesGhsId: ghsId },
       } as Prisma.imagesGhsDeleteManyArgs;
-      const deleteImage = await this.ImgGhsRepo.deleteMany(conditioniamge);
-      return deleteImage;
+      const images = await this.ImgGhsRepo.findMany(conditionImage);
+      images.map((image) => {
+        this.deleteFile(image.path);
+      });
+      await this.ImgGhsRepo.deleteMany(conditionImage);
     }
     return deleteGSH;
   }
   async removeImage(images_ghs: string) {
     const condition = {
       where: { imagesGhsId: images_ghs },
-    } as Prisma.imagesGhsDeleteManyArgs;
+    };
+    const images = await this.ImgGhsRepo.findMany(condition);
+    images.map((image) => {
+      this.deleteFile(image.path);
+    });
     return await this.ImgGhsRepo.deleteMany(condition);
+  }
+
+  async deleteFile(path: string) {
+    const filePath = `${path}`;
+    try {
+      await fsPromises.unlink(filePath);
+      console.log(`File ${path} has been deleted successfully.`);
+    } catch (err) {
+      console.error(`Error deleting file ${path}: ${err.message}`);
+    }
   }
 }

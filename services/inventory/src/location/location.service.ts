@@ -5,7 +5,7 @@ import {
   LocationRepository,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
-
+import { promises as fsPromises } from 'fs';
 @Injectable()
 export class LocationService {
   constructor(
@@ -128,17 +128,19 @@ export class LocationService {
     return updateLocation;
   }
 
-  async remove(locationId: string, id: number) {
+  async remove(locationId: number, id: number) {
     const condition = { where: { id: id } } as Prisma.locationDeleteArgs;
     const deleteLocation = await this.locationRepo.delete(condition);
     if (deleteLocation) {
       const conditioniamge = {
         where: { images_location: locationId },
-      } as Prisma.imagesLocationDeleteManyArgs;
-      const deleteImage = await this.imagelocationRepo.deleteMany(
-        conditioniamge,
-      );
-      return deleteImage;
+      };
+      const images = await this.imagelocationRepo.findMany(conditioniamge);
+      images.map((image) => {
+        this.deleteFile(image.path);
+      });
+      await this.imagelocationRepo.deleteMany(conditioniamge);
+      // return deleteImage;
     }
     return deleteLocation;
   }
@@ -146,7 +148,21 @@ export class LocationService {
   async removeImage(images_location: string) {
     const condition = {
       where: { images_location: Number(images_location) },
-    } as Prisma.imagesLocationDeleteManyArgs;
+    };
+    const images = await this.imagelocationRepo.findMany(condition);
+    images.map((image) => {
+      this.deleteFile(image.path);
+    });
     return await this.imagelocationRepo.deleteMany(condition);
+  }
+
+  async deleteFile(path: string) {
+    const filePath = `${path}`;
+    try {
+      await fsPromises.unlink(filePath);
+      console.log(`File ${path} has been deleted successfully.`);
+    } catch (err) {
+      console.error(`Error deleting file ${path}: ${err.message}`);
+    }
   }
 }

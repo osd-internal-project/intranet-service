@@ -11,7 +11,20 @@ export class ImageLocationRepository {
     const prisma = option?.prisma ?? this.prisma;
     return prisma.imagesLocation.findMany();
   }
-
+  async findMany(
+    condition: Prisma.imagesLocationFindFirstArgsBase,
+    option?: { prisma?: TQueryClient },
+  ) {
+    const prisma = option?.prisma ?? this.prisma;
+    return prisma.imagesLocation.findMany(condition);
+  }
+  async findOne(
+    condition: Prisma.imagesLocationFindFirstArgsBase,
+    option?: { prisma?: TQueryClient },
+  ) {
+    const prisma = option?.prisma ?? this.prisma;
+    return prisma.imagesLocation.findFirst(condition);
+  }
   async createImagesLocation(
     data: Prisma.imagesLocationCreateManyInput,
     option?: { prisma?: TQueryClient },

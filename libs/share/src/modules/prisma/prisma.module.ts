@@ -57,12 +57,16 @@ import {
   MasterHolidaysRepository,
   MasterTypeLeaveMapRepository,
   DataLeaveRepository,
+  dataLeaveFilesRepository,
   //Room
   MasterRoomRepository,
   BookingRoomRepository,
   MaTaskFilesRepository,
+  PublicizeSlideImagesRepository,
+  CustomerDetailRepository,
+  CustomerFilesRepository,
+  CustomerGroupRepository,
 } from 'src/repositories';
-
 const services = [
   PrismaService,
   BrandRepository,
@@ -122,9 +126,16 @@ const services = [
   MasterHolidaysRepository,
   MasterTypeLeaveMapRepository,
   DataLeaveRepository,
+  dataLeaveFilesRepository,
   //Room
   MasterRoomRepository,
   BookingRoomRepository,
+  //publicize
+  PublicizeSlideImagesRepository,
+  //CRM
+  CustomerDetailRepository,
+  CustomerFilesRepository,
+  CustomerGroupRepository,
 ];
 @Module({
   providers: [...services],

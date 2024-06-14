@@ -19,6 +19,8 @@ import { MaTaskFilesModule } from './ma-task-files/ma-task-files.module';
 import { UserMapOrganizeModule } from './user-map-organize/user-map-organize.module';
 import { TpyeDataLeaveMapModule } from './tpye-data-leave-map/tpye-data-leave-map.module';
 import { DataLeaveModule } from './data-leave/data-leave.module';
+import { PublicizeSlideImagesModule } from './publicize-slide-images/publicize-slide-images.module';
+import { DataLeaveFileModule } from './data-leave-file/data-leave-file.module';
 
 @Module({
   imports: [
@@ -39,6 +41,8 @@ import { DataLeaveModule } from './data-leave/data-leave.module';
     UserMapOrganizeModule,
     TpyeDataLeaveMapModule,
     DataLeaveModule,
+    PublicizeSlideImagesModule,
+    DataLeaveFileModule,
   ],
   controllers: [IntranetController],
   providers: [IntranetService],
