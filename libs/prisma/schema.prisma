@@ -577,6 +577,21 @@ model profileRuleMap {
     @@map("profile_rule_map")
 }
 
+model publicizeSlideImages {
+    id           Int       @unique @default(autoincrement())
+    fileCode     String?   @map("file_code") @db.VarChar(200)
+    path         String?   @db.VarChar(200)
+    fileName     String?   @map("file_name") @db.VarChar(200)
+    fileType     String?   @map("file_type") @db.VarChar(200)
+    name         String?   @map("name") @db.VarChar(200)
+    activeStatus Boolean   @default(false) @map("active_status") @db.Boolean
+    type         String?   @db.VarChar(10)
+    createdAt    DateTime  @default(now())
+    updatedAt    DateTime? @db.Timestamp()
+
+    @@map("publicize_slide_images")
+}
+
 model roleProfileMap {
     id            Int          @unique @default(autoincrement()) @map("id")
     userRole      userRole?    @relation(fields: [userRoleId], references: [roleId], onDelete: Cascade)
@@ -743,7 +758,7 @@ model userGroup {
     parentGroupId             String?                     @map("parent_group_id") @db.VarChar(50)
     userGroup                 userGroup[]                 @relation("ChildGroup")
     userGroupMap              userGroupMap[]
-    organized                 organized?                  @relation(fields: [organizedGroupId], references: [organizedId])
+    organized                 organized?                  @relation(fields: [organizedGroupId], references: [organizedId], onDelete: Cascade)
     organizedGroupId          String?                     @map("organized_group_id")
     description               String                      @default("") @map("description") @db.Text
     locationUserGroupMap      locationUserGroupMap[]

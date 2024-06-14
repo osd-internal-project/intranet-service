@@ -27,5 +27,4 @@ export class MasterProductImageService {
     };
     return await this.masterProductImageRepo.deleteMany(condition);
   }
-  
 }

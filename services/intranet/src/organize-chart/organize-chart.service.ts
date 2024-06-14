@@ -86,7 +86,7 @@ export class OrganizeChartService {
       FROM
           organize_chart oc
       left join user_map_organize_chart umoc on umoc."positionId" = oc.position_id
-      left join "user" u on u.user_id = umoc."userId"
+      left join "users" u on u.user_id = umoc."userId"
       WHERE
           position_id = '${rootId}'
       UNION ALL
@@ -105,7 +105,7 @@ export class OrganizeChartService {
       FROM
           organize_chart oc
       left join user_map_organize_chart umoc on umoc."positionId" = oc.position_id
-      left join "user" u on u.user_id = umoc."userId"
+      left join "users" u on u.user_id = umoc."userId"
       INNER JOIN OrgChartCTE cte ON cte.position_id = oc.parent_position_id
       where oc."type" = 'position'
   )

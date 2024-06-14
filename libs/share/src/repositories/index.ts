@@ -61,3 +61,6 @@ export * from './masterRoom.repository';
 export * from './bookingRoom.repository';
 export * from './masterTypeLeaveMap.repository';
 export * from './dataLeave.repository';
+
+//News
+export * from './publicizeSlideImages.repository';
