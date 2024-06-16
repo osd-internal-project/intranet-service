@@ -6,22 +6,17 @@ import {
   Get,
   Post,
   Body,
-  Request,
-  HttpCode,
-  HttpStatus,
   UseGuards,
   NotFoundException,
   UnauthorizedException,
   Req,
   Logger,
   Patch,
-  Query,
   Param,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { AuthguardService, AuthGuard } from '@inventory/share';
 import { authenticate } from 'ldap-authentication';
-import { jwtConfig } from './config';
 import * as bcrypt from 'bcrypt';
 
 @Controller('auth')
@@ -132,11 +127,10 @@ export class AuthController {
 
   @Get('/permission/:userid')
   async getPermission(@Param('userid') userId: string) {
-    const grouplist = await this.userGroupMapService.findGrouplistByUserId(
+    const getPermissionByUserId = await this.userService.getPermissionByUserId(
       userId,
     );
-    const rulelist = await this.userRoleMapService.findRulelistByUserId(userId);
-    return { rulelist: rulelist, grouplist: grouplist };
+    return getPermissionByUserId;
   }
 
   @UseGuards(AuthGuard)

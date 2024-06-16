@@ -5,6 +5,7 @@ import {
   UserRoleMapRepository,
   UserMapOrganizeGroupRepository,
   UserMapOrganizeGroupOwnerRepository,
+  UserGroupUserRoleMapRepository,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
@@ -17,6 +18,7 @@ export class UserService {
     private userGroupMapRepo: UserGroupMapRepository,
     private userMapOrganizeGroupRepo: UserMapOrganizeGroupRepository,
     private userMapOrganizeGroupOwnerRepo: UserMapOrganizeGroupOwnerRepository,
+    private userGroupUserRoleMapRepo: UserGroupUserRoleMapRepository,
   ) {}
 
   create(data: Prisma.usersCreateInput) {
@@ -93,7 +95,6 @@ export class UserService {
 
   async remove(userId: string) {
     const condition = { where: { userId: userId } } as Prisma.usersDeleteArgs;
-    console.log(condition);
     return await this.usersRepo.delete(condition);
   }
 
@@ -201,5 +202,61 @@ export class UserService {
     return this.userMapOrganizeGroupOwnerRepo.findOne({
       where: { usersId: userId, organizedId: organizeId },
     });
+  }
+  async getPermissionByUserId(userId: string) {
+    const resOrganizeIdGroupId = await this.userMapOrganizeGroupRepo.findMany({
+      where: { usersId: userId },
+    });
+    const resRoleIdByGroupId = await this.userGroupUserRoleMapRepo.findMany({
+      where: {
+        userGroupId: {
+          in: resOrganizeIdGroupId.map(
+            (item: { organizedId: string; groupId: string }) => item.groupId,
+          ),
+        },
+      },
+      select: {
+        userGroup: {
+          select: {
+            groupId: true,
+            groupName: true,
+            organizedGroupId: true,
+          },
+        },
+        userRole: {
+          select: {
+            roleProfileMap: {
+              select: {
+                profileRule: {
+                  select: {
+                    profileRuleMap: {
+                      select: {
+                        masterRule: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    const roles = resRoleIdByGroupId.flatMap((role: any) =>
+      role.userRole.roleProfileMap.flatMap((profileRuleItem) =>
+        profileRuleItem.profileRule.profileRuleMap.map(
+          (masterRuleItem) => masterRuleItem.masterRule.ruleName,
+        ),
+      ),
+    );
+    const roleList = Array.from(new Set([].concat(...roles)));
+    const grouplist = [];
+    resRoleIdByGroupId.map((item: any) =>
+      grouplist.push(item.userGroup.groupId),
+    );
+    return {
+      rulelist: roleList,
+      grouplist: grouplist,
+    };
   }
 }
