@@ -3,9 +3,6 @@ import { CreateResultCleanlineDto } from './dto/create-result-cleanline.dto';
 import { UpdateResultCleanlineDto } from './dto/update-result-cleanline.dto';
 import { ResultCleanlinessRepository } from '@inventory/share';
 import * as moment from 'moment';
-import { Prisma, PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
-
 @Injectable()
 export class ResultCleanlinesService {
   constructor(private resultCleanlinessRepo: ResultCleanlinessRepository) {}
@@ -20,7 +17,28 @@ export class ResultCleanlinesService {
     return new Date(dateset);
   }
 
-  create(createResultCleanlineDto: CreateResultCleanlineDto) {
+  async create(createResultCleanlineDto: CreateResultCleanlineDto) {
+    const startTrackDate = this.startOfDate(
+      createResultCleanlineDto.wrapupDate.replace(/"/g, ''),
+    ).toISOString();
+    const endTrackDate = this.endOfDate(
+      createResultCleanlineDto.wrapupDate.replace(/"/g, ''),
+    ).toISOString();
+    const checkFloorDuration = await this.resultCleanlinessRepo.findMany({
+      where: {
+        wrapupDate: {
+          gte: new Date(startTrackDate).toISOString(),
+          lte: new Date(endTrackDate).toISOString(),
+        },
+        floorId: {
+          in: createResultCleanlineDto.floor.map((item: number) => item),
+        },
+        duration: createResultCleanlineDto.duration,
+      },
+    });
+    if (checkFloorDuration.length > 0) {
+      return 501;
+    }
     return this.resultCleanlinessRepo.createMany({
       data: createResultCleanlineDto.floor.map((item: number) => ({
         duration: createResultCleanlineDto.duration,
@@ -56,8 +74,9 @@ export class ResultCleanlinesService {
         },
       },
       select: {
-        floors: { select: { floorName: true } },
-        houseKeepers: { select: { houseKeepName: true } },
+        id: true,
+        floors: { select: { floorName: true, floorId: true } },
+        houseKeepers: { select: { houseKeepName: true, houseKeeperId: true } },
         result: true,
         duration: true,
         wrapupDate: true,
@@ -70,8 +89,15 @@ export class ResultCleanlinesService {
     return `This action returns a #${id} resultCleanline`;
   }
 
-  update(id: number, updateResultCleanlineDto: UpdateResultCleanlineDto) {
-    return `This action updates a #${id} resultCleanline`;
+  async update(id: number, updateResultCleanlineDto: UpdateResultCleanlineDto) {
+    return this.resultCleanlinessRepo.update({
+      where: { id: id },
+      data: {
+        houseKeeperId: updateResultCleanlineDto.housekeeper,
+        remark: updateResultCleanlineDto.remark,
+        result: updateResultCleanlineDto.result,
+      },
+    });
   }
 
   remove(id: number) {
