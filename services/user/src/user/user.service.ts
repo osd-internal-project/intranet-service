@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import {
   UsersRepository,
   UserGroupMapRepository,
@@ -6,6 +6,7 @@ import {
   UserMapOrganizeGroupRepository,
   UserMapOrganizeGroupOwnerRepository,
   UserGroupUserRoleMapRepository,
+  AccessService,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
@@ -19,6 +20,7 @@ export class UserService {
     private userMapOrganizeGroupRepo: UserMapOrganizeGroupRepository,
     private userMapOrganizeGroupOwnerRepo: UserMapOrganizeGroupOwnerRepository,
     private userGroupUserRoleMapRepo: UserGroupUserRoleMapRepository,
+    private readonly accessService: AccessService,
   ) {}
 
   create(data: Prisma.usersCreateInput) {
@@ -39,9 +41,13 @@ export class UserService {
     return this.usersRepo.findAll();
   }
 
-  findByCondition(condition: Prisma.usersFindManyArgs) {
+  async findByCondition(condition: Prisma.usersFindManyArgs, userId: string) {
+    const userIdAll = await this.accessService.getAllUser(userId);
     condition = {
-      ...condition,
+      where: {
+        userId: { in: userIdAll },
+        ...condition.where,
+      },
       orderBy: [
         {
           createdAt: 'asc',

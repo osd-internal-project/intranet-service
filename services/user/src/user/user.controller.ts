@@ -14,6 +14,7 @@ import {
   UploadedFile,
   UploadedFiles,
   Res,
+  Req,
 } from '@nestjs/common';
 import { AuthGuard } from '@inventory/share';
 import { UserService } from './user.service';
@@ -75,8 +76,12 @@ export class UserController {
 
   @Post('condition')
   @UseGuards(AuthGuard)
-  findByCondition(@Body('condition') condition: Prisma.usersFindManyArgs) {
-    return this.userService.findByCondition(condition);
+  findByCondition(
+    @Body('condition') condition: Prisma.usersFindManyArgs,
+    @Req() req,
+  ) {
+    const userId = req.user.userId;
+    return this.userService.findByCondition(condition, userId);
   }
 
   @Post('condition-first')

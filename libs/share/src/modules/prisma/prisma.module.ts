@@ -70,6 +70,8 @@ import {
   CustomerFilesRepository,
   CustomerGroupRepository,
 } from 'src/repositories';
+import { AccessService } from 'src/access';
+
 const services = [
   PrismaService,
   BrandRepository,
@@ -142,6 +144,7 @@ const services = [
   CustomerDetailRepository,
   CustomerFilesRepository,
   CustomerGroupRepository,
+  AccessService,
 ];
 @Module({
   providers: [...services],
