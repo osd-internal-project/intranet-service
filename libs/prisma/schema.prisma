@@ -1018,7 +1018,7 @@ model customerAddress {
     district         String?         @map("noti_district") @db.VarChar(150)
     province         String?         @map("noti_province") @db.VarChar(150)
     zipCode          String?         @map("noti_zip_code") @db.VarChar(10)
-    customerBranch   customerBranch? @relation(fields: [customerBranchId], references: [id])
+    customerBranch   customerBranch? @relation(fields: [customerBranchId], references: [id], onDelete: Cascade)
     customerBranchId Int?            @map("customer_branch_id")
 
     @@map("customer_address")
@@ -1026,7 +1026,7 @@ model customerAddress {
 
 model customerBranch {
     id               Int               @unique @default(autoincrement()) @map("id")
-    mainBranchStatus Boolean           @map("main_branch_status") @db.Boolean
+    mainBranchStatus Boolean?          @map("main_branch_status") @db.Boolean
     branchName       String?           @map("branch_name") @db.VarChar(255)
     branchCode       String?           @map("branch_code") @db.VarChar(100)
     customerDetailId Int?              @map("customer_detail_id")
