@@ -21,32 +21,49 @@ export class AccessService {
       ? [resUser.userMapOrganizeGroupOwner[0].ownerGroupId]
       : [];
 
-    const findGroup = await this.prisma.userMapOrganizeGroup.findMany({
-      where: {
-        users: { is: { userId: token } },
-        groupId: { notIn: filterGroupId },
-      },
-    });
+    if (filterGroupId.length > 0) {
+      const masterGroup = await this.prisma.userGroup.findFirst({
+        where: { groupId: filterGroupId[0] },
+      });
 
-    const useridAll = await this.prisma.users.findMany({
-      where: {
-        OR: [
-          { userId: token },
-          {
-            userMapOrganizeGroupOwner: {
-              some: {
-                ownerGroupId: { in: findGroup.map((item) => item.groupId) },
+      if (masterGroup.parentGroupId === null) {
+        const useridAll = await this.prisma.users.findMany({});
+        const userIdList = useridAll.map((item) => {
+          return item.userId;
+        });
+
+        return userIdList;
+      }
+
+      const findGroup = await this.prisma.userMapOrganizeGroup.findMany({
+        where: {
+          users: { is: { userId: token } },
+          groupId: { notIn: filterGroupId },
+        },
+      });
+
+      const useridAll = await this.prisma.users.findMany({
+        where: {
+          OR: [
+            { userId: token },
+            {
+              userMapOrganizeGroupOwner: {
+                some: {
+                  ownerGroupId: { in: findGroup.map((item) => item.groupId) },
+                },
               },
             },
-          },
-        ],
-      },
-    });
+          ],
+        },
+      });
 
-    const userIdList = useridAll.map((item) => {
-      return item.userId;
-    });
+      const userIdList = useridAll.map((item) => {
+        return item.userId;
+      });
 
-    return userIdList;
+      return userIdList;
+    } else {
+      return [];
+    }
   }
 }
