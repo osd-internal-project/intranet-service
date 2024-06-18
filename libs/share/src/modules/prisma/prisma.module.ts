@@ -50,6 +50,8 @@ import {
   UserRoleRepository,
   UserRoleMapRepository,
   UserGroupUserRoleMapRepository,
+  UserMapOrganizeGroupRepository,
+  UserMapOrganizeGroupOwnerRepository,
   //MA
   MaTaskRepository,
   MaTypeRepository,
@@ -70,6 +72,8 @@ import {
   CustomerAddressRepository,
   CustomerBranchRepository,
 } from 'src/repositories';
+import { AccessService } from 'src/access';
+
 const services = [
   PrismaService,
   BrandRepository,
@@ -107,6 +111,8 @@ const services = [
   DepartMentRepository,
   OrganizedChartRepository,
   UserMapOrganizeChartRepository,
+  UserMapOrganizeGroupRepository,
+  UserMapOrganizeGroupOwnerRepository,
   //Auth
   MasterPositionRepository,
   MasterRuleRepository,
@@ -142,6 +148,7 @@ const services = [
   CustomerDetailRepository,
   CustomerGroupRepository,
   CustomerFilesRepository,
+  AccessService,
 ];
 @Module({
   providers: [...services],

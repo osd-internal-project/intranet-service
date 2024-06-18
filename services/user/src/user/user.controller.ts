@@ -14,6 +14,7 @@ import {
   UploadedFile,
   UploadedFiles,
   Res,
+  Req,
 } from '@nestjs/common';
 import { AuthGuard } from '@inventory/share';
 import { UserService } from './user.service';
@@ -75,25 +76,41 @@ export class UserController {
 
   @Post('condition')
   @UseGuards(AuthGuard)
-  findByCondition(@Body('condition') condition: Prisma.usersFindManyArgs) {
-    return this.userService.findByCondition(condition);
+  findByCondition(
+    @Body('condition') condition: Prisma.usersFindManyArgs,
+    @Req() req,
+  ) {
+    const userId = req.user.userId;
+    return this.userService.findByCondition(condition, userId);
   }
+
   @Post('condition-first')
   findOneByCondition(@Body('condition') condition: Prisma.usersFindManyArgs) {
     return this.userService.findOneByCondition(condition);
   }
 
-  @Patch()
-  update(
-    @Body('userId') userId: string,
-    @Body('data') data: Prisma.usersUpdateInput,
+  @Post('assign-groups/:userId')
+  assignGroups(
+    @Param('userId') userId: string,
+    @Body()
+    createRuleDto: {
+      organizeId?: string;
+      groups?: string[];
+    },
   ) {
-    return this.userService.update(userId, data);
+    return this.userService.assignGroups(userId, createRuleDto);
   }
 
-  @Delete(':userId')
-  remove(@Param('userId') userId: string) {
-    return this.userService.remove(userId);
+  @Post('assign_owner_groups/:userId')
+  assignOwnerGroups(
+    @Param('userId') userId: string,
+    @Body()
+    createRuleDto: {
+      organizeId?: string;
+      groupOwnerId?: string;
+    },
+  ) {
+    return this.userService.assignOwnerGroups(userId, createRuleDto);
   }
 
   @Post('set-user-roles-map')
@@ -187,9 +204,36 @@ export class UserController {
     return this.userService.uploadImags(userId, files[0]);
   }
 
+  @Post('set-defualt-admin')
+  async setUser() {
+    const rules = await this.masterRuleService.setRule();
+    Logger.debug(rules);
+    const ruleGroup = await this.profileRuleService.setProfile();
+    Logger.debug(ruleGroup);
+    const roles = await this.userRoleService.setRole();
+    Logger.debug(roles);
+    return this.userService.setDef();
+  }
+
   @Get()
   findAll() {
     return this.userService.findAll();
+  }
+
+  @Get('assign-owner-groups/:userId/:organizeId')
+  findAssignOwnerGroups(
+    @Param('userId') userId: string,
+    @Param('organizeId') organizeId: string,
+  ) {
+    return this.userService.findAssignOwnerGroups(userId, organizeId);
+  }
+
+  @Get('assign-groups/:userId/:organizeId')
+  findAssignGroups(
+    @Param('userId') userId: string,
+    @Param('organizeId') organizeId: string,
+  ) {
+    return this.userService.findAssignGroups(userId, organizeId);
   }
 
   @Get('/upload-image/:userId')
@@ -207,14 +251,16 @@ export class UserController {
     res.sendFile(`${imagePath}`, { root: './' });
   }
 
-  @Post('set-defualt-admin')
-  async setUser() {
-    const rules = await this.masterRuleService.setRule();
-    Logger.debug(rules);
-    const ruleGroup = await this.profileRuleService.setProfile();
-    Logger.debug(ruleGroup);
-    const roles = await this.userRoleService.setRole();
-    Logger.debug(roles);
-    return this.userService.setDef();
+  @Patch()
+  update(
+    @Body('userId') userId: string,
+    @Body('data') data: Prisma.usersUpdateInput,
+  ) {
+    return this.userService.update(userId, data);
+  }
+
+  @Delete(':userId')
+  remove(@Param('userId') userId: string) {
+    return this.userService.remove(userId);
   }
 }
