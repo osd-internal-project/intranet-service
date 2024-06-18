@@ -67,6 +67,8 @@ import {
   CustomerDetailRepository,
   CustomerFilesRepository,
   CustomerGroupRepository,
+  CustomerAddressRepository,
+  CustomerBranchRepository,
 } from 'src/repositories';
 const services = [
   PrismaService,
@@ -135,9 +137,11 @@ const services = [
   //publicize
   PublicizeSlideImagesRepository,
   //CRM
+  CustomerAddressRepository,
+  CustomerBranchRepository,
   CustomerDetailRepository,
-  CustomerFilesRepository,
   CustomerGroupRepository,
+  CustomerFilesRepository,
 ];
 @Module({
   providers: [...services],
