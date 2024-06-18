@@ -1005,6 +1005,39 @@ model userMapOrganizeChart {
 }
 
 //CRM 
+model customerAddress {
+    id               Int             @unique @default(autoincrement()) @map("id")
+    addressTypeId    String          @map("address_type_id") @db.VarChar(10)
+    addressTypeName  String          @map("address_type_name") @db.VarChar(100)
+    houseNumber      String?         @map("noti_house_number") @db.VarChar(10)
+    roomNumber       String?         @map("noti_room_number") @db.VarChar(10)
+    building         String?         @map("noti_building") @db.VarChar(150)
+    floor            String?         @map("noti_floor") @db.VarChar(5)
+    alley            String?         @map("noti_alley") @db.VarChar(150)
+    village          String?         @map("noti_village") @db.VarChar(5)
+    road             String?         @map("noti_road") @db.VarChar(150)
+    subDistrict      String?         @map("noti_sub_district") @db.VarChar(150)
+    district         String?         @map("noti_district") @db.VarChar(150)
+    province         String?         @map("noti_province") @db.VarChar(150)
+    zipCode          String?         @map("noti_zip_code") @db.VarChar(10)
+    customerBranch   customerBranch? @relation(fields: [customerBranchId], references: [id], onDelete: Cascade)
+    customerBranchId Int?            @map("customer_branch_id")
+
+    @@map("customer_address")
+}
+
+model customerBranch {
+    id               Int               @unique @default(autoincrement()) @map("id")
+    mainBranchStatus Boolean?          @map("main_branch_status") @db.Boolean
+    branchName       String?           @map("branch_name") @db.VarChar(255)
+    branchCode       String?           @map("branch_code") @db.VarChar(100)
+    customerDetailId Int?              @map("customer_detail_id")
+    customerDetail   customerDetail?   @relation(fields: [customerDetailId], references: [id])
+    customerAddress  customerAddress[]
+
+    @@map("customer_branch")
+}
+
 model customerDetail {
     //detail
     id                 Int       @unique @default(autoincrement()) @map("id")
@@ -1019,55 +1052,19 @@ model customerDetail {
     lastNameEn         String?   @map("last_name_en") @db.VarChar(200)
     companyRegisNumber String?   @map("company_regis_number") @db.VarChar(50)
     regisDate          DateTime? @map("regis_date") @db.Timestamptz()
-    customerGroupId    Int       @map("customer_group_id") @db.Integer
-    customerGroupName  String    @map("customer_group_name") @db.VarChar(255)
-    grade              String    @map("grade") @db.VarChar(5)
-    responsibleId      String    @map("responsible_id") @db.VarChar(50)
-    responsibleName    String    @map("responsible_name") @db.VarChar(200)
+    customerGroupId    Int?      @map("customer_group_id") @db.Integer
+    customerGroupName  String?   @map("customer_group_name") @db.VarChar(255)
+    grade              String?   @map("grade") @db.VarChar(5)
+    responsibleId      String?   @map("responsible_id") @db.VarChar(50)
+    responsibleName    String?   @map("responsible_name") @db.VarChar(200)
+    thirdPartyId       String?   @map("third_party_id") @db.VarChar(50)
+    thirdPartyName     String?   @map("third_party_name") @db.VarChar(200)
     activeStatus       Boolean   @map("active_status") @db.Boolean
 
-    //ที่อยู่ใบกำกับภาษี
-    taxHouseNumber String? @map("tax_house_number") @db.VarChar(10)
-    taxRoomNumber  String? @map("tax_room_number") @db.VarChar(10)
-    taxBuilding    String? @map("tax_building") @db.VarChar(150)
-    taxFloor       String? @map("tax_floor") @db.VarChar(5)
-    taxAlley       String? @map("tax_alley") @db.VarChar(150)
-    taxVillage     String? @map("tax_village") @db.VarChar(5)
-    taxRoad        String? @map("tax_road") @db.VarChar(150)
-    taxSubDistrict String? @map("tax_sub_district") @db.VarChar(150)
-    taxDistrict    String? @map("tax_district") @db.VarChar(150)
-    taxProvince    String? @map("tax_province") @db.VarChar(150)
-    taxZipCode     String? @map("tax_zip_code") @db.VarChar(10)
-
-    //ที่อยู่การจัดส่งบริการ
-    deliveryHouseNumber String? @map("delivery_house_number") @db.VarChar(10)
-    deliveryRoomNumber  String? @map("delivery_room_number") @db.VarChar(10)
-    deliveryBuilding    String? @map("delivery_building") @db.VarChar(150)
-    deliveryFloor       String? @map("delivery_floor") @db.VarChar(5)
-    deliveryAlley       String? @map("delivery_alley") @db.VarChar(150)
-    deliveryVillage     String? @map("delivery_village") @db.VarChar(5)
-    deliveryRoad        String? @map("delivery_road") @db.VarChar(150)
-    deliverySubDistrict String? @map("delivery_sub_district") @db.VarChar(150)
-    deliveryDistrict    String? @map("delivery_district") @db.VarChar(150)
-    deliveryProvince    String? @map("delivery_province") @db.VarChar(150)
-    deliveryZipCode     String? @map("delivery_zip_code") @db.VarChar(10)
-
-    //ที่อยู่จัดส่งใบแจ้งบริการ
-    notiHouseNumber String? @map("noti_house_number") @db.VarChar(10)
-    notiRoomNumber  String? @map("noti_room_number") @db.VarChar(10)
-    notiBuilding    String? @map("noti_building") @db.VarChar(150)
-    notiFloor       String? @map("noti_floor") @db.VarChar(5)
-    notiAlley       String? @map("noti_alley") @db.VarChar(150)
-    notiVillage     String? @map("noti_village") @db.VarChar(5)
-    notiRoad        String? @map("noti_road") @db.VarChar(150)
-    notiSubDistrict String? @map("noti_sub_district") @db.VarChar(150)
-    notiDistrict    String? @map("noti_district") @db.VarChar(150)
-    notiProvince    String? @map("noti_province") @db.VarChar(150)
-    notiZipCode     String? @map("noti_zip_code") @db.VarChar(10)
-    notiPhone       String? @map("noti_phone") @db.VarChar(20)
-    notiFax         String? @map("noti_fax") @db.VarChar(20)
-    notiEmail       String? @map("noti_email") @db.VarChar(30)
-    notiMap         String? @map("noti_map") @db.VarChar(20)
+    notiPhone String? @map("noti_phone") @db.VarChar(20)
+    notiFax   String? @map("noti_fax") @db.VarChar(20)
+    notiEmail String? @map("noti_email") @db.VarChar(30)
+    notiMap   String? @map("noti_map") @db.VarChar(20)
 
     businessCategory String?  @map("business_category") @db.Text
     objective        String?  @map("objective") @db.Text
@@ -1082,14 +1079,20 @@ model customerDetail {
     updatedByName String?   @map("updated_by_name") @db.VarChar(255)
     ownerGroup    String?   @map("owner_group") @db.VarChar(50)
 
-    branchName    String           @map("branch_name") @db.VarChar(255)
-    branchStatus  String           @map("branch_status") @db.VarChar(10)
-    mainBranchId  Int?             @map("main_branch_id")
-    mainBranch    customerDetail?  @relation("branchRelation", fields: [mainBranchId], references: [id])
-    branch        customerDetail[] @relation("branchRelation")
-    customerFiles customerFiles[]
+    customerFiles  customerFiles[]
+    customerBranch customerBranch[]
 
     @@map("customer_detail")
+}
+
+model customerGroup {
+    id           Int      @unique @default(autoincrement()) @map("id")
+    name         String   @map("name") @db.VarChar(255)
+    activeStatus Boolean  @map("active_status") @db.Boolean
+    createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt    DateTime @default(now()) @map("updated_at") @db.Timestamptz()
+
+    @@map("customer_group")
 }
 
 model customerFiles {
@@ -1105,14 +1108,4 @@ model customerFiles {
     customerId     Int?            @map("customer_id")
 
     @@map("customers_files")
-}
-
-model customerGroup {
-    id           Int      @unique @default(autoincrement()) @map("id")
-    name         String   @map("name") @db.VarChar(255)
-    activeStatus Boolean  @map("active_status") @db.Boolean
-    createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt    DateTime @default(now()) @map("updated_at") @db.Timestamptz()
-
-    @@map("customer_group")
 }

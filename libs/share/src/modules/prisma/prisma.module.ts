@@ -69,6 +69,8 @@ import {
   CustomerDetailRepository,
   CustomerFilesRepository,
   CustomerGroupRepository,
+  CustomerAddressRepository,
+  CustomerBranchRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -141,9 +143,11 @@ const services = [
   //publicize
   PublicizeSlideImagesRepository,
   //CRM
+  CustomerAddressRepository,
+  CustomerBranchRepository,
   CustomerDetailRepository,
-  CustomerFilesRepository,
   CustomerGroupRepository,
+  CustomerFilesRepository,
   AccessService,
 ];
 @Module({

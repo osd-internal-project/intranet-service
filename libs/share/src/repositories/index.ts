@@ -69,7 +69,9 @@ export * from './dataLeave.repository';
 export * from './publicizeSlideImages.repository';
 
 //CRM
+export * from './customerAddress.repository';
+export * from './customerBranch.repository';
 export * from './customerDetail.repository';
-export * from './customerFiles.repository';
 export * from './customerGroup.repository';
+export * from './customerFiles.repository';
 export * from './dataLeaveFiles.repository';
