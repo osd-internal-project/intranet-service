@@ -45,6 +45,11 @@ export class AuthController {
       },
       include: {
         masterPosition: true,
+        userMapOrganizeChart: {
+          select: {
+            positionId: true,
+          },
+        },
       },
     } as Prisma.usersFindFirstArgs;
 
@@ -60,6 +65,7 @@ export class AuthController {
         firstNameEn,
         lastNameEn,
         masterPosition,
+        userMapOrganizeChart,
       } = user;
       const payload = {
         userId,
@@ -72,6 +78,7 @@ export class AuthController {
         phoneNumber,
         ownerGroup: ownerGroupId,
         position: masterPosition,
+        userMapOrganizeChart: userMapOrganizeChart,
       };
       const token = this.authguardService.createToken(payload);
       await this.userService.updateRefreshToken(
