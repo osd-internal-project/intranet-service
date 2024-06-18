@@ -251,6 +251,11 @@ export class UserController {
     res.sendFile(`${imagePath}`, { root: './' });
   }
 
+  @Get('find-owner-users/:positionId')
+  findOwnerUserByPositionId(@Param('positionId') positionId: string) {
+    return this.userService.findOwnerUserByPositionId(positionId);
+  }
+
   @Patch()
   update(
     @Body('userId') userId: string,

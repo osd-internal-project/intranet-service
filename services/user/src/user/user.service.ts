@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   UsersRepository,
   UserGroupMapRepository,
@@ -7,6 +7,8 @@ import {
   UserMapOrganizeGroupOwnerRepository,
   UserGroupUserRoleMapRepository,
   AccessService,
+  UserMapOrganizeChartRepository,
+  OrganizedChartRepository,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
@@ -20,6 +22,8 @@ export class UserService {
     private userMapOrganizeGroupRepo: UserMapOrganizeGroupRepository,
     private userMapOrganizeGroupOwnerRepo: UserMapOrganizeGroupOwnerRepository,
     private userGroupUserRoleMapRepo: UserGroupUserRoleMapRepository,
+    private UserMapOrganizeChartRepo: UserMapOrganizeChartRepository,
+    private OrganizedChartRepo: OrganizedChartRepository,
     private readonly accessService: AccessService,
   ) {}
 
@@ -78,6 +82,43 @@ export class UserService {
   findByUserId(userId: string) {
     const condition = { where: { userId: userId } } as Prisma.usersArgs;
     return this.usersRepo.findOne(condition);
+  }
+
+  async findOwnerUserByPositionId(positionId: string) {
+    const condition = {
+      where: {
+        type: 'position',
+        positionId: positionId,
+      },
+    };
+    const cerrentOrganizedChart = await this.OrganizedChartRepo.findOne(
+      condition,
+    );
+    let parentPositionId = cerrentOrganizedChart.parentPositionId;
+    let HeadParentpositionId = cerrentOrganizedChart.positionId;
+    if (parentPositionId) {
+      while (parentPositionId) {
+        const cerrentOrganizedChart = await this.OrganizedChartRepo.findOne({
+          where: {
+            type: 'position',
+            positionId: parentPositionId,
+          },
+        });
+        if (cerrentOrganizedChart) {
+          HeadParentpositionId = cerrentOrganizedChart.positionId;
+          parentPositionId = cerrentOrganizedChart.parentPositionId;
+        } else {
+          parentPositionId = null;
+        }
+      }
+    }
+    const resUserMapOrganizeChartRepo =
+      await this.UserMapOrganizeChartRepo.findOne({
+        where: { positionId: HeadParentpositionId },
+      });
+    return await this.usersRepo.findOne({
+      where: { userId: resUserMapOrganizeChartRepo.userId },
+    });
   }
 
   async update(userId: string, data: Prisma.usersUpdateInput) {
