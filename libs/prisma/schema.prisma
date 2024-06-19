@@ -1097,8 +1097,9 @@ model customerDetail {
     updatedByName String?   @map("updated_by_name") @db.VarChar(255)
     ownerGroup    String?   @map("owner_group") @db.VarChar(50)
 
-    customerFiles  customerFiles[]
-    customerBranch customerBranch[]
+    customerFiles   customerFiles[]
+    customerBranch  customerBranch[]
+    customerProject customerProject[]
 
     @@map("customer_detail")
 }
@@ -1126,4 +1127,40 @@ model customerFiles {
     customerId     Int?            @map("customer_id")
 
     @@map("customers_files")
+}
+
+model customerProject {
+    id          Int       @unique @default(autoincrement())
+    projectCode String?   @map("project_code") @db.VarChar(255)
+    projectName String?   @map("project_name") @db.VarChar(255)
+    createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamp()
+    updatedAt   DateTime? @map("updated_at") @db.Timestamp()
+    branchId    Int?      @map("branch_id") @db.Integer
+    branchName  String?   @map("branch_name") @db.VarChar(255)
+
+    customerDetail        customerDetail?         @relation(fields: [customerDetailId], references: [id])
+    customerDetailId      Int?                    @map("customer_detail_id")
+    customerDetailName    String?                 @map("customer_detail_name")
+    customerProjectTicket customerProjectTicket[]
+
+    @@map("customer_project")
+}
+
+model customerProjectTicket {
+    id                Int              @unique @default(autoincrement())
+    createdAt         DateTime         @default(now()) @map("created_at") @db.Timestamp()
+    updatedAt         DateTime?        @map("updated_at") @db.Timestamp()
+    branchId          Int?             @map("branch_id") @db.Integer
+    branchName        String?          @map("branch_name") @db.VarChar(255)
+    customerProject   customerProject? @relation(fields: [customerProjectId], references: [id])
+    customerProjectId Int?             @map("customer_project_id")
+
+    status            String  @map("status") @db.VarChar(7)
+    ticketNo          String  @map("ticket_no") @db.VarChar(10)
+    refTicketCustomer String  @map("ref_ticket_customer") @db.VarChar(50)
+    refTicketPartner  String  @map("ref_ticket_partner") @db.VarChar(50)
+    ticketTitle       String  @map("ticket_title") @db.VarChar(10)
+    ticketDetail      String? @map("ticket_detail") @db.Text
+
+    @@map("customer_project_ticket")
 }

@@ -64,7 +64,7 @@ export * from './masterRoom.repository';
 export * from './bookingRoom.repository';
 export * from './masterTypeLeaveMap.repository';
 export * from './dataLeave.repository';
-
+export * from './dataLeaveFiles.repository';
 //News
 export * from './publicizeSlideImages.repository';
 
@@ -75,4 +75,5 @@ export * from './customerContact.repository';
 export * from './customerDetail.repository';
 export * from './customerGroup.repository';
 export * from './customerFiles.repository';
-export * from './dataLeaveFiles.repository';
+export * from './customerProject.repository';
+export * from './customerProjectTicket.repository';

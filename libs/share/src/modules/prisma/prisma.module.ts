@@ -72,6 +72,8 @@ import {
   CustomerAddressRepository,
   CustomerBranchRepository,
   CustomerContactRepository,
+  CustomerProjectTicketRepository,
+  CustomerProjectRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -150,6 +152,8 @@ const services = [
   CustomerDetailRepository,
   CustomerGroupRepository,
   CustomerFilesRepository,
+  CustomerProjectRepository,
+  CustomerProjectTicketRepository,
   AccessService,
 ];
 @Module({
