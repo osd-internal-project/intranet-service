@@ -1034,8 +1034,25 @@ model customerBranch {
     customerDetailId Int?              @map("customer_detail_id")
     customerDetail   customerDetail?   @relation(fields: [customerDetailId], references: [id])
     customerAddress  customerAddress[]
+    customerContact  customerContact[]
 
     @@map("customer_branch")
+}
+
+model customerContact {
+    id               Int             @unique @default(autoincrement()) @map("id")
+    name             String?         @map("name") @db.VarChar(255)
+    nickName         String?         @map("nick_name") @db.VarChar(100)
+    position         String?         @map("customer_detail_id") @db.VarChar(150)
+    phone            String?         @map("phone") @db.VarChar(20)
+    officePhone      String?         @map("office_phone") @db.VarChar(20)
+    fax              String?         @map("fax") @db.VarChar(20)
+    email            String?         @map("email") @db.VarChar(50)
+    birthday         DateTime?       @map("birthday") @db.Timestamptz()
+    customerBranch   customerBranch? @relation(fields: [customerBranchId], references: [id], onDelete: Cascade)
+    customerBranchId Int?            @map("customer_branch_id")
+
+    @@map("customer_contact")
 }
 
 model customerDetail {

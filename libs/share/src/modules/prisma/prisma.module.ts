@@ -71,6 +71,7 @@ import {
   CustomerGroupRepository,
   CustomerAddressRepository,
   CustomerBranchRepository,
+  CustomerContactRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -145,6 +146,7 @@ const services = [
   //CRM
   CustomerAddressRepository,
   CustomerBranchRepository,
+  CustomerContactRepository,
   CustomerDetailRepository,
   CustomerGroupRepository,
   CustomerFilesRepository,

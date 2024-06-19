@@ -71,6 +71,7 @@ export * from './publicizeSlideImages.repository';
 //CRM
 export * from './customerAddress.repository';
 export * from './customerBranch.repository';
+export * from './customerContact.repository';
 export * from './customerDetail.repository';
 export * from './customerGroup.repository';
 export * from './customerFiles.repository';
