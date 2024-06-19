@@ -1,0 +1,31 @@
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { IntranetController } from './app.controller';
+import { IntranetService } from './app.service';
+import configs from './configs';
+import { RequestLoggerMiddleware } from './middleware/request-logger.middleware';
+import { CustomerDetailModule } from './customer-detail/customer-detail.module';
+import { CustomerGroupModule } from './customer-group/customer-group.module';
+import { CustomerFilesModule } from './customer-files/customer-files.module';
+import { CustomerBranchModule } from './customer-branch/customer-branch.module';
+import { CustomerAddressModule } from './customer-address/customer-address.module';
+import { CustomerContactModule } from './customer-contact/customer-contact.module';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
+    CustomerAddressModule,
+    CustomerBranchModule,
+    CustomerContactModule,
+    CustomerDetailModule,
+    CustomerGroupModule,
+    CustomerFilesModule,
+  ],
+  controllers: [IntranetController],
+  providers: [IntranetService],
+})
+export class IntranetMainModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RequestLoggerMiddleware).forRoutes('*');
+  }
+}

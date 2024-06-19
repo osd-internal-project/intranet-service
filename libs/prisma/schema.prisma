@@ -1049,6 +1049,7 @@ model customerContact {
     fax              String?         @map("fax") @db.VarChar(20)
     email            String?         @map("email") @db.VarChar(50)
     birthday         DateTime?       @map("birthday") @db.Timestamptz()
+    activeStatus     Boolean         @default(true) @map("active_status") @db.Boolean
     customerBranch   customerBranch? @relation(fields: [customerBranchId], references: [id], onDelete: Cascade)
     customerBranchId Int?            @map("customer_branch_id")
 
