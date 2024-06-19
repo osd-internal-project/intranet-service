@@ -1,0 +1,38 @@
+import { CustomerProjectTicketRepository } from '@inventory/share';
+import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
+
+@Injectable()
+export class CustomerProjectTicketService {
+  constructor(
+    private readonly customerProjectTicketRepo: CustomerProjectTicketRepository,
+  ) {}
+  create(data: Prisma.customerProjectTicketCreateInput) {
+    return this.customerProjectTicketRepo.create({ data: data });
+  }
+  findAll() {
+    return this.customerProjectTicketRepo.findAll();
+  }
+  findMany(condition: Prisma.customerProjectTicketFindManyArgs) {
+    return this.customerProjectTicketRepo.findMany(condition);
+  }
+
+  findOneById(id: number) {
+    return this.customerProjectTicketRepo.findOne({ where: { id: id } });
+  }
+  findDetailById(id: number) {
+    return this.customerProjectTicketRepo.findOne({
+      where: { id: id },
+    });
+  }
+  update(id: number, data: Prisma.customerProjectTicketUpdateInput) {
+    return this.customerProjectTicketRepo.update({
+      where: { id: id },
+      data: data,
+    });
+  }
+
+  remove(id: number) {
+    return this.customerProjectTicketRepo.delete({ where: { id: id } });
+  }
+}

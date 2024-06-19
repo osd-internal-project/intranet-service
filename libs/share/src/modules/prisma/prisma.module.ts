@@ -153,6 +153,7 @@ const services = [
   CustomerGroupRepository,
   CustomerFilesRepository,
   CustomerProjectRepository,
+  CustomerProjectRepository,
   CustomerProjectTicketRepository,
   AccessService,
 ];

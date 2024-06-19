@@ -10,6 +10,9 @@ import { CustomerFilesModule } from './customer-files/customer-files.module';
 import { CustomerBranchModule } from './customer-branch/customer-branch.module';
 import { CustomerAddressModule } from './customer-address/customer-address.module';
 import { CustomerContactModule } from './customer-contact/customer-contact.module';
+import { CustomerProjectTaskModule } from './customer-project-task/customer-project-task.module';
+import { CustomerProjectModule } from './customer-project/customer-project.module';
+import { CustomerProjectTicketModule } from './customer-project-ticket/customer-project-ticket.module';
 
 @Module({
   imports: [
@@ -20,6 +23,9 @@ import { CustomerContactModule } from './customer-contact/customer-contact.modul
     CustomerDetailModule,
     CustomerGroupModule,
     CustomerFilesModule,
+    CustomerProjectModule,
+    CustomerProjectTaskModule,
+    CustomerProjectTicketModule,
   ],
   controllers: [IntranetController],
   providers: [IntranetService],

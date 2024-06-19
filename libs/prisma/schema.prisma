@@ -1035,6 +1035,7 @@ model customerBranch {
     customerDetail   customerDetail?   @relation(fields: [customerDetailId], references: [id])
     customerAddress  customerAddress[]
     customerContact  customerContact[]
+    customerProject  customerProject[]
 
     @@map("customer_branch")
 }
@@ -1097,9 +1098,8 @@ model customerDetail {
     updatedByName String?   @map("updated_by_name") @db.VarChar(255)
     ownerGroup    String?   @map("owner_group") @db.VarChar(50)
 
-    customerFiles   customerFiles[]
-    customerBranch  customerBranch[]
-    customerProject customerProject[]
+    customerFiles  customerFiles[]
+    customerBranch customerBranch[]
 
     @@map("customer_detail")
 }
@@ -1130,37 +1130,61 @@ model customerFiles {
 }
 
 model customerProject {
-    id          Int       @unique @default(autoincrement())
-    projectCode String?   @map("project_code") @db.VarChar(255)
-    projectName String?   @map("project_name") @db.VarChar(255)
-    createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamp()
-    updatedAt   DateTime? @map("updated_at") @db.Timestamp()
-    branchId    Int?      @map("branch_id") @db.Integer
-    branchName  String?   @map("branch_name") @db.VarChar(255)
-
-    customerDetail        customerDetail?         @relation(fields: [customerDetailId], references: [id])
-    customerDetailId      Int?                    @map("customer_detail_id")
-    customerDetailName    String?                 @map("customer_detail_name")
+    id                    Int                     @unique @default(autoincrement())
+    projectCode           String?                 @map("project_code") @db.VarChar(20)
+    projectName           String?                 @map("project_name") @db.VarChar(255)
+    createdAt             DateTime                @default(now()) @map("created_at") @db.Timestamp()
+    updatedAt             DateTime?               @map("updated_at") @db.Timestamp()
+    startDate             DateTime                @map("start_date") @db.Timestamp()
+    endDate               DateTime                @map("end_date") @db.Timestamp()
+    duration              Int                     @map("duration")
+    companyId             Int?                    @map("company_id")
+    companyName           Int?                    @map("company_name")
+    taxAddressId          Int?                    @map("tax_address_id")
+    deliveryAddressId     Int?                    @map("delivery_address_id")
+    notiAddressId         Int?                    @map("noti_address_id")
+    contactId             Int?                    @map("contact_id")
+    projectManagerId      Int?                    @map("project_manager_id")
+    saleManagerId         Int?                    @map("sale_manager_id")
+    saleId                Int?                    @map("sale_id")
     customerProjectTicket customerProjectTicket[]
+    customerProjectTask   customerProjectTask[]
+    customerBranch        customerBranch?         @relation(fields: [customerBranchId], references: [id])
+    customerBranchId      Int?
 
     @@map("customer_project")
 }
 
-model customerProjectTicket {
-    id                Int              @unique @default(autoincrement())
-    createdAt         DateTime         @default(now()) @map("created_at") @db.Timestamp()
-    updatedAt         DateTime?        @map("updated_at") @db.Timestamp()
-    branchId          Int?             @map("branch_id") @db.Integer
-    branchName        String?          @map("branch_name") @db.VarChar(255)
-    customerProject   customerProject? @relation(fields: [customerProjectId], references: [id])
-    customerProjectId Int?             @map("customer_project_id")
+model customerProjectTask {
+    id        Int       @unique @default(autoincrement())
+    createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp()
+    updatedAt DateTime? @map("updated_at") @db.Timestamp()
 
-    status            String  @map("status") @db.VarChar(7)
-    ticketNo          String  @map("ticket_no") @db.VarChar(10)
-    refTicketCustomer String  @map("ref_ticket_customer") @db.VarChar(50)
-    refTicketPartner  String  @map("ref_ticket_partner") @db.VarChar(50)
-    ticketTitle       String  @map("ticket_title") @db.VarChar(10)
-    ticketDetail      String? @map("ticket_detail") @db.Text
+    taskTitle            String                  @map("ticket_title") @db.VarChar(10)
+    startDate            DateTime                @map("start_date") @db.Timestamp()
+    endDate              DateTime                @map("end_date") @db.Timestamp()
+    customerProject      customerProject?        @relation(fields: [customerProjectId], references: [id])
+    customerProjectId    Int?                    @map("customer_project_id")
+    ustomerProjectTicket customerProjectTicket[]
+
+    @@map("customer_project_task")
+}
+
+model customerProjectTicket {
+    id Int @unique @default(autoincrement())
+
+    status                String               @map("status") @db.VarChar(7)
+    ticketNo              String               @map("ticket_no") @db.VarChar(10)
+    ticketTitle           String               @map("ticket_title") @db.VarChar(10)
+    ticketDetail          String?              @map("ticket_detail") @db.Text
+    createdAt             DateTime             @default(now()) @map("created_at") @db.Timestamp()
+    updatedAt             DateTime?            @map("updated_at") @db.Timestamp()
+    appointDate           DateTime?            @map("appoint_date") @db.Timestamp()
+    dueDate               DateTime?            @map("due_date") @db.Timestamp()
+    customerProjectTask   customerProjectTask? @relation(fields: [customerProjectTaskId], references: [id])
+    customerProjectTaskId Int?
+    customerProject       customerProject?     @relation(fields: [customerProjectId], references: [id])
+    customerProjectId     Int?                 @map("customer_project_id")
 
     @@map("customer_project_ticket")
 }

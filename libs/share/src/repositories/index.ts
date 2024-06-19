@@ -76,4 +76,5 @@ export * from './customerDetail.repository';
 export * from './customerGroup.repository';
 export * from './customerFiles.repository';
 export * from './customerProject.repository';
+export * from './customerProjectTask.repository';
 export * from './customerProjectTicket.repository';
