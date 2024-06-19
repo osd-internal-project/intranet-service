@@ -93,12 +93,25 @@ export class CustomerDetailService {
   //   return data;
   // }
 
-  findMany(condition: Prisma.customerDetailFindManyArgs) {
-    return this.customerDetailRepo.findMany(condition);
+  findMany(query: any) {
+    const { refcode, customername, activestatus } = query;
+
+    return this.customerDetailRepo.findMany({
+      where: {
+        ...(refcode && { referenceCode: { contains: refcode } }),
+        ...(activestatus && { activeStatus: JSON.parse(activestatus) }),
+        ...(customername && {
+          OR: [
+            { prefixTh: { contains: customername } },
+            { firstNameTh: { contains: customername } },
+            { lastNameTh: { contains: customername } },
+          ],
+        }),
+      },
+    });
   }
 
   update(id: number, data: Prisma.customerDetailUpdateInput) {
-    Logger.debug(data);
     return this.customerDetailRepo.update({
       where: { id: id },
       data: { ...data, updatedAt: new Date() },

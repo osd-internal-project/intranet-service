@@ -6,8 +6,8 @@ import {
   Patch,
   Param,
   Delete,
-  Query,
   Logger,
+  Query,
 } from '@nestjs/common';
 import { CustomerDetailService } from './customer-detail.service';
 import { Prisma } from '@prisma/client';
@@ -20,7 +20,7 @@ export class CustomerDetailController {
     return this.customerDetailService.create(createCustomerDetailDto);
   }
   @Get('many')
-  findDataTable(@Query() query) {
+  findDataTable(@Query() query: any) {
     return this.customerDetailService.findMany(query);
   }
   // @Get('range-event')
