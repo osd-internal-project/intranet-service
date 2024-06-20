@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { DataLeaveService } from './data-leave.service';
 import { Prisma } from '@prisma/client';
@@ -32,6 +33,16 @@ export class DataLeaveController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.dataLeaveService.findOne(+id);
+  }
+
+  @Get(`find-detail-type-leave-by-userId/:userId`)
+  findDetailTypeLeaveByUserId(@Param('userId') userId: string) {
+    return this.dataLeaveService.findDetailTypeLeaveByUserId(userId);
+  }
+
+  @Get(`find-user-by-userId/:userId`)
+  findUserByUserId(@Param('userId') userId: string) {
+    return this.dataLeaveService.findUserByUserId(userId);
   }
 
   @Patch(':id')
