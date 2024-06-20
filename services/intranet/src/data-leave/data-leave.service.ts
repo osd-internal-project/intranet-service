@@ -35,6 +35,7 @@ export class DataLeaveService {
       where: {
         userId: userId,
       },
+      include: { typeLeaveDisabledMap: true },
       orderBy: {
         createdAt: 'asc',
       },
@@ -99,6 +100,21 @@ export class DataLeaveService {
     });
 
     return lastResult;
+  }
+  async findUserByUserId(userId: string) {
+    const condition = {
+      where: {
+        userId: userId,
+      },
+      include: { typeLeaveDisabledMap: true },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    } as Prisma.usersFindFirstArgs;
+
+    const resUser = await this.usersRepo.findOne(condition);
+
+    return resUser;
   }
 
   countLeavesByTypeIdMap(leaveRecords) {
