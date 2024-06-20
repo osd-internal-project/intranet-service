@@ -1007,8 +1007,8 @@ model userMapOrganizeChart {
 //CRM 
 model customerAddress {
     id               Int             @unique @default(autoincrement()) @map("id")
-    addressTypeId    String          @map("address_type_id") @db.VarChar(10)
-    addressTypeName  String          @map("address_type_name") @db.VarChar(100)
+    addressTypeId    String?         @map("address_type_id") @db.VarChar(10)
+    addressTypeName  String?         @map("address_type_name") @db.VarChar(100)
     houseNumber      String?         @map("noti_house_number") @db.VarChar(10)
     roomNumber       String?         @map("noti_room_number") @db.VarChar(10)
     building         String?         @map("noti_building") @db.VarChar(150)
