@@ -10,7 +10,6 @@ export class BookingRoomService {
     private bookingRoomRepository: BookingRoomRepository,
   ) { }
   create(data: Prisma.bookingRoomCreateInput) {
-    console.log(data);
     const condition = { data: data } as Prisma.bookingRoomCreateArgs;
     return this.bookingRoomRepository.create(condition);
   }
