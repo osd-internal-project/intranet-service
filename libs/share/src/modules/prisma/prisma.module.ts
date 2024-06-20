@@ -74,6 +74,7 @@ import {
   CustomerContactRepository,
   CustomerProjectTicketRepository,
   CustomerProjectRepository,
+  CustomerProjectTaskRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -153,7 +154,7 @@ const services = [
   CustomerGroupRepository,
   CustomerFilesRepository,
   CustomerProjectRepository,
-  CustomerProjectRepository,
+  CustomerProjectTaskRepository,
   CustomerProjectTicketRepository,
   AccessService,
 ];

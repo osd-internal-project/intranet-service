@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import {
   CustomerFilesRepository,
   CustomerDetailRepository,
@@ -40,58 +40,6 @@ export class CustomerDetailService {
 
     return customers;
   }
-  async findDataTable(query: any) {
-    const { take, skip, typeid, maName, maDate, contact, maStatus } = query;
-    const data = await this.customerDetailRepo.findMany({
-      // where: {
-      //   ...(typeid && { maTypeId: Number(typeid) }),
-      //   ...(maName && { maName: { contains: maName } }),
-      //   ...(maDate && {
-      //     maDate: {
-      //       gte: this.startOfDate(maDate[0]),
-      //       lte: this.endOfDate(maDate[1]),
-      //     },
-      //   }),
-      //   ...(contact && { contact: { contains: contact } }),
-      //   ...(maStatus && { maStatus: maStatus }),
-      // },
-      orderBy: [{ createdAt: 'desc' }],
-      take: +take,
-      skip: +skip,
-    });
-    const count = await this.customerDetailRepo.count({
-      // where: {
-      //   ...(typeid && { maTypeId: Number(typeid) }),
-      //   ...(maName && { maName: { contains: maName } }),
-      //   ...(maDate && {
-      //     maDate: {
-      //       gte: this.startOfDate(maDate[0]),
-      //       lte: this.endOfDate(maDate[1]),
-      //     },
-      //   }),
-      //   ...(contact && { contact: { contains: contact } }),
-      //   ...(maStatus && { maStatus: maStatus }),
-      // },
-    });
-    return { data: data, count: count };
-  }
-
-  // async findRangeEvent(query: any) {
-  //   const { start, end } = query;
-  //   const data = await this.customerDetailRepo.findMany({
-  //     where: {
-  //       ...(start &&
-  //         end && {
-  //           maDate: {
-  //             gte: this.startOfDate(start),
-  //             lte: this.endOfDate(end),
-  //           },
-  //         }),
-  //     },
-  //     orderBy: [{ createdAt: 'desc' }],
-  //   });
-  //   return data;
-  // }
 
   findMany(query: any) {
     const { refcode, customername, activestatus } = query;
@@ -108,6 +56,61 @@ export class CustomerDetailService {
           ],
         }),
       },
+    });
+  }
+
+  async findDatatable(query: any) {
+    const { refcode, customername, activestatus, take, skip } = query;
+
+    const data = await this.customerDetailRepo.findMany({
+      where: {
+        ...(refcode && { referenceCode: { contains: refcode } }),
+        ...(activestatus && { activeStatus: JSON.parse(activestatus) }),
+        ...(customername && {
+          OR: [
+            { prefixTh: { contains: customername } },
+            { firstNameTh: { contains: customername } },
+            { lastNameTh: { contains: customername } },
+          ],
+        }),
+      },
+      ...(take && { take: Number(take) }),
+      ...(skip && { skip: Number(skip) }),
+    });
+    const count = await this.customerDetailRepo.count({
+      where: {
+        ...(refcode && { referenceCode: { contains: refcode } }),
+        ...(activestatus && { activeStatus: JSON.parse(activestatus) }),
+        ...(customername && {
+          OR: [
+            { prefixTh: { contains: customername } },
+            { firstNameTh: { contains: customername } },
+            { lastNameTh: { contains: customername } },
+          ],
+        }),
+      },
+    });
+    console.log(data, count);
+    return { data: data, count: count };
+  }
+
+  findActiveForProject() {
+    return this.customerDetailRepo.findMany({
+      where: { activeStatus: true },
+      // select: {
+      //   id: true,
+      //   prefixTh: true,
+      //   firstNameTh: true,
+      //   lastNameTh: true,
+      //   customerBranch: {
+      //     select: {
+      //       id: true,
+      //       branchName: true,
+      //       customerAddress: true,
+      //       customerContact: true,
+      //     },
+      //   },
+      // },
     });
   }
 

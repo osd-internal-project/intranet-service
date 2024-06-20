@@ -20,14 +20,21 @@ export class CustomerDetailController {
     return this.customerDetailService.create(createCustomerDetailDto);
   }
   @Get('many')
-  findDataTable(@Query() query: any) {
+  findMany(@Query() query: any) {
     return this.customerDetailService.findMany(query);
+  }
+  @Get('data-table')
+  findDatatable(@Query() query: any) {
+    return this.customerDetailService.findDatatable(query);
   }
   // @Get('range-event')
   // findRangeEvent(@Query() query) {
   //   return this.customerDetailService.findRangeEvent(query);
   // }
-
+  @Get('active-for-project')
+  findActiveForProject() {
+    return this.customerDetailService.findActiveForProject();
+  }
   @Get(':id')
   findOneById(@Param('id') id: string) {
     return this.customerDetailService.findOneById(+id);

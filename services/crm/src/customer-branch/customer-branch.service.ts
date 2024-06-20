@@ -24,6 +24,12 @@ export class CustomerBranchService {
       include: { customerAddress: true, customerContact: true },
     });
   }
+  findDetailByCustomerId(id: number) {
+    return this.customerBranchRepo.findMany({
+      where: { customerDetailId: id },
+      include: { customerAddress: true, customerContact: true },
+    });
+  }
   update(id: number, data: Prisma.customerBranchUpdateInput) {
     return this.customerBranchRepo.update({ where: { id: id }, data: data });
   }

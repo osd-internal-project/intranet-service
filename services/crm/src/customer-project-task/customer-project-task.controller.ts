@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 import { CustomerProjectTaskService } from './customer-project-task.service';
 import { Prisma } from '@prisma/client';
-import { query } from 'express';
 
 @Controller('customer-project-task')
 export class CustomerProjectTaskController {

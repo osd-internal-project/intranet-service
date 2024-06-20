@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 import { CustomerProjectService } from './customer-project.service';
 import { Prisma } from '@prisma/client';
-import { query } from 'express';
 
 @Controller('customer-project')
 export class CustomerProjectController {
@@ -41,6 +40,7 @@ export class CustomerProjectController {
   findDetailById(@Param('id') id: string) {
     return this.customerProjectService.findDetailById(+id);
   }
+
   @Patch(':id')
   update(
     @Param('id') id: string,
