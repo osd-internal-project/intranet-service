@@ -949,6 +949,7 @@ model masterRoomType {
 
 model bookingRoom {
     id               Int      @unique @default(autoincrement()) @map("id")
+    userId           String?  @map("user_id") @db.VarChar(100)
     roomId           String?  @map("room_id") @db.VarChar(255)
     roomName         String   @map("room_name") @db.VarChar(255)
     roomType         String   @map("room_type") @db.VarChar(255)
