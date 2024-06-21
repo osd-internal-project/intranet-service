@@ -105,7 +105,7 @@
     "db:seed": "yarn prisma db seed",
     "dev": "NODE_ENV=local ts-node-dev --respawn --exit-child --transpile-only -r tsconfig-paths/register ./src/main.ts ",
     "docker:build": "cd ../.. && docker build -t 'd-debt/inventory' -f services/inventory/Dockerfile .",
-    "docker:buildx": "cd ../.. && docker build --no-cache --platform linux/amd64 -t 'dinventory-inventory-be:v1.0.25' -f services/inventory/Dockerfile .",
+    "docker:buildx": "cd ../.. && docker build --no-cache --platform linux/amd64 -t 'intra-inventory-be:v1.0.0' -f services/inventory/Dockerfile .",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "generate": "prisma generate",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
