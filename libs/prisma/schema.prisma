@@ -1165,12 +1165,12 @@ model customerProjectTask {
     createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp()
     updatedAt DateTime? @map("updated_at") @db.Timestamp()
 
-    taskTitle            String                  @map("ticket_title") @db.VarChar(10)
-    startDate            DateTime                @map("start_date") @db.Timestamp()
-    endDate              DateTime                @map("end_date") @db.Timestamp()
-    customerProject      customerProject?        @relation(fields: [customerProjectId], references: [id])
-    customerProjectId    Int?                    @map("customer_project_id")
-    ustomerProjectTicket customerProjectTicket[]
+    taskTitle             String                  @map("ticket_title") @db.VarChar(100)
+    startDate             DateTime                @map("start_date") @db.Timestamp()
+    endDate               DateTime                @map("end_date") @db.Timestamp()
+    customerProject       customerProject?        @relation(fields: [customerProjectId], references: [id])
+    customerProjectId     Int?                    @map("customer_project_id")
+    customerProjectTicket customerProjectTicket[]
 
     @@map("customer_project_task")
 }
