@@ -1142,8 +1142,11 @@ model customerProject {
     companyId             Int?                    @map("company_id")
     companyName           Int?                    @map("company_name")
     taxAddressId          Int?                    @map("tax_address_id")
+    taxAddressText        String?                 @map("tax_address_text") @db.Text
     deliveryAddressId     Int?                    @map("delivery_address_id")
+    deliveryAddressText   String?                 @map("delivery_address_text") @db.Text
     notiAddressId         Int?                    @map("noti_address_id")
+    notiAddressText       String?                 @map("noti_address_text") @db.Text
     contactId             Int?                    @map("contact_id")
     projectManagerId      Int?                    @map("project_manager_id")
     saleManagerId         Int?                    @map("sale_manager_id")
