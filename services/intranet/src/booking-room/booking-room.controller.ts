@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Req,
+  Query
 } from '@nestjs/common';
 import { BookingRoomService } from './booking-room.service';
 import { Prisma } from '@prisma/client';
@@ -27,6 +28,11 @@ export class BookingRoomController {
   findAll(@Req() req) {
     const userId = req.user.userId;
     return this.bookingRoomService.findAll(userId);
+  }
+
+  @Get()
+  findMany(@Query('skip') skip: number, @Query('take') take: number) {
+    return this.bookingRoomService.findMany(+skip, +take);
   }
 
   @Get(':id')

@@ -7,7 +7,7 @@ export class BookingRoomService {
   constructor(
     private bookingRoomRepository: BookingRoomRepository,
     private readonly accessService: AccessService,
-  ) {}
+  ) { }
   create(data: Prisma.bookingRoomCreateInput) {
     const condition = { data: data } as Prisma.bookingRoomCreateArgs;
     return this.bookingRoomRepository.create(condition);
@@ -20,6 +20,13 @@ export class BookingRoomService {
         userId: { in: usersId },
       },
     });
+  }
+
+  async findMany(skip: number, take: number) {
+    const condition = { skip, take } as Prisma.bookingRoomFindFirstArgsBase;
+    const count = await this.bookingRoomRepository.count()
+    const result = await this.bookingRoomRepository.findMany(condition);
+    return { data: result, count: count };
   }
 
   findOne(id: number) {
