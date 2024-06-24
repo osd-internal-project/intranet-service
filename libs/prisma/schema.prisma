@@ -1199,6 +1199,9 @@ model customerProjectTicket {
     customerProjectTaskId Int?
     customerProject       customerProject?     @relation(fields: [customerProjectId], references: [id])
     customerProjectId     Int?                 @map("customer_project_id")
+    problem               String?              @map("problem") @db.Text
+    solution              String?              @map("solution") @db.Text
+    result                String?              @map("result") @db.Text
 
     @@map("customer_project_ticket")
 }
