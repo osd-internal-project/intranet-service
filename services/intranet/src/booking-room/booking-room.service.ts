@@ -1,21 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import {
-  BookingRoomRepository,
-} from '@inventory/share';
+import { AccessService, BookingRoomRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class BookingRoomService {
   constructor(
     private bookingRoomRepository: BookingRoomRepository,
-  ) { }
+    private readonly accessService: AccessService,
+  ) {}
   create(data: Prisma.bookingRoomCreateInput) {
     const condition = { data: data } as Prisma.bookingRoomCreateArgs;
     return this.bookingRoomRepository.create(condition);
   }
 
-  findAll() {
-    return this.bookingRoomRepository.findAll();
+  async findAll(userId: string) {
+    const usersId = await this.accessService.getAllUser(userId);
+    return this.bookingRoomRepository.findMany({
+      where: {
+        userId: { in: usersId },
+      },
+    });
   }
 
   findOne(id: number) {
