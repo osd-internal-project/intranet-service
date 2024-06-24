@@ -1,6 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { BookingRoomService } from './booking-room.service';
 import { Prisma } from '@prisma/client';
+import { AuthGuard } from '@inventory/share';
 
 @Controller('booking-room')
 export class BookingRoomController {
@@ -12,8 +23,10 @@ export class BookingRoomController {
   }
 
   @Get()
-  findAll() {
-    return this.bookingRoomService.findAll();
+  @UseGuards(AuthGuard)
+  findAll(@Req() req) {
+    const userId = req.user.userId;
+    return this.bookingRoomService.findAll(userId);
   }
 
   @Get(':id')
