@@ -960,6 +960,7 @@ model bookingRoom {
     startDate        DateTime  @default(now()) @map("start_date") @db.Timestamptz()
     endDate          DateTime  @default(now()) @map("end_date") @db.Timestamptz()
     bookingStatus    String    @map("booking_status") @db.VarChar(255)
+    approverId       String?   @map("approver_id") @db.VarChar(255)
     approver         String?   @map("approver") @db.VarChar(255)
     approveDate      DateTime? @map("approve_date") @db.Timestamptz()
     member           String    @map("member") @db.VarChar(255)
