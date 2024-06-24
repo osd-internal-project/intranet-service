@@ -21,6 +21,11 @@ export class CustomerProjectTicketService {
       where: { customerProjectTaskId: taskId },
     });
   }
+  findByProjectId(project: number) {
+    return this.customerProjectTicketRepo.findMany({
+      where: { customerProjectId: project, customerProjectTaskId: null },
+    });
+  }
   findOneById(id: number) {
     return this.customerProjectTicketRepo.findOne({ where: { id: id } });
   }

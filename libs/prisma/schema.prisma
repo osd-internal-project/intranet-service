@@ -1180,7 +1180,7 @@ model customerProjectTask {
 model customerProjectTicket {
     id Int @unique @default(autoincrement())
 
-    status                String               @map("status") @db.VarChar(7)
+    status                String               @map("status") @db.VarChar(15)
     ticketNo              String?              @map("ticket_no") @db.VarChar(10)
     ticketTitle           String               @map("ticket_title") @db.VarChar(100)
     ticketDetail          String?              @map("ticket_detail") @db.Text

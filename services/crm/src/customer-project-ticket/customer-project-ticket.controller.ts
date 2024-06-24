@@ -36,6 +36,10 @@ export class CustomerProjectTicketController {
   findByTaskId(@Param('taskid') id: string) {
     return this.customerProjectTicketService.findByTaskId(+id);
   }
+  @Get('/find-by-project/:taskid')
+  findByProjectId(@Param('taskid') id: string) {
+    return this.customerProjectTicketService.findByProjectId(+id);
+  }
   @Get('/detail/:id')
   findDetailById(@Param('id') id: string) {
     return this.customerProjectTicketService.findDetailById(+id);
@@ -50,6 +54,7 @@ export class CustomerProjectTicketController {
     @Body()
     updateCustomerProjectTicketDto: Prisma.customerProjectTicketUpdateInput,
   ) {
+    console.log(updateCustomerProjectTicketDto);
     return this.customerProjectTicketService.update(
       +id,
       updateCustomerProjectTicketDto,
