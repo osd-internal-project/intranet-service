@@ -31,16 +31,19 @@ export class CustomerProjectController {
     console.log(query);
     return this.customerProjectService.findMany({});
   }
-
-  @Get(':id')
-  findOneById(@Param('id') id: string) {
-    return this.customerProjectService.findOneById(+id);
+  @Get('data-table')
+  findDatatable(@Query() query: any) {
+    return this.customerProjectService.findDatatable(query);
   }
   @Get('/detail/:id')
   findDetailById(@Param('id') id: string) {
     return this.customerProjectService.findDetailById(+id);
   }
 
+  @Get(':id')
+  findOneById(@Param('id') id: string) {
+    return this.customerProjectService.findOneById(+id);
+  }
   @Patch(':id')
   update(
     @Param('id') id: string,

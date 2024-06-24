@@ -16,7 +16,11 @@ export class CustomerProjectTicketService {
   findMany(condition: Prisma.customerProjectTicketFindManyArgs) {
     return this.customerProjectTicketRepo.findMany(condition);
   }
-
+  findByTaskId(taskId: number) {
+    return this.customerProjectTicketRepo.findMany({
+      where: { customerProjectTaskId: taskId },
+    });
+  }
   findOneById(id: number) {
     return this.customerProjectTicketRepo.findOne({ where: { id: id } });
   }

@@ -25,6 +25,12 @@ export class CustomerProjectTaskService {
       where: { id: id },
     });
   }
+  findByProjectId(projectId: number) {
+    return this.customerProjectTaskRepo.findMany({
+      where: { customerProjectId: projectId },
+      include: { customerProjectTicket: true },
+    });
+  }
   update(id: number, data: Prisma.customerProjectTaskUpdateInput) {
     return this.customerProjectTaskRepo.update({
       where: { id: id },

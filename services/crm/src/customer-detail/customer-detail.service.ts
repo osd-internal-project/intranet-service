@@ -90,7 +90,6 @@ export class CustomerDetailService {
         }),
       },
     });
-    console.log(data, count);
     return { data: data, count: count };
   }
 

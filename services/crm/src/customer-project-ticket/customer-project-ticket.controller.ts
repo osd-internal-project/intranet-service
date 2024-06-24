@@ -32,13 +32,17 @@ export class CustomerProjectTicketController {
     return this.customerProjectTicketService.findMany({});
   }
 
-  @Get(':id')
-  findOneById(@Param('id') id: string) {
-    return this.customerProjectTicketService.findOneById(+id);
+  @Get('/find-by-task/:taskid')
+  findByTaskId(@Param('taskid') id: string) {
+    return this.customerProjectTicketService.findByTaskId(+id);
   }
   @Get('/detail/:id')
   findDetailById(@Param('id') id: string) {
     return this.customerProjectTicketService.findDetailById(+id);
+  }
+  @Get(':id')
+  findOneById(@Param('id') id: string) {
+    return this.customerProjectTicketService.findOneById(+id);
   }
   @Patch(':id')
   update(

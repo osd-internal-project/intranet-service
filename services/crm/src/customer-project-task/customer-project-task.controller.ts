@@ -40,6 +40,10 @@ export class CustomerProjectTaskController {
   findDetailById(@Param('id') id: string) {
     return this.customerProjectTaskService.findDetailById(+id);
   }
+  @Get('/find-by-project/:projectid')
+  findByProjectId(@Param('projectid') projectId: string) {
+    return this.customerProjectTaskService.findByProjectId(+projectId);
+  }
   @Patch(':id')
   update(
     @Param('id') id: string,
