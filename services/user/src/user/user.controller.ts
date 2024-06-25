@@ -256,6 +256,11 @@ export class UserController {
     return this.userService.findOwnerUserByPositionId(positionId);
   }
 
+  @Get('find-organize-user-by-userid/:userid')
+  findOrganizeuserByUserid(@Param('userId') userId: string) {
+    return this.userService.findOrganizeuserByUserid(userId);
+  }
+
   @Patch()
   update(
     @Body('userId') userId: string,
