@@ -43,6 +43,12 @@ export class CustomerBranchController {
   findDetailByCustomerId(@Param('id') id: string) {
     return this.customerBranchService.findDetailByCustomerId(+id);
   }
+  @Get('customer-project/:id')
+  findCustomerProjectBycustomerBranchId(@Param('id') id: string) {
+    return this.customerBranchService.findCustomerProjectBycustomerBranchId(
+      +id,
+    );
+  }
   @Patch(':id')
   update(
     @Param('id') id: string,
