@@ -1,10 +1,18 @@
-import { CustomerBranchRepository } from '@inventory/share';
+import {
+  CustomerBranchRepository,
+  CustomerProjectRepository,
+  CustomerDetailRepository,
+} from '@inventory/share';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class CustomerBranchService {
-  constructor(private readonly customerBranchRepo: CustomerBranchRepository) {}
+  constructor(
+    private readonly customerBranchRepo: CustomerBranchRepository,
+    private readonly customerProjectRepo: CustomerProjectRepository,
+    private readonly customerDetailRepo: CustomerDetailRepository,
+  ) {}
   create(data: Prisma.customerBranchCreateInput) {
     return this.customerBranchRepo.create({ data: data });
   }
@@ -29,6 +37,23 @@ export class CustomerBranchService {
       where: { customerDetailId: id },
       include: { customerAddress: true, customerContact: true },
     });
+  }
+  async findCustomerProjectBycustomerBranchId(id: number) {
+    const rescustomerDetail = (await this.customerDetailRepo.findOne({
+      where: { id: id },
+      include: {
+        customerBranch: true,
+      },
+    })) as any;
+    const rescustomerProject = await this.customerProjectRepo.findMany({
+      where: {
+        customerBranchId: { in: rescustomerDetail.customerBranch.id },
+      },
+      include: {
+        customerBranch: true,
+      },
+    });
+    return rescustomerProject;
   }
   update(id: number, data: Prisma.customerBranchUpdateInput) {
     return this.customerBranchRepo.update({ where: { id: id }, data: data });
