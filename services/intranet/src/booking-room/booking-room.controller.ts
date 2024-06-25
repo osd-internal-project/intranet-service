@@ -23,12 +23,12 @@ export class BookingRoomController {
     return this.bookingRoomService.create(data);
   }
 
-  @Get()
-  @UseGuards(AuthGuard)
-  findAll(@Req() req) {
-    const userId = req.user.userId;
-    return this.bookingRoomService.findAll(userId);
-  }
+  // @Get()
+  // @UseGuards(AuthGuard)
+  // findAll(@Req() req) {
+  //   const userId = req.user.userId;
+  //   return this.bookingRoomService.findAll(userId);
+  // }
 
   @Get()
   findMany(@Query('skip') skip: number, @Query('take') take: number) {
