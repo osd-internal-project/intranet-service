@@ -75,6 +75,8 @@ import {
   CustomerProjectTicketRepository,
   CustomerProjectRepository,
   CustomerProjectTaskRepository,
+  CustomerResponsibleRepository,
+  CustomerTypeRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -156,6 +158,8 @@ const services = [
   CustomerProjectRepository,
   CustomerProjectTaskRepository,
   CustomerProjectTicketRepository,
+  CustomerResponsibleRepository,
+  CustomerTypeRepository,
   AccessService,
 ];
 @Module({

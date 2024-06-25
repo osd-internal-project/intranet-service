@@ -78,3 +78,5 @@ export * from './customerFiles.repository';
 export * from './customerProject.repository';
 export * from './customerProjectTask.repository';
 export * from './customerProjectTicket.repository';
+export * from './customerResponsible.repository';
+export * from './customerType.repository';

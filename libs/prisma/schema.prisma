@@ -1078,6 +1078,7 @@ model customerDetail {
     lastNameEn         String?   @map("last_name_en") @db.VarChar(200)
     companyRegisNumber String?   @map("company_regis_number") @db.VarChar(50)
     regisDate          DateTime? @map("regis_date") @db.Timestamptz()
+    registration       String?   @map("registration") @db.VarChar(20)
     customerGroupId    Int?      @map("customer_group_id") @db.Integer
     customerGroupName  String?   @map("customer_group_name") @db.VarChar(255)
     grade              String?   @map("grade") @db.VarChar(5)
@@ -1114,11 +1115,31 @@ model customerDetail {
 model customerGroup {
     id           Int      @unique @default(autoincrement()) @map("id")
     name         String   @map("name") @db.VarChar(255)
-    activeStatus Boolean  @map("active_status") @db.Boolean
+    activeStatus Boolean  @default(true) @map("active_status") @db.Boolean
     createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz()
     updatedAt    DateTime @default(now()) @map("updated_at") @db.Timestamptz()
 
     @@map("customer_group")
+}
+
+model customerResponsible {
+    id           Int      @unique @default(autoincrement()) @map("id")
+    name         String   @map("name") @db.VarChar(255)
+    activeStatus Boolean  @default(true) @map("active_status") @db.Boolean
+    createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt    DateTime @default(now()) @map("updated_at") @db.Timestamptz()
+
+    @@map("customer_responsible")
+}
+
+model customerType {
+    id           Int      @unique @default(autoincrement()) @map("id")
+    name         String   @map("name") @db.VarChar(255)
+    activeStatus Boolean  @default(true) @map("active_status") @db.Boolean
+    createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt    DateTime @default(now()) @map("updated_at") @db.Timestamptz()
+
+    @@map("customer_type")
 }
 
 model customerFiles {
@@ -1140,6 +1161,7 @@ model customerProject {
     id                    Int                     @unique @default(autoincrement())
     projectCode           String?                 @map("project_code") @db.VarChar(20)
     projectName           String?                 @map("project_name") @db.VarChar(255)
+    productName           String?                 @map("product_name") @db.VarChar(255)
     createdAt             DateTime                @default(now()) @map("created_at") @db.Timestamp()
     updatedAt             DateTime?               @map("updated_at") @db.Timestamp()
     startDate             DateTime                @map("start_date") @db.Timestamp()
