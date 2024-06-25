@@ -120,7 +120,19 @@ export class UserService {
       where: { userId: resUserMapOrganizeChartRepo.userId },
     });
   }
-
+  async findOrganizeuserByUserid(userId: string) {
+    const organize = await this.userMapOrganizeGroupOwnerRepo.findOne({
+      where: { usersId: userId },
+    });
+    return this.usersRepo.findByCondition({
+      where: {
+        userMapOrganizeGroupOwner: {
+          some: { organizedId: organize.organizedId },
+        },
+      },
+      select: { userId: true, firstNameTh: true, lastNameTh: true },
+    });
+  }
   async update(userId: string, data: Prisma.usersUpdateInput) {
     const condition = {
       where: { userId: userId },
