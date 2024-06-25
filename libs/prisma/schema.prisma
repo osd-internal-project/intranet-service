@@ -1151,9 +1151,12 @@ model customerProject {
     notiAddressId         Int?                    @map("noti_address_id")
     notiAddressText       String?                 @map("noti_address_text") @db.Text
     contactId             Int?                    @map("contact_id")
-    projectManagerId      Int?                    @map("project_manager_id")
-    saleManagerId         Int?                    @map("sale_manager_id")
-    saleId                Int?                    @map("sale_id")
+    projectManagerId      String?                 @map("project_manager_id") @db.VarChar(50)
+    projectManagerName    String?                 @map("project_manager_name") @db.VarChar(150)
+    saleManagerId         String?                 @map("sale_manager_id") @db.VarChar(50)
+    saleManagerName       String?                 @map("sale_manager_name") @db.VarChar(150)
+    saleId                String?                 @map("sale_id") @db.VarChar(50)
+    saleName              String?                 @map("sale_name") @db.VarChar(150)
     customerProjectTicket customerProjectTicket[]
     customerProjectTask   customerProjectTask[]
     customerBranch        customerBranch?         @relation(fields: [customerBranchId], references: [id])
