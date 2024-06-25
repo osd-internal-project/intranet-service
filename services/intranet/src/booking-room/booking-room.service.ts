@@ -13,13 +13,17 @@ export class BookingRoomService {
     return this.bookingRoomRepository.create(condition);
   }
 
-  async findAll(userId: string) {
-    const usersId = await this.accessService.getAllUser(userId);
-    return this.bookingRoomRepository.findMany({
-      where: {
-        userId: { in: usersId },
-      },
-    });
+  // async findAll(userId: string) {
+  //   const usersId = await this.accessService.getAllUser(userId);
+  //   return this.bookingRoomRepository.findMany({
+  //     where: {
+  //       userId: { in: usersId },
+  //     },
+  //   });
+  // }
+
+  async findAll() {
+    return this.bookingRoomRepository.findAll();
   }
 
   async findMany(skip: number, take: number) {

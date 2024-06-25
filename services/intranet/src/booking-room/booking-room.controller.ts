@@ -31,9 +31,22 @@ export class BookingRoomController {
   // }
 
   @Get()
-  findMany(@Query('skip') skip: number, @Query('take') take: number) {
-    return this.bookingRoomService.findMany(+skip, +take);
+  findAll(@Query('skip') skip?: number, @Query('take') take?: number) {
+    if (skip !== undefined && take !== undefined) {
+      return this.bookingRoomService.findMany(+skip, +take);
+    }
+    return this.bookingRoomService.findAll();
   }
+
+  // @Get()
+  // findAll() {
+  //   return this.bookingRoomService.findAll();
+  // }
+
+  // @Get()
+  // findMany(@Query('skip') skip: number, @Query('take') take: number) {
+  //   return this.bookingRoomService.findMany(+skip, +take);
+  // }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
