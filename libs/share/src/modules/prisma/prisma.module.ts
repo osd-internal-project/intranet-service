@@ -66,6 +66,7 @@ import {
   BookingRoomRepository,
   MaTaskFilesRepository,
   PublicizeSlideImagesRepository,
+  //CRM
   CustomerDetailRepository,
   CustomerFilesRepository,
   CustomerGroupRepository,
@@ -77,6 +78,11 @@ import {
   CustomerProjectTaskRepository,
   CustomerResponsibleRepository,
   CustomerTypeRepository,
+  CustomerJobTypeRepository,
+  CustomerChannelTypeRepository,
+  CustomerPriorityRepository,
+  CustomerWorkTypeRepository,
+  CustomerRequestTypeRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -160,6 +166,13 @@ const services = [
   CustomerProjectTicketRepository,
   CustomerResponsibleRepository,
   CustomerTypeRepository,
+  CustomerChannelTypeRepository,
+  CustomerJobTypeRepository,
+  CustomerPriorityRepository,
+  CustomerTypeRepository,
+  CustomerWorkTypeRepository,
+  CustomerRequestTypeRepository,
+  //access
   AccessService,
 ];
 @Module({

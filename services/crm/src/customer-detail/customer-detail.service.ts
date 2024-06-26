@@ -1,7 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import {
-  CustomerFilesRepository,
   CustomerDetailRepository,
+  CustomerFilesRepository,
+  CustomerTypeRepository,
+  CustomerResponsibleRepository,
+  CustomerGroupRepository,
+  CustomerChannelTypeRepository,
+  CustomerJobTypeRepository,
+  CustomerWorkTypeRepository,
+  CustomerPriorityRepository,
+  CustomerRequestTypeRepository,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 @Injectable()
@@ -9,6 +17,14 @@ export class CustomerDetailService {
   constructor(
     private readonly customerDetailRepo: CustomerDetailRepository,
     private readonly customerFilesReposito: CustomerFilesRepository,
+    private readonly customerGroupRepo: CustomerGroupRepository,
+    private readonly customerResponsibleRepo: CustomerResponsibleRepository,
+    private readonly customerTypeRepo: CustomerTypeRepository,
+    private readonly customerChannelTypeRepo: CustomerChannelTypeRepository,
+    private readonly customerJobTypeRepo: CustomerJobTypeRepository,
+    private readonly customerWorkTypeRepo: CustomerWorkTypeRepository,
+    private readonly customerRequestTypeRepo: CustomerRequestTypeRepository,
+    private readonly customerPriorityRepo: CustomerPriorityRepository,
   ) {}
   startOfDate(date: string) {
     const dateset = new Date(date).setUTCHours(0, 0, 0, 0);
@@ -111,6 +127,47 @@ export class CustomerDetailService {
       //   },
       // },
     });
+  }
+  findConfigCustomerGroup() {
+    return this.customerGroupRepo.findMany({
+      where: { activeStatus: true },
+    });
+  }
+  findConfigCustomerType() {
+    return this.customerTypeRepo.findMany({
+      where: { activeStatus: true },
+    });
+  }
+
+  findConfigCustomerResponsible() {
+    return this.customerResponsibleRepo.findMany({
+      where: { activeStatus: true },
+    });
+  }
+
+  async findConfigForTicket() {
+    const channelTypeList = await this.customerChannelTypeRepo.findMany({
+      where: { activeStatus: true },
+    });
+    const jobTypeList = await this.customerJobTypeRepo.findMany({
+      where: { activeStatus: true },
+    });
+    const priorityList = await this.customerPriorityRepo.findMany({
+      where: { activeStatus: true },
+    });
+    const workTypeList = await this.customerWorkTypeRepo.findMany({
+      where: { activeStatus: true },
+    });
+    const requestTypeList = await this.customerRequestTypeRepo.findMany({
+      where: { activeStatus: true },
+    });
+    return {
+      channelTypeList: channelTypeList ? channelTypeList : [],
+      jobTypeList: jobTypeList ? jobTypeList : [],
+      priorityList: priorityList ? priorityList : [],
+      workTypeList: workTypeList ? workTypeList : [],
+      requestTypeList: requestTypeList ? requestTypeList : [],
+    };
   }
 
   update(id: number, data: Prisma.customerDetailUpdateInput) {

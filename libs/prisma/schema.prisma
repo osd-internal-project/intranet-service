@@ -1238,33 +1238,30 @@ model customerProjectTicket {
     assignId              String?              @map("assign_id") @db.VarChar(50)
     assignName            String?              @map("assign_name") @db.VarChar(150)
     //Config Ticket
-    requestType           String?              @map("request_type") @db.VarChar(150)
-    jobType               String?              @map("job_type") @db.VarChar(150)
-    workType              String?              @map("work_type") @db.VarChar(150)
-    priority              String?              @map("priority") @db.VarChar(20)
+    channelTypeId         Int?                 @map("channel_type_id")
+    channelTypeName       String?              @map("channel_type_name") @db.VarChar(100)
+    jobTypeId             Int?                 @map("job_type_id")
+    jobTypeName           String?              @map("job_type_name") @db.VarChar(100)
+    priorityId            Int?                 @map("priority_id")
+    priorityName          String?              @map("priority_name") @db.VarChar(100)
+    requestTypeId         Int?                 @map("request_type_id")
+    requestTypeName       String?              @map("request_type_name") @db.VarChar(100)
+    workTypeId            Int?                 @map("work_type_id")
+    workTypeName          String?              @map("work_type_name") @db.VarChar(100)
+
     //Date
-    dueDate               DateTime?            @map("due_date") @db.Timestamp()
-    appointmentDate       DateTime?            @map("appointment_date") @db.Timestamp()
-    reciveDate            DateTime?            @map("recive_date") @db.Timestamp()
-    finishDate            DateTime?            @map("finish_date") @db.Timestamp()
-    completeDate          DateTime?            @map("complete_date") @db.Timestamp()
+    dueDate         DateTime? @map("due_date") @db.Timestamp()
+    appointmentDate DateTime? @map("appointment_date") @db.Timestamp()
+    reciveDate      DateTime? @map("recive_date") @db.Timestamp()
+    finishDate      DateTime? @map("finish_date") @db.Timestamp()
+    completeDate    DateTime? @map("complete_date") @db.Timestamp()
 
     @@map("customer_project_ticket")
 }
 
-model customerPriority {
-    id           Int      @unique @default(autoincrement()) @map("id")
-    name         String   @map("name") @db.VarChar(255)
-    activeStatus Boolean  @default(true) @map("active_status") @db.Boolean
-    createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt    DateTime @default(now()) @map("updated_at") @db.Timestamptz()
-
-    @@map("customer_priority")
-}
-
 model customerChannelType {
     id           Int      @unique @default(autoincrement()) @map("id")
-    name         String   @map("name") @db.VarChar(255)
+    name         String   @map("name") @db.VarChar(100)
     activeStatus Boolean  @default(true) @map("active_status") @db.Boolean
     createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz()
     updatedAt    DateTime @default(now()) @map("updated_at") @db.Timestamptz()
@@ -1274,7 +1271,7 @@ model customerChannelType {
 
 model customerJobType {
     id           Int      @unique @default(autoincrement()) @map("id")
-    name         String   @map("name") @db.VarChar(255)
+    name         String   @map("name") @db.VarChar(100)
     activeStatus Boolean  @default(true) @map("active_status") @db.Boolean
     createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz()
     updatedAt    DateTime @default(now()) @map("updated_at") @db.Timestamptz()
@@ -1282,9 +1279,29 @@ model customerJobType {
     @@map("customer_job_type")
 }
 
+model customerPriority {
+    id           Int      @unique @default(autoincrement()) @map("id")
+    name         String   @map("name") @db.VarChar(100)
+    activeStatus Boolean  @default(true) @map("active_status") @db.Boolean
+    createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt    DateTime @default(now()) @map("updated_at") @db.Timestamptz()
+
+    @@map("customer_priority")
+}
+
+model customerRequestType {
+    id           Int      @unique @default(autoincrement()) @map("id")
+    name         String   @map("name") @db.VarChar(100)
+    activeStatus Boolean  @default(true) @map("active_status") @db.Boolean
+    createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt    DateTime @default(now()) @map("updated_at") @db.Timestamptz()
+
+    @@map("customer_request_type")
+}
+
 model customerWorkType {
     id           Int      @unique @default(autoincrement()) @map("id")
-    name         String   @map("name") @db.VarChar(255)
+    name         String   @map("name") @db.VarChar(100)
     activeStatus Boolean  @default(true) @map("active_status") @db.Boolean
     createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz()
     updatedAt    DateTime @default(now()) @map("updated_at") @db.Timestamptz()

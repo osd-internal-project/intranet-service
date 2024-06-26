@@ -27,7 +27,6 @@ export class CustomerBranchController {
   }
   @Get('many')
   findMany(@Query() query: object) {
-    console.log(query);
     return this.customerBranchService.findMany({});
   }
 

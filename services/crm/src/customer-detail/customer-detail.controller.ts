@@ -35,6 +35,22 @@ export class CustomerDetailController {
   findActiveForProject() {
     return this.customerDetailService.findActiveForProject();
   }
+  @Get('config/customer-group')
+  findConfigCustomerGroup() {
+    return this.customerDetailService.findConfigCustomerGroup();
+  }
+  @Get('config/customer-responsible')
+  findConfigCustomerResponsible() {
+    return this.customerDetailService.findConfigCustomerResponsible();
+  }
+  @Get('config/customer-type')
+  findConfigCustomerType() {
+    return this.customerDetailService.findConfigCustomerType();
+  }
+  @Get('config/ticket-configs')
+  findConfigForTicket() {
+    return this.customerDetailService.findConfigForTicket();
+  }
   @Get(':id')
   findOneById(@Param('id') id: string) {
     return this.customerDetailService.findOneById(+id);

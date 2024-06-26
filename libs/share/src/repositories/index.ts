@@ -80,3 +80,8 @@ export * from './customerProjectTask.repository';
 export * from './customerProjectTicket.repository';
 export * from './customerResponsible.repository';
 export * from './customerType.repository';
+export * from './customerChannelType.repository';
+export * from './customerJobType.repository';
+export * from './customerPriority.repository';
+export * from './customerRequestType.repository';
+export * from './customerWorkType.repository';

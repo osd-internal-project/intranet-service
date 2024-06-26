@@ -39,15 +39,16 @@ export class CustomerBranchService {
     });
   }
   async findCustomerProjectBycustomerBranchId(id: number) {
-    const rescustomerDetail = (await this.customerDetailRepo.findOne({
-      where: { id: id },
-      include: {
-        customerBranch: true,
-      },
-    })) as any;
+    // const rescustomerDetail = (await this.customerDetailRepo.findOne({
+    //   where: { id: id },
+    //   include: {
+    //     customerBranch: true,
+    //   },
+    // })) as any;
     const rescustomerProject = await this.customerProjectRepo.findMany({
       where: {
-        customerBranchId: { in: rescustomerDetail.customerBranch.id },
+        // customerBranchId: { in: rescustomerDetail.customerBranch.id },
+        customerBranch: { customerDetailId: id },
       },
       include: {
         customerBranch: true,
