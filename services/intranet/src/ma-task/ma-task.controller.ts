@@ -8,16 +8,21 @@ import {
   Delete,
   Query,
   Logger,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { MaTaskService } from './ma-task.service';
 import { Prisma } from '@prisma/client';
+import { AuthGuard } from '@inventory/share';
 @Controller('ma-task')
 export class MaTaskController {
   constructor(private readonly maTaskService: MaTaskService) {}
 
   @Post()
-  create(@Body() createMaTaskDto: Prisma.maTaskCreateInput) {
-    return this.maTaskService.create(createMaTaskDto);
+  @UseGuards(AuthGuard)
+  create(@Body() createMaTaskDto: Prisma.maTaskCreateInput, @Req() req: any) {
+    const ownerGroupId = req.user.userMapOwnerGroupId[0].ownerGroupId;
+    return this.maTaskService.create(createMaTaskDto, ownerGroupId);
   }
 
   @Patch(':id')
@@ -33,8 +38,10 @@ export class MaTaskController {
     return this.maTaskService.remove(+id);
   }
   @Get('data-table')
-  findDataTable(@Query() query) {
-    return this.maTaskService.findDataTable(query);
+  @UseGuards(AuthGuard)
+  findDataTable(@Query() query, @Req() req: any) {
+    const userId = req.user.userId;
+    return this.maTaskService.findDataTable(query, userId);
   }
   @Get('range-event')
   findRangeEvent(@Query() query) {

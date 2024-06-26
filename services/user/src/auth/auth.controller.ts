@@ -50,6 +50,9 @@ export class AuthController {
             positionId: true,
           },
         },
+        userMapOrganizeGroupOwner: {
+          select: { ownerGroupId: true },
+        },
       },
     } as Prisma.usersFindFirstArgs;
 
@@ -66,6 +69,7 @@ export class AuthController {
         lastNameEn,
         masterPosition,
         userMapOrganizeChart,
+        userMapOrganizeGroupOwner,
       } = user;
       const payload = {
         userId,
@@ -79,6 +83,7 @@ export class AuthController {
         ownerGroup: ownerGroupId,
         position: masterPosition,
         userMapOrganizeChart: userMapOrganizeChart,
+        userMapOwnerGroupId: userMapOrganizeGroupOwner,
       };
       const token = this.authguardService.createToken(payload);
       await this.userService.updateRefreshToken(
@@ -114,7 +119,6 @@ export class AuthController {
       }
     } else {
       const user = await this.userService.findOneByCondition(condition);
-
       if (!user) {
         throw new NotFoundException();
       }

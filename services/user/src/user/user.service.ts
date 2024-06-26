@@ -46,10 +46,8 @@ export class UserService {
   }
 
   async findByCondition(condition: Prisma.usersFindManyArgs, userId: string) {
-    const userIdAll = await this.accessService.getAllUser(userId);
     condition = {
       where: {
-        userId: { in: userIdAll },
         ...condition.where,
       },
       orderBy: [

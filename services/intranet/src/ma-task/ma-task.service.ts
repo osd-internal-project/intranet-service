@@ -1,11 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { MaTaskFilesRepository, MaTaskRepository } from '@inventory/share';
+import {
+  AccessService,
+  MaTaskFilesRepository,
+  MaTaskRepository,
+} from '@inventory/share';
 import { Prisma } from '@prisma/client';
 @Injectable()
 export class MaTaskService {
   constructor(
     private readonly maTaskRepo: MaTaskRepository,
     private readonly maTaskFilesRepo: MaTaskFilesRepository,
+    private readonly accessService: AccessService,
   ) {}
   startOfDate(date: string) {
     const dateset = new Date(date).setUTCHours(0, 0, 0, 0);
@@ -16,9 +21,9 @@ export class MaTaskService {
     const dateset = new Date(date).setUTCHours(23, 59, 59, 59);
     return new Date(dateset);
   }
-  create(data: Prisma.maTaskCreateInput) {
+  create(data: Prisma.maTaskCreateInput, ownerGroupId: string) {
     const condition = {
-      data: data,
+      data: { ...data, ownerGroup: ownerGroupId },
     } as Prisma.maTaskCreateArgs;
     return this.maTaskRepo.create(condition);
   }
@@ -51,8 +56,9 @@ export class MaTaskService {
     });
     return { ...task, fileList: fileList, imageList: imageList };
   }
-  async findDataTable(query: any) {
+  async findDataTable(query: any, userId: string) {
     const { take, skip, typeid, maName, maDate, contact, maStatus } = query;
+    const ownerGroupId = await this.accessService.getOwnerGroupId(userId);
     const data = await this.maTaskRepo.findMany({
       where: {
         ...(typeid && { maTypeId: Number(typeid) }),
@@ -65,6 +71,7 @@ export class MaTaskService {
         }),
         ...(contact && { contact: { contains: contact } }),
         ...(maStatus && { maStatus: maStatus }),
+        ownerGroup: { in: ownerGroupId },
       },
       orderBy: [{ createdAt: 'desc' }],
       take: +take,
@@ -82,6 +89,7 @@ export class MaTaskService {
         }),
         ...(contact && { contact: { contains: contact } }),
         ...(maStatus && { maStatus: maStatus }),
+        ownerGroup: { in: ownerGroupId },
       },
     });
     return { data: data, count: count };
