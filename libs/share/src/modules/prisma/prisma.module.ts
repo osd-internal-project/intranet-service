@@ -83,6 +83,7 @@ import {
   CustomerPriorityRepository,
   CustomerWorkTypeRepository,
   CustomerRequestTypeRepository,
+  TicketHistoryLogsRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -172,6 +173,7 @@ const services = [
   CustomerTypeRepository,
   CustomerWorkTypeRepository,
   CustomerRequestTypeRepository,
+  TicketHistoryLogsRepository,
   //access
   AccessService,
 ];

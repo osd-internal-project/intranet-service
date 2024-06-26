@@ -85,3 +85,4 @@ export * from './customerJobType.repository';
 export * from './customerPriority.repository';
 export * from './customerRequestType.repository';
 export * from './customerWorkType.repository';
+export * from './ticketHistoryLogs.repository';

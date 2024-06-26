@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   CustomerDetailRepository,
   CustomerFilesRepository,
@@ -10,6 +10,7 @@ import {
   CustomerWorkTypeRepository,
   CustomerPriorityRepository,
   CustomerRequestTypeRepository,
+  UserMapOrganizeGroupOwnerRepository,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 @Injectable()
@@ -25,6 +26,8 @@ export class CustomerDetailService {
     private readonly customerWorkTypeRepo: CustomerWorkTypeRepository,
     private readonly customerRequestTypeRepo: CustomerRequestTypeRepository,
     private readonly customerPriorityRepo: CustomerPriorityRepository,
+    //User
+    private readonly userMapOrganizeGroupOwnerRepo: UserMapOrganizeGroupOwnerRepository,
   ) {}
   startOfDate(date: string) {
     const dateset = new Date(date).setUTCHours(0, 0, 0, 0);
@@ -35,10 +38,25 @@ export class CustomerDetailService {
     const dateset = new Date(date).setUTCHours(23, 59, 59, 59);
     return new Date(dateset);
   }
-  create(data: Prisma.customerDetailCreateInput) {
+  async create(data: Prisma.customerDetailCreateInput) {
+    const responsible = data.responsible as any;
+    let responsibleGroup = [];
+    if (responsible) {
+      const userids = responsible.map(
+        (data: { uid: string; name: string }) => data.uid,
+      );
+      if (userids && userids.length > 0) {
+        const group = await this.userMapOrganizeGroupOwnerRepo.findMany({
+          where: { usersId: { in: userids } },
+        });
+
+        responsibleGroup = group.map((data) => data.ownerGroupId);
+      }
+    }
     const condition = {
-      data: data,
+      data: { ...data, responsibleGroup: responsibleGroup },
     } as Prisma.customerDetailCreateArgs;
+
     return this.customerDetailRepo.create(condition);
   }
 
@@ -170,10 +188,29 @@ export class CustomerDetailService {
     };
   }
 
-  update(id: number, data: Prisma.customerDetailUpdateInput) {
+  async update(id: number, data: Prisma.customerDetailUpdateInput) {
+    const responsible = data.responsible as any;
+    let responsibleGroup = [];
+    if (responsible) {
+      const userids = responsible.map(
+        (data: { uid: string; name: string }) => data.uid,
+      );
+      if (userids && userids.length > 0) {
+        const group = await this.userMapOrganizeGroupOwnerRepo.findMany({
+          where: { usersId: { in: userids } },
+        });
+
+        responsibleGroup = group.map((data) => data.ownerGroupId);
+      }
+    }
+
     return this.customerDetailRepo.update({
       where: { id: id },
-      data: { ...data, updatedAt: new Date() },
+      data: {
+        ...data,
+        updatedAt: new Date(),
+        responsibleGroup: responsibleGroup,
+      },
     });
   }
 

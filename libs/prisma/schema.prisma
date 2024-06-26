@@ -1308,3 +1308,14 @@ model customerWorkType {
 
     @@map("customer_work_type")
 }
+
+model ticketHistoryLogs {
+    id            Int      @unique @default(autoincrement()) @map("id")
+    type          String   @map("type") @db.VarChar(50)
+    updatedById   String?  @map("updated_by_id") @db.VarChar(50)
+    updatedByName String?  @map("updated_by_name") @db.VarChar(255)
+    updatedAt     DateTime @default(now()) @map("updated_at") @db.Timestamptz()
+    detail        String?  @map("detail") @db.Text
+
+    @@map("ticket_history_logs")
+}
