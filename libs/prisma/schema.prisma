@@ -1248,14 +1248,14 @@ model customerProjectTicket {
     requestTypeName       String?              @map("request_type_name") @db.VarChar(100)
     workTypeId            Int?                 @map("work_type_id")
     workTypeName          String?              @map("work_type_name") @db.VarChar(100)
-
+    summary               String?              @map("summary") @db.Text
     //Date
-    dueDate           DateTime?           @map("due_date") @db.Timestamp()
-    appointmentDate   DateTime?           @map("appointment_date") @db.Timestamp()
-    reciveDate        DateTime?           @map("recive_date") @db.Timestamp()
-    finishDate        DateTime?           @map("finish_date") @db.Timestamp()
-    completeDate      DateTime?           @map("complete_date") @db.Timestamp()
-    ticketHistoryLogs ticketHistoryLogs[]
+    dueDate               DateTime?            @map("due_date") @db.Timestamp()
+    appointmentDate       DateTime?            @map("appointment_date") @db.Timestamp()
+    reciveDate            DateTime?            @map("recive_date") @db.Timestamp()
+    finishDate            DateTime?            @map("finish_date") @db.Timestamp()
+    completeDate          DateTime?            @map("complete_date") @db.Timestamp()
+    ticketHistoryLogs     ticketHistoryLogs[]
 
     @@map("customer_project_ticket")
 }
