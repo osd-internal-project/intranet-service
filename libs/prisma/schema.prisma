@@ -1250,11 +1250,12 @@ model customerProjectTicket {
     workTypeName          String?              @map("work_type_name") @db.VarChar(100)
 
     //Date
-    dueDate         DateTime? @map("due_date") @db.Timestamp()
-    appointmentDate DateTime? @map("appointment_date") @db.Timestamp()
-    reciveDate      DateTime? @map("recive_date") @db.Timestamp()
-    finishDate      DateTime? @map("finish_date") @db.Timestamp()
-    completeDate    DateTime? @map("complete_date") @db.Timestamp()
+    dueDate           DateTime?           @map("due_date") @db.Timestamp()
+    appointmentDate   DateTime?           @map("appointment_date") @db.Timestamp()
+    reciveDate        DateTime?           @map("recive_date") @db.Timestamp()
+    finishDate        DateTime?           @map("finish_date") @db.Timestamp()
+    completeDate      DateTime?           @map("complete_date") @db.Timestamp()
+    ticketHistoryLogs ticketHistoryLogs[]
 
     @@map("customer_project_ticket")
 }
@@ -1310,12 +1311,14 @@ model customerWorkType {
 }
 
 model ticketHistoryLogs {
-    id            Int      @unique @default(autoincrement()) @map("id")
-    type          String   @map("type") @db.VarChar(50)
-    updatedById   String?  @map("updated_by_id") @db.VarChar(50)
-    updatedByName String?  @map("updated_by_name") @db.VarChar(255)
-    updatedAt     DateTime @default(now()) @map("updated_at") @db.Timestamptz()
-    detail        String?  @map("detail") @db.Text
+    id                      Int                    @unique @default(autoincrement()) @map("id")
+    type                    String                 @map("type") @db.VarChar(50)
+    updatedById             String?                @map("updated_by_id") @db.VarChar(50)
+    updatedByName           String?                @map("updated_by_name") @db.VarChar(255)
+    updatedAt               DateTime               @default(now()) @map("updated_at") @db.Timestamptz()
+    detail                  String?                @map("detail") @db.Text
+    customerProjectTicket   customerProjectTicket? @relation(fields: [customerProjectTicketId], references: [id])
+    customerProjectTicketId Int?                   @map("customer_project_ticket_id")
 
     @@map("ticket_history_logs")
 }

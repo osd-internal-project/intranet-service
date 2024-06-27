@@ -13,6 +13,7 @@ import { CustomerContactModule } from './customer-contact/customer-contact.modul
 import { CustomerProjectTaskModule } from './customer-project-task/customer-project-task.module';
 import { CustomerProjectModule } from './customer-project/customer-project.module';
 import { CustomerProjectTicketModule } from './customer-project-ticket/customer-project-ticket.module';
+import { TicketHistoryLogsModule } from './ticket-history-logs/ticket-history-logs.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { CustomerProjectTicketModule } from './customer-project-ticket/customer-
     CustomerProjectModule,
     CustomerProjectTaskModule,
     CustomerProjectTicketModule,
+    TicketHistoryLogsModule,
   ],
   controllers: [IntranetController],
   providers: [IntranetService],
