@@ -1,4 +1,5 @@
 import {
+  CustomerFilesRepository,
   CustomerProjectTicketRepository,
   TicketHistoryLogsRepository,
 } from '@inventory/share';
@@ -10,6 +11,7 @@ export class CustomerProjectTicketService {
   constructor(
     private readonly customerProjectTicketRepo: CustomerProjectTicketRepository,
     private readonly ticketHistoryLogsRepo: TicketHistoryLogsRepository,
+    private readonly customerFilesRepo: CustomerFilesRepository,
   ) {}
   create(data: Prisma.customerProjectTicketCreateInput) {
     return this.customerProjectTicketRepo.create({ data: data });
@@ -33,11 +35,18 @@ export class CustomerProjectTicketService {
   findOneById(id: number) {
     return this.customerProjectTicketRepo.findOne({ where: { id: id } });
   }
-  findDetailById(id: number) {
-    return this.customerProjectTicketRepo.findOne({
+  async findDetailById(id: number) {
+    const detail = await this.customerProjectTicketRepo.findOne({
       where: { id: id },
       include: { ticketHistoryLogs: true },
     });
+    const createFiles = await this.customerFilesRepo.findMany({
+      where: { customerProjectTicketId: id, type: 'create-attend' },
+    });
+    const updateFiles = await this.customerFilesRepo.findMany({
+      where: { customerProjectTicketId: id, type: 'update-attend' },
+    });
+    return { ...detail, createFiles: createFiles, updateFiles: updateFiles };
   }
   update(id: number, data: Prisma.customerProjectTicketUpdateInput) {
     return this.customerProjectTicketRepo.update({

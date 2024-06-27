@@ -43,7 +43,7 @@ export class CustomerFilesController {
   ) {
     if (id && type && files.length > 0) {
       const data = {
-        customerId: +id,
+        customerProjectTicketId: +id,
         path: files[0].path,
         type: type,
         fileCode: files[0].filename,
@@ -79,5 +79,9 @@ export class CustomerFilesController {
   @Get(':id')
   findOne(@Param() query: object) {
     return this.customerFilesService.findOne(query);
+  }
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.customerFilesService.remove(+id);
   }
 }

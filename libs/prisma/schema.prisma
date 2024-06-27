@@ -1102,14 +1102,14 @@ model customerDetail {
     //Action By
     createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz()
 
-    createdById    String?          @map("created_by_id") @db.VarChar(50)
-    ownerGroupId   String?          @map("owner_group_id") @db.VarChar(50)
-    createdByName  String?          @map("created_by_name") @db.VarChar(255)
-    updatedAt      DateTime?        @map("updated_at") @db.Timestamptz()
-    updatedById    String?          @map("updated_by_id") @db.VarChar(50)
-    updatedByName  String?          @map("updated_by_name") @db.VarChar(255)
-    ownerGroup     String?          @map("owner_group") @db.VarChar(50)
-    customerFiles  customerFiles[]
+    createdById   String?   @map("created_by_id") @db.VarChar(50)
+    ownerGroupId  String?   @map("owner_group_id") @db.VarChar(50)
+    createdByName String?   @map("created_by_name") @db.VarChar(255)
+    updatedAt     DateTime? @map("updated_at") @db.Timestamptz()
+    updatedById   String?   @map("updated_by_id") @db.VarChar(50)
+    updatedByName String?   @map("updated_by_name") @db.VarChar(255)
+    ownerGroup    String?   @map("owner_group") @db.VarChar(50)
+
     customerBranch customerBranch[]
 
     @@map("customer_detail")
@@ -1146,16 +1146,17 @@ model customerType {
 }
 
 model customerFiles {
-    id             Int             @unique @default(autoincrement())
-    fileCode       String?         @map("file_code") @db.VarChar(200)
-    path           String?         @db.VarChar(200)
-    fileName       String?         @map("file_name") @db.VarChar(200)
-    fileType       String?         @map("file_type") @db.VarChar(200)
-    type           String?         @db.VarChar(10)
-    createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamp()
-    updatedAt      DateTime?       @map("updated_at") @db.Timestamp()
-    customerDetail customerDetail? @relation(fields: [customerId], references: [id])
-    customerId     Int?            @map("customer_id")
+    id        Int       @unique @default(autoincrement())
+    fileCode  String?   @map("file_code") @db.VarChar(200)
+    path      String?   @db.VarChar(200)
+    fileName  String?   @map("file_name") @db.VarChar(200)
+    fileType  String?   @map("file_type") @db.VarChar(200)
+    type      String?   @db.VarChar(20)
+    createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp()
+    updatedAt DateTime? @map("updated_at") @db.Timestamp()
+
+    customerProjectTicket   customerProjectTicket? @relation(fields: [customerProjectTicketId], references: [id])
+    customerProjectTicketId Int?                   @map("customer_project_ticket_id")
 
     @@map("customers_files")
 }
@@ -1231,6 +1232,7 @@ model customerProjectTicket {
     problem               String?              @map("problem") @db.Text
     solution              String?              @map("solution") @db.Text
     result                String?              @map("result") @db.Text
+    summary               String?              @map("summary") @db.Text
     //Created
     createdById           String?              @map("created_by_id") @db.VarChar(50)
     createdByName         String?              @map("created_by_name") @db.VarChar(255)
@@ -1248,14 +1250,15 @@ model customerProjectTicket {
     requestTypeName       String?              @map("request_type_name") @db.VarChar(100)
     workTypeId            Int?                 @map("work_type_id")
     workTypeName          String?              @map("work_type_name") @db.VarChar(100)
-    summary               String?              @map("summary") @db.Text
+
     //Date
-    dueDate               DateTime?            @map("due_date") @db.Timestamp()
-    appointmentDate       DateTime?            @map("appointment_date") @db.Timestamp()
-    reciveDate            DateTime?            @map("recive_date") @db.Timestamp()
-    finishDate            DateTime?            @map("finish_date") @db.Timestamp()
-    completeDate          DateTime?            @map("complete_date") @db.Timestamp()
-    ticketHistoryLogs     ticketHistoryLogs[]
+    dueDate           DateTime?           @map("due_date") @db.Timestamp()
+    appointmentDate   DateTime?           @map("appointment_date") @db.Timestamp()
+    reciveDate        DateTime?           @map("recive_date") @db.Timestamp()
+    finishDate        DateTime?           @map("finish_date") @db.Timestamp()
+    completeDate      DateTime?           @map("complete_date") @db.Timestamp()
+    ticketHistoryLogs ticketHistoryLogs[]
+    customerFiles     customerFiles[]
 
     @@map("customer_project_ticket")
 }
