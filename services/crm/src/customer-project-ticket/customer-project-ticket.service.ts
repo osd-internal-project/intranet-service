@@ -1,4 +1,7 @@
-import { CustomerProjectTicketRepository } from '@inventory/share';
+import {
+  CustomerProjectTicketRepository,
+  TicketHistoryLogsRepository,
+} from '@inventory/share';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
@@ -6,6 +9,7 @@ import { Prisma } from '@prisma/client';
 export class CustomerProjectTicketService {
   constructor(
     private readonly customerProjectTicketRepo: CustomerProjectTicketRepository,
+    private readonly ticketHistoryLogsRepo: TicketHistoryLogsRepository,
   ) {}
   create(data: Prisma.customerProjectTicketCreateInput) {
     return this.customerProjectTicketRepo.create({ data: data });
@@ -32,6 +36,7 @@ export class CustomerProjectTicketService {
   findDetailById(id: number) {
     return this.customerProjectTicketRepo.findOne({
       where: { id: id },
+      include: { ticketHistoryLogs: true },
     });
   }
   update(id: number, data: Prisma.customerProjectTicketUpdateInput) {
