@@ -338,14 +338,16 @@ export class UserService {
     });
   }
   async getPermissionByUserId(userId: string) {
-    const resOrganizeIdGroupId = await this.userMapOrganizeGroupRepo.findMany({
-      where: { usersId: userId },
-    });
+    const resOrganizeIdGroupId =
+      await this.userMapOrganizeGroupOwnerRepo.findMany({
+        where: { usersId: userId },
+      });
     const resRoleIdByGroupId = await this.userGroupUserRoleMapRepo.findMany({
       where: {
         userGroupId: {
           in: resOrganizeIdGroupId.map(
-            (item: { organizedId: string; groupId: string }) => item.groupId,
+            (item: { organizedId: string; ownerGroupId: string }) =>
+              item.ownerGroupId,
           ),
         },
       },

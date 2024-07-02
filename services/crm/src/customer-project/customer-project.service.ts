@@ -48,8 +48,8 @@ export class CustomerProjectService {
           }),
         ...(!ownerUserGroup.exceptionalSatatus && {
           OR: [
-            { saleId: { in: saleUsers } },
-            { projectManagerId: { in: engineerUsers } },
+            { saleId: { in: [...saleUsers, userid] } },
+            { projectManagerId: { in: [...engineerUsers, userid] } },
           ],
         }),
       },
