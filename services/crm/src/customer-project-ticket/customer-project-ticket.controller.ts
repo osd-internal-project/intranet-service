@@ -22,20 +22,7 @@ export class CustomerProjectTicketController {
 
   @Post()
   async create(@Body() data: Prisma.customerProjectTicketCreateInput) {
-    let createdData = data;
-    if (data.createdById) {
-      const createdGroup = await this.accessService.getOwnerGroupByUserId(
-        data.createdById,
-      );
-      createdData = { ...createdData, createdGroupId: createdGroup.groupId };
-    }
-    if (data.assignId) {
-      const assignGroup = await this.accessService.getOwnerGroupByUserId(
-        data.assignId,
-      );
-      createdData = { ...createdData, assignGroupId: assignGroup.groupId };
-    }
-    return this.customerProjectTicketService.create(createdData);
+    return this.customerProjectTicketService.create(data);
   }
 
   @Get()
@@ -52,8 +39,8 @@ export class CustomerProjectTicketController {
   findByTaskId(@Param('taskid') id: string) {
     return this.customerProjectTicketService.findByTaskId(+id);
   }
-  @Get('/find-by-project/:taskid')
-  findByProjectId(@Param('taskid') id: string) {
+  @Get('/find-by-project/:projectid')
+  findByProjectId(@Param('projectid') id: string) {
     return this.customerProjectTicketService.findByProjectId(+id);
   }
   @Get('/detail/:id')

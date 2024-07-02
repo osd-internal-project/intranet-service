@@ -1,4 +1,5 @@
 import {
+  AccessService,
   CustomerFilesRepository,
   CustomerProjectTicketRepository,
   TicketHistoryLogsRepository,
@@ -12,9 +13,23 @@ export class CustomerProjectTicketService {
     private readonly customerProjectTicketRepo: CustomerProjectTicketRepository,
     private readonly ticketHistoryLogsRepo: TicketHistoryLogsRepository,
     private readonly customerFilesRepo: CustomerFilesRepository,
+    private readonly accessService: AccessService,
   ) {}
-  create(data: Prisma.customerProjectTicketCreateInput) {
-    return this.customerProjectTicketRepo.create({ data: data });
+  async create(data: Prisma.customerProjectTicketCreateInput) {
+    let createdData = data;
+    if (data.createdById) {
+      const createdGroup = await this.accessService.getOwnerGroupByUserId(
+        data.createdById,
+      );
+      createdData = { ...createdData, createdGroupId: createdGroup.groupId };
+    }
+    if (data.assignId) {
+      const assignGroup = await this.accessService.getOwnerGroupByUserId(
+        data.assignId,
+      );
+      createdData = { ...createdData, assignGroupId: assignGroup.groupId };
+    }
+    return this.customerProjectTicketRepo.create({ data: createdData });
   }
   findAll() {
     return this.customerProjectTicketRepo.findAll();
@@ -25,11 +40,13 @@ export class CustomerProjectTicketService {
   findByTaskId(taskId: number) {
     return this.customerProjectTicketRepo.findMany({
       where: { customerProjectTaskId: taskId },
+      orderBy: [{ createdAt: 'desc' }],
     });
   }
   findByProjectId(project: number) {
     return this.customerProjectTicketRepo.findMany({
       where: { customerProjectId: project, customerProjectTaskId: null },
+      orderBy: [{ createdAt: 'desc' }],
     });
   }
   findOneById(id: number) {
@@ -59,6 +76,7 @@ export class CustomerProjectTicketService {
 
       skip: skip,
       take: take,
+      orderBy: [{ createdAt: 'desc' }],
     });
     const total = await this.customerProjectTicketRepo.count({
       where: { OR: [{ createdById: userId }, { assignId: userId }] },
