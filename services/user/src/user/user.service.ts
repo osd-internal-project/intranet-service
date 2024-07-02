@@ -338,17 +338,26 @@ export class UserService {
     });
   }
   async getPermissionByUserId(userId: string) {
-    const resOrganizeIdGroupId =
+    const resViewOrganizeIdGroupId =
+      await this.userMapOrganizeGroupRepo.findMany({
+        where: { usersId: userId },
+      });
+    const vieGroup = resViewOrganizeIdGroupId.map(
+      (item: { organizedId: string; groupId: string }) => item.groupId,
+    );
+    const resOwnerOrganizeIdGroupId =
       await this.userMapOrganizeGroupOwnerRepo.findMany({
         where: { usersId: userId },
       });
+
+    const ownerGroup = resOwnerOrganizeIdGroupId.map(
+      (item: { organizedId: string; ownerGroupId: string }) =>
+        item.ownerGroupId,
+    );
     const resRoleIdByGroupId = await this.userGroupUserRoleMapRepo.findMany({
       where: {
         userGroupId: {
-          in: resOrganizeIdGroupId.map(
-            (item: { organizedId: string; ownerGroupId: string }) =>
-              item.ownerGroupId,
-          ),
+          in: [...ownerGroup, ...vieGroup],
         },
       },
       select: {
