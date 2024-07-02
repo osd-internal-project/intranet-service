@@ -767,25 +767,32 @@ model organizeMapGroup {
 }
 
 model userGroup {
-    id                        Int                         @unique @default(autoincrement()) @map("id")
-    groupId                   String                      @unique @default(uuid()) @map("group_id") @db.VarChar(50)
-    groupName                 String                      @map("group_name") @db.VarChar(200) //Text waiting update
-    createdAt                 DateTime                    @default(now()) @map("created_at")
-    updatedAt                 DateTime                    @default(now()) @map("updated_at")
-    parent                    userGroup?                  @relation("ChildGroup", fields: [parentGroupId], references: [groupId])
-    parentGroupId             String?                     @map("parent_group_id") @db.VarChar(50)
-    userGroup                 userGroup[]                 @relation("ChildGroup")
-    userGroupMap              userGroupMap[]
-    organized                 organized?                  @relation(fields: [organizedGroupId], references: [organizedId], onDelete: Cascade)
-    organizedGroupId          String?                     @map("organized_group_id")
-    description               String                      @default("") @map("description") @db.Text
-    locationUserGroupMap      locationUserGroupMap[]
+    id                   Int                    @unique @default(autoincrement()) @map("id")
+    groupId              String                 @unique @default(uuid()) @map("group_id") @db.VarChar(50)
+    groupName            String                 @map("group_name") @db.VarChar(200) //Text waiting update
+    createdAt            DateTime               @default(now()) @map("created_at")
+    updatedAt            DateTime               @default(now()) @map("updated_at")
+    parent               userGroup?             @relation("ChildGroup", fields: [parentGroupId], references: [groupId])
+    parentGroupId        String?                @map("parent_group_id") @db.VarChar(50)
+    userGroup            userGroup[]            @relation("ChildGroup")
+    userGroupMap         userGroupMap[]
+    organized            organized?             @relation(fields: [organizedGroupId], references: [organizedId], onDelete: Cascade)
+    organizedGroupId     String?                @map("organized_group_id")
+    description          String                 @default("") @map("description") @db.Text
+    locationUserGroupMap locationUserGroupMap[]
+
     // userOwner            userOwner[]
     user                      users[]
     userMapOrganizeGroup      userMapOrganizeGroup[]
     userMapOrganizeGroupOwner userMapOrganizeGroupOwner[]
     organizeMapGroup          organizeMapGroup[]
     userGroupUserRoleMap      userGroupUserRoleMap[]
+
+    saleUserGroupId     String[] @map("sale_user_group_id")
+    saleUsersId         String[] @map("sale_users_id")
+    engineerUserGroupId String[] @map("engineer_user_group_id")
+    engineerUsersId     String[] @map("engineer_users_id")
+    exceptionalSatatus  Boolean? @default(false) @map("exceptional_satatus")
 
     @@map("user_group")
 }
@@ -1221,7 +1228,6 @@ model customerProjectTicket {
 
     createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp()
     updatedAt DateTime? @map("updated_at") @db.Timestamp()
-    groupId   String?   @map("group_id") @db.VarChar(50)
 
     approvedById          String?              @map("approved_by_id") @db.VarChar(50)
     approvedByName        String?              @map("approved_by_name") @db.VarChar(255)
@@ -1236,8 +1242,10 @@ model customerProjectTicket {
     //Created
     createdById           String?              @map("created_by_id") @db.VarChar(50)
     createdByName         String?              @map("created_by_name") @db.VarChar(255)
+    createdGroupId        String?              @map("created_group_id") @db.VarChar(50)
     //assign
     assignId              String?              @map("assign_id") @db.VarChar(50)
+    assignGroupId         String?              @map("assign_group_id") @db.VarChar(50)
     assignName            String?              @map("assign_name") @db.VarChar(150)
     //Config Ticket
     channelTypeId         Int?                 @map("channel_type_id")
@@ -1252,9 +1260,10 @@ model customerProjectTicket {
     workTypeName          String?              @map("work_type_name") @db.VarChar(100)
 
     //Date
+    requestDate       DateTime?           @map("request_date") @db.Timestamp()
     dueDate           DateTime?           @map("due_date") @db.Timestamp()
     appointmentDate   DateTime?           @map("appointment_date") @db.Timestamp()
-    reciveDate        DateTime?           @map("recive_date") @db.Timestamp()
+    receiveDate       DateTime?           @map("receive_date") @db.Timestamp()
     finishDate        DateTime?           @map("finish_date") @db.Timestamp()
     completeDate      DateTime?           @map("complete_date") @db.Timestamp()
     ticketHistoryLogs ticketHistoryLogs[]

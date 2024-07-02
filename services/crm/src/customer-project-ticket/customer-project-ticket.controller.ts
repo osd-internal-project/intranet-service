@@ -10,16 +10,32 @@ import {
 } from '@nestjs/common';
 import { CustomerProjectTicketService } from './customer-project-ticket.service';
 import { Prisma } from '@prisma/client';
+import { query } from 'express';
+import { AccessService } from '@inventory/share';
 
 @Controller('customer-project-ticket')
 export class CustomerProjectTicketController {
   constructor(
     private readonly customerProjectTicketService: CustomerProjectTicketService,
+    private readonly accessService: AccessService,
   ) {}
 
   @Post()
-  create(@Body() data: Prisma.customerProjectTicketCreateInput) {
-    return this.customerProjectTicketService.create(data);
+  async create(@Body() data: Prisma.customerProjectTicketCreateInput) {
+    let createdData = data;
+    if (data.createdById) {
+      const createdGroup = await this.accessService.getOwnerGroupByUserId(
+        data.createdById,
+      );
+      createdData = { ...createdData, createdGroupId: createdGroup.groupId };
+    }
+    if (data.assignId) {
+      const assignGroup = await this.accessService.getOwnerGroupByUserId(
+        data.assignId,
+      );
+      createdData = { ...createdData, assignGroupId: assignGroup.groupId };
+    }
+    return this.customerProjectTicketService.create(createdData);
   }
 
   @Get()
@@ -44,6 +60,21 @@ export class CustomerProjectTicketController {
   findDetailById(@Param('id') id: string) {
     return this.customerProjectTicketService.findDetailById(+id);
   }
+  @Get('/data-table/:userid')
+  findListByUserId(
+    @Param('userid') userid: string,
+    @Query('query') query,
+    @Query('skip') skip,
+    @Query('take') take,
+  ) {
+    return this.customerProjectTicketService.findDatatableUserId(
+      userid,
+      query,
+      +skip,
+      +take,
+    );
+  }
+
   @Get(':id')
   findOneById(@Param('id') id: string) {
     return this.customerProjectTicketService.findOneById(+id);
@@ -54,7 +85,6 @@ export class CustomerProjectTicketController {
     @Body()
     updateCustomerProjectTicketDto: Prisma.customerProjectTicketUpdateInput,
   ) {
-    console.log(updateCustomerProjectTicketDto);
     return this.customerProjectTicketService.update(
       +id,
       updateCustomerProjectTicketDto,

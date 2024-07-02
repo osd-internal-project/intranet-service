@@ -11,6 +11,7 @@ import {
   CustomerPriorityRepository,
   CustomerRequestTypeRepository,
   UserMapOrganizeGroupOwnerRepository,
+  AccessService,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 @Injectable()
@@ -28,6 +29,7 @@ export class CustomerDetailService {
     private readonly customerPriorityRepo: CustomerPriorityRepository,
     //User
     private readonly userMapOrganizeGroupOwnerRepo: UserMapOrganizeGroupOwnerRepository,
+    private readonly accessService: AccessService,
   ) {}
   startOfDate(date: string) {
     const dateset = new Date(date).setUTCHours(0, 0, 0, 0);
@@ -94,7 +96,11 @@ export class CustomerDetailService {
   }
 
   async findDatatable(query: any) {
-    const { refcode, customername, activestatus, take, skip } = query;
+    const { refcode, customername, activestatus, take, skip, userid } = query;
+    const ownerGroups = await this.accessService.getOwnerGroupId(userid);
+    const ownerUserGroup = await this.accessService.getOwnerGroupByUserId(
+      userid,
+    );
 
     const data = await this.customerDetailRepo.findMany({
       where: {
@@ -105,6 +111,12 @@ export class CustomerDetailService {
             { prefixTh: { contains: customername } },
             { firstNameTh: { contains: customername } },
             { lastNameTh: { contains: customername } },
+          ],
+        }),
+        ...(!ownerUserGroup.exceptionalSatatus && {
+          OR: [
+            { responsible: { hasSome: { path: ['uid'], equals: userid } } },
+            { responsibleGroup: { hasSome: ownerGroups } },
           ],
         }),
       },
@@ -121,6 +133,9 @@ export class CustomerDetailService {
             { firstNameTh: { contains: customername } },
             { lastNameTh: { contains: customername } },
           ],
+          ...(!ownerUserGroup.exceptionalSatatus && {
+            responsibleGroup: { hasSome: ownerGroups },
+          }),
         }),
       },
     });

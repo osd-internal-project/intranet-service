@@ -40,7 +40,7 @@ export class MasterRuleController {
     return this.masterRuleService.remove(rule);
   }
 
-  @Post('setdef')
+  @Post('set-rules')
   setRule() {
     return this.masterRuleService.setRule();
   }

@@ -9,6 +9,7 @@ import {
   AccessService,
   UserMapOrganizeChartRepository,
   OrganizedChartRepository,
+  UserGroupRepository,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
@@ -19,6 +20,7 @@ export class UserService {
     private usersRepo: UsersRepository,
     private userRoleMapRepo: UserRoleMapRepository,
     private userGroupMapRepo: UserGroupMapRepository,
+    private userGroupRepo: UserGroupRepository,
     private userMapOrganizeGroupRepo: UserMapOrganizeGroupRepository,
     private userMapOrganizeGroupOwnerRepo: UserMapOrganizeGroupOwnerRepository,
     private userGroupUserRoleMapRepo: UserGroupUserRoleMapRepository,
@@ -122,6 +124,7 @@ export class UserService {
     const organize = await this.userMapOrganizeGroupOwnerRepo.findOne({
       where: { usersId: userId },
     });
+
     return this.usersRepo.findByCondition({
       where: {
         userMapOrganizeGroupOwner: {
@@ -131,6 +134,35 @@ export class UserService {
       select: { userId: true, firstNameTh: true, lastNameTh: true },
     });
   }
+  async findSaleUserBySalePermission(userId: string) {
+    Logger.debug(userId);
+    const permissionGroup = await this.userGroupRepo.findOne({
+      where: { userMapOrganizeGroupOwner: { some: { usersId: userId } } },
+    });
+    Logger.debug(permissionGroup);
+    let userList = [];
+    if (permissionGroup.saleUsersId.length > 0) {
+      userList = permissionGroup.saleUsersId;
+    } else if (permissionGroup.saleUserGroupId.length > 0) {
+      const allGroup = await this.findAllRelatedGroupRows(
+        permissionGroup.saleUserGroupId,
+      );
+      console.log('allGroup');
+      console.log(allGroup);
+      const groups = await this.userMapOrganizeGroupOwnerRepo.findMany({
+        where: { ownerGroupId: { in: allGroup } },
+      });
+      userList = groups.map((group) => group.usersId);
+    }
+
+    return this.usersRepo.findByCondition({
+      where: {
+        userId: { in: userList },
+      },
+      select: { userId: true, firstNameTh: true, lastNameTh: true },
+    });
+  }
+
   async update(userId: string, data: Prisma.usersUpdateInput) {
     const condition = {
       where: { userId: userId },
@@ -254,10 +286,55 @@ export class UserService {
       where: { usersId: userId, organizedId: organizeId },
     });
   }
-
+  //Functin Find All Oner Group
   findAssignOwnerGroups(userId: string, organizeId: string) {
     return this.userMapOrganizeGroupOwnerRepo.findOne({
       where: { usersId: userId, organizedId: organizeId },
+    });
+  }
+  async findAllRelatedGroupRows(idList: string[]) {
+    const result = [];
+    const groupList = [...idList];
+
+    while (groupList.length > 0) {
+      const currentId = groupList.pop();
+
+      // Fetch the node and its direct children
+      const cerentRow = (await this.userGroupRepo.findOne({
+        where: { groupId: currentId },
+        include: { userGroup: true },
+      })) as any;
+
+      if (cerentRow) {
+        result.push(cerentRow.groupId);
+        groupList.push(...cerentRow.userGroup.map((child) => child.groupId));
+      }
+    }
+
+    return result;
+  }
+
+  async findUsersByOwnergroup(ownerGroup: { [key: string]: string }) {
+    const group: string[] = Object.values(ownerGroup);
+    const allGroup = await this.findAllRelatedGroupRows(group);
+
+    // const data = await this.userGroupRepo.findByCondition({
+    //   where: { groupId: { in: group } },
+    //   include: { userGroup: true },
+    // });
+
+    return this.usersRepo.findByCondition({
+      where: {
+        activeStatus: true,
+        userMapOrganizeGroupOwner: {
+          some: { ownerGroupId: { in: allGroup } },
+        },
+      },
+      select: {
+        userId: true,
+        firstNameTh: true,
+        lastNameTh: true,
+      },
     });
   }
   async getPermissionByUserId(userId: string) {

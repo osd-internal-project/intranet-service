@@ -23,6 +23,11 @@ export class UserGroupController {
   findAll() {
     return this.userGroupService.findAll();
   }
+  @Get('find-group-by-user/:userid')
+  findOwnerFormOrganizedByUser(@Param('userid') userid) {
+    console.log(1);
+    return this.userGroupService.findOwnerFormOrganizedByUser(userid);
+  }
 
   @Get(':organizeid')
   findByOrganizeId(@Param('organizeid') organizeId: string) {
@@ -53,6 +58,14 @@ export class UserGroupController {
     },
   ) {
     return this.userGroupService.update(groupId, data);
+  }
+  @Patch('permission/:groupId')
+  updatePermission(
+    @Param('groupId') groupId: string,
+    @Body()
+    data,
+  ) {
+    return this.userGroupService.updatePermission(groupId, data);
   }
 
   @Delete(':groupId')

@@ -1,4 +1,4 @@
-import { CustomerProjectRepository } from '@inventory/share';
+import { AccessService, CustomerProjectRepository } from '@inventory/share';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
@@ -6,6 +6,7 @@ import { Prisma } from '@prisma/client';
 export class CustomerProjectService {
   constructor(
     private readonly customerProjectRepo: CustomerProjectRepository,
+    private readonly accessService: AccessService,
   ) {}
   create(data: Prisma.customerProjectCreateInput) {
     return this.customerProjectRepo.create({ data: data });
@@ -17,8 +18,17 @@ export class CustomerProjectService {
     return this.customerProjectRepo.findMany(condition);
   }
   async findDatatable(query: any) {
-    const { projectname, projectcode, fdate, ldate, take, skip } = query;
+    const { projectname, projectcode, fdate, ldate, take, skip, userid } =
+      query;
+    const ownerUserGroup = await this.accessService.getOwnerGroupByUserId(
+      userid,
+    );
+    const saleUsers = await this.accessService.getSaleUsersBySalePermission(
+      userid,
+    );
 
+    const engineerUsers =
+      await this.accessService.getEngineerUsersBySalePermission(userid);
     const data = await this.customerProjectRepo.findMany({
       where: {
         ...(projectcode && { projectCode: { contains: projectcode } }),
@@ -36,7 +46,14 @@ export class CustomerProjectService {
               },
             ],
           }),
+        ...(!ownerUserGroup.exceptionalSatatus && {
+          OR: [
+            { saleId: { in: saleUsers } },
+            { projectManagerId: { in: engineerUsers } },
+          ],
+        }),
       },
+
       include: {
         customerBranch: {
           select: { branchCode: true, branchName: true, customerDetail: true },

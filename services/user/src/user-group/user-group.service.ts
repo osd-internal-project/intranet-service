@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   OrganizedRepository,
   UserGroupRepository,
@@ -44,19 +44,27 @@ export class UserGroupService {
     };
     return this.userGroupRepo.findByCondition(condition);
   }
-
+  async findOwnerFormOrganizedByUser(userId: string) {
+    const organize = await this.organizedRepo.findOne({
+      where: { userMapOrganizeGroupOwner: { some: { usersId: userId } } },
+    });
+    return this.organizedRepo.findOne({
+      where: { organizedId: organize.organizedId },
+      select: { organizeMapGroup: { select: { group: true } } },
+    });
+  }
   findByOrganizeId(organizeId: string) {
     return this.organizedRepo.findOne({
       where: { organizedId: organizeId },
       select: { organizeMapGroup: { select: { group: true } } },
     });
   }
-
-  findOneByCondition(condition: Prisma.userGroupFindFirstArgs) {
+  async findOneByCondition(condition: Prisma.userGroupFindFirstArgs) {
     condition = {
       ...condition,
     };
-    return this.userGroupRepo.findOne(condition);
+    const data = await this.userGroupRepo.findOne(condition);
+    return data;
   }
 
   findChildGroupByGropId(groupId: string) {
@@ -99,7 +107,13 @@ export class UserGroupService {
     } as Prisma.userGroupUpdateArgs;
     return await this.userGroupRepo.update(condition);
   }
-
+  async updatePermission(groupId: string, data) {
+    const condition = {
+      where: { groupId: groupId },
+      data: data,
+    } as Prisma.userGroupUpdateArgs;
+    return await this.userGroupRepo.update(condition);
+  }
   async remove(groupId: string) {
     const condition = {
       where: { groupId: groupId },

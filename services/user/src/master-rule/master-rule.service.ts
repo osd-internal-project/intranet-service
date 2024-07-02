@@ -120,6 +120,7 @@ export class MasterRuleService {
       { ruleCode: 'rlue74', ruleName: 'report-transaction-show' },
       { ruleCode: 'rlue75', ruleName: 'report-expired' },
       { ruleCode: 'rlue76', ruleName: 'mp-hazard-type-show' },
+      { ruleCode: 'rlue76', ruleName: 'mp-hazard-type-show' },
     ] as unknown as Prisma.masterRuleCreateManyInput;
     return this.masterRuleRepo.createMany({ data: data });
   }

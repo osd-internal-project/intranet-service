@@ -3,8 +3,8 @@ import { PrismaService } from '../modules/prisma/prisma.service';
 @Injectable()
 export class AccessService {
   constructor(private prisma: PrismaService) {}
-  async getOwnerGroupId(userId: string) {
-    const resUser: any = await this.prisma.users.findFirst({
+  async getOwnerGroupId(userId: string): Promise<string[]> {
+    const resUser = await this.prisma.users.findFirst({
       where: {
         userId: userId,
       },
@@ -73,5 +73,67 @@ export class AccessService {
     } else {
       return [];
     }
+  }
+  async getOwnerGroupByUserId(userId: string) {
+    return await this.prisma.userGroup.findFirst({
+      where: { userMapOrganizeGroupOwner: { some: { usersId: userId } } },
+    });
+  }
+  async getSaleUsersBySalePermission(userId: string) {
+    const permissionGroup = await this.prisma.userGroup.findFirst({
+      where: { userMapOrganizeGroupOwner: { some: { usersId: userId } } },
+    });
+    if (permissionGroup.saleUsersId.length > 0) {
+      const userList = permissionGroup.saleUsersId;
+      return userList;
+    } else if (permissionGroup.saleUserGroupId.length > 0) {
+      const allGroup = await this.findAllRelatedGroupRows(
+        permissionGroup.saleUserGroupId,
+      );
+      const groups = await this.prisma.userMapOrganizeGroupOwner.findMany({
+        where: { ownerGroupId: { in: allGroup } },
+      });
+      const userList = groups.map((group) => group.usersId);
+      return userList;
+    }
+  }
+  async getEngineerUsersBySalePermission(userId: string) {
+    const permissionGroup = await this.prisma.userGroup.findFirst({
+      where: { userMapOrganizeGroupOwner: { some: { usersId: userId } } },
+    });
+    if (permissionGroup.engineerUsersId.length > 0) {
+      const userList = permissionGroup.saleUsersId;
+      return userList;
+    } else if (permissionGroup.engineerUserGroupId.length > 0) {
+      const allGroup = await this.findAllRelatedGroupRows(
+        permissionGroup.saleUserGroupId,
+      );
+      const groups = await this.prisma.userMapOrganizeGroupOwner.findMany({
+        where: { ownerGroupId: { in: allGroup } },
+      });
+      const userList = groups.map((group) => group.usersId);
+      return userList;
+    }
+  }
+  async findAllRelatedGroupRows(idList: string[]) {
+    const result = [];
+    const groupList = [...idList];
+
+    while (groupList.length > 0) {
+      const currentId = groupList.pop();
+
+      // Fetch the node and its direct children
+      const cerentRow = (await this.prisma.userGroup.findFirst({
+        where: { groupId: currentId },
+        include: { userGroup: true },
+      })) as any;
+
+      if (cerentRow) {
+        result.push(cerentRow.groupId);
+        groupList.push(...cerentRow.userGroup.map((child) => child.groupId));
+      }
+    }
+
+    return result;
   }
 }

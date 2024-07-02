@@ -15,6 +15,7 @@ import {
   UploadedFiles,
   Res,
   Req,
+  Query,
 } from '@nestjs/common';
 import { AuthGuard } from '@inventory/share';
 import { UserService } from './user.service';
@@ -29,7 +30,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { join } from 'path';
 import { extname } from 'path';
 import config from '../configs';
-import { Response } from 'express';
+import { query, Response } from 'express';
 import * as fs from 'fs';
 
 const pathMountDirUpload = config().pathMountDirUpload;
@@ -52,6 +53,7 @@ export class UserController {
 
   @Post()
   async create(@Body('data') data: Prisma.usersCreateInput) {
+    console.log(data);
     const checkuser = await this.userService.findOneByCondition({
       where: {
         username: data.username.trim(),
@@ -259,6 +261,14 @@ export class UserController {
   @Get('find-organize-user-by-userid/:userid')
   findOrganizeuserByUserid(@Param('userId') userId: string) {
     return this.userService.findOrganizeuserByUserid(userId);
+  }
+  @Get('find-sale-user-by-sale-permission/:userid')
+  findSaleUserBySalePermission(@Param('userid') userId: string) {
+    return this.userService.findSaleUserBySalePermission(userId);
+  }
+  @Get('find-users-by-ownergroup')
+  findUsersByOwnergroup(@Query() group: { [key: string]: string }) {
+    return this.userService.findUsersByOwnergroup(group);
   }
 
   @Patch()

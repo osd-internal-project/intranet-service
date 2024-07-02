@@ -48,6 +48,23 @@ export class CustomerProjectTicketService {
     });
     return { ...detail, createFiles: createFiles, updateFiles: updateFiles };
   }
+  async findDatatableUserId(
+    userId: string,
+    query: object,
+    skip: number,
+    take: number,
+  ) {
+    const data = await this.customerProjectTicketRepo.findMany({
+      where: { OR: [{ createdById: userId }, { assignId: userId }], ...query },
+
+      skip: skip,
+      take: take,
+    });
+    const total = await this.customerProjectTicketRepo.count({
+      where: { OR: [{ createdById: userId }, { assignId: userId }] },
+    });
+    return { data: data, total: total };
+  }
   update(id: number, data: Prisma.customerProjectTicketUpdateInput) {
     return this.customerProjectTicketRepo.update({
       where: { id: id },
