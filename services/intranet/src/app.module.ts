@@ -21,6 +21,9 @@ import { TpyeDataLeaveMapModule } from './tpye-data-leave-map/tpye-data-leave-ma
 import { DataLeaveModule } from './data-leave/data-leave.module';
 import { PublicizeSlideImagesModule } from './publicize-slide-images/publicize-slide-images.module';
 import { DataLeaveFileModule } from './data-leave-file/data-leave-file.module';
+import { MaCarModule } from './ma-car/ma-car.module';
+import { MaCarTypeModule } from './ma-car-type/ma-car-type.module';
+import { MaCarBookModule } from './ma-car-book/ma-car-book.module';
 
 @Module({
   imports: [
@@ -43,6 +46,9 @@ import { DataLeaveFileModule } from './data-leave-file/data-leave-file.module';
     DataLeaveModule,
     PublicizeSlideImagesModule,
     DataLeaveFileModule,
+    MaCarModule,
+    MaCarTypeModule,
+    MaCarBookModule,
   ],
   controllers: [IntranetController],
   providers: [IntranetService],
