@@ -84,6 +84,9 @@ import {
   CustomerWorkTypeRepository,
   CustomerRequestTypeRepository,
   TicketHistoryLogsRepository,
+  MaCarRepository,
+  MaCarTypeRepository,
+  MaCarBookRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -144,6 +147,9 @@ const services = [
   MaTaskRepository,
   MaTaskFilesRepository,
   MaTypeRepository,
+  MaCarRepository,
+  MaCarTypeRepository,
+  MaCarBookRepository,
   // data Leave
   MasterTypeLeaveRepository,
   MasterHolidaysRepository,

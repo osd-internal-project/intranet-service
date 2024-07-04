@@ -881,6 +881,62 @@ model resultCleanliness {
 }
 
 //MA
+
+model maCar {
+    id            Int       @default(autoincrement()) @map("id")
+    carId         String    @unique @default(uuid()) @map("car_id") @db.VarChar(50)
+    carName       String    @map("car_name") @db.VarChar(150)
+    carPetrol     String    @map("car_petrol") @db.VarChar(150)
+    detail        String    @map("detail") @db.VarChar(150)
+    status        Boolean   @default(true) @map("stauts") @db.Boolean
+    createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+    createdById   String?   @map("created_by_id") @db.VarChar(50)
+    createdByName String?   @map("created_by_name") @db.VarChar(255)
+    updatedAt     DateTime? @map("updated_at") @db.Timestamptz()
+    updatedById   String?   @map("updated_by_id") @db.VarChar(50)
+    updatedByName String?   @map("updated_by_name") @db.VarChar(255)
+
+    @@map("ma_car")
+}
+
+model maCarType {
+    id            Int      @unique @default(autoincrement()) @map("id")
+    typeName      String   @map("type_name") @db.VarChar(150)
+    detail        String   @map("detail") @db.VarChar(150)
+    status        Boolean  @default(true) @map("stauts") @db.Boolean
+    createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz()
+    createdById   String?  @map("created_by_id") @db.VarChar(50)
+    createdByName String?  @map("created_by_name") @db.VarChar(255)
+
+    @@map("ma_car_type")
+}
+
+model maCarBook {
+    id                    Int       @default(autoincrement()) @map("id")
+    carId                 String    @unique @default(uuid()) @map("car_id") @db.VarChar(50)
+    carName               String    @map("car_name") @db.VarChar(150)
+    carBookTitle          String    @map("car_book_title") @db.VarChar(50)
+    carBookProvince       String    @map("car_book_province") @db.VarChar(250)
+    carBookPlace          String    @map("car_book_place") @db.VarChar(250)
+    carBookUsers          Int       @map("car_book_users") @db.Integer
+    carBookStartDate      DateTime  @map("car_book_start_date") @db.Timestamptz()
+    carBookEndDate        DateTime  @map("car_book_end_date") @db.Timestamptz()
+    carBookApprovedDate   DateTime? @map("car_book_approved_date") @db.Timestamptz()
+    carBookApprovedById   String?   @map("car_book_approved_by_id") @db.VarChar(50)
+    carBookApprovedByName String?   @map("car_book_approved__by_name") @db.VarChar(255)
+    detail                String?   @map("detail") @db.VarChar(150)
+    remark                String?   @map("remark") @db.VarChar(150)
+    status                Boolean?  @default(true) @map("stauts") @db.Boolean
+    createdAt             DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+    createdById           String?   @map("created_by_id") @db.VarChar(50)
+    createdByName         String?   @map("created_by_name") @db.VarChar(255)
+    updatedAt             DateTime? @map("updated_at") @db.Timestamptz()
+    updatedById           String?   @map("updated_by_id") @db.VarChar(50)
+    updatedByName         String?   @map("updated_by_name") @db.VarChar(255)
+
+    @@map("ma_car_book")
+}
+
 model maTask {
     id            Int           @unique @default(autoincrement()) @map("id")
     maName        String        @map("ma_name") @db.VarChar(255)

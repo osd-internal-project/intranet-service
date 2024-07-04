@@ -56,6 +56,9 @@ export * from './userRoleMap.repository';
 export * from './maTask.repository';
 export * from './maTaskFiles.repository';
 export * from './maType.repository';
+export * from './maCar.repository';
+export * from './maCarType.repository';
+export * from './maCarBook.repository';
 
 // type data leave
 export * from './masterTypeLeave.repository';
