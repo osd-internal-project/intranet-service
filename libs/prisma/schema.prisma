@@ -1254,6 +1254,7 @@ model customerProject {
     customerBranchId      Int?
     relatedGroupId        String[]                @map("related_group_id")
     relatedUsersId        String[]                @map("related_users_id")
+    description           String?                 @map("description") @db.Text
 
     @@map("customer_project")
 }
