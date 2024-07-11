@@ -103,7 +103,7 @@
     "db:pull": "yarn prisma db pull",
     "db:push": "yarn prisma db push",
     "db:seed": "yarn prisma db seed",
-    "dev": "NODE_ENV=local ts-node-dev --respawn --exit-child --transpile-only -r tsconfig-paths/register ./src/main.ts ",
+    "dev": "cross-env NODE_ENV=local ts-node-dev --respawn --exit-child --transpile-only -r tsconfig-paths/register ./src/main.ts ",
     "docker:build": "cd ../.. && docker build -t 'd-debt/inventory' -f services/inventory/Dockerfile .",
     "docker:buildx": "cd ../.. && docker build --no-cache --platform linux/amd64 -t 'intra-report-be:v1.0.0' -f services/report/Dockerfile .",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
