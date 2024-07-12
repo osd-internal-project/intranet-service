@@ -908,13 +908,12 @@ model maCarType {
     createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz()
     createdById   String?  @map("created_by_id") @db.VarChar(50)
     createdByName String?  @map("created_by_name") @db.VarChar(255)
-
     @@map("ma_car_type")
 }
 
 model maCarBook {
-    id                    Int       @default(autoincrement()) @map("id")
-    carId                 String    @unique @default(uuid()) @map("car_id") @db.VarChar(50)
+    id                    Int       @unique @default(autoincrement()) @map("id")
+    carId                 String    @map("car_id") @db.VarChar(50)
     carName               String    @map("car_name") @db.VarChar(150)
     carBookTitle          String    @map("car_book_title") @db.VarChar(50)
     carBookProvince       String    @map("car_book_province") @db.VarChar(250)
@@ -925,6 +924,7 @@ model maCarBook {
     carBookApprovedDate   DateTime? @map("car_book_approved_date") @db.Timestamptz()
     carBookApprovedById   String?   @map("car_book_approved_by_id") @db.VarChar(50)
     carBookApprovedByName String?   @map("car_book_approved__by_name") @db.VarChar(255)
+    carBookApprovedStatus String?   @map("car_book_approved_status") @db.VarChar(10)  
     detail                String?   @map("detail") @db.VarChar(150)
     remark                String?   @map("remark") @db.VarChar(150)
     status                Boolean?  @default(true) @map("stauts") @db.Boolean
@@ -997,7 +997,6 @@ model masterRoom {
     roomDescription  String          @map("room_description") @db.VarChar(255)
     masterRoomType   masterRoomType? @relation(fields: [masterRoomTypeId], references: [id])
     masterRoomTypeId Int?
-
     @@map("master_room")
 }
 
@@ -1256,6 +1255,7 @@ model customerProject {
     customerBranchId      Int?
     relatedGroupId        String[]                @map("related_group_id")
     relatedUsersId        String[]                @map("related_users_id")
+    description           String?                 @map("description") @db.Text
 
     @@map("customer_project")
 }

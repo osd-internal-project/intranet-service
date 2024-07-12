@@ -1,41 +1,45 @@
 import { Injectable } from '@nestjs/common';
 import { CreateMaCarDto } from './dto/create-ma-car.dto';
 import { UpdateMaCarDto } from './dto/update-ma-car.dto';
-import { MaCarRepository } from '@inventory/share';
+import { AccessService, MaCarRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class MaCarService {
   constructor(
-      private readonly macarRepo: MaCarRepository,
-      private readonly macarRepository: MaCarRepository,
+    private readonly macarRepo: MaCarRepository,
+    private readonly maCarRepository: MaCarRepository,
+    private readonly accessService: AccessService,
   ) {}
 
-  create( data: Prisma.maCarCreateInput) {
+  create(data: Prisma.maCarCreateInput) {
     const condition = { data: data } as Prisma.maCarCreateArgs;
-    return this.macarRepository.create(condition);
+    return this.maCarRepository.create(condition);
   }
+  // 'This action adds a new maCar'
 
   findAll() {
-    return this.macarRepo.findAll();
+    return this.maCarRepository.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} maCar`;
+  findOne(carId: string) {
+    return this.maCarRepository.findOne({
+      where: {
+        carId: carId,
+      },
+    });
   }
 
   update(carId: string, data: Prisma.maCarUpdateInput) {
     const condition = {
-      where: { id: carId },
+      where: { carId: carId },
       data: data,
     } as Prisma.maCarUpdateArgs;
-    return this.macarRepository.update(condition);
+    return this.maCarRepository.update(condition);
   }
 
   remove(carId: string) {
-    const condition = {
-      where: { carId: carId },
-    } as Prisma.maCarDeleteArgs;
-    return this.macarRepository.delete(condition);
+    const condition = { where: { carId: carId } } as Prisma.maCarDeleteArgs;
+    return this.maCarRepository.delete(condition);
   }
 }

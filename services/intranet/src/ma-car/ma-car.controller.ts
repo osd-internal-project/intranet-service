@@ -7,10 +7,10 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { MaCarService } from './ma-car.service';
 import { CreateMaCarDto } from './dto/create-ma-car.dto';
 import { UpdateMaCarDto } from './dto/update-ma-car.dto';
-import { Prisma } from '@prisma/client';
 
 @Controller('ma-car')
 export class MaCarController {
@@ -28,13 +28,13 @@ export class MaCarController {
     return this.maCarService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.maCarService.findOne(+id);
+  @Get(':carId')
+  findOne(@Param('carId') carId: string) {
+    return this.maCarService.findOne(carId);
   }
 
   @Patch(':carId')
-  update(@Param('carId') carId : string, @Body() data: Prisma.maCarUpdateInput) {
+  update(@Param('carId') carId: string, @Body() data: Prisma.maCarUpdateInput) {
     return this.maCarService.update(carId, data);
   }
 
