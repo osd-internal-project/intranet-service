@@ -887,6 +887,7 @@ model maCar {
     carId         String    @unique @default(uuid()) @map("car_id") @db.VarChar(50)
     carName       String    @map("car_name") @db.VarChar(150)
     carPetrol     String    @map("car_petrol") @db.VarChar(150)
+    carMile       Int?       @map("car_mile")
     detail        String    @map("detail") @db.VarChar(150)
     status        Boolean   @default(true) @map("stauts") @db.Boolean
     createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz()

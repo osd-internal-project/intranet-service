@@ -2,13 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { CreateMaCarDto } from './dto/create-ma-car.dto';
 import { UpdateMaCarDto } from './dto/update-ma-car.dto';
 import { MaCarRepository } from '@inventory/share';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class MaCarService {
-  constructor(private readonly macarRepo: MaCarRepository) {}
+  constructor(
+      private readonly macarRepo: MaCarRepository,
+      private readonly macarRepository: MaCarRepository,
+  ) {}
 
-  create(createMaCarDto: CreateMaCarDto) {
-    return 'This action adds a new maCar';
+  create( data: Prisma.maCarCreateInput) {
+    const condition = { data: data } as Prisma.maCarCreateArgs;
+    return this.macarRepository.create(condition);
   }
 
   findAll() {
@@ -19,11 +24,18 @@ export class MaCarService {
     return `This action returns a #${id} maCar`;
   }
 
-  update(id: number, updateMaCarDto: UpdateMaCarDto) {
-    return `This action updates a #${id} maCar`;
+  update(carId: string, data: Prisma.maCarUpdateInput) {
+    const condition = {
+      where: { id: carId },
+      data: data,
+    } as Prisma.maCarUpdateArgs;
+    return this.macarRepository.update(condition);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} maCar`;
+  remove(carId: string) {
+    const condition = {
+      where: { carId: carId },
+    } as Prisma.maCarDeleteArgs;
+    return this.macarRepository.delete(condition);
   }
 }
