@@ -59,6 +59,7 @@ export * from './maType.repository';
 export * from './maCar.repository';
 export * from './maCarType.repository';
 export * from './maCarBook.repository';
+export * from './maCarWrapup.repository';
 
 // type data leave
 export * from './masterTypeLeave.repository';
