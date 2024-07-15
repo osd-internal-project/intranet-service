@@ -96,6 +96,8 @@ export class AccessService {
       });
       const userList = groups.map((group) => group.usersId);
       return userList;
+    } else {
+      return [];
     }
   }
   async getEngineerUsersBySalePermission(userId: string) {
@@ -114,6 +116,8 @@ export class AccessService {
       });
       const userList = groups.map((group) => group.usersId);
       return userList;
+    } else {
+      return [];
     }
   }
   async findAllRelatedGroupRows(idList: string[]) {
