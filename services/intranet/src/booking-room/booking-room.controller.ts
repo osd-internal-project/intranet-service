@@ -8,7 +8,7 @@ import {
   Delete,
   UseGuards,
   Req,
-  Query
+  Query,
 } from '@nestjs/common';
 import { BookingRoomService } from './booking-room.service';
 import { Prisma } from '@prisma/client';

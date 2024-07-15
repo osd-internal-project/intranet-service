@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import {
   CustomerDetailRepository,
   CustomerFilesRepository,
@@ -101,7 +101,6 @@ export class CustomerDetailService {
     const ownerUserGroup = await this.accessService.getOwnerGroupByUserId(
       userid,
     );
-
     const data = await this.customerDetailRepo.findMany({
       where: {
         ...(refcode && { referenceCode: { contains: refcode } }),
@@ -229,7 +228,17 @@ export class CustomerDetailService {
     });
   }
 
-  remove(id: number) {
-    return this.customerDetailRepo.delete({ where: { id: id } });
+  async remove(id: number) {
+    const customer = (await this.customerDetailRepo.findOne({
+      where: { id: id },
+      select: { customerBranch: { select: { customerProject: true } } },
+    })) as any;
+    Logger.debug(customer);
+    customer.customerBranch.map((data) => {
+      if (data.customerProject.length > 0) {
+        throw new BadRequestException('Project Used');
+      }
+    });
+    // return this.customerDetailRepo.delete({ where: { id: id } });
   }
 }
