@@ -54,6 +54,7 @@ export class AccessService {
         (item) => item.groupId,
       );
       const combinedGroupIds = [...new Set([...groupIds1, ...groupIds2])];
+      const groupRelatedAll = this.findAllRelatedGroupRows(combinedGroupIds);
       // const useridAll = await this.prisma.users.findMany({
       //   where: {
       //     OR: [
@@ -69,7 +70,7 @@ export class AccessService {
       //   },
       // });
 
-      return combinedGroupIds;
+      return groupRelatedAll;
     } else {
       return [];
     }

@@ -1103,7 +1103,7 @@ model customerBranch {
     createdAt        DateTime?         @map("created_at") @db.Timestamptz()
     updatedAt        DateTime?         @map("updated_at") @db.Timestamptz()
     customerDetailId Int?              @map("customer_detail_id")
-    customerDetail   customerDetail?   @relation(fields: [customerDetailId], references: [id])
+    customerDetail   customerDetail?   @relation(fields: [customerDetailId], references: [id], onDelete: Cascade)
     customerAddress  customerAddress[]
     customerContact  customerContact[]
     customerProject  customerProject[]
