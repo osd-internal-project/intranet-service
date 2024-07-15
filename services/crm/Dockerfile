@@ -9,7 +9,7 @@ ENV YARN_CACHE_FOLDER=.yarn-cache
 FROM base AS pruner
 RUN yarn global add turbo@1.5.5
 COPY . .
-RUN turbo prune --scope="@inventory/inventory" --docker
+RUN turbo prune --scope="@inventory/crm" --docker
 RUN yarn global remove turbo
 
 # development dependencies
@@ -31,7 +31,7 @@ FROM base AS builder
 COPY --from=dev-deps /app/ .
 COPY --from=pruner /app/out/full/ .
 RUN yarn generate
-RUN yarn turbo run build --scope="@inventory/inventory" --include-dependencies --no-deps
+RUN yarn turbo run build --scope="@inventory/crm" --include-dependencies --no-deps
 RUN find . -name node_modules | xargs rm -rf
 
 # reduce size for production
@@ -45,6 +45,6 @@ RUN yarn global remove modclean
 
 FROM base AS runner
 COPY --from=cleaner /app/ .
-WORKDIR /app/services/inventory
+WORKDIR /app/services/crm
 USER node
 CMD node dist/main
