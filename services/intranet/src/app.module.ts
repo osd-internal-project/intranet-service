@@ -24,6 +24,7 @@ import { DataLeaveFileModule } from './data-leave-file/data-leave-file.module';
 import { MaCarModule } from './ma-car/ma-car.module';
 import { MaCarTypeModule } from './ma-car-type/ma-car-type.module';
 import { MaCarBookModule } from './ma-car-book/ma-car-book.module';
+import { MaCarWrapupModule } from './ma-car-wrapup/ma-car-wrapup.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { MaCarBookModule } from './ma-car-book/ma-car-book.module';
     MaCarModule,
     MaCarTypeModule,
     MaCarBookModule,
+    MaCarWrapupModule,
   ],
   controllers: [IntranetController],
   providers: [IntranetService],

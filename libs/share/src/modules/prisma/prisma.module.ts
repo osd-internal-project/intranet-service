@@ -87,6 +87,7 @@ import {
   MaCarRepository,
   MaCarTypeRepository,
   MaCarBookRepository,
+  MaCarWrapupRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -150,6 +151,7 @@ const services = [
   MaCarRepository,
   MaCarTypeRepository,
   MaCarBookRepository,
+  MaCarWrapupRepository,
   // data Leave
   MasterTypeLeaveRepository,
   MasterHolidaysRepository,

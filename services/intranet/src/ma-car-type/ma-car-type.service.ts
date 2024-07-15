@@ -1,26 +1,40 @@
 import { Injectable } from '@nestjs/common';
 import { CreateMaCarTypeDto } from './dto/create-ma-car-type.dto';
 import { UpdateMaCarTypeDto } from './dto/update-ma-car-type.dto';
+import { AccessService, MaCarTypeRepository } from '@inventory/share';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class MaCarTypeService {
-  create(createMaCarTypeDto: CreateMaCarTypeDto) {
-    return 'This action adds a new maCarType';
+  constructor(
+    // private readonly macarRepo: MaCarRepository,
+    private readonly maCarTypeRepository: MaCarTypeRepository, // private readonly accessService: AccessService,
+  ) {}
+  create(data: Prisma.maCarTypeCreateInput) {
+    const condition = { data: data } as Prisma.maCarTypeCreateArgs;
+    return this.maCarTypeRepository.create(condition);
   }
 
   findAll() {
-    return `This action returns all maCarType`;
+    return this.maCarTypeRepository.findAll();
   }
 
   findOne(id: number) {
     return `This action returns a #${id} maCarType`;
   }
 
-  update(id: number, updateMaCarTypeDto: UpdateMaCarTypeDto) {
-    return `This action updates a #${id} maCarType`;
+  async update(id: number, data: Prisma.maCarTypeUpdateInput) {
+    const condition = {
+      where: { id: id },
+      data: data,
+    } as Prisma.maCarTypeUpdateArgs;
+    return await this.maCarTypeRepository.update(condition);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} maCarType`;
+  async remove(id: number) {
+    const condition = {
+      where: { id: id },
+    } as Prisma.maCarTypeDeleteArgs;
+    return await this.maCarTypeRepository.delete(condition);
   }
 }

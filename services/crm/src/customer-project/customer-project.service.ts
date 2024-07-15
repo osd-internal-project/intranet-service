@@ -26,32 +26,37 @@ export class CustomerProjectService {
     const saleUsers = await this.accessService.getSaleUsersBySalePermission(
       userid,
     );
-
     const engineerUsers =
       await this.accessService.getEngineerUsersBySalePermission(userid);
+    const whereAnd = [];
+    if (fdate && ldate) {
+      whereAnd.push({
+        OR: [
+          {
+            startDate: { lte: new Date(ldate) },
+            endDate: { gte: new Date(fdate) },
+          },
+          {
+            startDate: { gte: new Date(fdate) },
+            endDate: { lte: new Date(ldate) },
+          },
+        ],
+      });
+    }
+    if (!ownerUserGroup.exceptionalSatatus) {
+      whereAnd.push({
+        OR: [
+          { saleId: { in: [...saleUsers, userid] } },
+          { projectManagerId: { in: [...engineerUsers, userid] } },
+        ],
+      });
+    }
+
     const data = await this.customerProjectRepo.findMany({
       where: {
         ...(projectcode && { projectCode: { contains: projectcode } }),
         ...(projectname && { projectName: { contains: projectname } }),
-        ...(fdate &&
-          ldate && {
-            OR: [
-              {
-                startDate: { lte: new Date(ldate) },
-                endDate: { gte: new Date(fdate) },
-              },
-              {
-                startDate: { gte: new Date(fdate) },
-                endDate: { lte: new Date(ldate) },
-              },
-            ],
-          }),
-        ...(!ownerUserGroup.exceptionalSatatus && {
-          OR: [
-            { saleId: { in: [...saleUsers, userid] } },
-            { projectManagerId: { in: [...engineerUsers, userid] } },
-          ],
-        }),
+        AND: whereAnd,
       },
 
       include: {
@@ -66,6 +71,7 @@ export class CustomerProjectService {
       where: {
         ...(projectcode && { projectCode: { contains: projectcode } }),
         ...(projectname && { projectName: { contains: projectname } }),
+        AND: whereAnd,
       },
     });
     return { data: data, count: count };
