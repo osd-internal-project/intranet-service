@@ -1,15 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { MaCarTypeService } from './ma-car-type.service';
 import { CreateMaCarTypeDto } from './dto/create-ma-car-type.dto';
 import { UpdateMaCarTypeDto } from './dto/update-ma-car-type.dto';
+import { Prisma } from '@prisma/client';
 
 @Controller('ma-car-type')
 export class MaCarTypeController {
   constructor(private readonly maCarTypeService: MaCarTypeService) {}
 
   @Post()
-  create(@Body() createMaCarTypeDto: CreateMaCarTypeDto) {
-    return this.maCarTypeService.create(createMaCarTypeDto);
+  create(@Body() data: Prisma.maCarTypeCreateInput) {
+    return this.maCarTypeService.create(data);
   }
 
   @Get()
@@ -23,8 +32,8 @@ export class MaCarTypeController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMaCarTypeDto: UpdateMaCarTypeDto) {
-    return this.maCarTypeService.update(+id, updateMaCarTypeDto);
+  update(@Param('id') id: string, @Body() data: Prisma.maCarTypeUpdateInput) {
+    return this.maCarTypeService.update(+id, data);
   }
 
   @Delete(':id')
