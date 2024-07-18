@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateMaCarDto } from './dto/create-ma-car.dto';
-import { UpdateMaCarDto } from './dto/update-ma-car.dto';
 import { AccessService, MaCarRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 
