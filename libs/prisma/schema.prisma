@@ -887,7 +887,7 @@ model maCar {
     carId         String    @unique @default(uuid()) @map("car_id") @db.VarChar(50)
     carName       String    @map("car_name") @db.VarChar(150)
     carPetrol     String    @map("car_petrol") @db.VarChar(150)
-    carMile       Int?       @map("car_mile")
+    carMile       Int?      @map("car_mile")
     detail        String    @map("detail") @db.VarChar(150)
     status        Boolean   @default(true) @map("stauts") @db.Boolean
     createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz()
@@ -908,6 +908,7 @@ model maCarType {
     createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz()
     createdById   String?  @map("created_by_id") @db.VarChar(50)
     createdByName String?  @map("created_by_name") @db.VarChar(255)
+
     @@map("ma_car_type")
 }
 
@@ -924,7 +925,7 @@ model maCarBook {
     carBookApprovedDate   DateTime? @map("car_book_approved_date") @db.Timestamptz()
     carBookApprovedById   String?   @map("car_book_approved_by_id") @db.VarChar(50)
     carBookApprovedByName String?   @map("car_book_approved__by_name") @db.VarChar(255)
-    carBookApprovedStatus String?   @map("car_book_approved_status") @db.VarChar(10)  
+    carBookApprovedStatus String?   @map("car_book_approved_status") @db.VarChar(10)
     detail                String?   @map("detail") @db.VarChar(150)
     remark                String?   @map("remark") @db.VarChar(150)
     status                Boolean?  @default(true) @map("stauts") @db.Boolean
@@ -936,6 +937,26 @@ model maCarBook {
     updatedByName         String?   @map("updated_by_name") @db.VarChar(255)
 
     @@map("ma_car_book")
+}
+
+model maCarWrapup {
+    id          Int       @default(autoincrement()) @map("id")
+    carWrapupId String    @unique @default(uuid()) @map("car_wrapup_id") @db.VarChar(50)
+    carId       String    @map("car_id") @db.VarChar(50)
+    carName     String    @map("car_name") @db.VarChar(100)
+    typeId      Int       @map("type_id")
+    typeName    String    @map("type_name") @db.VarChar(150)
+    vender      String    @map("vender") @db.VarChar(100)
+    cost        Decimal   @map("cost") @db.Money
+    detail      String    @map("detail") @db.Text
+    wrapupMiles String    @map("wrapup_miles") @db.VarChar(150)
+    dateStart   DateTime  @map("date_start") @db.Timestamptz()
+    dateEnd     DateTime  @map("date_end") @db.Timestamptz()
+    remark      String    @map("remark") @db.Text
+    createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt   DateTime? @map("updated_at") @db.Timestamptz()
+
+    @@map("ma_car_wrapup")
 }
 
 model maTask {
@@ -997,6 +1018,7 @@ model masterRoom {
     roomDescription  String          @map("room_description") @db.VarChar(255)
     masterRoomType   masterRoomType? @relation(fields: [masterRoomTypeId], references: [id])
     masterRoomTypeId Int?
+
     @@map("master_room")
 }
 
@@ -1103,7 +1125,7 @@ model customerBranch {
     createdAt        DateTime?         @map("created_at") @db.Timestamptz()
     updatedAt        DateTime?         @map("updated_at") @db.Timestamptz()
     customerDetailId Int?              @map("customer_detail_id")
-    customerDetail   customerDetail?   @relation(fields: [customerDetailId], references: [id])
+    customerDetail   customerDetail?   @relation(fields: [customerDetailId], references: [id], onDelete: Cascade)
     customerAddress  customerAddress[]
     customerContact  customerContact[]
     customerProject  customerProject[]

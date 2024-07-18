@@ -28,7 +28,6 @@ export class CustomerProjectController {
   }
   @Get('many')
   findMany(@Query() query: object) {
-    console.log(query);
     return this.customerProjectService.findMany({});
   }
   @Get('data-table')

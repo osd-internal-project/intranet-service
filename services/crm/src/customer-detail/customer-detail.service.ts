@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import {
   CustomerDetailRepository,
   CustomerFilesRepository,
@@ -97,48 +97,47 @@ export class CustomerDetailService {
 
   async findDatatable(query: any) {
     const { refcode, customername, activestatus, take, skip, userid } = query;
+    Logger.debug(customername);
     const ownerGroups = await this.accessService.getOwnerGroupId(userid);
     const ownerUserGroup = await this.accessService.getOwnerGroupByUserId(
       userid,
     );
-
-    const data = await this.customerDetailRepo.findMany({
+    const whereAnd = [];
+    if (customername) {
+      whereAnd.push({
+        OR: [
+          { prefixTh: { contains: customername } },
+          { firstNameTh: { contains: customername } },
+          { lastNameTh: { contains: customername } },
+        ],
+      });
+    }
+    if (!ownerUserGroup.exceptionalSatatus) {
+      whereAnd.push({
+        OR: [
+          { responsible: { hasSome: { path: ['uid'], equals: userid } } },
+          { responsibleGroup: { hasSome: ownerGroups } },
+        ],
+      });
+    }
+    const findCondition = {
       where: {
         ...(refcode && { referenceCode: { contains: refcode } }),
         ...(activestatus && { activeStatus: JSON.parse(activestatus) }),
-        ...(customername && {
-          OR: [
-            { prefixTh: { contains: customername } },
-            { firstNameTh: { contains: customername } },
-            { lastNameTh: { contains: customername } },
-          ],
-        }),
-        ...(!ownerUserGroup.exceptionalSatatus && {
-          OR: [
-            { responsible: { hasSome: { path: ['uid'], equals: userid } } },
-            { responsibleGroup: { hasSome: ownerGroups } },
-          ],
-        }),
+        AND: whereAnd,
       },
       ...(take && { take: Number(take) }),
       ...(skip && { skip: Number(skip) }),
-    });
-    const count = await this.customerDetailRepo.count({
+    } as Prisma.customerDetailFindManyArgs;
+    const countCondition = {
       where: {
         ...(refcode && { referenceCode: { contains: refcode } }),
         ...(activestatus && { activeStatus: JSON.parse(activestatus) }),
-        ...(customername && {
-          OR: [
-            { prefixTh: { contains: customername } },
-            { firstNameTh: { contains: customername } },
-            { lastNameTh: { contains: customername } },
-          ],
-          ...(!ownerUserGroup.exceptionalSatatus && {
-            responsibleGroup: { hasSome: ownerGroups },
-          }),
-        }),
+        AND: whereAnd,
       },
-    });
+    } as Prisma.customerDetailCountArgs;
+    const data = await this.customerDetailRepo.findMany(findCondition);
+    const count = await this.customerDetailRepo.count(countCondition);
     return { data: data, count: count };
   }
 
@@ -229,7 +228,17 @@ export class CustomerDetailService {
     });
   }
 
-  remove(id: number) {
-    return this.customerDetailRepo.delete({ where: { id: id } });
+  async remove(id: number) {
+    const customer = (await this.customerDetailRepo.findOne({
+      where: { id: id },
+      select: { customerBranch: { select: { customerProject: true } } },
+    })) as any;
+    Logger.debug(customer);
+    customer.customerBranch.map((data) => {
+      if (data.customerProject.length > 0) {
+        throw new BadRequestException('Project Used');
+      }
+    });
+    // return this.customerDetailRepo.delete({ where: { id: id } });
   }
 }
