@@ -880,22 +880,23 @@ model resultCleanliness {
     @@map("result_cleanliness")
 }
 
-//MA
-
 model maCar {
-    id            Int       @default(autoincrement()) @map("id")
-    carId         String    @unique @default(uuid()) @map("car_id") @db.VarChar(50)
-    carName       String    @map("car_name") @db.VarChar(150)
-    carPetrol     String    @map("car_petrol") @db.VarChar(150)
-    carMile       Int?      @map("car_mile")
-    detail        String    @map("detail") @db.VarChar(150)
-    status        Boolean   @default(true) @map("stauts") @db.Boolean
-    createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz()
-    createdById   String?   @map("created_by_id") @db.VarChar(50)
-    createdByName String?   @map("created_by_name") @db.VarChar(255)
-    updatedAt     DateTime? @map("updated_at") @db.Timestamptz()
-    updatedById   String?   @map("updated_by_id") @db.VarChar(50)
-    updatedByName String?   @map("updated_by_name") @db.VarChar(255)
+    id                    Int           @default(autoincrement()) @map("id")
+    carId                 String        @unique @default(uuid()) @map("car_id") @db.VarChar(50)
+    carName               String        @map("car_name") @db.VarChar(150)
+    carPetrol             String        @map("car_petrol") @db.VarChar(150)
+    carMile               Int?          @map("car_mile")
+    detail                String        @map("detail") @db.VarChar(150)
+    status                Boolean       @default(true) @map("stauts") @db.Boolean
+    createdAt             DateTime      @default(now()) @map("created_at") @db.Timestamptz()
+    createdById           String?       @map("created_by_id") @db.VarChar(50)
+    createdByName         String?       @map("created_by_name") @db.VarChar(255)
+    updatedAt             DateTime?     @map("updated_at") @db.Timestamptz()
+    updatedById           String?       @map("updated_by_id") @db.VarChar(50)
+    updatedByName         String?       @map("updated_by_name") @db.VarChar(255)
+    carBookApprovedStatus String?       @map("car_book_approved_status") @db.VarChar(10)
+    maCarBook             maCarBook[]
+    maCarWrapup           maCarWrapup[]
 
     @@map("ma_car")
 }
@@ -935,6 +936,7 @@ model maCarBook {
     updatedAt             DateTime? @map("updated_at") @db.Timestamptz()
     updatedById           String?   @map("updated_by_id") @db.VarChar(50)
     updatedByName         String?   @map("updated_by_name") @db.VarChar(255)
+    maCar                 maCar?    @relation(fields: [carId], references: [carId])
 
     @@map("ma_car_book")
 }
@@ -955,6 +957,7 @@ model maCarWrapup {
     remark      String    @map("remark") @db.Text
     createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz()
     updatedAt   DateTime? @map("updated_at") @db.Timestamptz()
+    maCar       maCar?    @relation(fields: [carId], references: [carId])
 
     @@map("ma_car_wrapup")
 }

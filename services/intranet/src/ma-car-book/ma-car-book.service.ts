@@ -38,6 +38,12 @@ export class MaCarBookService {
       where: {
         createdById: createdById,
       },
+      include: {
+        maCar: true,
+        // {
+        //   maCarWrapup: true,
+        // },
+      },
       orderBy: {
         id: 'desc',
       },
