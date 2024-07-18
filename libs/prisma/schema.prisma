@@ -894,7 +894,6 @@ model maCar {
     updatedAt             DateTime?   @map("updated_at") @db.Timestamptz()
     updatedById           String?     @map("updated_by_id") @db.VarChar(50)
     updatedByName         String?     @map("updated_by_name") @db.VarChar(255)
-    carBookApprovedStatus String?     @map("car_book_approved_status") @db.VarChar(10)
     maCarBook             maCarBook[]
 
     @@map("ma_car")
