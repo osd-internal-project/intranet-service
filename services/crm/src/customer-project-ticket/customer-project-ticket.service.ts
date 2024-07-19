@@ -71,8 +71,18 @@ export class CustomerProjectTicketService {
     skip: number,
     take: number,
   ) {
+    const groups = await this.accessService.getOwnerGroupId(userId);
+
     const data = await this.customerProjectTicketRepo.findMany({
-      where: { OR: [{ createdById: userId }, { assignId: userId }], ...query },
+      where: {
+        OR: [
+          { createdById: userId },
+          { assignId: userId },
+          { createdGroupId: { in: groups } },
+          { assignGroupId: { in: groups } },
+        ],
+        ...query,
+      },
 
       skip: skip,
       take: take,
