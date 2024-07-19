@@ -881,7 +881,6 @@ model resultCleanliness {
 }
 
 //MA
-
 model maCar {
     id            Int       @default(autoincrement()) @map("id")
     carId         String    @unique @default(uuid()) @map("car_id") @db.VarChar(50)
