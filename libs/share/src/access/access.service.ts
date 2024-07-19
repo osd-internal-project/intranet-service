@@ -108,7 +108,6 @@ export class AccessService {
       const userList = permissionGroup.engineerUsersId;
       return userList;
     } else if (permissionGroup.engineerUserGroupId.length > 0) {
-      console.log(permissionGroup.engineerUserGroupId);
       const allGroup = await this.findAllRelatedGroupRows(
         permissionGroup.engineerUserGroupId,
       );
