@@ -39,10 +39,11 @@ export class MaCarBookService {
         createdById: createdById,
       },
       include: {
-        maCar: true,
-        // {
-        //   maCarWrapup: true,
-        // },
+        maCar: {
+          include: {
+            maCarWrapup: true,
+          },
+        },
       },
       orderBy: {
         id: 'desc',
