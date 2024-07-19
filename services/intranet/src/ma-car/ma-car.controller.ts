@@ -9,8 +9,6 @@ import {
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { MaCarService } from './ma-car.service';
-import { CreateMaCarDto } from './dto/create-ma-car.dto';
-import { UpdateMaCarDto } from './dto/update-ma-car.dto';
 
 @Controller('ma-car')
 export class MaCarController {
@@ -23,8 +21,6 @@ export class MaCarController {
 
   @Get()
   findAll() {
-    console.log('test');
-    
     return this.maCarService.findAll();
   }
 

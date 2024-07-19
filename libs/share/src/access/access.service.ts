@@ -105,11 +105,11 @@ export class AccessService {
       where: { userMapOrganizeGroupOwner: { some: { usersId: userId } } },
     });
     if (permissionGroup.engineerUsersId.length > 0) {
-      const userList = permissionGroup.saleUsersId;
+      const userList = permissionGroup.engineerUsersId;
       return userList;
     } else if (permissionGroup.engineerUserGroupId.length > 0) {
       const allGroup = await this.findAllRelatedGroupRows(
-        permissionGroup.saleUserGroupId,
+        permissionGroup.engineerUserGroupId,
       );
       const groups = await this.prisma.userMapOrganizeGroupOwner.findMany({
         where: { ownerGroupId: { in: allGroup } },

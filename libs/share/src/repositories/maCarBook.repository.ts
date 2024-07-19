@@ -12,7 +12,7 @@ export class MaCarBookRepository {
     return prisma.maCarBook.findMany();
   }
   async findMany(
-    condition: Prisma.maCarBookFindFirstArgsBase,
+    condition: Prisma.maCarBookFindManyArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;

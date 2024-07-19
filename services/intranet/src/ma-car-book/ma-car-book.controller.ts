@@ -8,8 +8,6 @@ import {
   Delete,
 } from '@nestjs/common';
 import { MaCarBookService } from './ma-car-book.service';
-import { CreateMaCarBookDto } from './dto/create-ma-car-book.dto';
-import { UpdateMaCarBookDto } from './dto/update-ma-car-book.dto';
 import { Prisma } from '@prisma/client';
 
 @Controller('ma-car-book')
@@ -22,25 +20,22 @@ export class MaCarBookController {
   }
 
   @Get()
-  findAll() {
-    return this.maCarBookService.findAll();
+  findMany() {
+    return this.maCarBookService.findMany();
   }
 
-  @Get(':carId')
-  findOne(@Param('carId') carId: string) {
-    return this.maCarBookService.findOne(carId);
+  @Get(':createdById')
+  createdById(@Param('createdById') createdById: string) {
+    return this.maCarBookService.createdById(createdById);
   }
 
-  @Patch(':carId')
-  update(
-    @Param('carId') carId: string,
-    @Body() data: Prisma.maCarBookUpdateInput,
-  ) {
-    return this.maCarBookService.update(carId, data);
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() data: Prisma.maCarBookUpdateInput) {
+    return this.maCarBookService.update(+id, data);
   }
 
-  @Delete(':carId')
-  remove(@Param('carId') carId: string) {
-    return this.maCarBookService.remove(carId);
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.maCarBookService.remove(+id);
   }
 }
