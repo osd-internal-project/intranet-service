@@ -1,5 +1,5 @@
 import { AccessService, CustomerProjectRepository } from '@inventory/share';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
