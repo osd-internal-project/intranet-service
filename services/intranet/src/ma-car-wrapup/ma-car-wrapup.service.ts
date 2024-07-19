@@ -26,13 +26,14 @@ export class MaCarWrapupService {
     return this.macarwrapupRepo.findOne(base);
   }
 
-  update(carWrapupId: string) {
-    return this.macarwrapupRepo.update({
+  update(carWrapupId: string, condition: Prisma.maCarWrapupUpdateArgs) {
+    const base = {
       where: {
         carWrapupId: carWrapupId,
       },
-      // data: {...condition}
-    });
+      data: { ...condition },
+    } as Prisma.maCarWrapupUpdateArgs;
+    return this.macarwrapupRepo.update(base);
   }
 
   remove(carWrapupId: string) {
