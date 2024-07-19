@@ -35,12 +35,8 @@ export class MaCarWrapupController {
     @Param('carWrapupId') carWrapupId: string,
     @Body() condition: Prisma.maCarWrapupUpdateArgs,
   ) {
-<<<<<<< HEAD
     
     return this.maCarWrapupService.update(carWrapupId, condition);
-=======
-    return this.maCarWrapupService.update(carWrapupId);
->>>>>>> 17abdad14d55198cd743c532bffab7d1a6287ebc
   }
 
   @Delete(':carWrapupId')
