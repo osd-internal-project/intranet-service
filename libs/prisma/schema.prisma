@@ -942,9 +942,9 @@ model maCarBook {
 model maCarWrapup {
     id          Int       @default(autoincrement()) @map("id")
     carWrapupId String    @unique @default(uuid()) @map("car_wrapup_id") @db.VarChar(50)
-    carId       String    @map("car_id") @db.VarChar(50)
+    carId       String?    @map("car_id") @db.VarChar(50)
     carName     String    @map("car_name") @db.VarChar(100)
-    typeId      Int       @map("type_id")
+    typeId      Int?       @map("type_id")
     typeName    String    @map("type_name") @db.VarChar(150)
     vender      String    @map("vender") @db.VarChar(100)
     cost        Decimal   @map("cost") @db.Money

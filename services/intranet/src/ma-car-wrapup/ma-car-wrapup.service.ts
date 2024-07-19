@@ -32,7 +32,7 @@ export class MaCarWrapupService {
       },
       data: { ...condition },
     } as Prisma.maCarWrapupUpdateArgs;
-    return this.macarwrapupRepo.findMany(base);
+    return this.macarwrapupRepo.update(base);
   }
 
   remove(carWrapupId: string) {
