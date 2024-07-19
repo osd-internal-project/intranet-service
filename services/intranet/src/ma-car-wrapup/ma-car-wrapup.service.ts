@@ -22,14 +22,16 @@ export class MaCarWrapupService {
         carWrapupId: carWrapupId,
       },
     };
+
     return this.macarwrapupRepo.findOne(base);
   }
 
   update(carWrapupId: string) {
-    return this.macarwrapupRepo.findMany({
+    return this.macarwrapupRepo.update({
       where: {
         carWrapupId: carWrapupId,
       },
+      // data: {...condition}
     });
   }
 
