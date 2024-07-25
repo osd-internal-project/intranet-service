@@ -935,6 +935,10 @@ model maCarBook {
     updatedAt             DateTime? @map("updated_at") @db.Timestamptz()
     updatedById           String?   @map("updated_by_id") @db.VarChar(50)
     updatedByName         String?   @map("updated_by_name") @db.VarChar(255)
+    recipientId           String?   @map("recipient_id") @db.VarChar(50)
+    recipientName         String?   @map("recipient_name") @db.VarChar(255)
+    returnNotifAt         DateTime? @map("return_notif_at") @db.Timestamptz()
+    returnAt              DateTime? @map("return_at") @db.Timestamptz()
     maCar                 maCar?    @relation(fields: [carId], references: [carId])
 
     @@map("ma_car_book")
@@ -1173,7 +1177,7 @@ model customerDetail {
     customerTypeId     Int?      @map("customer_type_id") @db.Integer
     customerTypeName   String?   @map("customer_type_name") @db.VarChar(255)
     grade              String?   @map("grade") @db.VarChar(5)
-    responsible        Json[]    @map("responsible") @db.JsonB
+    responsible        Json?     @map("responsible")
     responsibleGroup   String[]  @map("responsible_group")
     responsibleName    String?   @map("responsible_name") @db.VarChar(200)
     thirdPartyId       String?   @map("third_party_id") @db.VarChar(50)
