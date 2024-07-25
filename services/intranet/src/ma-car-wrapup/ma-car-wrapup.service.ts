@@ -31,6 +31,8 @@ export class MaCarWrapupService {
         carWrapupId: carWrapupId,
       },
       data: { ...condition },
+      
+      
     } as Prisma.maCarWrapupUpdateArgs;
     return this.macarwrapupRepo.update(base);
   }
