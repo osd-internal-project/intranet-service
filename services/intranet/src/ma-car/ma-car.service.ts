@@ -17,13 +17,21 @@ export class MaCarService {
   // 'This action adds a new maCar'
 
   findAll() {
-    return this.maCarRepository.findAll();
+    return this.maCarRepository.findMany({
+      orderBy: {
+        id: 'desc',
+      },
+    });
   }
 
-  findOne(carId: string) {
-    return this.maCarRepository.findOne({
+  findMany(carId: string) {
+    return this.maCarRepository.findMany({
       where: {
         carId: carId,
+      },
+      include: {
+        maCarWrapup: true,
+        maCarBook: true,
       },
     });
   }
