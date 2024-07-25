@@ -1172,7 +1172,7 @@ model customerDetail {
     customerTypeId     Int?      @map("customer_type_id") @db.Integer
     customerTypeName   String?   @map("customer_type_name") @db.VarChar(255)
     grade              String?   @map("grade") @db.VarChar(5)
-    responsible        Json[]    @map("responsible") @db.JsonB
+    responsible        Json      @map("responsible") @db.JsonB
     responsibleGroup   String[]  @map("responsible_group")
     responsibleName    String?   @map("responsible_name") @db.VarChar(200)
     thirdPartyId       String?   @map("third_party_id") @db.VarChar(50)
