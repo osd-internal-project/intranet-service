@@ -39,7 +39,6 @@ export class AccessService {
         });
         return ownerGroupsId;
       }
-      Logger.warn(filterGroupId);
       const findGroup = await this.prisma.userMapOrganizeGroup.findMany({
         where: {
           users: { is: { userId: userId } },
@@ -51,11 +50,9 @@ export class AccessService {
       });
 
       const groupIds1 = findGroup.map((item) => item.groupId);
-      Logger.warn(groupIds1);
       const groupIds2 = resUser.userMapOrganizeGroup.map(
         (item) => item.groupId,
       );
-      Logger.warn(groupIds2);
       const combinedGroupIds = [...new Set([...groupIds1, ...groupIds2])];
       const groupRelatedAll = this.findAllRelatedGroupRows(combinedGroupIds);
       // const useridAll = await this.prisma.users.findMany({
