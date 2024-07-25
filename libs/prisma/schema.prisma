@@ -935,7 +935,11 @@ model maCarBook {
     updatedAt             DateTime? @map("updated_at") @db.Timestamptz()
     updatedById           String?   @map("updated_by_id") @db.VarChar(50)
     updatedByName         String?   @map("updated_by_name") @db.VarChar(255)
-    maCar                 maCar?    @relation(fields: [carId], references: [carId])
+    recipientName         String?   @map("recipient_name") @db.VarChar(255)
+    returnNotifAt         DateTime? @default(now()) @map("return_notif_at") @db.Timestamptz()
+    returnAt              DateTime? @map("return_at") @db.Timestamptz()
+
+    maCar maCar? @relation(fields: [carId], references: [carId])
 
     @@map("ma_car_book")
 }
@@ -943,6 +947,7 @@ model maCarBook {
 model maCarWrapup {
     id          Int       @default(autoincrement()) @map("id")
     carWrapupId String    @unique @default(uuid()) @map("car_wrapup_id") @db.VarChar(50)
+    carId       String?   @map("car_id") @db.VarChar(50)
     carName     String    @map("car_name") @db.VarChar(100)
     typeId      Int?      @map("type_id")
     typeName    String    @map("type_name") @db.VarChar(150)
