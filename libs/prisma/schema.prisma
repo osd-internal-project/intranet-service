@@ -938,7 +938,6 @@ model maCarBook {
     recipientName         String?   @map("recipient_name") @db.VarChar(255)
     returnNotifAt         DateTime? @default(now()) @map("return_notif_at") @db.Timestamptz()
     returnAt              DateTime? @map("return_at") @db.Timestamptz()
-
     maCar maCar? @relation(fields: [carId], references: [carId])
 
     @@map("ma_car_book")
