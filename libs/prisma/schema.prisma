@@ -960,6 +960,7 @@ model maCarWrapup {
     createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz()
     updatedAt   DateTime? @map("updated_at") @db.Timestamptz()
     maCar       maCar?    @relation(fields: [carId], references: [carId])
+    carId       String?   @map("car_id") @db.VarChar(50)
 
     @@map("ma_car_wrapup")
 }
@@ -1175,7 +1176,7 @@ model customerDetail {
     customerTypeId     Int?      @map("customer_type_id") @db.Integer
     customerTypeName   String?   @map("customer_type_name") @db.VarChar(255)
     grade              String?   @map("grade") @db.VarChar(5)
-    responsible        Json      @map("responsible") @db.JsonB
+    responsible        Json?     @map("responsible")
     responsibleGroup   String[]  @map("responsible_group")
     responsibleName    String?   @map("responsible_name") @db.VarChar(200)
     thirdPartyId       String?   @map("third_party_id") @db.VarChar(50)
