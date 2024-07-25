@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../modules/prisma/prisma.service';
 @Injectable()
 export class AccessService {
   constructor(private prisma: PrismaService) {}
+  //All Group
   async getOwnerGroupId(userId: string): Promise<string[]> {
     const resUser = await this.prisma.users.findFirst({
       where: {
@@ -38,7 +39,7 @@ export class AccessService {
         });
         return ownerGroupsId;
       }
-
+      Logger.warn(filterGroupId);
       const findGroup = await this.prisma.userMapOrganizeGroup.findMany({
         where: {
           users: { is: { userId: userId } },
@@ -50,9 +51,11 @@ export class AccessService {
       });
 
       const groupIds1 = findGroup.map((item) => item.groupId);
+      Logger.warn(groupIds1);
       const groupIds2 = resUser.userMapOrganizeGroup.map(
         (item) => item.groupId,
       );
+      Logger.warn(groupIds2);
       const combinedGroupIds = [...new Set([...groupIds1, ...groupIds2])];
       const groupRelatedAll = this.findAllRelatedGroupRows(combinedGroupIds);
       // const useridAll = await this.prisma.users.findMany({
@@ -75,11 +78,13 @@ export class AccessService {
       return [];
     }
   }
+  //Owner Group
   async getOwnerGroupByUserId(userId: string) {
     return await this.prisma.userGroup.findFirst({
       where: { userMapOrganizeGroupOwner: { some: { usersId: userId } } },
     });
   }
+  //Sale Group
   async getSaleUsersBySalePermission(userId: string) {
     const permissionGroup = await this.prisma.userGroup.findFirst({
       where: { userMapOrganizeGroupOwner: { some: { usersId: userId } } },
@@ -100,6 +105,7 @@ export class AccessService {
       return [];
     }
   }
+  //Engineer Group
   async getEngineerUsersBySalePermission(userId: string) {
     const permissionGroup = await this.prisma.userGroup.findFirst({
       where: { userMapOrganizeGroupOwner: { some: { usersId: userId } } },
