@@ -29,6 +29,11 @@ export class MaCarBookController {
     return this.maCarBookService.createdById(createdById);
   }
 
+  @Get(':id')
+  id(@Param('id') id: string) {
+    return this.maCarBookService.findManyid(+id);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() data: Prisma.maCarBookUpdateInput) {
     return this.maCarBookService.update(+id, data);

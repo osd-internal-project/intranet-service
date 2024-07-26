@@ -22,6 +22,7 @@ export class MaCarWrapupService {
         carWrapupId: carWrapupId,
       },
     };
+
     return this.macarwrapupRepo.findOne(base);
   }
 

@@ -25,10 +25,13 @@ export class MaCarBookService {
     });
   }
 
-  findOne(id: number) {
-    return this.maCarBookRepository.findOne({
+  findManyid(id: number) {
+    return this.maCarBookRepository.findMany({
       where: {
         id: id,
+      },
+      orderBy: {
+        id: 'desc',
       },
     });
   }

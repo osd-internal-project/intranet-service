@@ -25,8 +25,8 @@ export class MaCarController {
   }
 
   @Get(':carId')
-  findOne(@Param('carId') carId: string) {
-    return this.maCarService.findOne(carId);
+  findMany(@Param('carId') carId: string) {
+    return this.maCarService.findMany(carId);
   }
 
   @Patch(':carId')
