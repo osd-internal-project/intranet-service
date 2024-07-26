@@ -55,7 +55,6 @@ export class AccessService {
       );
 
       const combinedGroupIds = [...new Set([...groupIds1, ...groupIds2])];
-      console.log(combinedGroupIds);
       const groupRelatedAll = this.findAllRelatedGroupRows(combinedGroupIds);
       // const useridAll = await this.prisma.users.findMany({
       //   where: {
