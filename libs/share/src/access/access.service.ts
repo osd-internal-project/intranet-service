@@ -30,30 +30,32 @@ export class AccessService {
     if (filterGroupId.length > 0) {
       const masterGroup = await this.prisma.userGroup.findFirst({
         where: { groupId: filterGroupId[0] },
+        include: { userGroup: true },
       });
 
-      if (masterGroup.parentGroupId === null) {
-        const ownerGroupAll = await this.prisma.userGroup.findMany({});
-        const ownerGroupsId = ownerGroupAll.map((item) => {
-          return item.groupId;
-        });
-        return ownerGroupsId;
-      }
-      const findGroup = await this.prisma.userMapOrganizeGroup.findMany({
-        where: {
-          users: { is: { userId: userId } },
-          groupId: { notIn: filterGroupId },
-        },
-        select: {
-          groupId: true,
-        },
-      });
-
-      const groupIds1 = findGroup.map((item) => item.groupId);
+      // if (masterGroup.parentGroupId === null) {
+      //   const ownerGroupAll = await this.prisma.userGroup.findMany({});
+      //   const ownerGroupsId = ownerGroupAll.map((item) => {
+      //     return item.groupId;
+      //   });
+      //   return ownerGroupsId;
+      // }
+      // const findGroup = await this.prisma.userMapOrganizeGroup.findMany({
+      //   where: {
+      //     users: { is: { userId: userId } },
+      //     groupId: { notIn: filterGroupId },
+      //   },
+      //   select: {
+      //     groupId: true,
+      //   },
+      // });
+      const groupIds1 = masterGroup.userGroup.map((item) => item.groupId);
       const groupIds2 = resUser.userMapOrganizeGroup.map(
         (item) => item.groupId,
       );
+
       const combinedGroupIds = [...new Set([...groupIds1, ...groupIds2])];
+      console.log(combinedGroupIds);
       const groupRelatedAll = this.findAllRelatedGroupRows(combinedGroupIds);
       // const useridAll = await this.prisma.users.findMany({
       //   where: {
