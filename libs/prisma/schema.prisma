@@ -925,7 +925,7 @@ model maCarBook {
     carBookApprovedDate   DateTime? @map("car_book_approved_date") @db.Timestamptz()
     carBookApprovedById   String?   @map("car_book_approved_by_id") @db.VarChar(50)
     carBookApprovedByName String?   @map("car_book_approved__by_name") @db.VarChar(255)
-    carBookApprovedStatus String?   @map("car_book_approved_status") @db.VarChar(10)
+    carBookApprovedStatus String?   @map("car_book_approved_status") @db.VarChar(20)
     detail                String?   @map("detail") @db.VarChar(150)
     remark                String?   @map("remark") @db.VarChar(150)
     status                Boolean?  @default(true) @map("stauts") @db.Boolean
