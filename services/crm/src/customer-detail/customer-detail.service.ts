@@ -115,7 +115,7 @@ export class CustomerDetailService {
     if (!ownerUserGroup.exceptionalSatatus) {
       whereAnd.push({
         OR: [
-          { responsible: { hasSome: { path: ['uid'], equals: userid } } },
+          { responsibleId: { hasSome: userid } },
           { responsibleGroup: { hasSome: ownerGroups } },
         ],
       });
@@ -138,6 +138,7 @@ export class CustomerDetailService {
     } as Prisma.customerDetailCountArgs;
     const data = await this.customerDetailRepo.findMany(findCondition);
     const count = await this.customerDetailRepo.count(countCondition);
+
     return { data: data, count: count };
   }
 
