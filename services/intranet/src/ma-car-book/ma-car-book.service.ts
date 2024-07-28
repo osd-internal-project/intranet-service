@@ -62,19 +62,6 @@ export class MaCarBookService {
     return this.maCarBookRepository.update(condition);
   }
 
-  // update(id: Number, data: Prisma.maCarBookUpdateInput) {
-  //   const condition = {
-  //     where: { id: id },
-  //     data: data,
-  //   } as Prisma.maCarBookUpdateArgs;
-
-  //   return this.maCarBookRepository.update(condition).then(() => {
-  //     return this.maCarBookRepository.findMany({
-  //       orderBy: [{ updatedAt: 'desc' }],
-  //     });
-  //   });
-  // }
-
   remove(id: Number) {
     const condition = { where: { id: id } } as Prisma.maCarBookDeleteArgs;
     return this.maCarBookRepository.delete(condition);
