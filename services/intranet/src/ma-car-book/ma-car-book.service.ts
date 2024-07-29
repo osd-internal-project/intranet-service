@@ -19,6 +19,9 @@ export class MaCarBookService {
 
   findMany(skip: number = 0, take: number = 10) {
     return this.maCarBookRepository.findMany({
+      include: {
+        maCar: true,
+      },
       skip: skip,
       take: take,
       orderBy: { id: 'desc' },
@@ -29,6 +32,9 @@ export class MaCarBookService {
     return this.maCarBookRepository.findMany({
       where: {
         id: id,
+      },
+      include: {
+        maCar: true,
       },
       orderBy: {
         id: 'desc',
