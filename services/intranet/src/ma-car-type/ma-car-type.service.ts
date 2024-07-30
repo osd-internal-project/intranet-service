@@ -16,7 +16,11 @@ export class MaCarTypeService {
   }
 
   findAll() {
-    return this.maCarTypeRepository.findAll();
+    return this.maCarTypeRepository.findMany({
+      orderBy: {
+        id: 'asc',
+      },
+    });
   }
 
   findOne(id: number) {
