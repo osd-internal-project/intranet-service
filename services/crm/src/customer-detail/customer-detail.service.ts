@@ -82,6 +82,7 @@ export class CustomerDetailService {
 
     return this.customerDetailRepo.findMany({
       where: {
+        deleteStatus: false,
         ...(refcode && { referenceCode: { contains: refcode } }),
         ...(activestatus && { activeStatus: JSON.parse(activestatus) }),
         ...(customername && {
@@ -97,7 +98,7 @@ export class CustomerDetailService {
 
   async findDatatable(query: any) {
     const { refcode, customername, activestatus, take, skip, userid } = query;
-    Logger.debug(customername);
+
     const ownerGroups = await this.accessService.getOwnerGroupId(userid);
     const ownerUserGroup = await this.accessService.getOwnerGroupByUserId(
       userid,
@@ -122,6 +123,7 @@ export class CustomerDetailService {
     }
     const findCondition = {
       where: {
+        deleteStatus: false,
         ...(refcode && { referenceCode: { contains: refcode } }),
         ...(activestatus && { activeStatus: JSON.parse(activestatus) }),
         AND: whereAnd,
@@ -131,6 +133,7 @@ export class CustomerDetailService {
     } as Prisma.customerDetailFindManyArgs;
     const countCondition = {
       where: {
+        deleteStatus: false,
         ...(refcode && { referenceCode: { contains: refcode } }),
         ...(activestatus && { activeStatus: JSON.parse(activestatus) }),
         AND: whereAnd,
@@ -144,7 +147,7 @@ export class CustomerDetailService {
 
   findActiveForProject() {
     return this.customerDetailRepo.findMany({
-      where: { activeStatus: true },
+      where: { deleteStatus: false, activeStatus: true },
       // select: {
       //   id: true,
       //   prefixTh: true,
@@ -234,12 +237,24 @@ export class CustomerDetailService {
       where: { id: id },
       select: { customerBranch: { select: { customerProject: true } } },
     })) as any;
-    Logger.debug(customer);
-    customer.customerBranch.map((data) => {
-      if (data.customerProject.length > 0) {
-        throw new BadRequestException('Project Used');
+    if (customer.customerBranch) {
+      let countProject = 0;
+      Logger.debug(customer);
+      customer.customerBranch.map((data) => {
+        if (data.customerProject.length > 0) {
+          countProject = countProject + 1;
+        }
+      });
+      if (countProject > 0) {
+        return this.customerDetailRepo.update({
+          where: { id: id },
+          data: { deleteStatus: true },
+        });
+      } else {
+        return this.customerDetailRepo.delete({ where: { id: id } });
       }
-    });
-    // return this.customerDetailRepo.delete({ where: { id: id } });
+    } else {
+      return this.customerDetailRepo.delete({ where: { id: id } });
+    }
   }
 }

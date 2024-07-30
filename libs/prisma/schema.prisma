@@ -960,7 +960,6 @@ model maCarWrapup {
     remark      String    @map("remark") @db.Text
     createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz()
     updatedAt   DateTime? @map("updated_at") @db.Timestamptz()
-    status      Boolean?  @default(true) @map("stauts") @db.Boolean
     maCar       maCar?    @relation(fields: [carId], references: [carId])
 
     @@map("ma_car_wrapup")
