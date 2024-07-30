@@ -1194,14 +1194,14 @@ model customerDetail {
     //Action By
     createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz()
 
-    createdById    String?          @map("created_by_id") @db.VarChar(50)
-    ownerGroupId   String?          @map("owner_group_id") @db.VarChar(50)
-    createdByName  String?          @map("created_by_name") @db.VarChar(255)
-    updatedAt      DateTime?        @map("updated_at") @db.Timestamptz()
-    updatedById    String?          @map("updated_by_id") @db.VarChar(50)
-    updatedByName  String?          @map("updated_by_name") @db.VarChar(255)
-    ownerGroup     String?          @map("owner_group") @db.VarChar(50)
-    deleteStatus   Boolean          @default(true) @map("delete_status") @db.Boolean
+    createdById   String?   @map("created_by_id") @db.VarChar(50)
+    ownerGroupId  String?   @map("owner_group_id") @db.VarChar(50)
+    createdByName String?   @map("created_by_name") @db.VarChar(255)
+    updatedAt     DateTime? @map("updated_at") @db.Timestamptz()
+    updatedById   String?   @map("updated_by_id") @db.VarChar(50)
+    updatedByName String?   @map("updated_by_name") @db.VarChar(255)
+    ownerGroup    String?   @map("owner_group") @db.VarChar(50)
+
     customerBranch customerBranch[]
 
     @@map("customer_detail")
