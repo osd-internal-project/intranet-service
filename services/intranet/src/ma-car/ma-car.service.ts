@@ -21,6 +21,9 @@ export class MaCarService {
       orderBy: {
         id: 'desc',
       },
+      include: {
+        maCarBook: true,
+      },
     });
   }
 
