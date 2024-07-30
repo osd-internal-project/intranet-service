@@ -945,23 +945,23 @@ model maCarBook {
 }
 
 model maCarWrapup {
-    id              Int       @default(autoincrement()) @map("id")
-    carWrapupId     String    @unique @default(uuid()) @map("car_wrapup_id") @db.VarChar(50)
-    carId           String?    @map("car_id") @db.VarChar(50)
-    carName         String    @map("car_name") @db.VarChar(100)
-    typeId          Int?       @map("type_id")
-    typeName        String    @map("type_name") @db.VarChar(150)
-    vender          String    @map("vender") @db.VarChar(100)
-    cost            Decimal   @map("cost") @db.Money
-    detail          String    @map("detail") @db.Text
-    wrapupMiles     String    @map("wrapup_miles") @db.VarChar(150)
-    dateStart       DateTime  @map("date_start") @db.Timestamptz()
-    dateEnd         DateTime  @map("date_end") @db.Timestamptz()
-    remark          String    @map("remark") @db.Text
-    createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt       DateTime? @map("updated_at") @db.Timestamptz()
-    status          Boolean?  @default(true) @map("stauts") @db.Boolean   
-    maCar           maCar?    @relation(fields: [carId], references: [carId])
+    id          Int       @default(autoincrement()) @map("id")
+    carWrapupId String    @unique @default(uuid()) @map("car_wrapup_id") @db.VarChar(50)
+    carId       String?   @map("car_id") @db.VarChar(50)
+    carName     String    @map("car_name") @db.VarChar(100)
+    typeId      Int?      @map("type_id")
+    typeName    String    @map("type_name") @db.VarChar(150)
+    vender      String    @map("vender") @db.VarChar(100)
+    cost        Decimal   @map("cost") @db.Money
+    detail      String    @map("detail") @db.Text
+    wrapupMiles String    @map("wrapup_miles") @db.VarChar(150)
+    dateStart   DateTime  @map("date_start") @db.Timestamptz()
+    dateEnd     DateTime  @map("date_end") @db.Timestamptz()
+    remark      String    @map("remark") @db.Text
+    createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt   DateTime? @map("updated_at") @db.Timestamptz()
+    status      Boolean?  @default(true) @map("stauts") @db.Boolean
+    maCar       maCar?    @relation(fields: [carId], references: [carId])
 
     @@map("ma_car_wrapup")
 }
@@ -1194,14 +1194,14 @@ model customerDetail {
     //Action By
     createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz()
 
-    createdById   String?   @map("created_by_id") @db.VarChar(50)
-    ownerGroupId  String?   @map("owner_group_id") @db.VarChar(50)
-    createdByName String?   @map("created_by_name") @db.VarChar(255)
-    updatedAt     DateTime? @map("updated_at") @db.Timestamptz()
-    updatedById   String?   @map("updated_by_id") @db.VarChar(50)
-    updatedByName String?   @map("updated_by_name") @db.VarChar(255)
-    ownerGroup    String?   @map("owner_group") @db.VarChar(50)
-
+    createdById    String?          @map("created_by_id") @db.VarChar(50)
+    ownerGroupId   String?          @map("owner_group_id") @db.VarChar(50)
+    createdByName  String?          @map("created_by_name") @db.VarChar(255)
+    updatedAt      DateTime?        @map("updated_at") @db.Timestamptz()
+    updatedById    String?          @map("updated_by_id") @db.VarChar(50)
+    updatedByName  String?          @map("updated_by_name") @db.VarChar(255)
+    ownerGroup     String?          @map("owner_group") @db.VarChar(50)
+    deleteStatus   Boolean          @default(true) @map("delete_status") @db.Boolean
     customerBranch customerBranch[]
 
     @@map("customer_detail")
