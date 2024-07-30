@@ -895,7 +895,7 @@ model maCar {
     updatedById   String?       @map("updated_by_id") @db.VarChar(50)
     updatedByName String?       @map("updated_by_name") @db.VarChar(255)
     maCarWrapup   maCarWrapup[]
-    maCarBook     maCarBook[]
+    maCarBook     maCarBook[]   @relation("CarBooks")
 
     @@map("ma_car")
 }
@@ -939,7 +939,7 @@ model maCarBook {
     recipientName         String?   @map("recipient_name") @db.VarChar(255)
     returnNotifAt         DateTime? @map("return_notif_at") @db.Timestamptz()
     returnAt              DateTime? @map("return_at") @db.Timestamptz()
-    maCar                 maCar?    @relation(fields: [carId], references: [carId])
+    maCar                 maCar     @relation("CarBooks", fields: [carId], references: [carId])
 
     @@map("ma_car_book")
 }
