@@ -19,6 +19,9 @@ export class MaCarBookService {
 
   findMany(skip: number = 0, take: number = 10) {
     return this.maCarBookRepository.findMany({
+      include: {
+        maCar: true,
+      },
       skip: skip,
       take: take,
       orderBy: { id: 'desc' },
@@ -29,6 +32,9 @@ export class MaCarBookService {
     return this.maCarBookRepository.findMany({
       where: {
         id: id,
+      },
+      include: {
+        maCar: true,
       },
       orderBy: {
         id: 'desc',
@@ -61,19 +67,6 @@ export class MaCarBookService {
     } as Prisma.maCarBookUpdateArgs;
     return this.maCarBookRepository.update(condition);
   }
-
-  // update(id: Number, data: Prisma.maCarBookUpdateInput) {
-  //   const condition = {
-  //     where: { id: id },
-  //     data: data,
-  //   } as Prisma.maCarBookUpdateArgs;
-
-  //   return this.maCarBookRepository.update(condition).then(() => {
-  //     return this.maCarBookRepository.findMany({
-  //       orderBy: [{ updatedAt: 'desc' }],
-  //     });
-  //   });
-  // }
 
   remove(id: Number) {
     const condition = { where: { id: id } } as Prisma.maCarBookDeleteArgs;
