@@ -5,8 +5,7 @@ import { Prisma } from '@prisma/client';
 @Injectable()
 export class MaCarBookService {
   constructor(
-    // private readonly macarRepo: MaCarRepository,
-    private readonly maCarBookRepository: MaCarBookRepository, // private readonly accessService: AccessService,
+    private readonly maCarBookRepository: MaCarBookRepository, 
   ) {}
   create(data: Prisma.maCarBookCreateInput) {
     const condition = { data: data } as Prisma.maCarBookCreateArgs;

@@ -1,14 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { AccessService, MaCarRepository } from '@inventory/share';
+import { MaCarRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class MaCarService {
-  constructor(
-    private readonly macarRepo: MaCarRepository,
-    private readonly maCarRepository: MaCarRepository,
-    private readonly accessService: AccessService,
-  ) {}
+  constructor(private readonly maCarRepository: MaCarRepository) {}
 
   create(data: Prisma.maCarCreateInput) {
     const condition = { data: data } as Prisma.maCarCreateArgs;
