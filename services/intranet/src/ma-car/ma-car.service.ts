@@ -14,7 +14,6 @@ export class MaCarService {
     const condition = { data: data } as Prisma.maCarCreateArgs;
     return this.maCarRepository.create(condition);
   }
-  // 'This action adds a new maCar'
 
   findAll() {
     return this.maCarRepository.findMany({

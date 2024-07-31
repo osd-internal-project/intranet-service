@@ -17,13 +17,11 @@ export class MaCarBookService {
     return this.maCarBookRepository.findAll();
   }
 
-  findMany(skip: number = 0, take: number = 10) {
+  findMany() {
     return this.maCarBookRepository.findMany({
       include: {
         maCar: true,
       },
-      skip: skip,
-      take: take,
       orderBy: { id: 'desc' },
     });
   }
