@@ -5,8 +5,7 @@ import { Prisma } from '@prisma/client';
 @Injectable()
 export class MaCarBookService {
   constructor(
-    // private readonly macarRepo: MaCarRepository,
-    private readonly maCarBookRepository: MaCarBookRepository, // private readonly accessService: AccessService,
+    private readonly maCarBookRepository: MaCarBookRepository, 
   ) {}
   create(data: Prisma.maCarBookCreateInput) {
     const condition = { data: data } as Prisma.maCarBookCreateArgs;
@@ -17,13 +16,11 @@ export class MaCarBookService {
     return this.maCarBookRepository.findAll();
   }
 
-  findMany(skip: number = 0, take: number = 10) {
+  findMany() {
     return this.maCarBookRepository.findMany({
       include: {
         maCar: true,
       },
-      skip: skip,
-      take: take,
       orderBy: { id: 'desc' },
     });
   }
