@@ -21,7 +21,7 @@ export class DataLeaveService {
     return await this.dataleaveRepo.create(condition);
   }
   findAll() {
-    return `This action returns all dataLeave`;
+    return this.dataleaveRepo.findAll();
   }
   findOne(id: number) {
     return `This action returns a #${id} dataLeave`;

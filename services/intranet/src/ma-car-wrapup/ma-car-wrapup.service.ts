@@ -12,8 +12,13 @@ export class MaCarWrapupService {
     return this.macarwrapupRepo.create(data);
   }
 
-  findAll(condotion: Prisma.maCarWrapupFindManyArgs) {
-    return this.macarwrapupRepo.findMany(condotion);
+  findAll(condition: Prisma.maCarWrapupFindManyArgs) {
+    return this.macarwrapupRepo.findMany({
+      ...condition,
+      orderBy: {
+        id: 'asc',
+      },
+    });
   }
 
   findOne(carWrapupId: string) {
