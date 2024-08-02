@@ -112,6 +112,40 @@ model imagesGhs {
     @@map("images_ghs")
 }
 
+model informaionNews{
+    newsId          Int             @unique @@map("news_id ")
+    newsName        String          @default("") @@map("news_name")
+    content         String          @default("") @@map("content")
+    categoryId      Int             @default("") @@map("category_id")
+    newType         String          @default("") @@map("new_Type")
+    author          String          @default("") @@map("author") @db.VarChar(100)
+    phblishedAt     DateTime        @default("") @@map("phblished_at")
+    updateAT        DateTime        @default(now()) @@map("update_at")
+    status          Boolean         @default(true) @map("status") @db.Boolean
+
+    @@map("informaion_news")
+}
+
+model newsImage{
+    imageId         Int             @@map("image_id")
+    newsId          Int             @@map("news_id")
+    fileName        String?         @@map("file_name")
+    filePath        String?         @@map("file_path")
+
+    @@map("news_image")
+}
+
+model handbookFile {
+    id              Int             @id @default(autoincrement())
+    fileName        String          
+    fileLocation    String          
+    createdAt       DateTime        @default(now())
+    updatedAt       DateTime        @updatedAt
+    status          Boolean         @default(true) @map("status") @db.Boolean
+
+    @@map("handbook_File")
+}       
+
 model inventory {
     id              Int              @unique @default(autoincrement()) @map("id")
     inventoryId     String           @unique @default(uuid()) @map("inventory_id")
@@ -226,12 +260,12 @@ model masterGhsType {
 }
 
 model masterHazardtype {
-    id                         Int                          @unique @default(autoincrement()) @map("id")
-    nameHazard                 String                       @map("name_hazard") @db.VarChar(200)
-    description                String?                      @default("") @map("description") @db.VarChar(250)
-    createdAt                  DateTime?                    @default(now())
-    updatedAt                  DateTime?                    @default(now()) @db.Timestamp()
-    status                     Boolean                      @default(true) @map("status") @db.Boolean
+    id                         Int             @unique @default(autoincrement()) @map("id")
+    nameHazard                 String          @map("name_hazard") @db.VarChar(200)
+    description                String?         @default("") @map("description") @db.VarChar(250)
+    createdAt                  DateTime?       @default(now())
+    updatedAt                  DateTime?       @default(now()) @db.Timestamp()
+    status                     Boolean         @default(true) @map("status") @db.Boolean
     masterProductHazardtypeMap masterProductHazardtypeMap[]
     masterProduct              masterProduct[]
 
