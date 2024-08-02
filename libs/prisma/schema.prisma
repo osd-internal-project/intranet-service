@@ -112,25 +112,34 @@ model imagesGhs {
     @@map("images_ghs")
 }
 
-model informaionNews{
+model informationNews{
     newsId          Int             @unique @default(autoincrement()) @map("news_id ") 
     newsName        String          @default("") @map("news_name")
     content         String          @default("") @map("content")
-    categoryId      Int             @map("category_id")
-    newType         String          @default("") @map("new_Type")
+    newsType        String          @default("") @map("new_Type")
     author          String          @default("") @map("author") @db.VarChar(100)
     phblishedAt     DateTime        @map("phblished_at")
     updatedAt       DateTime        @default(now()) @map("updated_at")
     status          Boolean         @default(true) @map("status") @db.Boolean
 
-    @@map("informaion_news")
+    @@map("information_news")
+}
+
+model newsType{
+    idType          Int             @unique @map("idType") @default(autoincrement())
+    nameType        String          @default("") @map("nameType")
+    dedeil          String          @default("") @map("dedeil")
+    createAt        DateTime        @default(now()) @map("createAt")
+    status          Boolean         @default(true) @map("status") @db.Boolean
+
+    @@map("news-type")
 }
 
 model newsImage{
     imageId         Int             @unique @map("image_id") @default(autoincrement())
     newsId          Int             @map("news_id")
-    createdAt       DateTime        @default(now())
-    updatedAt       DateTime        @updatedAt
+    createdAt       DateTime        @default(now()) @map("createdat")
+    updatedAt       DateTime        @default(now()) @map("updatedat")
     fileimageName   String?         @default("") @map("file_image_name") @db.VarChar(100)
     fileimagePath   String?         @default("") @map("file_image_path") @db.VarChar(100)
 
@@ -630,7 +639,7 @@ model profileRuleMap {
 
     @@map("profile_rule_map")
 }
-
+//
 model publicizeSlideImages {
     id           Int       @unique @default(autoincrement())
     fileCode     String?   @map("file_code") @db.VarChar(200)
