@@ -113,32 +113,34 @@ model imagesGhs {
 }
 
 model informaionNews{
-    newsId          Int             @unique @@map("news_id ")
-    newsName        String          @default("") @@map("news_name")
-    content         String          @default("") @@map("content")
-    categoryId      Int             @default("") @@map("category_id")
-    newType         String          @default("") @@map("new_Type")
-    author          String          @default("") @@map("author") @db.VarChar(100)
-    phblishedAt     DateTime        @default("") @@map("phblished_at")
-    updateAT        DateTime        @default(now()) @@map("update_at")
+    newsId          Int             @unique @default(autoincrement()) @map("news_id ") 
+    newsName        String          @default("") @map("news_name")
+    content         String          @default("") @map("content")
+    categoryId      Int             @map("category_id")
+    newType         String          @default("") @map("new_Type")
+    author          String          @default("") @map("author") @db.VarChar(100)
+    phblishedAt     DateTime        @map("phblished_at")
+    updatedAt       DateTime        @default(now()) @map("updated_at")
     status          Boolean         @default(true) @map("status") @db.Boolean
 
     @@map("informaion_news")
 }
 
 model newsImage{
-    imageId         Int             @@map("image_id")
-    newsId          Int             @@map("news_id")
-    fileName        String?         @@map("file_name")
-    filePath        String?         @@map("file_path")
+    imageId         Int             @unique @map("image_id") @default(autoincrement())
+    newsId          Int             @map("news_id")
+    createdAt       DateTime        @default(now())
+    updatedAt       DateTime        @updatedAt
+    fileimageName   String?         @default("") @map("file_image_name") @db.VarChar(100)
+    fileimagePath   String?         @default("") @map("file_image_path") @db.VarChar(100)
 
     @@map("news_image")
 }
 
 model handbookFile {
     id              Int             @id @default(autoincrement())
-    fileName        String          
-    fileLocation    String          
+    fileName        String          @default("") @map("file_name") @db.VarChar(100)
+    fileLocation    String          @default("") @map("file_location") @db.VarChar(100)
     createdAt       DateTime        @default(now())
     updatedAt       DateTime        @updatedAt
     status          Boolean         @default(true) @map("status") @db.Boolean
