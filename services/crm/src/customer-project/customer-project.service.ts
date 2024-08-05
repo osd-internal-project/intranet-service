@@ -18,8 +18,16 @@ export class CustomerProjectService {
     return this.customerProjectRepo.findMany(condition);
   }
   async findDatatable(query: any) {
-    const { projectname, projectcode, fdate, ldate, take, skip, userid } =
-      query;
+    const {
+      projectname,
+      productname,
+      projectcode,
+      fdate,
+      ldate,
+      take,
+      skip,
+      userid,
+    } = query;
     const ownerUserGroup = await this.accessService.getOwnerGroupByUserId(
       userid,
     );
@@ -56,6 +64,7 @@ export class CustomerProjectService {
       where: {
         ...(projectcode && { projectCode: { contains: projectcode } }),
         ...(projectname && { projectName: { contains: projectname } }),
+        ...(productname && { productName: { contains: productname } }),
         AND: whereAnd,
       },
 
@@ -71,6 +80,7 @@ export class CustomerProjectService {
       where: {
         ...(projectcode && { projectCode: { contains: projectcode } }),
         ...(projectname && { projectName: { contains: projectname } }),
+        ...(productname && { productName: { contains: productname } }),
         AND: whereAnd,
       },
     });

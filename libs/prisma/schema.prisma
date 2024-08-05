@@ -112,6 +112,51 @@ model imagesGhs {
     @@map("images_ghs")
 }
 
+model informationNews{
+    newsId          Int             @unique @default(autoincrement()) @map("news_id ") 
+    newsName        String          @default("") @map("news_name")
+    content         String          @default("") @map("content")
+    newsType        String          @default("") @map("new_Type")
+    author          String          @default("") @map("author") @db.VarChar(100)
+    phblishedAt     DateTime        @map("phblished_at")
+    updatedAt       DateTime        @default(now()) @map("updated_at")
+    status          Boolean         @default(true) @map("status") @db.Boolean
+
+    @@map("information_news")
+}
+
+model newsType{
+    idType          Int             @unique @map("idType") @default(autoincrement())
+    nameType        String          @default("") @map("nameType")
+    dedeil          String          @default("") @map("dedeil")
+    createAt        DateTime        @default(now()) @map("createAt")
+    status          Boolean         @default(true) @map("status") @db.Boolean
+
+    @@map("news-type")
+}
+
+model newsImage{
+    imageId         Int             @unique @map("image_id") @default(autoincrement())
+    newsId          Int             @map("news_id")
+    createdAt       DateTime        @default(now()) @map("createdat")
+    updatedAt       DateTime        @default(now()) @map("updatedat")
+    fileimageName   String?         @default("") @map("file_image_name") @db.VarChar(100)
+    fileimagePath   String?         @default("") @map("file_image_path") @db.VarChar(100)
+
+    @@map("news_image")
+}
+
+model handbookFile {
+    id              Int             @id @default(autoincrement())
+    fileName        String          @default("") @map("file_name") @db.VarChar(100)
+    fileLocation    String          @default("") @map("file_location") @db.VarChar(100)
+    createdAt       DateTime        @default(now())
+    updatedAt       DateTime        @updatedAt
+    status          Boolean         @default(true) @map("status") @db.Boolean
+
+    @@map("handbook_File")
+}       
+
 model inventory {
     id              Int              @unique @default(autoincrement()) @map("id")
     inventoryId     String           @unique @default(uuid()) @map("inventory_id")
@@ -226,12 +271,12 @@ model masterGhsType {
 }
 
 model masterHazardtype {
-    id                         Int                          @unique @default(autoincrement()) @map("id")
-    nameHazard                 String                       @map("name_hazard") @db.VarChar(200)
-    description                String?                      @default("") @map("description") @db.VarChar(250)
-    createdAt                  DateTime?                    @default(now())
-    updatedAt                  DateTime?                    @default(now()) @db.Timestamp()
-    status                     Boolean                      @default(true) @map("status") @db.Boolean
+    id                         Int             @unique @default(autoincrement()) @map("id")
+    nameHazard                 String          @map("name_hazard") @db.VarChar(200)
+    description                String?         @default("") @map("description") @db.VarChar(250)
+    createdAt                  DateTime?       @default(now())
+    updatedAt                  DateTime?       @default(now()) @db.Timestamp()
+    status                     Boolean         @default(true) @map("status") @db.Boolean
     masterProductHazardtypeMap masterProductHazardtypeMap[]
     masterProduct              masterProduct[]
 
@@ -594,7 +639,7 @@ model profileRuleMap {
 
     @@map("profile_rule_map")
 }
-
+//
 model publicizeSlideImages {
     id           Int       @unique @default(autoincrement())
     fileCode     String?   @map("file_code") @db.VarChar(200)
@@ -1163,15 +1208,15 @@ model customerDetail {
     customerCode       String    @map("customer_code") @db.VarChar(50)
     referenceCode      String?   @map("reference_code") @db.VarChar(50)
     departmentCode     String?   @map("department_code") @db.VarChar(50)
-    prefixTh           String?   @map("prefix_th") @db.VarChar(10)
-    firstNameTh        String?   @map("first_name_th") @db.VarChar(200)
-    lastNameTh         String?   @map("last_name_th") @db.VarChar(200)
-    prefixEn           String?   @map("prefix_en") @db.VarChar(10)
-    firstNameEn        String?   @map("first_name_en") @db.VarChar(200)
-    lastNameEn         String?   @map("last_name_en") @db.VarChar(200)
+    prefixTh           String?   @default("") @map("prefix_th") @db.VarChar(10)
+    firstNameTh        String?   @default("") @map("first_name_th") @db.VarChar(200)
+    lastNameTh         String?   @default("") @map("last_name_th") @db.VarChar(200)
+    prefixEn           String?   @default("") @map("prefix_en") @db.VarChar(10)
+    firstNameEn        String?   @default("") @map("first_name_en") @db.VarChar(200)
+    lastNameEn         String?   @default("") @map("last_name_en") @db.VarChar(200)
     companyRegisNumber String?   @map("company_regis_number") @db.VarChar(50)
     regisDate          DateTime? @map("regis_date") @db.Timestamptz()
-    registration       BigInt?   @map("registration")
+    registration       Float?    @map("registration")
     customerGroupId    Int?      @map("customer_group_id") @db.Integer
     customerGroupName  String?   @map("customer_group_name") @db.VarChar(255)
     customerTypeId     Int?      @map("customer_type_id") @db.Integer
