@@ -128,7 +128,8 @@ export class DataLeaveService {
     return await this.dataleaveRepo.update(condition);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} dataLeave`;
+  remove(id: Number) {
+    const condition = { where: { id: id } } as Prisma.dataLeaveDeleteArgs;
+    return this.dataleaveRepo.delete(condition);
   }
 }
