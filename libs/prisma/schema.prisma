@@ -1105,7 +1105,7 @@ model bookingRoom {
     note             String?   @default("") @map("note") @db.VarChar(255)
     createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz()
     updatedAt        DateTime  @default(now()) @map("updated_at") @db.Timestamptz()
-
+    
     @@map("booking_room")
 }
 

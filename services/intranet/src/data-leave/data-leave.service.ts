@@ -27,7 +27,12 @@ export class DataLeaveService {
     return `This action returns a #${id} dataLeave`;
   }
   async findMany(condition: Prisma.dataLeaveFindManyArgs) {
-    return await this.dataleaveRepo.findMany(condition);
+    return await this.dataleaveRepo.findMany({
+      ...condition,
+      orderBy: {
+        id: 'desc',
+      },
+    });
   }
 
   async findDetailTypeLeaveByUserId(userId: string) {
@@ -108,7 +113,7 @@ export class DataLeaveService {
       },
       include: { typeLeaveDisabledMap: true },
       orderBy: {
-        createdAt: 'asc',
+        id: 'desc',
       },
     } as Prisma.usersFindFirstArgs;
 
