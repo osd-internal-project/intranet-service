@@ -128,7 +128,7 @@ model informationNews{
 model newsType{
     idType          Int             @unique @map("idType") @default(autoincrement())
     nameType        String          @default("") @map("nameType")
-    dedeil          String          @default("") @map("dedeil")
+    deteil          String          @default("") @map("dedeil")
     createAt        DateTime        @default(now()) @map("createAt")
     status          Boolean         @default(true) @map("status") @db.Boolean
 

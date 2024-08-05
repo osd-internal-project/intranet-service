@@ -88,6 +88,10 @@ import {
   MaCarTypeRepository,
   MaCarBookRepository,
   MaCarWrapupRepository,
+  InformationRepository,
+  newsTypeRepository,
+  newsImageRepository,
+  handbookFileRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -184,6 +188,10 @@ const services = [
   TicketHistoryLogsRepository,
   //access
   AccessService,
+  InformationRepository,
+  newsTypeRepository,
+  newsImageRepository,
+  handbookFileRepository,
 ];
 @Module({
   providers: [...services],
