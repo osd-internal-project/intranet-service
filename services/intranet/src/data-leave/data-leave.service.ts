@@ -129,7 +129,7 @@ export class DataLeaveService {
   }
 
   remove(id: Number) {
-    const condition = { where: { id: id } } as Prisma.dataLeaveDeleteArgs;
-    return this.dataleaveRepo.delete(condition);
+    const dataLeaveid = { where: { id: id } } as Prisma.dataLeaveDeleteArgs;
+    return this.dataleaveRepo.delete(dataLeaveid);
   }
 }
