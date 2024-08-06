@@ -69,7 +69,7 @@ model dataLeave {
     createdAt      DateTime?        @default(now()) @map("created_at") @db.Timestamp()
     updatedAt      DateTime?        @default(now()) @map("updated_at") @db.Timestamp()
     ownerId        String?          @default("") @map("owner_id") @db.VarChar(100)
-    ownerName      String?          @default("") @map("owner_name") @db.VarChar(100)
+    ownerName      String?          @default("") @map("owner_name") @db.VarChar(150)
     dataLeaveFiles dataLeaveFiles[]
 
     @@map("data_leave")
