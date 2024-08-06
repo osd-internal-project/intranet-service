@@ -768,16 +768,19 @@ model users {
     imageId                   String?                     @map("image_id") @db.VarChar(255)
     ownerGroup                userGroup?                  @relation(fields: [ownerGroupId], references: [groupId])
     masterPosition            masterPosition?             @relation(fields: [positionId], references: [posId])
+    departMent                departMent?                 @relation(fields: [departId], references: [departId])
     startWork                 DateTime?                   @map("start_work")
     userGroupMap              userGroupMap[]
     roleProfileMap            roleProfileMap[]
     userRoleMap               userRoleMap[]
     request                   request[]
     positionId                Int?
+    departId                  Int?
     userMapOrganizeChart      userMapOrganizeChart[]
     typeLeaveDisabledMap      typeLeaveDisabledMap[]
     userMapOrganizeGroup      userMapOrganizeGroup[]
     userMapOrganizeGroupOwner userMapOrganizeGroupOwner[]
+    departMentId              Int?
 }
 
 model userMapOrganizeGroup {
@@ -1118,6 +1121,7 @@ model departMent {
     departName String   @unique @map("depart_name") @db.VarChar(100)
     createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz()
     updatedAt  DateTime @default(now()) @map("updated_at") @db.Timestamptz()
+    user       users[]
 
     @@map("department")
 }
