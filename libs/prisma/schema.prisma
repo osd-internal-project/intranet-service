@@ -51,6 +51,8 @@ model dataLeave {
     lastName       String?          @default("") @map("last_name") @db.VarChar(100)
     positionId     Int?             @map("position_id") @db.Integer
     position       String?          @default("") @map("position") @db.VarChar(100)
+    departId       Int?             @map("depart_id") @db.Integer
+    departName     String?          @default("") @map("depart_name") @db.VarChar(100)
     typeId         Int?             @map("type_id") @db.Integer
     typeName       String?          @default("") @map("type_name") @db.VarChar(100)
     startDate      DateTime?        @default(now()) @map("start_date") @db.Timestamp()
@@ -112,50 +114,50 @@ model imagesGhs {
     @@map("images_ghs")
 }
 
-model informationNews{
-    newsId          Int             @unique @default(autoincrement()) @map("news_id") 
-    newsName        String?          @default("") @map("news_name")
-    content         String?          @default("") @map("content")
-    newsType        String?          @default("") @map("new_Type")
-    author          String?          @default("") @map("author") @db.VarChar(100)
-    phblishedAt     DateTime?        @map("phblished_at")
-    updatedAt       DateTime?        @default(now()) @map("updated_at")
-    status          Boolean?         @default(true) @map("status") @db.Boolean
+model informationNews {
+    newsId      Int       @unique @default(autoincrement()) @map("news_id")
+    newsName    String?   @default("") @map("news_name")
+    content     String?   @default("") @map("content")
+    newsType    String?   @default("") @map("new_Type")
+    author      String?   @default("") @map("author") @db.VarChar(100)
+    phblishedAt DateTime? @map("phblished_at")
+    updatedAt   DateTime? @default(now()) @map("updated_at")
+    status      Boolean?  @default(true) @map("status") @db.Boolean
 
     @@map("information_news")
 }
 
-model newsType{
-    idType          Int             @unique @map("idType") @default(autoincrement())
-    nameType        String?          @default("") @map("nameType")
-    deteil          String?          @default("") @map("dedeil")
-    createAt        DateTime?        @default(now()) @map("createAt")
-    status          Boolean?         @default(true) @map("status") @db.Boolean
+model newsType {
+    idType   Int       @unique @default(autoincrement()) @map("idType")
+    nameType String?   @default("") @map("nameType")
+    deteil   String?   @default("") @map("dedeil")
+    createAt DateTime? @default(now()) @map("createAt")
+    status   Boolean?  @default(true) @map("status") @db.Boolean
 
     @@map("news_type")
 }
 
-model newsImage{
-    imageId         Int             @unique @map("image_id") @default(autoincrement())
-    newsId          Int             @map("news_id")
-    createdAt       DateTime?       @default(now()) @map("createdat")
-    updatedAt       DateTime?       @default(now()) @map("updatedat")
-    fileimageName   String?         @default("") @map("file_image_name") @db.VarChar(100)
-    fileimagePath   String?         @default("") @map("file_image_path") @db.VarChar(100)
+model newsImage {
+    imageId       Int       @unique @default(autoincrement()) @map("image_id")
+    newsId        Int       @map("news_id")
+    createdAt     DateTime? @default(now()) @map("createdat")
+    updatedAt     DateTime? @default(now()) @map("updatedat")
+    fileimageName String?   @default("") @map("file_image_name") @db.VarChar(100)
+    fileimagePath String?   @default("") @map("file_image_path") @db.VarChar(100)
 
     @@map("news_image")
 }
 
 model handbookFile {
-    id              Int              @id @default(autoincrement())
-    fileName        String?          @default("") @map("file_name") @db.VarChar(100)
-    fileLocation    String?          @default("") @map("file_location") @db.VarChar(100)
-    createdAt       DateTime?        @default(now())
-    updatedAt       DateTime?        @updatedAt
-    status          Boolean?         @default(true) @map("status") @db.Boolean
+    id           Int       @id @default(autoincrement())
+    fileName     String?   @default("") @map("file_name") @db.VarChar(100)
+    fileLocation String?   @default("") @map("file_location") @db.VarChar(100)
+    createdAt    DateTime? @default(now())
+    updatedAt    DateTime? @updatedAt
+    status       Boolean?  @default(true) @map("status") @db.Boolean
 
     @@map("handbook_file")
-}       
+}
 
 model inventory {
     id              Int              @unique @default(autoincrement()) @map("id")
@@ -271,12 +273,12 @@ model masterGhsType {
 }
 
 model masterHazardtype {
-    id                         Int             @unique @default(autoincrement()) @map("id")
-    nameHazard                 String          @map("name_hazard") @db.VarChar(200)
-    description                String?         @default("") @map("description") @db.VarChar(250)
-    createdAt                  DateTime?       @default(now())
-    updatedAt                  DateTime?       @default(now()) @db.Timestamp()
-    status                     Boolean         @default(true) @map("status") @db.Boolean
+    id                         Int                          @unique @default(autoincrement()) @map("id")
+    nameHazard                 String                       @map("name_hazard") @db.VarChar(200)
+    description                String?                      @default("") @map("description") @db.VarChar(250)
+    createdAt                  DateTime?                    @default(now())
+    updatedAt                  DateTime?                    @default(now()) @db.Timestamp()
+    status                     Boolean                      @default(true) @map("status") @db.Boolean
     masterProductHazardtypeMap masterProductHazardtypeMap[]
     masterProduct              masterProduct[]
 
@@ -639,6 +641,7 @@ model profileRuleMap {
 
     @@map("profile_rule_map")
 }
+
 //
 model publicizeSlideImages {
     id           Int       @unique @default(autoincrement())
