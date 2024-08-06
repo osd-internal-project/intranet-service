@@ -10,6 +10,7 @@ import {
 import { DepartmentService } from './department.service';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
+import { Prisma } from '@prisma/client';
 
 @Controller('department')
 export class DepartmentController {
@@ -28,6 +29,14 @@ export class DepartmentController {
   @Get(':depart-id')
   findOne(@Param('depart-id') departId: string) {
     return this.departmentService.findOne(+departId);
+  }
+
+  @Post('conditionId')
+  async findByConditionTypeId(
+    // masterTypeleaveFindManyArgs
+    @Body('condition') condition: Prisma.departMentFindManyArgs,
+  ) {
+    return await this.departmentService.findOneByCondition(condition);
   }
 
   @Patch(':id')

@@ -112,6 +112,7 @@ model imagesGhs {
     @@map("images_ghs")
 }
 
+<<<<<<< HEAD
 model informationNews{
     newsId          Int             @unique @default(autoincrement()) @map("news_id") 
     newsName        String?         @default("") @map("news_name")
@@ -127,10 +128,10 @@ model informationNews{
 
 model newsType{
     idType          Int             @unique @map("idType") @default(autoincrement())
-    nameType        String?         @default("") @map("nameType")
-    deteil          String?         @default("") @map("dedeil")
-    createAt        DateTime?       @default(now()) @map("createAt")
-    status          Boolean?        @default(true) @map("status") @db.Boolean
+    nameType        String?          @default("") @map("nameType")
+    deteil          String?          @default("") @map("dedeil")
+    createAt        DateTime?        @default(now()) @map("createAt")
+    status          Boolean?         @default(true) @map("status") @db.Boolean
 
     @@map("news_type")
 }
