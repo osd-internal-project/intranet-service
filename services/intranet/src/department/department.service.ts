@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
 import { DepartMentRepository } from '@inventory/share';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class DepartmentService {
@@ -23,6 +24,13 @@ export class DepartmentService {
       where: { departId: departId },
       data: updateDepartmentDto,
     });
+  }
+
+  findOneByCondition(condition: Prisma.departMentFindFirstArgsBase) {
+    condition = {
+      ...condition,
+    };
+    return this.departMentRepo.findMany(condition);
   }
 
   remove(id: number) {

@@ -26,6 +26,7 @@ export class MasterTypeLeaveService {
     };
     return await this.mastertypeleaveRepo.findMany(condition);
   }
+  
   findOneByCondition(condition: Prisma.masterTypeleaveFindFirstArgsBase) {
     condition = {
       ...condition,
