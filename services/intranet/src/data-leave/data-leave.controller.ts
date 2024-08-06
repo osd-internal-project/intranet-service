@@ -25,6 +25,11 @@ export class DataLeaveController {
     return this.dataLeaveService.findMany(condition);
   }
 
+  @Post('departId')
+  findManydepartId(@Body('departId') departId: Prisma.dataLeaveFindManyArgs) {
+    return this.dataLeaveService.finddepartId(departId);
+  }
+
   @Get()
   findAll() {
     return this.dataLeaveService.findAll();
