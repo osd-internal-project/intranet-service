@@ -764,10 +764,12 @@ model users {
     updatedAt                 DateTime                    @default(now()) @map("updated_at")
     organizedGroupId          String?                     @map("organized_group_id") @db.VarChar(50)
     refreshToken              String?                     @map("refresh_token")
+    departmentId              Int?                        @map("department_id")
     ownerGroupId              String?                     @map("owner_group_id") @db.VarChar(50)
     imageId                   String?                     @map("image_id") @db.VarChar(255)
     ownerGroup                userGroup?                  @relation(fields: [ownerGroupId], references: [groupId])
     masterPosition            masterPosition?             @relation(fields: [positionId], references: [posId])
+    department                departMent?                 @relation(fields: [departmentId], references: [id])
     startWork                 DateTime?                   @map("start_work")
     userGroupMap              userGroupMap[]
     roleProfileMap            roleProfileMap[]
@@ -1118,6 +1120,7 @@ model departMent {
     departName String   @unique @map("depart_name") @db.VarChar(100)
     createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz()
     updatedAt  DateTime @default(now()) @map("updated_at") @db.Timestamptz()
+    users      users[]
 
     @@map("department")
 }

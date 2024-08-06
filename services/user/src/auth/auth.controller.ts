@@ -57,6 +57,8 @@ export class AuthController {
     } as Prisma.usersFindFirstArgs;
 
     const createTokenAndReturn = async (user: any) => {
+      console.log(user);
+
       const {
         userId,
         username,
@@ -70,6 +72,7 @@ export class AuthController {
         masterPosition,
         userMapOrganizeChart,
         userMapOrganizeGroupOwner,
+        departmentId,
       } = user;
       const payload = {
         userId,
@@ -84,6 +87,7 @@ export class AuthController {
         position: masterPosition,
         userMapOrganizeChart: userMapOrganizeChart,
         userMapOwnerGroupId: userMapOrganizeGroupOwner,
+        departmentId,
       };
       const token = this.authguardService.createToken(payload);
       await this.userService.updateRefreshToken(
@@ -110,6 +114,7 @@ export class AuthController {
         if (!user) {
           const createUserData = { username: signInDto.username };
           const newUser = await this.userService.defaultUser(createUserData);
+
           return createTokenAndReturn(newUser);
         }
 
