@@ -113,33 +113,33 @@ model imagesGhs {
 }
 
 model informationNews{
-    newsId          Int             @unique @default(autoincrement()) @map("news_id ") 
-    newsName        String          @default("") @map("news_name")
-    content         String          @default("") @map("content")
-    newsType        String          @default("") @map("new_Type")
-    author          String          @default("") @map("author") @db.VarChar(100)
-    phblishedAt     DateTime        @map("phblished_at")
-    updatedAt       DateTime        @default(now()) @map("updated_at")
-    status          Boolean         @default(true) @map("status") @db.Boolean
+    newsId          Int             @unique @default(autoincrement()) @map("news_id") 
+    newsName        String?         @default("") @map("news_name")
+    content         String?         @default("") @map("content")
+    newsType        String?         @default("") @map("new_Type")
+    author          String?         @default("") @map("author") @db.VarChar(100)
+    phblishedAt     DateTime?       @map("phblished_at")
+    updatedAt       DateTime?       @default(now()) @map("updated_at")
+    status          Boolean?        @default(true) @map("status") @db.Boolean
 
     @@map("information_news")
 }
 
 model newsType{
     idType          Int             @unique @map("idType") @default(autoincrement())
-    nameType        String          @default("") @map("nameType")
-    deteil          String          @default("") @map("dedeil")
-    createAt        DateTime        @default(now()) @map("createAt")
-    status          Boolean         @default(true) @map("status") @db.Boolean
+    nameType        String?         @default("") @map("nameType")
+    deteil          String?         @default("") @map("dedeil")
+    createAt        DateTime?       @default(now()) @map("createAt")
+    status          Boolean?        @default(true) @map("status") @db.Boolean
 
-    @@map("news-type")
+    @@map("news_type")
 }
 
 model newsImage{
     imageId         Int             @unique @map("image_id") @default(autoincrement())
     newsId          Int             @map("news_id")
-    createdAt       DateTime        @default(now()) @map("createdat")
-    updatedAt       DateTime        @default(now()) @map("updatedat")
+    createdAt       DateTime?       @default(now()) @map("createdat")
+    updatedAt       DateTime?       @default(now()) @map("updatedat")
     fileimageName   String?         @default("") @map("file_image_name") @db.VarChar(100)
     fileimagePath   String?         @default("") @map("file_image_path") @db.VarChar(100)
 
@@ -147,14 +147,14 @@ model newsImage{
 }
 
 model handbookFile {
-    id              Int             @id @default(autoincrement())
-    fileName        String          @default("") @map("file_name") @db.VarChar(100)
-    fileLocation    String          @default("") @map("file_location") @db.VarChar(100)
-    createdAt       DateTime        @default(now())
-    updatedAt       DateTime        @updatedAt
-    status          Boolean         @default(true) @map("status") @db.Boolean
+    id              Int              @id @default(autoincrement())
+    fileName        String?          @default("") @map("file_name") @db.VarChar(100)
+    fileLocation    String?          @default("") @map("file_location") @db.VarChar(100)
+    createdAt       DateTime?        @default(now())
+    updatedAt       DateTime?        @updatedAt
+    status          Boolean?         @default(true) @map("status") @db.Boolean
 
-    @@map("handbook_File")
+    @@map("handbook_file")
 }       
 
 model inventory {
