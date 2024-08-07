@@ -57,8 +57,6 @@ export class AuthController {
     } as Prisma.usersFindFirstArgs;
 
     const createTokenAndReturn = async (user: any) => {
-      console.log(user);
-
       const {
         userId,
         username,
