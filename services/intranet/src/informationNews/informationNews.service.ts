@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { InformationRepository,  } from '@inventory/share';
+import { InformationRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
@@ -29,14 +29,12 @@ export class informationNewsService {
     return this.informationNewsRepo.findOne(base);
   }
 
-  update(carWrapupId: string, condition: Prisma.informationNewsUpdateArgs) {
+  update(newsId: number, condition: Prisma.informationNewsUpdateArgs) {
     const base = {
       where: {
-        carWrapupId: carWrapupId,
+        newsId: newsId,
       },
-      data: { ...condition },
-      
-      
+      data:condition,
     } as Prisma.informationNewsUpdateArgs;
     return this.informationNewsRepo.update(base);
   }

@@ -11,7 +11,7 @@ import {
 import { newsTypeService } from './newsType.service';
 import { Prisma } from '@prisma/client';
 
-@Controller('news-Type')
+@Controller('newsType')
 export class newsTypeController {
   constructor(private readonly newsTypeService: newsTypeService) {}
 
@@ -36,7 +36,7 @@ export class newsTypeController {
     @Body() condition: Prisma.newsTypeUpdateArgs,
   ) {
     
-    return this.newsTypeService.update(idType, condition);
+    return this.newsTypeService.update(+idType, condition);
   }
 
   @Delete(':idType')

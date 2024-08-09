@@ -29,10 +29,10 @@ export class newsTypeService {
     return this.newsTypeRepo.findOne(base);
   }
 
-  update(carWrapupId: string, condition: Prisma.newsTypeUpdateArgs) {
+  update(idType: number, condition: Prisma.newsTypeUpdateArgs) {
     const base = {
       where: {
-        carWrapupId: carWrapupId,
+        idType: idType,
       },
       data: { ...condition },
       

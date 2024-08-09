@@ -29,10 +29,10 @@ export class handbookFileService {
     return this.handbookFileRepo.findOne(base);
   }
 
-  update(carWrapupId: string, condition: Prisma.handbookFileUpdateArgs) {
+  update(id: number, condition: Prisma.handbookFileUpdateArgs) {
     const base = {
       where: {
-        carWrapupId: carWrapupId,
+        id: id,
       },
       data: { ...condition },
       

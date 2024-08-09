@@ -29,10 +29,10 @@ export class NewsImageService {
     return this.newsImageNewsRepo.findOne(base);
   }
 
-  update(carWrapupId: string, condition: Prisma.newsImageUpdateArgs) {
+  update(imageId: number, condition: Prisma.newsImageUpdateArgs) {
     const base = {
       where: {
-        carWrapupId: carWrapupId,
+        imageId: imageId,
       },
       data: { ...condition },
       
