@@ -25,7 +25,10 @@ import { MaCarModule } from './ma-car/ma-car.module';
 import { MaCarTypeModule } from './ma-car-type/ma-car-type.module';
 import { MaCarBookModule } from './ma-car-book/ma-car-book.module';
 import { MaCarWrapupModule } from './ma-car-wrapup/ma-car-wrapup.module';
-
+import { HandbookFileModule } from './handbookFile/handbookFile.module';
+import { InformationNewsModule } from './informationNews/informationNews.module';
+import { NewsImageModule } from './newsImage/newsImage.module';
+import { NewsTypeModule } from './newsType/newsType.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
@@ -51,6 +54,10 @@ import { MaCarWrapupModule } from './ma-car-wrapup/ma-car-wrapup.module';
     MaCarTypeModule,
     MaCarBookModule,
     MaCarWrapupModule,
+    HandbookFileModule,
+    InformationNewsModule,
+    NewsImageModule,
+    NewsTypeModule,
   ],
   controllers: [IntranetController],
   providers: [IntranetService],

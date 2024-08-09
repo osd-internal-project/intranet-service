@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { informationNewsService } from './informationNew.service';
-import { InformationController } from './informationNew.controller';
+import { informationNewsService } from './informationNews.service';
+import { InformationController } from './informationNews.controller';
 import { PrismaModule } from '@inventory/share';
 
 @Module({
@@ -8,4 +8,4 @@ import { PrismaModule } from '@inventory/share';
   controllers: [InformationController],
   providers: [informationNewsService],
 })
-export class MaCarWrapupModule {}
+export class InformationNewsModule {}

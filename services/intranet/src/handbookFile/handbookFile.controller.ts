@@ -11,7 +11,7 @@ import {
 import { handbookFileService } from './handbookFile.service';
 import { Prisma } from '@prisma/client';
 
-@Controller('handbook-file')
+@Controller('handbookfile')
 export class handbookFileController {
   constructor(private readonly handbookFileService: handbookFileService) {}
 
@@ -25,22 +25,22 @@ export class handbookFileController {
     return this.handbookFileService.findAll(query);
   }
 
-  @Get(':newsId')
-  findOne(@Param('newsId') newsId: string) {
-    return this.handbookFileService.findOne(+newsId);
+  @Get(':id')
+  findOne(@Param('id') id: number) {
+    return this.handbookFileService.findOne(+id);
   }
 
-  @Patch(':newsId')
+  @Patch(':id')
   update(
-    @Param('newsId') newsId: string,
+    @Param('id') id: string,
     @Body() condition: Prisma.handbookFileUpdateArgs,
   ) {
     
-    return this.handbookFileService.update(newsId, condition);
+    return this.handbookFileService.update(+id, condition);
   }
 
-  @Delete(':newsId')
-  remove(@Param('newsId') newsId: string) {
-    return this.handbookFileService.remove(+newsId);
+  @Delete(':id')
+  remove(@Param('id') id: number) {
+    return this.handbookFileService.remove(+id);
   }
 }
