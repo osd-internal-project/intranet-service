@@ -53,6 +53,11 @@ export class AuthController {
         userMapOrganizeGroupOwner: {
           select: { ownerGroupId: true },
         },
+        typeLeaveDisabledMap: {
+          select: {
+            userId: true,
+          },
+        },
       },
     } as Prisma.usersFindFirstArgs;
 
@@ -71,6 +76,7 @@ export class AuthController {
         userMapOrganizeChart,
         userMapOrganizeGroupOwner,
         departmentId,
+        typeLeaveDisabledMap,
       } = user;
       const payload = {
         userId,
@@ -85,6 +91,7 @@ export class AuthController {
         position: masterPosition,
         userMapOrganizeChart: userMapOrganizeChart,
         userMapOwnerGroupId: userMapOrganizeGroupOwner,
+        typeLeaveDisabledMap: typeLeaveDisabledMap,
         departmentId,
       };
       const token = this.authguardService.createToken(payload);
