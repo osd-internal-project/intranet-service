@@ -152,6 +152,7 @@ model handbookFile {
     id           Int       @id @default(autoincrement())
     fileName     String?   @default("") @map("file_name") @db.VarChar(100)
     fileLocation String?   @default("") @map("file_location") @db.VarChar(100)
+    author       String?   @default("") @map("author") @db.VarChar(100)
     createdAt    DateTime? @default(now())
     updatedAt    DateTime? @updatedAt
     status       Boolean?  @default(true) @map("status") @db.Boolean
