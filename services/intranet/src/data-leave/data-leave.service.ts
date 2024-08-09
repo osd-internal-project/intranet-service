@@ -22,6 +22,7 @@ export class DataLeaveService {
   }
   findAll() {
     return this.dataleaveRepo.findAll();
+    
   }
 
   findOne(id: number) {
@@ -31,15 +32,6 @@ export class DataLeaveService {
   async findMany(condition: Prisma.dataLeaveFindManyArgs) {
     return await this.dataleaveRepo.findMany({
       ...condition,
-      orderBy: {
-        id: 'desc',
-      },
-    });
-  }
-
-  async finddepartId(departId: Prisma.dataLeaveFindManyArgs) {
-    return await this.dataleaveRepo.findMany({
-      ...departId,
       orderBy: {
         id: 'desc',
       },

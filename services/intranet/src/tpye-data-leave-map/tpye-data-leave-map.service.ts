@@ -30,7 +30,9 @@ export class TpyeDataLeaveMapService {
 
   async remove(id: number) {
     const condition = {
-      where: { userId: id },
+      where: {
+        id: id,
+      },
     } as Prisma.typeLeaveDisabledMapDeleteManyArgs;
     return await this.masterTypeLeaveMapRepo.delete(condition);
   }
