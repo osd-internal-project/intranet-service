@@ -115,14 +115,15 @@ model imagesGhs {
 }
 
 model informationNews {
-    newsId      Int       @unique @default(autoincrement()) @map("news_id")
-    newsName    String?   @default("") @map("news_name")
-    content     String?   @default("") @map("content")
-    newsType    String?   @default("") @map("new_Type")
-    author      String?   @default("") @map("author") @db.VarChar(100)
-    phblishedAt DateTime? @map("phblished_at")
-    updatedAt   DateTime? @default(now()) @map("updated_at")
-    status      Boolean?  @default(true) @map("status") @db.Boolean
+    newsId      Int         @unique @default(autoincrement()) @map("news_id")
+    newsName    String?     @default("") @map("news_name")
+    content     String?     @default("") @map("content")
+    newsType    String?     @default("") @map("new_Type")
+    author      String?     @default("") @map("author") @db.VarChar(100)
+    phblishedAt DateTime?   @map("phblished_at")
+    updatedAt   DateTime?   @default(now()) @map("updated_at")
+    status      Boolean?    @default(true) @map("status") @db.Boolean
+    newsImage   newsImage[]
 
     @@map("information_news")
 }
@@ -138,18 +139,20 @@ model newsType {
 }
 
 model newsImage {
-    imageId       Int       @unique @default(autoincrement()) @map("image_id")
-    newsId        Int       @map("news_id")
-    createdAt     DateTime? @default(now()) @map("createdat")
-    updatedAt     DateTime? @default(now()) @map("updatedat")
-    fileimageName String?   @default("") @map("file_image_name") @db.VarChar(100)
-    fileimagePath String?   @default("") @map("file_image_path") @db.VarChar(100)
+    imageId         Int              @unique @default(autoincrement()) @map("image_id")
+    // newsId        Int       @map("news_id")
+    createdAt       DateTime?        @default(now()) @map("createdat")
+    updatedAt       DateTime?        @default(now()) @map("updatedat")
+    fileimageName   String?          @default("") @map("file_image_name") @db.VarChar(100)
+    fileimagePath   String?          @default("") @map("file_image_path") @db.VarChar(100)
+    informationNews informationNews? @relation(fields: [newsId], references: [newsId])
+    newsId          Int?             @map("news_id")
 
     @@map("news_image")
 }
 
 model handbookFile {
-    id           Int       @id @default(autoincrement())
+    id           Int       @unique @id @default(autoincrement())
     fileName     String?   @default("") @map("file_name") @db.VarChar(100)
     fileLocation String?   @default("") @map("file_location") @db.VarChar(100)
     author       String?   @default("") @map("author") @db.VarChar(100)

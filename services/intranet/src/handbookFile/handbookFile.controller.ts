@@ -7,17 +7,44 @@ import {
   Param,
   Delete,
   Query,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { handbookFileService } from './handbookFile.service';
 import { Prisma } from '@prisma/client';
+import { diskStorage } from 'multer';
+import { v4 as uuidv4 } from 'uuid';
+import { extname, join } from 'path';
+import { FileInterceptor } from '@nestjs/platform-express';
 
-@Controller('handbookfile')
+@Controller('handbook-file')
 export class handbookFileController {
   constructor(private readonly handbookFileService: handbookFileService) {}
 
-  @Post()
-  create(@Body() data: Prisma.handbookFileCreateArgs) {
-    return this.handbookFileService.create(data);
+  @Post(':id')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: `${process.env.PATH_MOUNTDIR_UPLOAD}/handbookfile`,  
+        filename: (req, file, cb) => {
+          const fileExtName = extname(file.originalname);
+          const randomName = uuidv4();
+          cb(null, `${randomName}${fileExtName}`);
+        },
+      }),
+    }),
+  )
+  uploadFile(@Param('id') id :string, @UploadedFile() file: Express.Multer.File) {
+    console.log(file); 
+    if (!file) {
+      throw new Error('File is undefined');
+    }
+    const data = {
+      id: +id,
+      fileName: file.originalname,
+      fileLocation: file.path,
+    } as Prisma.handbookFileCreateInput;
+    return this.handbookFileService.create({data:data});
   }
 
   @Get()
