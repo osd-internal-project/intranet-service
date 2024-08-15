@@ -52,9 +52,9 @@ export class DataLeaveService {
     const resUser = await this.usersRepo.findOne(condition);
     const startWork = dayjs(resUser.startWork);
     const DateNow = dayjs();
+    
     const numberWorkStart = DateNow.diff(startWork, 'year');
     const dataTypeLeave = await this.mastertypeLeaveRepo.findAll();
-
     const dataLeaveWrapup = await this.dataleaveRepo.findMany({
       where: {
         userId: userId,
@@ -109,6 +109,7 @@ export class DataLeaveService {
 
     return lastResult;
   }
+  
   async findUserByUserId(userId: string) {
     const condition = {
       where: {
