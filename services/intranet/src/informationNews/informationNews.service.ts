@@ -13,6 +13,7 @@ export class informationNewsService {
   findAll(condition: Prisma.informationNewsFindManyArgs) {
     return this.informationNewsRepo.findMany({
       ...condition,
+      include:{ newsImage:true},
       orderBy: {
         newsId: 'asc',
       },

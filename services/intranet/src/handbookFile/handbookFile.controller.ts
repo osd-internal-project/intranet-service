@@ -21,7 +21,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class handbookFileController {
   constructor(private readonly handbookFileService: handbookFileService) {}
 
-  @Post(':id')
+  @Post(':handbookid')
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -34,13 +34,12 @@ export class handbookFileController {
       }),
     }),
   )
-  uploadFile(@Param('id') id :string, @UploadedFile() file: Express.Multer.File) {
+  uploadFile(@UploadedFile() file: Express.Multer.File) {
     console.log(file); 
     if (!file) {
       throw new Error('File is undefined');
     }
     const data = {
-      id: +id,
       fileName: file.originalname,
       fileLocation: file.path,
     } as Prisma.handbookFileCreateInput;
@@ -52,22 +51,22 @@ export class handbookFileController {
     return this.handbookFileService.findAll(query);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.handbookFileService.findOne(+id);
+  @Get(':handbookid')
+  findOne(@Param('handbookid') handbookid: number) {
+    return this.handbookFileService.findOne(+handbookid);
   }
-
-  @Patch(':id')
+  
+  @Patch(':handbookid')
   update(
-    @Param('id') id: string,
+    @Param('handbookid') handbookid: string,
     @Body() condition: Prisma.handbookFileUpdateArgs,
   ) {
     
-    return this.handbookFileService.update(+id, condition);
+    return this.handbookFileService.update(+handbookid, condition);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.handbookFileService.remove(+id);
+  @Delete(':handbookid')
+  remove(@Param('handbookid') handbookid: number) {
+    return this.handbookFileService.remove(+handbookid);
   }
 }

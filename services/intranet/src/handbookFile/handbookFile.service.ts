@@ -14,25 +14,25 @@ export class handbookFileService {
     return this.handbookFileRepo.findMany({
       ...condition,
       orderBy: {
-        id: 'asc',
+        handbookid: 'asc',
       },
     });
   }
 
-  findOne(id: number) {
+  findOne(handbookid: number) {
     const base = {
       where: {
-        id: id,
+        handbookid : handbookid,
       },
     };
 
     return this.handbookFileRepo.findOne(base);
   }
 
-  update(id: number, condition: Prisma.handbookFileUpdateArgs) {
+  update(handbookid: number, condition: Prisma.handbookFileUpdateArgs) {
     const base = {
       where: {
-        id: id,
+        handbookid: handbookid,
       },
       data: { ...condition },
       
@@ -41,10 +41,10 @@ export class handbookFileService {
     return this.handbookFileRepo.update(base);
   }
 
-  remove(id: number) {
+  remove(handbookid: number) {
     return this.handbookFileRepo.delete({
       where: {
-        id: id,
+        handbookid : handbookid,
       },
     });
   }

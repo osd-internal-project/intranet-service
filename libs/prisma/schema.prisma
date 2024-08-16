@@ -140,11 +140,11 @@ model newsType {
 
 model newsImage {
     imageId         Int              @unique @default(autoincrement()) @map("image_id")
-    // newsId        Int       @map("news_id")
     createdAt       DateTime?        @default(now()) @map("createdat")
     updatedAt       DateTime?        @default(now()) @map("updatedat")
     fileimageName   String?          @default("") @map("file_image_name") @db.VarChar(100)
     fileimagePath   String?          @default("") @map("file_image_path") @db.VarChar(100)
+    fileName         String?          @default("") @map("file_name") @db.VarChar(100)
     informationNews informationNews? @relation(fields: [newsId], references: [newsId])
     newsId          Int?             @map("news_id")
 
@@ -152,12 +152,12 @@ model newsImage {
 }
 
 model handbookFile {
-    id           Int       @unique @id @default(autoincrement())
+    handbookid   Int       @unique @default(autoincrement()) @map("handbook_id")
     fileName     String?   @default("") @map("file_name") @db.VarChar(100)
     fileLocation String?   @default("") @map("file_location") @db.VarChar(100)
     author       String?   @default("") @map("author") @db.VarChar(100)
     createdAt    DateTime? @default(now())
-    updatedAt    DateTime? @updatedAt
+    updatedAt    DateTime? @default(now())
     status       Boolean?  @default(true) @map("status") @db.Boolean
 
     @@map("handbook_file")
