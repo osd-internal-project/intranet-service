@@ -23,13 +23,13 @@ import { Response } from 'express';
   @Controller('public')
   export class PublicController { 
     @Get('news-image/:filename')
-    getNewsImageFile(@Param('filename') filename:string, @Res() res: Response): StreamableFile {
+    getNewsImageFile(@Param('filename') filename:string, @Res() res: Response): void {
       console.log(filename)
         const filesPath =  join(`./undefined/newsimage`,filename);
       const file = createReadStream(join(`./undefined/newsimage`,filename));
       res.set({
-        'Content-Type': 'image/jpeg', // ตั้งค่า MIME type ตามประเภทของรูปภาพ
-        'Content-Disposition': `inline; filename="${file}"`, // กำหนดชื่อไฟล์เมื่อส่งออก
+        'Content-Type': 'image/jpeg',
+        'Content-Disposition': `inline; filename="${file}"`, 
       });
         file.pipe(res);
     }
