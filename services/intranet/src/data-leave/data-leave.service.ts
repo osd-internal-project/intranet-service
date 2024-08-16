@@ -133,10 +133,10 @@ export class DataLeaveService {
   // }
   countLeavesByTypeIdMap(leaveRecords) {
     return leaveRecords.reduce((acc, record) => {
-      if (record.leaveHour % 8 === 0) {
-        const increment = record.leaveHour / 8;
-        acc[record.typeId] = (acc[record.typeId] || 0) + increment;
-      }
+      // if (record.leaveHour % 8 === 0) {
+      const increment = record.leaveHour / 8;
+      acc[record.typeId] = (acc[record.typeId] || 0) + increment;
+      // }
       return acc;
     }, {});
   }
