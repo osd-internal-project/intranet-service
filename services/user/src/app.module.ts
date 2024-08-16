@@ -15,7 +15,6 @@ import { UserRoleMapModule } from './user-role-map/user-role-map.module';
 import { UserRoleModule } from './user-role/user-role.module';
 import { MasterRuleModule } from './master-rule/master-rule.module';
 import { MasterPositionModule } from './master-position/master-position.module';
-import { PublicController } from './publics/public.controller';
 
 @Module({
   imports: [
@@ -33,7 +32,7 @@ import { PublicController } from './publics/public.controller';
     UserGroupModule,
     UserGroupMapModule,
   ],
-  controllers: [EvoteController, PublicController],
+  controllers: [EvoteController],
   providers: [EvoteService],
 })
 export class EvoteMainModule implements NestModule {

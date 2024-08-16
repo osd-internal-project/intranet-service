@@ -29,7 +29,6 @@ import { HandbookFileModule } from './handbookFile/handbookFile.module';
 import { InformationNewsModule } from './informationNews/informationNews.module';
 import { NewsImageModule } from './newsImage/newsImage.module';
 import { NewsTypeModule } from './newsType/newsType.module';
-import { PublicController } from './public/public.controller';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
@@ -60,7 +59,7 @@ import { PublicController } from './public/public.controller';
     NewsImageModule,
     NewsTypeModule,
   ],
-  controllers: [IntranetController,PublicController],
+  controllers: [IntranetController],
   providers: [IntranetService],
 })
 export class IntranetMainModule implements NestModule {
