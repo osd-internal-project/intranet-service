@@ -834,7 +834,6 @@ model userGroup {
     organizedGroupId     String?                @map("organized_group_id")
     description          String                 @default("") @map("description") @db.Text
     locationUserGroupMap locationUserGroupMap[]
-
     // userOwner            userOwner[]
     user                      users[]
     userMapOrganizeGroup      userMapOrganizeGroup[]
