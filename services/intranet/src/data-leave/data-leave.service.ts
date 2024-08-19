@@ -105,10 +105,8 @@ export class DataLeaveService {
       };
       return mapdata;
     });
-
     return lastResult;
   }
-
   async findUserByUserId(userId: string) {
     const condition = {
       where: {
@@ -125,18 +123,11 @@ export class DataLeaveService {
     return resUser;
   }
 
-  // countLeavesByTypeIdMap(leaveRecords) {
-  //   return leaveRecords.reduce((acc, record) => {
-  //     acc[record.typeId] = (acc[record.typeId] || 0) + 1;
-  //     return acc;
-  //   }, {});
-  // }
   countLeavesByTypeIdMap(leaveRecords) {
     return leaveRecords.reduce((acc, record) => {
-      // if (record.leaveHour % 8 === 0) {
       const increment = record.leaveHour / 8;
       acc[record.typeId] = (acc[record.typeId] || 0) + increment;
-      // }
+
       return acc;
     }, {});
   }
