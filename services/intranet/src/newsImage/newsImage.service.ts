@@ -4,6 +4,15 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class NewsImageService {
+  find(arg0: { where: { newsId: string; }; }) {
+    throw new Error('Method not implemented.');
+  }
+  delete(id: any) {
+    throw new Error('Method not implemented.');
+  }
+  countImages(arg0: number) {
+    throw new Error('Method not implemented.');
+  }
   constructor(private readonly newsImageNewsRepo: newsImageRepository) {}
 
   create(data: Prisma.newsImageCreateArgs) {
@@ -14,25 +23,26 @@ export class NewsImageService {
     return this.newsImageNewsRepo.findMany({
       ...condition,
       orderBy: {
-        imageId: 'asc',
+        newsId: 'asc',
       },
     });
   }
 
-  findOne(imageId: number) {
+  findOne(newsId: number) {
     const base = {
       where: {
-        imageId: imageId,
+        newsId: newsId,
       },
     };
 
     return this.newsImageNewsRepo.findOne(base);
   }
+  
 
-  update(imageId: number, condition: Prisma.newsImageUpdateArgs) {
+  update(newsId: number, condition: Prisma.newsImageUpdateArgs) {
     const base = {
       where: {
-        imageId: imageId,
+        newsId: newsId,
       },
       data: { ...condition },
       
@@ -41,10 +51,10 @@ export class NewsImageService {
     return this.newsImageNewsRepo.update(base);
   }
 
-  remove(imageId: number) {
+  remove(newsId: number) {
     return this.newsImageNewsRepo.delete({
       where: {
-        imageId: imageId,
+        newsId: newsId,
       },
     });
   }
