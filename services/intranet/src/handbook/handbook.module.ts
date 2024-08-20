@@ -8,4 +8,4 @@ import { PrismaModule } from '@inventory/share';
   controllers: [handbookController],
   providers: [handbookService],
 })
-export class NewsTypeModule {}
+export class HandbookModule {}

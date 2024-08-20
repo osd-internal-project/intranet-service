@@ -90,6 +90,8 @@ export * from './customerPriority.repository';
 export * from './customerRequestType.repository';
 export * from './customerWorkType.repository';
 export * from './ticketHistoryLogs.repository';
+
+// information and handbook
 export * from './Information.repository';
 export * from './newsType.repository';
 export * from './newsImage.repository';

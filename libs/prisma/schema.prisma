@@ -161,11 +161,12 @@ model handbook {
     status       Boolean?       @default(true) @map("status") @db.Boolean
     handbookFile handbookFile[]
 
-    @@map("handbook")
+    @@map("hand_book")
 }
 
 model handbookFile {
     handbookid   Int       @unique @default(autoincrement()) @map("handbook_id")
+    fileName     String?   @default("") @map("file_name") @db.VarChar(100)
     fileLocation String?   @default("") @map("file_location") @db.VarChar(100)
     author       String?   @default("") @map("author") @db.VarChar(100)
     createdAt    DateTime? @default(now())

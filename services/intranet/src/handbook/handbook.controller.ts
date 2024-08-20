@@ -11,7 +11,7 @@ import {
 import { handbookService } from './handbook.service';
 import { Prisma } from '@prisma/client';
 
-@Controller('handbook')
+@Controller('hand-book')
 export class handbookController {
   constructor(private readonly handbookService: handbookService) {}
 
