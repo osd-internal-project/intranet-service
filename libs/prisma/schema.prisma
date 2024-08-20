@@ -160,6 +160,8 @@ model handbook {
     author       String?        @default("") @map("author") @db.VarChar(100)
     status       Boolean?       @default(true) @map("status") @db.Boolean
     handbookFile handbookFile[]
+
+    @@map("handbook")
 }
 
 model handbookFile {
