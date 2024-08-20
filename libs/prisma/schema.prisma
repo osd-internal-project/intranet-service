@@ -151,14 +151,26 @@ model newsImage {
     @@map("news_image")
 }
 
+model handbook {
+    idbook       Int            @unique @default(autoincrement()) @map("id_book")
+    fileName     String?        @default("") @map("file_name") @db.VarChar(100)
+    filetype     String?        @default("") @map("file_type") @db.VarChar(100)
+    createdAt    DateTime?      @default(now())
+    updatedAt    DateTime?      @default(now())
+    author       String?        @default("") @map("author") @db.VarChar(100)
+    status       Boolean?       @default(true) @map("status") @db.Boolean
+    handbookFile handbookFile[]
+}
+
 model handbookFile {
     handbookid   Int       @unique @default(autoincrement()) @map("handbook_id")
-    fileName     String?   @default("") @map("file_name") @db.VarChar(100)
     fileLocation String?   @default("") @map("file_location") @db.VarChar(100)
     author       String?   @default("") @map("author") @db.VarChar(100)
     createdAt    DateTime? @default(now())
     updatedAt    DateTime? @default(now())
     status       Boolean?  @default(true) @map("status") @db.Boolean
+    handbook     handbook? @relation(fields: [idbook], references: [idbook])
+    idbook       Int?      @map("id_book")
 
     @@map("handbook_file")
 }
@@ -821,19 +833,19 @@ model organizeMapGroup {
 }
 
 model userGroup {
-    id                   Int                    @unique @default(autoincrement()) @map("id")
-    groupId              String                 @unique @default(uuid()) @map("group_id") @db.VarChar(50)
-    groupName            String                 @map("group_name") @db.VarChar(200) //Text waiting update
-    createdAt            DateTime               @default(now()) @map("created_at")
-    updatedAt            DateTime               @default(now()) @map("updated_at")
-    parent               userGroup?             @relation("ChildGroup", fields: [parentGroupId], references: [groupId])
-    parentGroupId        String?                @map("parent_group_id") @db.VarChar(50)
-    userGroup            userGroup[]            @relation("ChildGroup")
-    userGroupMap         userGroupMap[]
-    organized            organized?             @relation(fields: [organizedGroupId], references: [organizedId], onDelete: Cascade)
-    organizedGroupId     String?                @map("organized_group_id")
-    description          String                 @default("") @map("description") @db.Text
-    locationUserGroupMap locationUserGroupMap[]
+    id                        Int                         @unique @default(autoincrement()) @map("id")
+    groupId                   String                      @unique @default(uuid()) @map("group_id") @db.VarChar(50)
+    groupName                 String                      @map("group_name") @db.VarChar(200) //Text waiting update
+    createdAt                 DateTime                    @default(now()) @map("created_at")
+    updatedAt                 DateTime                    @default(now()) @map("updated_at")
+    parent                    userGroup?                  @relation("ChildGroup", fields: [parentGroupId], references: [groupId])
+    parentGroupId             String?                     @map("parent_group_id") @db.VarChar(50)
+    userGroup                 userGroup[]                 @relation("ChildGroup")
+    userGroupMap              userGroupMap[]
+    organized                 organized?                  @relation(fields: [organizedGroupId], references: [organizedId], onDelete: Cascade)
+    organizedGroupId          String?                     @map("organized_group_id")
+    description               String                      @default("") @map("description") @db.Text
+    locationUserGroupMap      locationUserGroupMap[]
     // userOwner            userOwner[]
     user                      users[]
     userMapOrganizeGroup      userMapOrganizeGroup[]

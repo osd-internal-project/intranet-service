@@ -24,11 +24,21 @@ import { Response } from 'express';
   export class PublicController { 
     @Get('news-image/:filename')
     getNewsImageFile(@Param('filename') filename:string, @Res() res: Response): void {
-      console.log(filename)
-        const filesPath =  join(`./undefined/newsimage`,filename);
+        // const filesPath =  join(`./undefined/newsimage`,filename);
       const file = createReadStream(join(`./undefined/newsimage`,filename));
       res.set({
         'Content-Type': 'image/jpeg',
+        'Content-Disposition': `inline; filename="${file}"`, 
+      });
+        file.pipe(res);
+    }
+
+    @Get('handbook-file/:filename')
+    gethandbookfile(@Param('filename') filename:string, @Res() res: Response): void {
+      console.log(filename)
+        // const filesPath =  join(`./undefined/handbookfile`,filename);
+      const file = createReadStream(join(`./undefined/handbookfile`,filename));
+      res.set({
         'Content-Disposition': `inline; filename="${file}"`, 
       });
         file.pipe(res);

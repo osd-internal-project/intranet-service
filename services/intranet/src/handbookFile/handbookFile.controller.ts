@@ -25,7 +25,7 @@ export class handbookFileController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: `${process.env.PATH_MOUNTDIR_UPLOAD}/handbookfile`,  
+        destination: `${process.env.PATH_MOUNTDIR_UPLOAD}/handbookfile`,
         filename: (req, file, cb) => {
           const fileExtName = extname(file.originalname);
           const randomName = uuidv4();
@@ -34,16 +34,25 @@ export class handbookFileController {
       }),
     }),
   )
-  uploadFile(@UploadedFile() file: Express.Multer.File) {
-    console.log(file); 
+  uploadFile(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() body: { fileName: string; filetype: string; status: string },
+  ) {
+    console.log(file);
+    console.log(body);
     if (!file) {
       throw new Error('File is undefined');
     }
     const data = {
-      fileName: file.originalname,
+      fileName: body.fileName, // ใช้ชื่อไฟล์จากฟอร์ม
       fileLocation: file.path,
-    } as Prisma.handbookFileCreateInput;
-    return this.handbookFileService.create({data:data});
+      filetype: body.filetype,
+      status: body.status,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      author: 'author_name',
+    } as unknown as Prisma.handbookFileCreateInput;
+    return this.handbookFileService.create({ data });
   }
 
   @Get()
@@ -55,13 +64,12 @@ export class handbookFileController {
   findOne(@Param('handbookid') handbookid: number) {
     return this.handbookFileService.findOne(+handbookid);
   }
-  
+
   @Patch(':handbookid')
   update(
     @Param('handbookid') handbookid: string,
     @Body() condition: Prisma.handbookFileUpdateArgs,
   ) {
-    
     return this.handbookFileService.update(+handbookid, condition);
   }
 

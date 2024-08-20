@@ -59,6 +59,7 @@ import { PublicController } from './public/public.controller';
     InformationNewsModule,
     NewsImageModule,
     NewsTypeModule,
+    HandbookFileModule,
   ],
   controllers: [IntranetController,PublicController],
   providers: [IntranetService],

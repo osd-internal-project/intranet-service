@@ -1,16 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { newsImageRepository,  } from '@inventory/share';
+import { newsImageRepository, PrismaService } from '@inventory/share';
 import { Prisma } from '@prisma/client';
+import { promises as fsPromises } from 'fs';
 
 @Injectable()
 export class NewsImageService {
-  find(arg0: { where: { newsId: string; }; }) {
-    throw new Error('Method not implemented.');
-  }
-  delete(id: any) {
-    throw new Error('Method not implemented.');
-  }
-  countImages(arg0: number) {
+  findMany(arg0: {
+    where: { newsId: number };
+    orderBy: { createdAt: string };
+  }) {
     throw new Error('Method not implemented.');
   }
   constructor(private readonly newsImageNewsRepo: newsImageRepository) {}
@@ -28,16 +26,15 @@ export class NewsImageService {
     });
   }
 
-  findOne(newsId: number) {
+  findOne(imageId: number) {
     const base = {
       where: {
-        newsId: newsId,
+        imageId: imageId,
       },
     };
 
     return this.newsImageNewsRepo.findOne(base);
   }
-  
 
   update(newsId: number, condition: Prisma.newsImageUpdateArgs) {
     const base = {
@@ -45,17 +42,29 @@ export class NewsImageService {
         newsId: newsId,
       },
       data: { ...condition },
-      
-      
     } as Prisma.newsImageUpdateArgs;
     return this.newsImageNewsRepo.update(base);
   }
 
-  remove(newsId: number) {
-    return this.newsImageNewsRepo.delete({
+  async remove(imageId: number) {
+    const condition = {
       where: {
-        newsId: newsId,
+        imageId: imageId,
       },
+    };
+    const images = await this.newsImageNewsRepo.findMany(condition);
+    images.map((image) => {
+      this.deleteFile(image.fileimagePath);
     });
+    return await this.newsImageNewsRepo.delete(condition);
+  }
+  async deleteFile(fileimagePath: string) {
+    const filePath = `${fileimagePath}`;
+    try {
+      await fsPromises.unlink(filePath);
+      console.log(`File ${fileimagePath} has been deleted successfully.`);
+    } catch (err) {
+      console.error(`Error deleting file ${fileimagePath}: ${err.message}`);
+    }
   }
 }
