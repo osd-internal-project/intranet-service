@@ -127,7 +127,6 @@ export class DataLeaveService {
     return leaveRecords.reduce((acc, record) => {
       const increment = record.leaveHour / 8;
       acc[record.typeId] = (acc[record.typeId] || 0) + increment;
-
       return acc;
     }, {});
   }
