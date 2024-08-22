@@ -153,9 +153,9 @@ model newsImage {
 
 model handbooktype {
     idhandtype   Int      @unique @default(autoincrement()) @map("id_handtype")
-    nameType    String?   @default("") @map("name_Type")
-    createAt    DateTime? @default(now()) @map("createAt")
-    status      Boolean?  @default(true) @map("status") @db.Boolean
+    nameType     String?   @default("") @map("name_Type")
+    createAt     DateTime? @default(now()) @map("createAt")
+    status       Boolean?  @default(true) @map("status") @db.Boolean
 
     @@map("handbook_type")
 }
