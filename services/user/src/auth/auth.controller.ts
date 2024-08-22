@@ -51,11 +51,14 @@ export class AuthController {
           },
         },
         userMapOrganizeGroupOwner: {
-          select: { ownerGroupId: true },
+          select: {
+            ownerGroupId: true,
+          },
         },
         typeLeaveDisabledMap: {
           select: {
             userId: true,
+            // id: true,
           },
         },
       },

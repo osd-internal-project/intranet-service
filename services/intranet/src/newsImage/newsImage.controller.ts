@@ -2,24 +2,29 @@ import {
   Controller,
   Get,
   Post,
-  Body,
   Patch,
   Param,
   Delete,
   Query,
   UploadedFile,
   UseInterceptors,
+  BadRequestException,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { NewsImageService } from './newsImage.service';
 import { Prisma } from '@prisma/client';
 import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
-import { extname, join } from 'path';
+import path, { extname } from 'path';
 import { FileInterceptor } from '@nestjs/platform-express';
-const uploadpath =process.env.PATH_MOUNTDIR_IMAGES_UPLOAD
+import fs from 'fs';
+const uploadpath = process.env.PATH_MOUNTDIR_IMAGES_UPLOAD;
+const MAX_IMAGES = 3;
 @Controller('news-image')
 export class NewsImageController {
   constructor(private readonly newsImageService: NewsImageService) {}
+
   @Post(':newsId')
   @UseInterceptors(
     FileInterceptor('file', {
@@ -37,43 +42,78 @@ export class NewsImageController {
     @Param('newsId') newsId: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    console.log(process.env.PATH_MOUNTDIR_IMAGES_UPLOAD);
     if (!file) {
       throw new Error('File is undefined');
     }
-    // console.log(uploadpath)
     const data = {
       newsId: +newsId,
       fileimageName: file.originalname,
-      fileimagePath: file.path, 
+      fileimagePath: file.path,
       fileName: file.filename,
     } as Prisma.newsImageCreateInput;
     return this.newsImageService.create({ data: data });
   }
 
   @Get()
-  findAll(@Query('newsId') newsId?: string) {
-    if (newsId) {
-      return this.newsImageService.findAll({ where: { newsId: +newsId } });
+  findAll(@Query('imageId') imageId?: number) {
+    if (imageId) {
+      return this.newsImageService.findAll({ where: { imageId: +imageId } });
     }
     return this.newsImageService.findAll({});
   }
 
   @Get(':imageId')
-  findOne(@Param('imageId') imageId: string) {
+  findOne(@Param('imageId') imageId: number) {
     return this.newsImageService.findOne(+imageId);
   }
 
-  @Patch(':imageId')
-  update(
-    @Param('imageId') imageId: string,
-    @Body() condition: Prisma.newsImageUpdateArgs,
+  @Patch(':newsId')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: `${process.env.PATH_MOUNTDIR_IMAGES_UPLOAD}/newsimage`,
+        filename: (req, file, cb) => {
+          const fileExtName = extname(file.originalname);
+          const randomName = uuidv4();
+          cb(null, `${randomName}${fileExtName}`);
+        },
+      }),
+    }),
+  )
+  async updateFile(
+    @Param('newsId') newsId: string,
+    @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.newsImageService.update(+imageId, condition);
-  }
+    if (!file) {
+      throw new BadRequestException('File is undefined');
+    }
 
+    // Get the existing images related to the newsId
+    const existingImages = this.newsImageService.findMany({
+      where: { newsId: +newsId },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    if (Array.isArray(existingImages) && existingImages.length >= 3) {
+      // ถ้ามีภาพเกิน 3 ภาพ ให้หยุดการอัพเดทและโยนข้อยกเว้น
+      throw new BadRequestException('Cannot upload more than 3 images.');
+    }
+
+    const data = {
+      fileimageName: file.originalname,
+      fileimagePath: file.path,
+      fileName: file.filename,
+    } as Prisma.newsImageUpdateInput;
+
+    return this.newsImageService.update(+newsId, {
+      data,
+      where: {
+        imageId: +newsId,
+      },
+    });
+  }
   @Delete(':imageId')
-  remove(@Param('imageId') imageId: string) {
+  remove(@Param('imageId') imageId: number) {
     return this.newsImageService.remove(+imageId);
   }
 }

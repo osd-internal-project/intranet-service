@@ -9,6 +9,7 @@ import {
   Query,
   UploadedFile,
   UseInterceptors,
+  BadRequestException,
 } from '@nestjs/common';
 import { handbookFileService } from './handbookFile.service';
 import { Prisma } from '@prisma/client';
@@ -21,11 +22,11 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class handbookFileController {
   constructor(private readonly handbookFileService: handbookFileService) {}
 
-  @Post(':handbookid')
+  @Post(':idbook')
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: `${process.env.PATH_MOUNTDIR_UPLOAD}/handbookfile`,  
+        destination: `${process.env.PATH_MOUNTDIR_UPLOAD}/handbookfile`,
         filename: (req, file, cb) => {
           const fileExtName = extname(file.originalname);
           const randomName = uuidv4();
@@ -34,35 +35,80 @@ export class handbookFileController {
       }),
     }),
   )
-  uploadFile(@UploadedFile() file: Express.Multer.File) {
-    console.log(file); 
+  uploadFilehandbookFile(
+    @Param('idbook') idbook: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    console.log(file);
+    
     if (!file) {
       throw new Error('File is undefined');
     }
     const data = {
-      fileName: file.originalname,
+      idbook: +idbook,
+      fileName: file.filename,
       fileLocation: file.path,
     } as Prisma.handbookFileCreateInput;
-    return this.handbookFileService.create({data:data});
+    return this.handbookFileService.create({ data: data });
   }
 
   @Get()
-  findAll(@Query() query) {
-    return this.handbookFileService.findAll(query);
+  findAll(@Query('idbook') idbook?: number) {
+    if (idbook) {
+      return this.handbookFileService.findAll({ where: { idbook: +idbook } });
+    }
+    return this.handbookFileService.findAll({});
   }
 
   @Get(':handbookid')
   findOne(@Param('handbookid') handbookid: number) {
     return this.handbookFileService.findOne(+handbookid);
   }
-  
-  @Patch(':handbookid')
-  update(
-    @Param('handbookid') handbookid: string,
-    @Body() condition: Prisma.handbookFileUpdateArgs,
+
+  @Patch(':idbook')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: `${process.env.PATH_MOUNTDIR_IMAGES_UPLOAD}/handbookfile`,
+        filename: (req, file, cb) => {
+          const fileExtName = extname(file.originalname);
+          const randomName = uuidv4();
+          cb(null, `${randomName}${fileExtName}`);
+        },
+      }),
+    }),
+  )
+  async updateFile(
+    @Param('idbook') idbook: string,
+    @UploadedFile() file: Express.Multer.File,
   ) {
-    
-    return this.handbookFileService.update(+handbookid, condition);
+    if (!file) {
+      throw new BadRequestException('File is undefined');
+    }
+
+    // Get the existing images related to the idbook
+    const existingImages = this.handbookFileService.findMany({
+      where: { idbook: +idbook },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    if (Array.isArray(existingImages) && existingImages.length >= 1) {
+      // ถ้ามีภาพเกิน 3 ภาพ ให้หยุดการอัพเดทและโยนข้อยกเว้น
+      throw new BadRequestException('Cannot upload more than 1 file.');
+    }
+
+    const data = {
+      fileimageName: file.originalname,
+      fileimagePath: file.path,
+      fileName: file.filename,
+    } as Prisma.newsImageUpdateInput;
+
+    return this.handbookFileService.update(+idbook, {
+      data,
+      where: {
+        handbookid: +idbook,
+      },
+    });
   }
 
   @Delete(':handbookid')

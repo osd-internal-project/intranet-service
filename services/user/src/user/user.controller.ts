@@ -53,7 +53,6 @@ export class UserController {
 
   @Post()
   async create(@Body('data') data: Prisma.usersCreateInput) {
-    console.log(data);
     const checkuser = await this.userService.findOneByCondition({
       where: {
         username: data.username.trim(),
@@ -254,7 +253,8 @@ export class UserController {
   }
 
   @Get('find-owner-users/:positionId')
-  findOwnerUserByPositionId(@Param('positionId') positionId: string) {
+  dOwnerUserByPositionId(@Param('positionId') positionId: string) {
+    console.log(positionId);
     return this.userService.findOwnerUserByPositionId(positionId);
   }
 
