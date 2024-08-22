@@ -10,24 +10,25 @@ export class informationNewsService {
     return this.informationNewsRepo.create(data);
   }
 
-  findAll(condition: Prisma.informationNewsFindManyArgs) {
-    return this.informationNewsRepo.findMany({
+  async findAll(condition: Prisma.informationNewsFindManyArgs) {
+    return await this.informationNewsRepo.findMany({
       ...condition,
-      include:{ newsImage:true},
+      include: { newsImage: true },
       orderBy: {
         newsId: 'asc',
       },
     });
   }
 
-  findOne(newsId: number) {
-    const base = {
+  async findOne(newsId: number) {
+    const base = {};
+
+    return await this.informationNewsRepo.findOne({
       where: {
         newsId: newsId,
       },
-    };
-
-    return this.informationNewsRepo.findOne(base);
+      include:{newsImage:true}
+    });
   }
 
   update(newsId: number, condition: Prisma.informationNewsUpdateArgs) {
@@ -35,13 +36,13 @@ export class informationNewsService {
       where: {
         newsId: newsId,
       },
-      data:condition,
+      data: condition,
     } as Prisma.informationNewsUpdateArgs;
     return this.informationNewsRepo.update(base);
   }
 
-  remove(newsId: number) {
-    return this.informationNewsRepo.delete({
+  async remove(newsId: number) {
+    return await this.informationNewsRepo.delete({
       where: {
         newsId: newsId,
       },

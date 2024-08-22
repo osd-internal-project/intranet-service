@@ -10,23 +10,25 @@ export class handbookService {
     return this.handbookRepo.create(data);
   }
 
-  findAll(condition: Prisma.handbookFindManyArgs) {
-    return this.handbookRepo.findMany({
+  async findAll(condition: Prisma.handbookFindManyArgs) {
+    return await this.handbookRepo.findMany({
       ...condition,
       orderBy: {
         idbook: 'asc',
       },
+      include:{handbookFile:true}
     });
   }
 
-  findOne(idbook: number) {
-    const base = {
+   async findOne(idbook: number) {
+    return await this.handbookRepo.findOne({
       where: {
         idbook: idbook,
       },
-    };
+      include:{handbookFile:true}
+    });
 
-    return this.handbookRepo.findOne(base);
+    // return this.handbookRepo.findOne(base);
   }
 
   update(idbook: number, condition: Prisma.handbookUpdateArgs) {
@@ -35,14 +37,12 @@ export class handbookService {
         idbook: idbook,
       },
       data: { ...condition },
-      
-      
     } as Prisma.handbookUpdateArgs;
     return this.handbookRepo.update(base);
   }
 
-  remove(idbook: number) {
-    return this.handbookRepo.delete({
+  async remove(idbook: number) {
+    return await this.handbookRepo.delete({
       where: {
         idbook: idbook,
       },

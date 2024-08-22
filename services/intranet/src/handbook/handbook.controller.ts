@@ -26,13 +26,13 @@ export class handbookController {
   }
 
   @Get(':idbook')
-  findOne(@Param('idbook') idbook: string) {
+  findOne(@Param('idbook') idbook: number) {
     return this.handbookService.findOne(+idbook);
   }
 
   @Patch(':idbook')
   update(
-    @Param('idbook') idbook: string,
+    @Param('idbook') idbook: number,
     @Body() condition: Prisma.handbookUpdateArgs,
   ) {
     
@@ -40,7 +40,7 @@ export class handbookController {
   }
 
   @Delete(':idbook')
-  remove(@Param('idbook') idbook: string) {
+  remove(@Param('idbook') idbook: number) {
     return this.handbookService.remove(+idbook);
   }
 }

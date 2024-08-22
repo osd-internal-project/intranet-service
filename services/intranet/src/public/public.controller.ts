@@ -34,12 +34,13 @@ import { Response } from 'express';
     }
 
     @Get('handbook-file/:filename')
-    gethandbookfile(@Param('filename') filename:string, @Res() res: Response): void {
-      console.log(filename)
+    gethandbookfile(@Param('filename') fileName:string, @Res() res: Response): void {
+      console.log(fileName)
         // const filesPath =  join(`./undefined/handbookfile`,filename);
-      const file = createReadStream(join(`./undefined/handbookfile`,filename));
+      const file = createReadStream(join(`./undefined/handbookfile`,fileName));
       res.set({
-        'Content-Disposition': `inline; filename="${file}"`, 
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `inline; fileName="${fileName}"`, 
       });
         file.pipe(res);
     }
