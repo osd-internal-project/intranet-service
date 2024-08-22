@@ -92,6 +92,7 @@ import {
   newsTypeRepository,
   newsImageRepository,
   handbookFileRepository,
+  handbookRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -192,6 +193,7 @@ const services = [
   newsTypeRepository,
   newsImageRepository,
   handbookFileRepository,
+  handbookRepository,
 ];
 @Module({
   providers: [...services],

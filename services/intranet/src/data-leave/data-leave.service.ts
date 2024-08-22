@@ -37,15 +37,6 @@ export class DataLeaveService {
     });
   }
 
-  async finddepartId(departId: Prisma.dataLeaveFindManyArgs) {
-    return await this.dataleaveRepo.findMany({
-      ...departId,
-      orderBy: {
-        id: 'desc',
-      },
-    });
-  }
-
   async findDetailTypeLeaveByUserId(userId: string) {
     const condition = {
       where: {
@@ -60,9 +51,9 @@ export class DataLeaveService {
     const resUser = await this.usersRepo.findOne(condition);
     const startWork = dayjs(resUser.startWork);
     const DateNow = dayjs();
+
     const numberWorkStart = DateNow.diff(startWork, 'year');
     const dataTypeLeave = await this.mastertypeLeaveRepo.findAll();
-
     const dataLeaveWrapup = await this.dataleaveRepo.findMany({
       where: {
         userId: userId,
@@ -114,7 +105,6 @@ export class DataLeaveService {
       };
       return mapdata;
     });
-
     return lastResult;
   }
   async findUserByUserId(userId: string) {
@@ -135,7 +125,8 @@ export class DataLeaveService {
 
   countLeavesByTypeIdMap(leaveRecords) {
     return leaveRecords.reduce((acc, record) => {
-      acc[record.typeId] = (acc[record.typeId] || 0) + 1;
+      const increment = record.leaveHour / 8;
+      acc[record.typeId] = (acc[record.typeId] || 0) + increment;
       return acc;
     }, {});
   }

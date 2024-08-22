@@ -8,4 +8,4 @@ import { PrismaModule } from '@inventory/share';
   controllers: [NewsImageController],
   providers: [NewsImageService],
 })
-export class MaCarWrapupModule {}
+export class NewsImageModule {}

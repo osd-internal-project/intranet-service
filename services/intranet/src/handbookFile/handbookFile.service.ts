@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { handbookFileRepository,  } from '@inventory/share';
+import { handbookFileRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
+import { promises as fsPromises } from 'fs';
 
 @Injectable()
 export class handbookFileService {
+  [x: string]: any;
   constructor(private readonly handbookFileRepo: handbookFileRepository) {}
 
   create(data: Prisma.handbookFileCreateArgs) {
@@ -14,38 +16,50 @@ export class handbookFileService {
     return this.handbookFileRepo.findMany({
       ...condition,
       orderBy: {
-        id: 'asc',
+        idbook: 'asc',
       },
     });
   }
 
-  findOne(id: number) {
+  findOne(handbookid: number) {
     const base = {
       where: {
-        id: id,
+        handbookid: handbookid,
       },
     };
 
     return this.handbookFileRepo.findOne(base);
   }
 
-  update(carWrapupId: string, condition: Prisma.handbookFileUpdateArgs) {
+  update(idbook: number, condition: Prisma.handbookFileUpdateArgs) {
     const base = {
       where: {
-        carWrapupId: carWrapupId,
+        idbook: idbook,
       },
       data: { ...condition },
-      
-      
     } as Prisma.handbookFileUpdateArgs;
     return this.handbookFileRepo.update(base);
   }
 
-  remove(id: number) {
-    return this.handbookFileRepo.delete({
+  async remove(handbookid: number) {
+    const condition = {
       where: {
-        id: id,
+        handbookid: handbookid,
       },
+    };
+    const filespdf = await this.handbookFileRepo.findMany(condition);
+    filespdf.map((filespdf) => {
+      this.deleteFile(filespdf.fileLocation);
     });
+    return this.handbookFileRepo.delete(condition);
+  }
+  async deleteFile(fileLocation: string) {
+    const filePath = `${fileLocation}`;
+    try {
+      await fsPromises.unlink(filePath);
+      console.log(`File ${fileLocation} has been deleted successfully.`);
+    } catch (err) {
+      console.error(`Error deleting file ${fileLocation}: ${err.message}`);
+    }
   }
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { InformationRepository,  } from '@inventory/share';
+import { InformationRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
@@ -10,39 +10,39 @@ export class informationNewsService {
     return this.informationNewsRepo.create(data);
   }
 
-  findAll(condition: Prisma.informationNewsFindManyArgs) {
-    return this.informationNewsRepo.findMany({
+  async findAll(condition: Prisma.informationNewsFindManyArgs) {
+    return await this.informationNewsRepo.findMany({
       ...condition,
+      include: { newsImage: true },
       orderBy: {
         newsId: 'asc',
       },
     });
   }
 
-  findOne(newsId: number) {
+  async findOne(newsId: number) {
+    const base = {};
+
+    return await this.informationNewsRepo.findOne({
+      where: {
+        newsId: newsId,
+      },
+      include:{newsImage:true}
+    });
+  }
+
+  update(newsId: number, condition: Prisma.informationNewsUpdateArgs) {
     const base = {
       where: {
         newsId: newsId,
       },
-    };
-
-    return this.informationNewsRepo.findOne(base);
-  }
-
-  update(carWrapupId: string, condition: Prisma.informationNewsUpdateArgs) {
-    const base = {
-      where: {
-        carWrapupId: carWrapupId,
-      },
-      data: { ...condition },
-      
-      
+      data: condition,
     } as Prisma.informationNewsUpdateArgs;
     return this.informationNewsRepo.update(base);
   }
 
-  remove(newsId: number) {
-    return this.informationNewsRepo.delete({
+  async remove(newsId: number) {
+    return await this.informationNewsRepo.delete({
       where: {
         newsId: newsId,
       },
