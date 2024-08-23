@@ -105,7 +105,7 @@
     "db:seed": "yarn prisma db seed",
     "dev": "NODE_ENV=local ts-node-dev --respawn --exit-child --transpile-only -r tsconfig-paths/register ./src/main.ts ",
     "docker:build": "cd ../.. && docker build -t 'd-debt/crm' -f services/crm/Dockerfile .",
-    "docker:buildx": "cd ../.. && docker build --no-cache --platform linux/amd64 -t 'intranet-crm-be:v1.0.1' -f services/crm/Dockerfile .",
+    "docker:buildx": "cd ../.. && docker build --no-cache --platform linux/amd64 -t 'intranet-crm-be:v1.0.2' -f services/crm/Dockerfile .",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "generate": "prisma generate",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
