@@ -64,7 +64,7 @@ import { HandbooktypeModule } from './handbooktype/handbooktype.module';
     HandbookModule,
     HandbooktypeModule,
   ],
-  controllers: [IntranetController,PublicController],
+  controllers: [IntranetController, PublicController],
   providers: [IntranetService],
 })
 export class IntranetMainModule implements NestModule {
