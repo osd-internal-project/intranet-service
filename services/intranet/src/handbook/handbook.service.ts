@@ -16,18 +16,18 @@ export class handbookService {
       orderBy: {
         idbook: 'asc',
       },
-      include:{handbookFile:true}
+      include: { handbookFile: true },
     });
   }
 
-   async findOne(idbook: number) {
+  async findOne(idbook: number) {
     return await this.handbookRepo.findOne({
       where: {
         idbook: idbook,
       },
-      include:{handbookFile:true}
+      include: { handbookFile: true },
     });
-
+    
     // return this.handbookRepo.findOne(base);
   }
 
