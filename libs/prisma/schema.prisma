@@ -1297,6 +1297,7 @@ model customerDetail {
     updatedById   String?   @map("updated_by_id") @db.VarChar(50)
     updatedByName String?   @map("updated_by_name") @db.VarChar(255)
     ownerGroup    String?   @map("owner_group") @db.VarChar(50)
+    deleteStatus  Boolean   @default(false) @map("delete_status") @db.Boolean
 
     customerBranch customerBranch[]
 
