@@ -190,7 +190,7 @@ model handbookFile {
 model slideImage {
     id            Int       @unique @default(autoincrement()) @map("id")
     fileId        String    @unique @default(uuid()) @map("file_id") @db.VarChar(50)
-    imagePath     String?   @map("image_path") @db.VarChar(255)
+    filePath      String?   @map("file_path") @db.VarChar(255)
     fileName      String?   @default("") @map("file_name") @db.VarChar(255)
     fileType      String?   @map("file_type") @db.VarChar(50)
     status        Boolean   @default(true) @map("status") @db.Boolean
