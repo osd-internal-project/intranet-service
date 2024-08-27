@@ -32,6 +32,7 @@ import { NewsTypeModule } from './newsType/newsType.module';
 import { PublicController } from './public/public.controller';
 import { HandbookModule } from './handbook/handbook.module';
 import { HandbooktypeModule } from './handbooktype/handbooktype.module';
+import { SlideImageModule } from './slide-image/slide-image.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
@@ -63,6 +64,7 @@ import { HandbooktypeModule } from './handbooktype/handbooktype.module';
     NewsTypeModule,
     HandbookModule,
     HandbooktypeModule,
+    SlideImageModule,
   ],
   controllers: [IntranetController, PublicController],
   providers: [IntranetService],
