@@ -152,10 +152,10 @@ model newsImage {
 }
 
 model handbooktype {
-    idhandtype   Int      @unique @default(autoincrement()) @map("id_handtype")
-    nameType     String?   @default("") @map("name_Type")
-    createAt     DateTime? @default(now()) @map("createAt")
-    status       Boolean?  @default(true) @map("status") @db.Boolean
+    idhandtype Int       @unique @default(autoincrement()) @map("id_handtype")
+    nameType   String?   @default("") @map("name_Type")
+    createAt   DateTime? @default(now()) @map("createAt")
+    status     Boolean?  @default(true) @map("status") @db.Boolean
 
     @@map("handbook_type")
 }
@@ -185,6 +185,24 @@ model handbookFile {
     idbook       Int?      @map("id_book")
 
     @@map("handbook_file")
+}
+
+model slideImage {
+    id            Int       @unique @default(autoincrement()) @map("id")
+    fileId        String    @unique @default(uuid()) @map("file_id") @db.VarChar(50)
+    filePath      String?   @map("file_path") @db.VarChar(255)
+    fileName      String?   @default("") @map("file_name") @db.VarChar(255)
+    fileType      String?   @map("file_type") @db.VarChar(50)
+    status        Boolean   @default(true) @map("status") @db.Boolean
+    createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+    createdById   String?   @map("created_by_id") @db.VarChar(50)
+    createdByName String?   @map("created_by_name") @db.VarChar(255)
+    updatedAt     DateTime? @map("updated_at") @db.Timestamptz()
+    updatedById   String?   @map("updated_by_id") @db.VarChar(50)
+    updatedByName String?   @map("updated_by_name") @db.VarChar(255)
+    deletedAt     DateTime? @map("deleted_at") @db.Timestamptz()
+
+    @@map("slide_image")
 }
 
 model inventory {
@@ -964,7 +982,7 @@ model maCar {
     carPetrol     String        @map("car_petrol") @db.VarChar(150)
     carMile       Int?          @map("car_mile")
     detail        String        @map("detail") @db.VarChar(150)
-    status        Boolean       @default(true) @map("stauts") @db.Boolean
+    status        Boolean       @default(true) @map("status") @db.Boolean
     createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz()
     createdById   String?       @map("created_by_id") @db.VarChar(50)
     createdByName String?       @map("created_by_name") @db.VarChar(255)
@@ -1279,6 +1297,7 @@ model customerDetail {
     updatedById   String?   @map("updated_by_id") @db.VarChar(50)
     updatedByName String?   @map("updated_by_name") @db.VarChar(255)
     ownerGroup    String?   @map("owner_group") @db.VarChar(50)
+    deleteStatus  Boolean   @default(false) @map("delete_status") @db.Boolean
 
     customerBranch customerBranch[]
 
@@ -1447,11 +1466,16 @@ model customerChannelType {
 }
 
 model customerJobType {
-    id           Int      @unique @default(autoincrement()) @map("id")
-    name         String   @map("name") @db.VarChar(100)
-    activeStatus Boolean  @default(true) @map("active_status") @db.Boolean
-    createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt    DateTime @default(now()) @map("updated_at") @db.Timestamptz()
+    id                    Int                  @unique @default(autoincrement()) @map("id")
+    name                  String               @map("name") @db.VarChar(100)
+    description           String?              @map("description") @db.Text
+    priority              String?              @map("priority") @db.VarChar(20)
+    priorityHour          Int?                 @map("priority_hour") @db.Integer
+    activeStatus          Boolean              @default(true) @map("active_status") @db.Boolean
+    createdAt             DateTime             @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt             DateTime             @default(now()) @map("updated_at") @db.Timestamptz()
+    customerRequestType   customerRequestType? @relation(fields: [customerRequestTypeId], references: [id])
+    customerRequestTypeId Int?                 @map("customer_request_type_id")
 
     @@map("customer_job_type")
 }
@@ -1467,11 +1491,13 @@ model customerPriority {
 }
 
 model customerRequestType {
-    id           Int      @unique @default(autoincrement()) @map("id")
-    name         String   @map("name") @db.VarChar(100)
-    activeStatus Boolean  @default(true) @map("active_status") @db.Boolean
-    createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt    DateTime @default(now()) @map("updated_at") @db.Timestamptz()
+    id              Int               @unique @default(autoincrement()) @map("id")
+    name            String            @map("name") @db.VarChar(100)
+    description     String?           @map("description") @db.Text
+    activeStatus    Boolean           @default(true) @map("active_status") @db.Boolean
+    createdAt       DateTime          @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt       DateTime          @default(now()) @map("updated_at") @db.Timestamptz()
+    customerJobType customerJobType[]
 
     @@map("customer_request_type")
 }

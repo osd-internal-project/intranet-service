@@ -94,6 +94,7 @@ import {
   handbookFileRepository,
   handbookRepository,
   handbooktypeRepository
+  SlideImageRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -196,6 +197,7 @@ const services = [
   handbookFileRepository,
   handbookRepository,
   handbooktypeRepository,
+  SlideImageRepository,
 ];
 @Module({
   providers: [...services],
