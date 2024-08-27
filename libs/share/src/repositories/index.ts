@@ -98,3 +98,9 @@ export * from './newsImage.repository';
 export * from './handbookFile.repository';
 export * from './handbook.repository';
 export * from './handbooktype.repository';
+
+//slide
+export * from './slideImage.repository';
+
+
+
