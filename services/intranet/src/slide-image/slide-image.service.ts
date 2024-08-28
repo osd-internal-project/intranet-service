@@ -27,4 +27,6 @@ export class SlideImageService {
     const condition = { where: { id: id } } as Prisma.slideImageDeleteArgs;
     return this.SlideImageRepository.delete(condition);
   }
+
+  
 }
