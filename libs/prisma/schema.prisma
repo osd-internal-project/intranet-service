@@ -129,11 +129,12 @@ model informationNews {
 }
 
 model newsType {
-    idType   Int       @unique @default(autoincrement()) @map("idType")
-    nameType String?   @default("") @map("nameType")
-    deteil   String?   @default("") @map("dedeil")
-    createAt DateTime? @default(now()) @map("createAt")
-    status   Boolean?  @default(true) @map("status") @db.Boolean
+    idType    Int       @unique @default(autoincrement()) @map("idType")
+    nameType  String?   @default("") @map("nameType")
+    deteil    String?   @default("") @map("dedeil")
+    createAt  DateTime? @default(now()) @map("createAt")
+    updatedAt DateTime? @default(now()) @map("updated_At")
+    status    Boolean?  @default(true) @map("status") @db.Boolean
 
     @@map("news_type")
 }
