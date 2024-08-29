@@ -120,12 +120,15 @@ export class handbookFileController {
 
   @Get('/get-file/:id')
   @UseInterceptors(FileInterceptor('files'))
-  async getfilesByFileName(@Param('id') id: string, @Res() res: Response) {
+  async getfilesByFileName(
+    @Param('id') handbookid: number,
+    @Res() res: Response,
+  ) {
     try {
       const file = await this.handbookFileService.findOnes({
-        where: { id: +id },
+        where: { handbookid: +handbookid },
       });
-      const filesPath = join(`${file.path}`);
+      const filesPath = join(`${file.fileLocation}`);
       res.sendFile(`${filesPath}`, { root: './' });
     } catch (error) {
       res
