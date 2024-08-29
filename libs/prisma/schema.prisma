@@ -1122,6 +1122,7 @@ model masterRoom {
     masterRoomType   masterRoomType? @relation(fields: [masterRoomTypeId], references: [id])
     masterRoomTypeId Int?
     bookingRoom      bookingRoom[]
+    
 
     @@map("master_room")
 }
