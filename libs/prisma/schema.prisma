@@ -129,12 +129,11 @@ model informationNews {
 }
 
 model newsType {
-    idType    Int       @unique @default(autoincrement()) @map("idType")
-    nameType  String?   @default("") @map("nameType")
-    deteil    String?   @default("") @map("dedeil")
-    updatedAt DateTime? @default(now()) @map("updated_At")
-    createAt  DateTime? @default(now()) @map("createAt")
-    status    Boolean?  @default(true) @map("status") @db.Boolean
+    idType   Int       @unique @default(autoincrement()) @map("idType")
+    nameType String?   @default("") @map("nameType")
+    deteil   String?   @default("") @map("dedeil")
+    createAt DateTime? @default(now()) @map("createAt")
+    status   Boolean?  @default(true) @map("status") @db.Boolean
 
     @@map("news_type")
 }
@@ -1122,7 +1121,6 @@ model masterRoom {
     masterRoomType   masterRoomType? @relation(fields: [masterRoomTypeId], references: [id])
     masterRoomTypeId Int?
     bookingRoom      bookingRoom[]
-    
 
     @@map("master_room")
 }
