@@ -7,12 +7,20 @@ export class SlideImageService {
   constructor(private readonly SlideImageRepository: SlideImageRepository) {}
 
   findAll() {
-    return this.SlideImageRepository.findMany({});
+    return this.SlideImageRepository.findMany({
+      orderBy: {
+        id: 'asc',
+      },
+    });
   }
 
   create(data: Prisma.slideImageCreateInput) {
     const condition = { data: data } as Prisma.slideImageCreateArgs;
     return this.SlideImageRepository.create(condition);
+  }
+
+  createfiles(condition: Prisma.dataLeaveFilesCreateInput) {
+    return this.SlideImageRepository.create({ data: condition });
   }
 
   update(fileId: string, data: Prisma.slideImageUpdateInput) {
@@ -27,6 +35,4 @@ export class SlideImageService {
     const condition = { where: { id: id } } as Prisma.slideImageDeleteArgs;
     return this.SlideImageRepository.delete(condition);
   }
-
-  
 }

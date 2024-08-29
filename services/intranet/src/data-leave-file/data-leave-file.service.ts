@@ -5,6 +5,7 @@ import { Prisma } from '@prisma/client';
 @Injectable()
 export class DataLeaveFileService {
   constructor(private readonly dataleavefilesRepo: dataLeaveFilesRepository) {}
+  
   create(condition: Prisma.dataLeaveFilesCreateInput) {
     return this.dataleavefilesRepo.create({ data: condition });
   }
