@@ -154,7 +154,9 @@ model newsImage {
 model handbooktype {
     idhandtype Int       @unique @default(autoincrement()) @map("id_handtype")
     nameType   String?   @default("") @map("name_Type")
-    createAt   DateTime? @default(now()) @map("createAt")
+    createAt   DateTime? @default(now()) @map("create_At")
+    updatedAt  DateTime? @default(now()) @map("updated_At")
+    author     String?   @default("") @map("author") @db.VarChar(100)
     status     Boolean?  @default(true) @map("status") @db.Boolean
 
     @@map("handbook_type")
@@ -164,8 +166,8 @@ model handbook {
     idbook       Int            @unique @default(autoincrement()) @map("id_book")
     fileName     String?        @default("") @map("file_name") @db.VarChar(100)
     filetype     String?        @default("") @map("file_type") @db.VarChar(100)
-    createdAt    DateTime?      @default(now())
-    updatedAt    DateTime?      @default(now())
+    createdAt    DateTime?      @default(now()) @map("created_At")
+    updatedAt    DateTime?      @default(now()) @map("updated_At")
     author       String?        @default("") @map("author") @db.VarChar(100)
     status       Boolean?       @default(true) @map("status") @db.Boolean
     handbookFile handbookFile[]
@@ -178,8 +180,8 @@ model handbookFile {
     fileName     String?   @default("") @map("file_name") @db.VarChar(100)
     fileLocation String?   @default("") @map("file_location") @db.VarChar(100)
     author       String?   @default("") @map("author") @db.VarChar(100)
-    createdAt    DateTime? @default(now())
-    updatedAt    DateTime? @default(now())
+    createdAt    DateTime? @default(now()) @map("created_At")
+    updatedAt    DateTime? @default(now()) @map("updated_At")
     status       Boolean?  @default(true) @map("status") @db.Boolean
     handbook     handbook? @relation(fields: [idbook], references: [idbook])
     idbook       Int?      @map("id_book")
@@ -1120,7 +1122,6 @@ model masterRoom {
     roomDescription  String          @map("room_description") @db.VarChar(255)
     masterRoomType   masterRoomType? @relation(fields: [masterRoomTypeId], references: [id])
     masterRoomTypeId Int?
-    bookingRoom      bookingRoom[]
 
     @@map("master_room")
 }
@@ -1136,27 +1137,26 @@ model masterRoomType {
 }
 
 model bookingRoom {
-    id               Int         @unique @default(autoincrement()) @map("id")
-    userId           String?     @map("user_id") @db.VarChar(100)
-    roomId           String?     @map("room_id") @db.VarChar(255)
-    roomName         String      @map("room_name") @db.VarChar(255)
-    roomType         String      @map("room_type") @db.VarChar(255)
-    bookerName       String      @map("booker_name") @db.VarChar(255)
-    bookerPhone      String      @map("booker_phone") @db.VarChar(255)
-    bookerDepartment String      @map("booker_department") @db.VarChar(255)
-    title            String      @map("title") @db.VarChar(255)
-    startDate        DateTime    @default(now()) @map("start_date") @db.Timestamptz()
-    endDate          DateTime    @default(now()) @map("end_date") @db.Timestamptz()
-    bookingStatus    String      @map("booking_status") @db.VarChar(255)
-    approverId       String?     @map("approver_id") @db.VarChar(255)
-    approver         String?     @map("approver") @db.VarChar(255)
-    approveDate      DateTime?   @map("approve_date") @db.Timestamptz()
-    member           String      @map("member") @db.VarChar(255)
-    outSider         String      @map("out_sider") @db.VarChar(255)
-    note             String?     @default("") @map("note") @db.VarChar(255)
-    createdAt        DateTime    @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt        DateTime    @default(now()) @map("updated_at") @db.Timestamptz()
-    masterRoom       masterRoom? @relation(fields: [roomId], references: [roomId])
+    id               Int       @unique @default(autoincrement()) @map("id")
+    userId           String?   @map("user_id") @db.VarChar(100)
+    roomId           String?   @map("room_id") @db.VarChar(255)
+    roomName         String    @map("room_name") @db.VarChar(255)
+    roomType         String    @map("room_type") @db.VarChar(255)
+    bookerName       String    @map("booker_name") @db.VarChar(255)
+    bookerPhone      String    @map("booker_phone") @db.VarChar(255)
+    bookerDepartment String    @map("booker_department") @db.VarChar(255)
+    title            String    @map("title") @db.VarChar(255)
+    startDate        DateTime  @default(now()) @map("start_date") @db.Timestamptz()
+    endDate          DateTime  @default(now()) @map("end_date") @db.Timestamptz()
+    bookingStatus    String    @map("booking_status") @db.VarChar(255)
+    approverId       String?   @map("approver_id") @db.VarChar(255)
+    approver         String?   @map("approver") @db.VarChar(255)
+    approveDate      DateTime? @map("approve_date") @db.Timestamptz()
+    member           String    @map("member") @db.VarChar(255)
+    outSider         String    @map("out_sider") @db.VarChar(255)
+    note             String?   @default("") @map("note") @db.VarChar(255)
+    createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt        DateTime  @default(now()) @map("updated_at") @db.Timestamptz()
 
     @@map("booking_room")
 }
