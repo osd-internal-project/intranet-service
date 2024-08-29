@@ -155,9 +155,7 @@ model newsImage {
 model handbooktype {
     idhandtype Int       @unique @default(autoincrement()) @map("id_handtype")
     nameType   String?   @default("") @map("name_Type")
-    createAt   DateTime? @default(now()) @map("create_At")
-    updatedAt  DateTime? @default(now()) @map("updated_At")
-    author     String?   @default("") @map("author") @db.VarChar(100)
+    createAt   DateTime? @default(now()) @map("createAt")
     status     Boolean?  @default(true) @map("status") @db.Boolean
 
     @@map("handbook_type")
@@ -167,8 +165,8 @@ model handbook {
     idbook       Int            @unique @default(autoincrement()) @map("id_book")
     fileName     String?        @default("") @map("file_name") @db.VarChar(100)
     filetype     String?        @default("") @map("file_type") @db.VarChar(100)
-    createdAt    DateTime?      @default(now()) @map("created_At")
-    updatedAt    DateTime?      @default(now()) @map("updated_At")
+    createdAt    DateTime?      @default(now())
+    updatedAt    DateTime?      @default(now())
     author       String?        @default("") @map("author") @db.VarChar(100)
     status       Boolean?       @default(true) @map("status") @db.Boolean
     handbookFile handbookFile[]
@@ -181,8 +179,8 @@ model handbookFile {
     fileName     String?   @default("") @map("file_name") @db.VarChar(100)
     fileLocation String?   @default("") @map("file_location") @db.VarChar(100)
     author       String?   @default("") @map("author") @db.VarChar(100)
-    createdAt    DateTime? @default(now()) @map("created_At")
-    updatedAt    DateTime? @default(now()) @map("updated_At")
+    createdAt    DateTime? @default(now())
+    updatedAt    DateTime? @default(now())
     status       Boolean?  @default(true) @map("status") @db.Boolean
     handbook     handbook? @relation(fields: [idbook], references: [idbook])
     idbook       Int?      @map("id_book")
