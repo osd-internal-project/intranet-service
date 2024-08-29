@@ -13,7 +13,7 @@ export class MasterRoomService {
   findAll() {
     return this.masterRoomeRepository.findMany({
       include: {
-        masterRoomType: true,
+        bookingRoom: true,
       },
     });
   }
