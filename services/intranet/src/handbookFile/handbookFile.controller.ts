@@ -10,7 +10,9 @@ import {
   UploadedFile,
   UseInterceptors,
   BadRequestException,
+  Res,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { handbookFileService } from './handbookFile.service';
 import { Prisma } from '@prisma/client';
 import { diskStorage } from 'multer';
@@ -40,7 +42,7 @@ export class handbookFileController {
     @UploadedFile() file: Express.Multer.File,
   ) {
     console.log(file);
-    
+
     if (!file) {
       throw new Error('File is undefined');
     }
@@ -114,5 +116,21 @@ export class handbookFileController {
   @Delete(':handbookid')
   remove(@Param('handbookid') handbookid: number) {
     return this.handbookFileService.remove(+handbookid);
+  }
+
+  @Get('/get-file/:id')
+  @UseInterceptors(FileInterceptor('files'))
+  async getfilesByFileName(@Param('id') id: string, @Res() res: Response) {
+    try {
+      const file = await this.handbookFileService.findOnes({
+        where: { id: +id },
+      });
+      const filesPath = join(`${file.path}`);
+      res.sendFile(`${filesPath}`, { root: './' });
+    } catch (error) {
+      res
+        .status(404)
+        .sendFile('path/to/default/files.jpg', { root: './public' });
+    }
   }
 }
