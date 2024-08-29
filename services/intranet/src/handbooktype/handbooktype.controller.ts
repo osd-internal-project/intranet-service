@@ -26,13 +26,13 @@ export class handbooktypeController {
   }
 
   @Get(':idhandtype')
-  findOne(@Param('idhandtype') idhandtype: string) {
+  findOne(@Param('idhandtype') idhandtype: number) {
     return this.handbooktypeService.findOne(+idhandtype);
   }
 
   @Patch(':idhandtype')
   update(
-    @Param('idhandtype') idhandtype: string,
+    @Param('idhandtype') idhandtype: number,
     @Body() condition: Prisma.handbooktypeUpdateArgs,
   ) {
     
@@ -40,7 +40,7 @@ export class handbooktypeController {
   }
 
   @Delete(':idhandtype')
-  remove(@Param('idhandtype') idhandtype: string) {
+  remove(@Param('idhandtype') idhandtype: number) {
     return this.handbooktypeService.remove(+idhandtype);
   }
 }
