@@ -1414,9 +1414,8 @@ model customerProjectTicket {
     ticketTitle  String  @map("ticket_title") @db.VarChar(100)
     ticketDetail String? @map("ticket_detail") @db.Text
 
-    createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp()
-    updatedAt DateTime? @map("updated_at") @db.Timestamp()
-
+    createdAt             DateTime             @default(now()) @map("created_at") @db.Timestamp()
+    updatedAt             DateTime?            @map("updated_at") @db.Timestamp()
     approvedById          String?              @map("approved_by_id") @db.VarChar(50)
     approvedByName        String?              @map("approved_by_name") @db.VarChar(255)
     customerProjectTask   customerProjectTask? @relation(fields: [customerProjectTaskId], references: [id])
@@ -1425,6 +1424,7 @@ model customerProjectTicket {
     customerProjectId     Int?                 @map("customer_project_id")
     problem               String?              @map("problem") @db.Text
     solution              String?              @map("solution") @db.Text
+    manhour               Int?                 @map("manhour") @db.Integer
     result                String?              @map("result") @db.Text
     summary               String?              @map("summary") @db.Text
     //Created

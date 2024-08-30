@@ -18,16 +18,21 @@ export class CustomerProjectTaskService {
   }
 
   findOneById(id: number) {
-    return this.customerProjectTaskRepo.findOne({ where: { id: id } });
+    return this.customerProjectTaskRepo.findOne({
+      where: { id: id },
+      orderBy: { id: 'asc' },
+    });
   }
   findDetailById(id: number) {
     return this.customerProjectTaskRepo.findOne({
       where: { id: id },
+      orderBy: { id: 'asc' },
     });
   }
   findByProjectId(projectId: number) {
     return this.customerProjectTaskRepo.findMany({
       where: { customerProjectId: projectId },
+      orderBy: { id: 'asc' },
       include: { customerProjectTicket: true },
     });
   }
