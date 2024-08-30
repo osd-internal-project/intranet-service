@@ -1123,7 +1123,7 @@ model masterRoom {
     roomDescription  String          @map("room_description") @db.VarChar(255)
     masterRoomType   masterRoomType? @relation(fields: [masterRoomTypeId], references: [id])
     masterRoomTypeId Int?
-    // bookingRoom      bookingRoom[]
+    bookingRoom      bookingRoom[]
 
     @@map("master_room")
 }
@@ -1159,7 +1159,7 @@ model bookingRoom {
     note             String?     @default("") @map("note") @db.VarChar(255)
     createdAt        DateTime    @default(now()) @map("created_at") @db.Timestamptz()
     updatedAt        DateTime    @default(now()) @map("updated_at") @db.Timestamptz()
-    // masterRoom       masterRoom? @relation(fields: [roomId], references: [roomId])
+    masterRoom       masterRoom? @relation(fields: [roomId], references: [roomId])
 
     @@map("booking_room")
 }
