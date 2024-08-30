@@ -93,7 +93,7 @@ import {
   newsImageRepository,
   handbookFileRepository,
   handbookRepository,
-  handbooktypeRepository
+  handbooktypeRepository,
   SlideImageRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';

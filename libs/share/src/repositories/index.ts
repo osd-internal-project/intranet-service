@@ -101,6 +101,3 @@ export * from './handbooktype.repository';
 
 //slide
 export * from './slideImage.repository';
-
-
-

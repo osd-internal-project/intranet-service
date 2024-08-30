@@ -1,22 +1,21 @@
 import { Injectable } from '@nestjs/common';
-import {
-  MasterRoomRepository,
-} from '@inventory/share';
+import { MasterRoomRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class MasterRoomService {
-  constructor(
-    private masterRoomeRepository: MasterRoomRepository,
-  ) { }
+  constructor(private masterRoomeRepository: MasterRoomRepository) {}
   create(data: Prisma.masterRoomCreateInput) {
-    console.log(data);
     const condition = { data: data } as Prisma.masterRoomCreateArgs;
     return this.masterRoomeRepository.create(condition);
   }
 
   findAll() {
-    return this.masterRoomeRepository.findAll();
+    return this.masterRoomeRepository.findMany({
+      // include: {
+      //   bookingRoom: true,
+      // },
+    });
   }
 
   findOne(id: number) {
