@@ -184,18 +184,24 @@ export class CustomerDetailService {
   async findConfigForTicket() {
     const channelTypeList = await this.customerChannelTypeRepo.findMany({
       where: { activeStatus: true },
+      orderBy: { id: 'asc' },
     });
     const jobTypeList = await this.customerJobTypeRepo.findMany({
       where: { activeStatus: true },
+      orderBy: { id: 'asc' },
     });
     const priorityList = await this.customerPriorityRepo.findMany({
       where: { activeStatus: true },
+      orderBy: { id: 'asc' },
     });
     const workTypeList = await this.customerWorkTypeRepo.findMany({
       where: { activeStatus: true },
+      orderBy: { id: 'asc' },
     });
     const requestTypeList = await this.customerRequestTypeRepo.findMany({
       where: { activeStatus: true },
+      orderBy: { id: 'asc' },
+      include: { customerJobType: true },
     });
     return {
       channelTypeList: channelTypeList ? channelTypeList : [],
