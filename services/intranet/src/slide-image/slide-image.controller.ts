@@ -43,7 +43,6 @@ export class SlideImageController {
   ) {
     if (id && type && files.length > 0) {
       const data = {
-        // fileId: id,
         filePath: files[0].path,
         fileType: files[0].mimetype,
         fileName: files[0].originalname,
