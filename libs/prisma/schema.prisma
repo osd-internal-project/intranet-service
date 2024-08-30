@@ -1387,10 +1387,10 @@ model customerProject {
 }
 
 model customerProjectTask {
-    id        Int       @unique @default(autoincrement())
-    createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp()
-    updatedAt DateTime? @map("updated_at") @db.Timestamp()
-
+    id                    Int                     @unique @default(autoincrement())
+    createdAt             DateTime                @default(now()) @map("created_at") @db.Timestamp()
+    updatedAt             DateTime?               @map("updated_at") @db.Timestamp()
+    weight                Int?                    @default(0) @map("weight")
     taskTitle             String                  @map("ticket_title") @db.VarChar(100)
     startDate             DateTime                @map("start_date") @db.Timestamp()
     endDate               DateTime                @map("end_date") @db.Timestamp()
