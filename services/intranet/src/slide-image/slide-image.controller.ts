@@ -43,9 +43,6 @@ export class SlideImageController {
     @Body('type') type: string,
     @Body('createdByName') createdByName: string,
   ) {
-    console.log('createdByName:', createdByName);
-    console.log('type:', type);
-
     if (id && type && files.length > 0) {
       const data = {
         filePath: files[0].path,
