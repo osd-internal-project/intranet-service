@@ -1202,6 +1202,15 @@ model userMapOrganizeChart {
 }
 
 //CRM 
+
+model contractCompany {
+    id              Int               @unique @default(autoincrement()) @map("id")
+    name            String            @map("name") @db.VarChar(100)
+    customerProject customerProject[]
+
+    @@map("contract_company")
+}
+
 model customerAddress {
     id               Int             @unique @default(autoincrement()) @map("id")
     addressTypeId    String?         @map("address_type_id") @db.VarChar(10)
@@ -1387,6 +1396,8 @@ model customerProject {
     relatedGroupId        String[]                @map("related_group_id")
     relatedUsersId        String[]                @map("related_users_id")
     description           String?                 @map("description") @db.Text
+    contractCompany       contractCompany?        @relation(fields: [contractCompanyId], references: [id])
+    contractCompanyId     Int?                    @map("contract_company_id")
 
     @@map("customer_project")
 }
@@ -1414,9 +1425,8 @@ model customerProjectTicket {
     ticketTitle  String  @map("ticket_title") @db.VarChar(100)
     ticketDetail String? @map("ticket_detail") @db.Text
 
-    createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp()
-    updatedAt DateTime? @map("updated_at") @db.Timestamp()
-
+    createdAt             DateTime             @default(now()) @map("created_at") @db.Timestamp()
+    updatedAt             DateTime?            @map("updated_at") @db.Timestamp()
     approvedById          String?              @map("approved_by_id") @db.VarChar(50)
     approvedByName        String?              @map("approved_by_name") @db.VarChar(255)
     customerProjectTask   customerProjectTask? @relation(fields: [customerProjectTaskId], references: [id])
@@ -1425,6 +1435,7 @@ model customerProjectTicket {
     customerProjectId     Int?                 @map("customer_project_id")
     problem               String?              @map("problem") @db.Text
     solution              String?              @map("solution") @db.Text
+    manhour               Int?                 @map("manhour") @db.Integer
     result                String?              @map("result") @db.Text
     summary               String?              @map("summary") @db.Text
     //Created
@@ -1458,6 +1469,27 @@ model customerProjectTicket {
     customerFiles     customerFiles[]
 
     @@map("customer_project_ticket")
+}
+
+model ticketExpend {
+    id            Int         @unique @default(autoincrement())
+    expendAmount  Float       @map("expend_amount")
+    expendPrice   Float       @map("expend_price")
+    expendType    expendType? @relation(fields: [expendCode], references: [expendCode])
+    expendCode    String?     @map("expend_code")
+    createdAt     DateTime    @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt     DateTime    @default(now()) @map("updated_at") @db.Timestamptz()
+    updatedById   String?     @map("updated_by_id") @db.VarChar(50)
+    updatedByName String?     @map("updated_by_name") @db.VarChar(255)
+
+    @@map("ticket_expend")
+}
+
+model expendType {
+    id           Int            @unique @default(autoincrement())
+    expendCode   String         @unique @map("expend_code") @db.VarChar(20)
+    expendName   String         @map("expend_name") @db.VarChar(200)
+    ticketExpend ticketExpend[]
 }
 
 model customerChannelType {
