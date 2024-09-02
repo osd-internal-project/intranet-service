@@ -12,11 +12,14 @@ import {
   CustomerRequestTypeRepository,
   UserMapOrganizeGroupOwnerRepository,
   AccessService,
+  ExpendTypeRepository,
+  ContractCompanyRepository,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 @Injectable()
 export class CustomerDetailService {
   constructor(
+    private readonly contractCompanyRepo: ContractCompanyRepository,
     private readonly customerDetailRepo: CustomerDetailRepository,
     private readonly customerFilesReposito: CustomerFilesRepository,
     private readonly customerGroupRepo: CustomerGroupRepository,
@@ -27,6 +30,7 @@ export class CustomerDetailService {
     private readonly customerWorkTypeRepo: CustomerWorkTypeRepository,
     private readonly customerRequestTypeRepo: CustomerRequestTypeRepository,
     private readonly customerPriorityRepo: CustomerPriorityRepository,
+    private readonly expendTypeRepo: ExpendTypeRepository,
     //User
     private readonly userMapOrganizeGroupOwnerRepo: UserMapOrganizeGroupOwnerRepository,
     private readonly accessService: AccessService,
@@ -164,6 +168,9 @@ export class CustomerDetailService {
       // },
     });
   }
+  findContractCompany() {
+    return this.contractCompanyRepo.findMany({});
+  }
   findConfigCustomerGroup() {
     return this.customerGroupRepo.findMany({
       where: { activeStatus: true },
@@ -174,7 +181,9 @@ export class CustomerDetailService {
       where: { activeStatus: true },
     });
   }
-
+  findConfigExpendType() {
+    return this.expendTypeRepo.findMany({});
+  }
   findConfigCustomerResponsible() {
     return this.customerResponsibleRepo.findMany({
       where: { activeStatus: true },

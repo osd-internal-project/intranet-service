@@ -73,6 +73,7 @@ export * from './dataLeaveFiles.repository';
 export * from './publicizeSlideImages.repository';
 
 //CRM
+export * from './contractCompany.repository';
 export * from './customerAddress.repository';
 export * from './customerBranch.repository';
 export * from './customerContact.repository';
@@ -82,6 +83,8 @@ export * from './customerFiles.repository';
 export * from './customerProject.repository';
 export * from './customerProjectTask.repository';
 export * from './customerProjectTicket.repository';
+export * from './ticketExpend.repository';
+export * from './expendType.repository';
 export * from './customerResponsible.repository';
 export * from './customerType.repository';
 export * from './customerChannelType.repository';
