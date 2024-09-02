@@ -94,6 +94,7 @@ export class CustomerProjectService {
     return this.customerProjectRepo.findOne({
       where: { id: id },
       include: {
+        contractCompany: true,
         customerBranch: {
           select: { branchCode: true, branchName: true, customerDetail: true },
         },

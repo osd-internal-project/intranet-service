@@ -47,10 +47,19 @@ export class CustomerDetailController {
   findConfigCustomerType() {
     return this.customerDetailService.findConfigCustomerType();
   }
+  @Get('config/expend-type')
+  findConfigExpendType() {
+    return this.customerDetailService.findConfigExpendType();
+  }
   @Get('config/ticket-configs')
   findConfigForTicket() {
     return this.customerDetailService.findConfigForTicket();
   }
+  @Get('contract-company')
+  findContractCompany() {
+    return this.customerDetailService.findContractCompany();
+  }
+
   @Get(':id')
   findOneById(@Param('id') id: string) {
     return this.customerDetailService.findOneById(+id);

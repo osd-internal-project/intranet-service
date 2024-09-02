@@ -95,6 +95,9 @@ import {
   handbookRepository,
   handbooktypeRepository,
   SlideImageRepository,
+  ExpendTypeRepository,
+  TicketExpendRepository,
+  ContractCompanyRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -171,6 +174,7 @@ const services = [
   //publicize
   PublicizeSlideImagesRepository,
   //CRM
+  ContractCompanyRepository,
   CustomerAddressRepository,
   CustomerBranchRepository,
   CustomerContactRepository,
@@ -180,6 +184,8 @@ const services = [
   CustomerProjectRepository,
   CustomerProjectTaskRepository,
   CustomerProjectTicketRepository,
+  TicketExpendRepository,
+  ExpendTypeRepository,
   CustomerResponsibleRepository,
   CustomerTypeRepository,
   CustomerChannelTypeRepository,
