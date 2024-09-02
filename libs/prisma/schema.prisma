@@ -1467,20 +1467,23 @@ model customerProjectTicket {
     completeDate      DateTime?           @map("complete_date") @db.Timestamp()
     ticketHistoryLogs ticketHistoryLogs[]
     customerFiles     customerFiles[]
+    ticketExpend      ticketExpend[]
 
     @@map("customer_project_ticket")
 }
 
 model ticketExpend {
-    id            Int         @unique @default(autoincrement())
-    expendAmount  Float       @map("expend_amount")
-    expendPrice   Float       @map("expend_price")
-    expendType    expendType? @relation(fields: [expendCode], references: [expendCode])
-    expendCode    String?     @map("expend_code")
-    createdAt     DateTime    @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt     DateTime    @default(now()) @map("updated_at") @db.Timestamptz()
-    updatedById   String?     @map("updated_by_id") @db.VarChar(50)
-    updatedByName String?     @map("updated_by_name") @db.VarChar(255)
+    id                      Int                    @unique @default(autoincrement())
+    expendAmount            Float                  @map("expend_amount")
+    expendPrice             Float                  @map("expend_price")
+    expendType              expendType?            @relation(fields: [expendCode], references: [expendCode])
+    expendCode              String?                @map("expend_code")
+    createdAt               DateTime               @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt               DateTime               @default(now()) @map("updated_at") @db.Timestamptz()
+    updatedById             String?                @map("updated_by_id") @db.VarChar(50)
+    updatedByName           String?                @map("updated_by_name") @db.VarChar(255)
+    customerProjectTicket   customerProjectTicket? @relation(fields: [customerProjectTicketId], references: [id])
+    customerProjectTicketId Int?                   @map("customer_project_ticketId")
 
     @@map("ticket_expend")
 }
