@@ -31,6 +31,7 @@ export class SlideImageController {
         filename: (req, file, callback) => {
           const fileCode = `${uuidv4()}`;
           const fileType = extname(file.originalname);
+
           callback(null, `${fileCode}${fileType}`);
         },
       }),
@@ -40,12 +41,14 @@ export class SlideImageController {
     @Param('id') id: string,
     @UploadedFiles() files: Express.Multer.File[],
     @Body('type') type: string,
+    @Body('createdByName') createdByName: string,
   ) {
     if (id && type && files.length > 0) {
       const data = {
         filePath: files[0].path,
         fileType: files[0].mimetype,
         fileName: files[0].originalname,
+        createdByName,
       } as Prisma.slideImageCreateInput;
       return this.SlideImageService.createfiles(data);
     }
