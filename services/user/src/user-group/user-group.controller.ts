@@ -25,7 +25,6 @@ export class UserGroupController {
   }
   @Get('find-group-by-user/:userid')
   findOwnerFormOrganizedByUser(@Param('userid') userid) {
-    console.log(1);
     return this.userGroupService.findOwnerFormOrganizedByUser(userid);
   }
 
@@ -42,6 +41,8 @@ export class UserGroupController {
   async findOneByCondition(
     @Body('condition') condition: Prisma.userGroupFindFirstArgs,
   ) {
+    // console.log('condition:', condition);
+
     const data = await this.userGroupService.findOneByCondition(condition);
     return data;
   }
@@ -53,10 +54,12 @@ export class UserGroupController {
     data: {
       groupId: string;
       groupName: string;
+      headId: string;
       description?: string;
       userRole: string[];
     },
   ) {
+    Logger.debug(data);
     return this.userGroupService.update(groupId, data);
   }
   @Patch('permission/:groupId')
@@ -81,13 +84,11 @@ export class UserGroupController {
         message: `ไม่สามารถลบได้เนื่องจากมีกลุ่มย่อยอยู่`,
       };
     } else if (checkUsed.length > 0) {
-      console.log(checkUsed);
       return {
         status: 401,
         message: `ไม่สามารถลบได้เนื่องจากมีผู้ใช้อยู่ในกลุ่ม`,
       };
     } else {
-      console.log(1);
       return this.userGroupService.remove(groupId);
     }
   }
