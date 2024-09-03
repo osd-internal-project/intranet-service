@@ -41,8 +41,6 @@ export class UserGroupController {
   async findOneByCondition(
     @Body('condition') condition: Prisma.userGroupFindFirstArgs,
   ) {
-    // console.log('condition:', condition);
-
     const data = await this.userGroupService.findOneByCondition(condition);
     return data;
   }

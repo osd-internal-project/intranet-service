@@ -51,8 +51,6 @@ model dataLeave {
     lastName       String?          @default("") @map("last_name") @db.VarChar(100)
     positionId     Int?             @map("position_id") @db.Integer
     position       String?          @default("") @map("position") @db.VarChar(100)
-    departId       Int?             @map("depart_id") @db.Integer
-    departName     String?          @default("") @map("depart_name") @db.VarChar(100)
     typeId         Int?             @map("type_id") @db.Integer
     typeName       String?          @default("") @map("type_name") @db.VarChar(100)
     startDate      DateTime?        @default(now()) @map("start_date") @db.Timestamp()
