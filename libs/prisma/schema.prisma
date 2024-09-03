@@ -889,7 +889,7 @@ model userGroup {
     engineerUserGroupId String[] @map("engineer_user_group_id")
     engineerUsersId     String[] @map("engineer_users_id")
     exceptionalSatatus  Boolean? @default(false) @map("exceptional_satatus")
-    headId              String?   @map("head_id") @db.VarChar(50)
+    headId              String?  @map("head_id") @db.VarChar(50)
 
     @@map("user_group")
 }
@@ -1492,6 +1492,8 @@ model expendType {
     expendCode   String         @unique @map("expend_code") @db.VarChar(20)
     expendName   String         @map("expend_name") @db.VarChar(200)
     ticketExpend ticketExpend[]
+
+    @@map("expend_type")
 }
 
 model customerChannelType {
