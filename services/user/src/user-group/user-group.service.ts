@@ -82,11 +82,13 @@ export class UserGroupService {
     groupId: string,
     data: {
       groupId: string;
+      headId: string;
       groupName: string;
       description?: string;
       userRole: string[];
     },
   ) {
+    console.log(data);
     await this.userGroupUserRoleMapRepo.deleteMany({
       where: { userGroupId: groupId },
     });
@@ -102,6 +104,7 @@ export class UserGroupService {
       data: {
         groupName: data.groupName,
         description: data.description,
+        headId: data.headId,
         updatedAt: new Date(),
       },
     } as Prisma.userGroupUpdateArgs;
