@@ -1493,6 +1493,8 @@ model expendType {
     expendCode   String         @unique @map("expend_code") @db.VarChar(20)
     expendName   String         @map("expend_name") @db.VarChar(200)
     ticketExpend ticketExpend[]
+
+    @@map("expend_type")
 }
 
 model customerChannelType {
