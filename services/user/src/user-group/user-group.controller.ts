@@ -25,7 +25,6 @@ export class UserGroupController {
   }
   @Get('find-group-by-user/:userid')
   findOwnerFormOrganizedByUser(@Param('userid') userid) {
-    console.log(1);
     return this.userGroupService.findOwnerFormOrganizedByUser(userid);
   }
 

@@ -82,4 +82,17 @@ export class CustomerProjectTicketController {
   remove(@Param('id') id: string) {
     return this.customerProjectTicketService.remove(+id);
   }
+
+  @Patch('expend/:expendid')
+  updateExpend(
+    @Param('expendid') expendId: string,
+    @Body()
+    data: Prisma.ticketExpendUpdateInput,
+  ) {
+    return this.customerProjectTicketService.updateExpend(+expendId, data);
+  }
+  @Delete('expend/:expendid')
+  removeExpend(@Param('expendid') id: string) {
+    return this.customerProjectTicketService.removeExpend(+id);
+  }
 }
