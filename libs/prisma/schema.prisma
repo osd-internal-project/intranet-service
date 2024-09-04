@@ -1284,7 +1284,7 @@ model customerDetail {
     registration       Float?    @map("registration")
     customerGroupId    Int?      @map("customer_group_id") @db.Integer
     customerGroupName  String?   @map("customer_group_name") @db.VarChar(255)
-    customerTypeId     Int?      @map("customer_type_id") @db.Integer
+    customerTypeId     String?   @map("customer_type_id") @db.VarChar(255)
     customerTypeName   String?   @map("customer_type_name") @db.VarChar(255)
     grade              String?   @map("grade") @db.VarChar(5)
     responsible        Json?     @map("responsible") @db.JsonB
@@ -1340,11 +1340,12 @@ model customerResponsible {
 }
 
 model customerType {
-    id           Int      @unique @default(autoincrement()) @map("id")
-    name         String   @map("name") @db.VarChar(255)
-    activeStatus Boolean  @default(true) @map("active_status") @db.Boolean
-    createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt    DateTime @default(now()) @map("updated_at") @db.Timestamptz()
+    id             Int      @unique @default(autoincrement()) @map("id")
+    customerTypeId String?  @map("customer_type_id") @db.VarChar(20)
+    name           String   @map("name") @db.VarChar(255)
+    activeStatus   Boolean  @default(true) @map("active_status") @db.Boolean
+    createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt      DateTime @default(now()) @map("updated_at") @db.Timestamptz()
 
     @@map("customer_type")
 }

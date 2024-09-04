@@ -111,9 +111,15 @@ export class CustomerDetailService {
     if (customername) {
       whereAnd.push({
         OR: [
-          { prefixTh: { contains: customername } },
-          { firstNameTh: { contains: customername } },
-          { lastNameTh: { contains: customername } },
+          { details: { path: ['details'], string_contains: customername } },
+          { details: { path: ['firstNameTh'], string_contains: customername } },
+          { details: { path: ['lastNameTh'], string_contains: customername } },
+          {
+            details: {
+              path: ['customerNameTh'],
+              string_contains: customername,
+            },
+          },
         ],
       });
     }
