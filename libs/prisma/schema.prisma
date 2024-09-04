@@ -1292,6 +1292,7 @@ model customerDetail {
     thirdPartyId       String?   @map("third_party_id") @db.VarChar(50)
     thirdPartyName     String?   @map("third_party_name") @db.VarChar(200)
     activeStatus       Boolean   @map("active_status") @db.Boolean
+    details            Json?     @map("details") @db.JsonB
 
     notiPhone String? @map("noti_phone") @db.VarChar(20)
     notiFax   String? @map("noti_fax") @db.VarChar(20)
