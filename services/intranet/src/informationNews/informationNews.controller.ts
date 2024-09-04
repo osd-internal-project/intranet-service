@@ -23,7 +23,6 @@ export class InformationController {
 
   @Post()
   create(@Body() data: Prisma.informationNewsCreateArgs) {
-    console.log(data);
     return this.informationNewsService.create(data);
   }
 
@@ -50,12 +49,12 @@ export class InformationController {
     return this.informationNewsService.remove(+newsId);
   }
 
-  @Get('undefined/newsimage/:file')
+  @Get('uploads/newsimage/:file')
   getFileSlide(
     @Param('file') fileimageName: string,
     @Res() res: Response,
   ): void {
-    const filePath = join('./undefined/newsimage', fileimageName);
+    const filePath = join('./uploads/newsimage', fileimageName);
     fsPromises
       .access(filePath)
       .then(() => {
