@@ -49,12 +49,12 @@ export class InformationController {
     return this.informationNewsService.remove(+newsId);
   }
 
-  @Get('uploads/newsimage/:file')
+  @Get('undefined/newsimage/:file')
   getFileSlide(
     @Param('file') fileimageName: string,
     @Res() res: Response,
   ): void {
-    const filePath = join('./uploads/newsimage', fileimageName);
+    const filePath = join('./undefined/newsimage', fileimageName);
     fsPromises
       .access(filePath)
       .then(() => {

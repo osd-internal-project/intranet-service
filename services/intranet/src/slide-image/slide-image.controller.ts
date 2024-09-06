@@ -77,21 +77,21 @@ export class SlideImageController {
     return this.SlideImageService.remove(+id);
   }
 
-  @Get('uploads/image/:file')
-  getFile(@Param('file') filename: string, @Res() res: Response): void {
-    const filePath = join('./upload/image', filename);
-    fsPromises
-      .access(filePath)
-      .then(() => {
-        const file = createReadStream(filePath);
-        res.setHeader('Content-Type', 'image/jpeg');
-        res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
-        file.pipe(res);
-      })
-      .catch(() => {
-        res.status(404).send('File not found');
-      });
-  }
+  // @Get('uploads/image/:file')
+  // getFile(@Param('file') filename: string, @Res() res: Response): void {
+  //   const filePath = join('./upload/image', filename);
+  //   fsPromises
+  //     .access(filePath)
+  //     .then(() => {
+  //       const file = createReadStream(filePath);
+  //       res.setHeader('Content-Type', 'image/jpeg');
+  //       res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
+  //       file.pipe(res);
+  //     })
+  //     .catch(() => {
+  //       res.status(404).send('File not found');
+  //     });
+  // }
 
   @Get('undefined/slide-image/:file')
   getFileSlide(@Param('file') filename: string, @Res() res: Response): void {
@@ -108,4 +108,33 @@ export class SlideImageController {
         res.status(404).send('File not found');
       });
   }
+
+  // @Get('undefined/slide-image/:file')
+  // async getFileSlide(
+  //   @Param('file') filename: string,
+  //   @Res() res: Response,
+  // ): Promise<void> {
+  //   const primaryFilePath = join('./undefined/slide-image', filename);
+  //   const secondaryFilePath = join(
+  //     './undefined/slide-image/19e0963b-e57a-4fd3-bb8e-303dc192d22a.png',
+  //   );
+
+  //   try {
+  //     await fsPromises.access(primaryFilePath);
+  //     const file = createReadStream(primaryFilePath);
+  //     res.setHeader('Content-Type', 'image/jpeg');
+  //     res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
+  //     file.pipe(res);
+  //   } catch {
+  //     try {
+  //       await fsPromises.access(secondaryFilePath);
+  //       const file = createReadStream(secondaryFilePath);
+  //       res.setHeader('Content-Type', 'image/jpeg');
+  //       res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
+  //       file.pipe(res);
+  //     } catch {
+  //       res.status(404).send('File not found');
+  //     }
+  //   }
+  // }
 }
