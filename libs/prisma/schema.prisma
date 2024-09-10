@@ -1050,15 +1050,16 @@ model maCarWrapup {
     typeId           Int?               @map("type_id")
     typeName         String             @map("type_name") @db.VarChar(150)
     vender           String             @map("vender") @db.VarChar(100)
-    cost             Decimal            @map("cost") @db.Money
-    detail           String             @map("detail") @db.Text
+    cost             Decimal?            @map("cost") @db.Money
+    detail           String?            @map("detail") @db.Text
     wrapupMiles      String             @map("wrapup_miles") @db.VarChar(150)
-    dateStart        DateTime           @map("date_start") @db.Timestamptz()
-    dateEnd          DateTime           @map("date_end") @db.Timestamptz()
+    dateStart        DateTime?          @map("date_start") @db.Timestamptz()
+    dateEnd          DateTime?          @map("date_end") @db.Timestamptz()
     remark           String             @map("remark") @db.Text
     createdAt        DateTime           @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt        DateTime?          @map("updated_at") @db.Timestamptz()
+    updatedAt        DateTime?          @default(now()) @map("updated_at") @db.Timestamptz()
     status           Boolean?           @default(true) @map("stauts") @db.Boolean
+    createbyName     String?             @map("create_name") @db.VarChar(70)
     maCar            maCar?             @relation(fields: [carId], references: [carId])
     maCarWrapupImage maCarWrapupImage[]
 
@@ -1073,7 +1074,7 @@ model maCarWrapupImage {
     createdAt       DateTime?    @default(now()) @map("created_at")
     updatedAt       DateTime?    @default(now()) @map("updated_at")
     maCarWrapup     maCarWrapup? @relation(fields: [carWrapupId], references: [carWrapupId])
-    carWrapupId     String?         @map("car_wrapup_id")
+    carWrapupId     String?      @map("car_wrapup_id")
 
     @@map("ma_car_wrapup_image")
 }
