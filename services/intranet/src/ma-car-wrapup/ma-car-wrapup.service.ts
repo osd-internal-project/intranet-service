@@ -10,23 +10,23 @@ export class MaCarWrapupService {
     return this.macarwrapupRepo.create(data);
   }
 
-  findAll(condition: Prisma.maCarWrapupFindManyArgs) {
-    return this.macarwrapupRepo.findMany({
+  async findAll(condition: Prisma.maCarWrapupFindManyArgs) {
+    return await this.macarwrapupRepo.findMany({
       ...condition,
       orderBy: {
         id: 'asc',
       },
+      include: { maCarWrapupImage: true },
     });
   }
 
-  findOne(carWrapupId: string) {
-    const base = {
+  async findOne(carWrapupId: string) {
+    return await this.macarwrapupRepo.findOne({
       where: {
         carWrapupId: carWrapupId,
       },
-    };
-
-    return this.macarwrapupRepo.findOne(base);
+      include: { maCarWrapupImage: true },
+    });
   }
 
   update(carWrapupId: string, condition: Prisma.maCarWrapupUpdateArgs) {
@@ -35,8 +35,6 @@ export class MaCarWrapupService {
         carWrapupId: carWrapupId,
       },
       data: { ...condition },
-      
-      
     } as Prisma.maCarWrapupUpdateArgs;
     return this.macarwrapupRepo.update(base);
   }

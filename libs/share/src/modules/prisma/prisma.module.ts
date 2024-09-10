@@ -88,6 +88,7 @@ import {
   MaCarTypeRepository,
   MaCarBookRepository,
   MaCarWrapupRepository,
+  MaCarWrapupImageRepository,
   InformationRepository,
   newsTypeRepository,
   newsImageRepository,
@@ -98,6 +99,7 @@ import {
   ExpendTypeRepository,
   TicketExpendRepository,
   ContractCompanyRepository,
+  
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -162,6 +164,7 @@ const services = [
   MaCarTypeRepository,
   MaCarBookRepository,
   MaCarWrapupRepository,
+  MaCarWrapupImageRepository,
   // data Leave
   MasterTypeLeaveRepository,
   MasterHolidaysRepository,

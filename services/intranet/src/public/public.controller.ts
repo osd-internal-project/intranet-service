@@ -44,5 +44,17 @@ import { Response } from 'express';
       });
         file.pipe(res);
     }
+
+    @Get('ma-car-wrapup-image/:maName')
+    getmaCarWrapupImage(@Param('maName') maName:string, @Res() res: Response): void {
+      console.log(maName)
+        // const filesPath =  join(`./undefined/handbookfile`,filename);
+      const file = createReadStream(join(`./undefined/maCarImage`,maName));
+      res.set({
+        'Content-Type': 'image/jpeg',
+        'Content-Disposition': `inline; fileName="${file}"`, 
+      });
+        file.pipe(res);
+    }
   }
   

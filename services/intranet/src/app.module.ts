@@ -33,6 +33,7 @@ import { PublicController } from './public/public.controller';
 import { HandbookModule } from './handbook/handbook.module';
 import { HandbooktypeModule } from './handbooktype/handbooktype.module';
 import { SlideImageModule } from './slide-image/slide-image.module';
+import { maCarWrapupImageModule } from './maCarWrapupImage/maCarWrapupImage.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
@@ -65,6 +66,7 @@ import { SlideImageModule } from './slide-image/slide-image.module';
     HandbookModule,
     HandbooktypeModule,
     SlideImageModule,
+    maCarWrapupImageModule,
   ],
   controllers: [IntranetController, PublicController],
   providers: [IntranetService],
