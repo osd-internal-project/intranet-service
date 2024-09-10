@@ -67,9 +67,45 @@ export class DataLeaveService {
     } as Prisma.dataLeaveFindFirstArgs);
 
     const leaveCountMap = this.countLeavesByTypeIdMap(dataLeaveWrapup);
+    console.log('DataleaveCountMap:', leaveCountMap);
+
+    // const lastResult = dataTypeLeave.map((event) => {
+    //   const leaveCount = leaveCountMap[event.typeId] || 0;
+    //   console.log('leaveCount:', leaveCount);
 
     const lastResult = dataTypeLeave.map((event) => {
-      const leaveCount = leaveCountMap[event.typeId] || 0;
+      let leaveCount = leaveCountMap[event.typeId] || 0;
+
+      const adjustLeaveCount = (leaveCount) => {
+        const decimal = leaveCount % 1;
+        const integer = Math.floor(leaveCount);
+        let adjustedLeaveCount = leaveCount;
+        // if (decimal > 0 && decimal < 1) {
+        //   adjustedLeaveCount += 0.2;
+        // }
+        // if (decimal > 0 && decimal < 0.2) {
+        //   adjustedLeaveCount += integer * 0.2;
+        // }
+        // if (integer > 0) {
+        //   adjustedLeaveCount += integer * 0.2;
+        // }
+
+        return adjustedLeaveCount;
+      };
+      leaveCount = adjustLeaveCount(leaveCount);
+      console.log('leaveCount:', leaveCount);
+
+      const limitLeaveLastResult =
+        numberWorkStart <= 1
+          ? Number(event.limitLeaveFour) - leaveCount
+          : numberWorkStart >= 1 && numberWorkStart < 3
+          ? Number(event.limitLeaveOne) - leaveCount
+          : numberWorkStart >= 3 && numberWorkStart < 5
+          ? Number(event.limitLeaveTwo) - leaveCount
+          : numberWorkStart >= 5
+          ? Number(event.limitLeaveThree) - leaveCount
+          : null;
+
       const mapdata = {
         id: event.id,
         typeId: event.typeId,
@@ -86,16 +122,17 @@ export class DataLeaveService {
             : numberWorkStart >= 5
             ? event.limitLeaveThree
             : null,
-        limitLeaveLastResult:
-          numberWorkStart <= 1
-            ? Number(event.limitLeaveFour) - leaveCount
-            : numberWorkStart >= 1
-            ? Number(event.limitLeaveOne) - leaveCount
-            : numberWorkStart >= 3
-            ? Number(event.limitLeaveTwo) - leaveCount
-            : numberWorkStart >= 5
-            ? Number(event.limitLeaveThree) - leaveCount
-            : null,
+        limitLeaveLastResult: limitLeaveLastResult,
+        // limitLeaveLastResult:
+        //   numberWorkStart <= 1
+        //     ? Number(event.limitLeaveFour) - leaveCount
+        //     : numberWorkStart >= 1
+        //     ? Number(event.limitLeaveOne) - leaveCount
+        //     : numberWorkStart >= 3
+        //     ? Number(event.limitLeaveTwo) - leaveCount
+        //     : numberWorkStart >= 5
+        //     ? Number(event.limitLeaveThree) - leaveCount
+        //     : null,
         descriptionLeave: event.descriptionLeave,
         typeEveryDay: event.typeEveryDay,
         typeNameEn: event.typeNameEn,
@@ -103,6 +140,8 @@ export class DataLeaveService {
         createdAt: event.createdAt,
         updatedAt: event.updatedAt,
       };
+      console.log('limitLeaveLastResult:', mapdata.limitLeaveLastResult);
+
       return mapdata;
     });
     return lastResult;
@@ -123,10 +162,54 @@ export class DataLeaveService {
     return resUser;
   }
 
+  // countLeavesByTypeIdMap(leaveRecords) {
+  //   console.log('leaveRecords:', leaveRecords);
+
+  //   return leaveRecords.reduce((acc, record) => {
+  //     const increment = record.leaveHour / 8;
+  //     acc[record.typeId] = (acc[record.typeId] || 0) + increment;
+  //     return acc;
+  //   }, {});
+  // }
+
+  // countLeavesByTypeIdMap(leaveRecords) {
+  //   console.log('leaveRecords:', leaveRecords);
+
+  //   return leaveRecords.reduce((acc, record) => {
+  //     const increment = record.leaveHour / 8;
+  //     if (increment < 1 && record.leaveHour % 8 !== 0) {
+  //       acc[record.typeId] =
+  //         (acc[record.typeId] || 0) + (0 + (record.leaveHour % 8) / 10);
+  //     } else if (increment > 1) {
+  //       acc[record.typeId] = (acc[record.typeId] || 0) + 1;
+  //     } else {
+  //       acc[record.typeId] = (acc[record.typeId] || 0) + increment;
+  //     }
+
+  //     return acc;
+  //   }, {});
+  // }
+
   countLeavesByTypeIdMap(leaveRecords) {
+    console.log('leaveRecords:', leaveRecords);
+
     return leaveRecords.reduce((acc, record) => {
-      const increment = record.leaveHour / 8;
-      acc[record.typeId] = (acc[record.typeId] || 0) + increment;
+      const hours = record.leaveHour;
+      console.log('hours:', hours);
+
+      if (hours === 8) {
+        acc[record.typeId] = (acc[record.typeId] || 0) + 1;
+      } else if (hours < 8) {
+        acc[record.typeId] = (acc[record.typeId] || 0) + hours / 10;
+      } else if (hours > 8) {
+        const fullDays = Math.floor(hours / 8);
+        const remainingHours = hours % 8;
+        const decimalHours = remainingHours / 10;
+
+        acc[record.typeId] =
+          (acc[record.typeId] || 0) + fullDays + decimalHours;
+      }
+
       return acc;
     }, {});
   }
