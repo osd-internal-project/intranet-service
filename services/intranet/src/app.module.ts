@@ -42,7 +42,6 @@ import { maCarWrapupImageModule } from './maCarWrapupImage/maCarWrapupImage.modu
     FloorModule,
     MaTaskModule,
     MaTypeModule,
-    MaTaskModule,
     DepartmentModule,
     MasterRoomModule,
     BookingRoomModule,
