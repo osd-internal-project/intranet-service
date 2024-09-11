@@ -1,7 +1,5 @@
 FROM node:16.17.1-alpine3.16 AS base
-RUN apk upgrade --update-cache && \
-    apk add openssl musl && \
-    rm -rf /var/cache/apk/*
+RUN apk upgrade --update-cache && apk add --no-cache git openssh && rm -rf /var/cache/apk/*
 WORKDIR /app
 ENV YARN_CACHE_FOLDER=.yarn-cache
 
