@@ -176,15 +176,16 @@ model handbook {
 }
 
 model handbookFile {
-    handbookid   Int       @unique @default(autoincrement()) @map("handbook_id")
-    fileName     String?   @default("") @map("file_name") @db.VarChar(100)
-    fileLocation String?   @default("") @map("file_location") @db.VarChar(100)
-    author       String?   @default("") @map("author") @db.VarChar(100)
-    createdAt    DateTime? @default(now()) @map("created_At")
-    updatedAt    DateTime? @default(now()) @map("updated_At")
-    status       Boolean?  @default(true) @map("status") @db.Boolean
-    handbook     handbook? @relation(fields: [idbook], references: [idbook])
-    idbook       Int?      @map("id_book")
+    handbookid       Int       @unique @default(autoincrement()) @map("handbook_id")
+    fileName         String?   @default("") @map("file_name") @db.VarChar(100)
+    fileoriginalName String?   @default("") @map("file_origina_name") @db.VarChar(100)
+    fileLocation     String?   @default("") @map("file_location") @db.VarChar(100)
+    author           String?   @default("") @map("author") @db.VarChar(100)
+    createdAt        DateTime? @default(now()) @map("created_At")
+    updatedAt        DateTime? @default(now()) @map("updated_At")
+    status           Boolean?  @default(true) @map("status") @db.Boolean
+    handbook         handbook? @relation(fields: [idbook], references: [idbook])
+    idbook           Int?      @map("id_book")
 
     @@map("handbook_file")
 }
@@ -1038,7 +1039,9 @@ model maCarBook {
     returnNotifAt         DateTime? @map("return_notif_at") @db.Timestamptz()
     returnAt              DateTime? @map("return_at") @db.Timestamptz()
     remarkApproved        String?   @map("remark_approved") @db.VarChar(225)
-    maCar                 maCar     @relation("CarBooks", fields: [carId], references: [carId])
+    remarkCancel          String?   @map("remark_cancel") @db.VarChar(225)
+
+    maCar maCar @relation("CarBooks", fields: [carId], references: [carId])
 
     @@map("ma_car_book")
 }
@@ -1051,7 +1054,7 @@ model maCarWrapup {
     typeId           Int?               @map("type_id")
     typeName         String             @map("type_name") @db.VarChar(150)
     vender           String             @map("vender") @db.VarChar(100)
-    cost             Decimal?            @map("cost") @db.Money
+    cost             Decimal?           @map("cost") @db.Money
     detail           String?            @map("detail") @db.Text
     wrapupMiles      String             @map("wrapup_miles") @db.VarChar(150)
     dateStart        DateTime?          @map("date_start") @db.Timestamptz()
@@ -1060,7 +1063,7 @@ model maCarWrapup {
     createdAt        DateTime           @default(now()) @map("created_at") @db.Timestamptz()
     updatedAt        DateTime?          @default(now()) @map("updated_at") @db.Timestamptz()
     status           Boolean?           @default(true) @map("stauts") @db.Boolean
-    createbyName     String?             @map("create_name") @db.VarChar(70)
+    createbyName     String?            @map("create_name") @db.VarChar(70)
     maCar            maCar?             @relation(fields: [carId], references: [carId])
     maCarWrapupImage maCarWrapupImage[]
 
