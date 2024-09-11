@@ -100,8 +100,8 @@ export class handbookFileController {
     }
 
     const data = {
-      fileimageName: file.originalname,
-      fileimagePath: file.path,
+      fileoriginalName: file.originalname,
+      fileLocation: file.path,
       fileName: file.filename,
     } as Prisma.newsImageUpdateInput;
 
