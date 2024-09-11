@@ -10,7 +10,7 @@ export class PrismaTransactionService {
     option?: { prisma?: TQueryClient },
   ) {
     const result = await this.db.$transaction(
-      (prisma) => func(option?.prisma ?? prisma),
+      (prisma: any) => func(option?.prisma ?? prisma),
       { maxWait: 60 * 1000, timeout: 60 * 1000 * 15 },
     );
     return result as T;
