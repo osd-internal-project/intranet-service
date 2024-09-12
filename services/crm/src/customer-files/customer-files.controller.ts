@@ -48,7 +48,8 @@ export class CustomerFilesController {
         type: type,
         fileCode: files[0].filename,
         fileType: files[0].mimetype,
-        fileName: files[0].originalname,
+        // fileName: files[0].originalname,
+        fileName: Buffer.from(files[0].originalname, 'latin1').toString('utf8'),
       } as Prisma.customerFilesCreateInput;
       return this.customerFilesService.create(data);
     }
