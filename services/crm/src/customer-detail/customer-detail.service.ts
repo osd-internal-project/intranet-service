@@ -4,7 +4,7 @@ import {
   CustomerFilesRepository,
   CustomerTypeRepository,
   CustomerResponsibleRepository,
-  CustomerGroupRepository,
+  CustomerTypeGroupRepository,
   CustomerChannelTypeRepository,
   CustomerJobTypeRepository,
   CustomerWorkTypeRepository,
@@ -22,7 +22,7 @@ export class CustomerDetailService {
     private readonly contractCompanyRepo: ContractCompanyRepository,
     private readonly customerDetailRepo: CustomerDetailRepository,
     private readonly customerFilesReposito: CustomerFilesRepository,
-    private readonly customerGroupRepo: CustomerGroupRepository,
+    private readonly customerTypeGroupRepo: CustomerTypeGroupRepository,
     private readonly customerResponsibleRepo: CustomerResponsibleRepository,
     private readonly customerTypeRepo: CustomerTypeRepository,
     private readonly customerChannelTypeRepo: CustomerChannelTypeRepository,
@@ -177,8 +177,8 @@ export class CustomerDetailService {
   findContractCompany() {
     return this.contractCompanyRepo.findMany({});
   }
-  findConfigCustomerGroup() {
-    return this.customerGroupRepo.findMany({
+  findConfigCustomerTypeGroup() {
+    return this.customerTypeGroupRepo.findMany({
       where: { activeStatus: true },
     });
   }
