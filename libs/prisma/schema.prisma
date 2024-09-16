@@ -1253,19 +1253,19 @@ model customerAddress {
 }
 
 model customerBranch {
-    id               Int               @unique @default(autoincrement()) @map("id")
-    mainBranchStatus Boolean?          @map("main_branch_status") @db.Boolean
-    branchName       String?           @map("branch_name") @db.VarChar(255)
-    branchCode       String?           @map("branch_code") @db.VarChar(100)
-    updatedBy        String?           @map("updated_by") @db.VarChar(100)
-    updatedByID      String?           @map("updated_by_id") @db.VarChar(100)
-    createdAt        DateTime?         @map("created_at") @db.Timestamptz()
-    updatedAt        DateTime?         @map("updated_at") @db.Timestamptz()
-    customerDetailId Int?              @map("customer_detail_id")
-    customerDetail   customerDetail?   @relation(fields: [customerDetailId], references: [id], onDelete: Cascade)
-    customerAddress  customerAddress[]
-    customerContact  customerContact[]
-    customerProject  customerProject[]
+    id                  Int                @unique @default(autoincrement()) @map("id")
+    mainBranchStatus    Boolean?           @map("main_branch_status") @db.Boolean
+    branchName          String?            @map("branch_name") @db.VarChar(255)
+    branchCode          String?            @map("branch_code") @db.VarChar(100)
+    updatedBy           String?            @map("updated_by") @db.VarChar(100)
+    updatedByID         String?            @map("updated_by_id") @db.VarChar(100)
+    createdAt           DateTime?          @map("created_at") @db.Timestamptz()
+    updatedAt           DateTime?          @map("updated_at") @db.Timestamptz()
+    customerAddress     customerAddress[]
+    customerContact     customerContact[]
+    customerProject     customerProject[]
+    customerDetailSub   customerDetailSub? @relation(fields: [customerDetailSubId], references: [id])
+    customerDetailSubId Int?               @map("customer_detail_sub_id")
 
     @@map("customer_branch")
 }
@@ -1289,31 +1289,31 @@ model customerContact {
 
 model customerDetail {
     //detail
-    id                 Int       @unique @default(autoincrement()) @map("id")
-    customerCode       String    @map("customer_code") @db.VarChar(50)
-    referenceCode      String?   @map("reference_code") @db.VarChar(50)
-    departmentCode     String?   @map("department_code") @db.VarChar(50)
-    prefixTh           String?   @default("") @map("prefix_th") @db.VarChar(10)
-    firstNameTh        String?   @default("") @map("first_name_th") @db.VarChar(200)
-    lastNameTh         String?   @default("") @map("last_name_th") @db.VarChar(200)
-    prefixEn           String?   @default("") @map("prefix_en") @db.VarChar(10)
-    firstNameEn        String?   @default("") @map("first_name_en") @db.VarChar(200)
-    lastNameEn         String?   @default("") @map("last_name_en") @db.VarChar(200)
-    companyRegisNumber String?   @map("company_regis_number") @db.VarChar(50)
-    regisDate          DateTime? @map("regis_date") @db.Timestamptz()
-    registration       Float?    @map("registration")
-    customerGroupId    Int?      @map("customer_group_id") @db.Integer
-    customerGroupName  String?   @map("customer_group_name") @db.VarChar(255)
-    customerTypeId     String?   @map("customer_type_id") @db.VarChar(255)
-    customerTypeName   String?   @map("customer_type_name") @db.VarChar(255)
-    grade              String?   @map("grade") @db.VarChar(5)
-    responsible        Json?     @map("responsible") @db.JsonB
-    responsibleGroup   String[]  @map("responsible_group")
-    responsibleId      String[]  @map("responsible_id")
-    thirdPartyId       String?   @map("third_party_id") @db.VarChar(50)
-    thirdPartyName     String?   @map("third_party_name") @db.VarChar(200)
-    activeStatus       Boolean   @map("active_status") @db.Boolean
-    details            Json?     @map("details") @db.JsonB
+    id                    Int       @unique @default(autoincrement()) @map("id")
+    customerCode          String    @map("customer_code") @db.VarChar(50)
+    referenceCode         String?   @map("reference_code") @db.VarChar(50)
+    departmentCode        String?   @map("department_code") @db.VarChar(50)
+    prefixTh              String?   @default("") @map("prefix_th") @db.VarChar(10)
+    firstNameTh           String?   @default("") @map("first_name_th") @db.VarChar(200)
+    lastNameTh            String?   @default("") @map("last_name_th") @db.VarChar(200)
+    prefixEn              String?   @default("") @map("prefix_en") @db.VarChar(10)
+    firstNameEn           String?   @default("") @map("first_name_en") @db.VarChar(200)
+    lastNameEn            String?   @default("") @map("last_name_en") @db.VarChar(200)
+    companyRegisNumber    String?   @map("company_regis_number") @db.VarChar(50)
+    regisDate             DateTime? @map("regis_date") @db.Timestamptz()
+    registration          Float?    @map("registration")
+    customerTypeGroupId   Int?      @map("customer_group_id") @db.Integer
+    customerTypeGroupName String?   @map("customer_group_name") @db.VarChar(255)
+    customerTypeId        String?   @map("customer_type_id") @db.VarChar(255)
+    customerTypeName      String?   @map("customer_type_name") @db.VarChar(255)
+    grade                 String?   @map("grade") @db.VarChar(5)
+    responsible           Json?     @map("responsible") @db.JsonB
+    responsibleGroup      String[]  @map("responsible_group")
+    responsibleId         String[]  @map("responsible_id")
+    thirdPartyId          String?   @map("third_party_id") @db.VarChar(50)
+    thirdPartyName        String?   @map("third_party_name") @db.VarChar(200)
+    activeStatus          Boolean   @map("active_status") @db.Boolean
+    details               Json?     @map("details") @db.JsonB
 
     notiPhone String? @map("noti_phone") @db.VarChar(20)
     notiFax   String? @map("noti_fax") @db.VarChar(20)
@@ -1334,19 +1334,35 @@ model customerDetail {
     ownerGroup    String?   @map("owner_group") @db.VarChar(50)
     deleteStatus  Boolean   @default(false) @map("delete_status") @db.Boolean
 
-    customerBranch customerBranch[]
+    customerDetailSub customerDetailSub[]
 
     @@map("customer_detail")
 }
 
-model customerGroup {
+model customerDetailSub {
+    id               Int              @unique @default(autoincrement()) @map("id")
+    mainBranchStatus Boolean?         @map("main_branch_status") @db.Boolean
+    branchName       String?          @map("branch_name") @db.VarChar(255)
+    branchCode       String?          @map("branch_code") @db.VarChar(100)
+    updatedBy        String?          @map("updated_by") @db.VarChar(100)
+    updatedByID      String?          @map("updated_by_id") @db.VarChar(100)
+    createdAt        DateTime?        @map("created_at") @db.Timestamptz()
+    updatedAt        DateTime?        @map("updated_at") @db.Timestamptz()
+    customerDetailId Int?             @map("customer_detail_id")
+    customerDetail   customerDetail?  @relation(fields: [customerDetailId], references: [id], onDelete: Cascade)
+    customerBranch   customerBranch[]
+
+    @@map("customer_detail_sub")
+}
+
+model customerTypeGroup {
     id           Int      @unique @default(autoincrement()) @map("id")
     name         String   @map("name") @db.VarChar(255)
     activeStatus Boolean  @default(true) @map("active_status") @db.Boolean
     createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz()
     updatedAt    DateTime @default(now()) @map("updated_at") @db.Timestamptz()
 
-    @@map("customer_group")
+    @@map("customer_type_group")
 }
 
 model customerResponsible {

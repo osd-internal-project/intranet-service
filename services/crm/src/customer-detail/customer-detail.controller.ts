@@ -35,9 +35,9 @@ export class CustomerDetailController {
   findActiveForProject() {
     return this.customerDetailService.findActiveForProject();
   }
-  @Get('config/customer-group')
-  findConfigCustomerGroup() {
-    return this.customerDetailService.findConfigCustomerGroup();
+  @Get('config/customer-type-group')
+  findConfigCustomerTypeGroup() {
+    return this.customerDetailService.findConfigCustomerTypeGroup();
   }
   @Get('config/customer-responsible')
   findConfigCustomerResponsible() {
