@@ -30,7 +30,6 @@ import { InformationNewsModule } from './informationNews/informationNews.module'
 import { NewsImageModule } from './newsImage/newsImage.module';
 import { NewsTypeModule } from './newsType/newsType.module';
 import { PublicController } from './public/public.controller';
-import { HandbookModule } from './handbook/handbook.module';
 import { HandbooktypeModule } from './handbooktype/handbooktype.module';
 import { SlideImageModule } from './slide-image/slide-image.module';
 import { maCarWrapupImageModule } from './maCarWrapupImage/maCarWrapupImage.module';
@@ -62,7 +61,6 @@ import { maCarWrapupImageModule } from './maCarWrapupImage/maCarWrapupImage.modu
     InformationNewsModule,
     NewsImageModule,
     NewsTypeModule,
-    HandbookModule,
     HandbooktypeModule,
     SlideImageModule,
     maCarWrapupImageModule,
