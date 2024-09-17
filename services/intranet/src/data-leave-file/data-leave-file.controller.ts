@@ -49,7 +49,7 @@ export class DataLeaveFileController {
         type: type,
         fileCode: files[0].filename,
         fileType: files[0].mimetype,
-        fileName: files[0].originalname,
+        fileName: Buffer.from(files[0].originalname, 'latin1').toString('utf8'),
       } as Prisma.dataLeaveFilesCreateInput;
       return this.dataLeaveFileService.create(data);
     }

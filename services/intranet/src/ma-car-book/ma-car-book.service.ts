@@ -4,9 +4,7 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class MaCarBookService {
-  constructor(
-    private readonly maCarBookRepository: MaCarBookRepository, 
-  ) {}
+  constructor(private readonly maCarBookRepository: MaCarBookRepository) {}
   create(data: Prisma.maCarBookCreateInput) {
     const condition = { data: data } as Prisma.maCarBookCreateArgs;
     return this.maCarBookRepository.create(condition);
@@ -16,19 +14,24 @@ export class MaCarBookService {
     return this.maCarBookRepository.findAll();
   }
 
-  findMany() {
-    return this.maCarBookRepository.findMany({
+  async findMany(skip: number, take: number) {
+    const data = await this.maCarBookRepository.findMany({
       include: {
         maCar: true,
       },
       orderBy: { id: 'desc' },
+      skip: skip,
+      take: take,
     });
+
+    const count = await this.maCarBookRepository.count({});
+    return { docs: data, total: count };
   }
 
-  findManyid(id: number) {
-    return this.maCarBookRepository.findMany({
+  async findManyid(id: string, skip: number, take: number) {
+    const data = await this.maCarBookRepository.findMany({
       where: {
-        id: id,
+        createdById: id,
       },
       include: {
         maCar: true,
@@ -36,7 +39,15 @@ export class MaCarBookService {
       orderBy: {
         id: 'desc',
       },
+      skip: skip,
+      take: take,
     });
+    const count = await this.maCarBookRepository.count({
+      where: {
+        createdById: id,
+      },
+    });
+    return { docs: data, total: count };
   }
 
   createdById(createdById: string) {
