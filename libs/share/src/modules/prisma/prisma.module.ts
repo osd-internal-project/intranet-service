@@ -68,6 +68,7 @@ import {
   PublicizeSlideImagesRepository,
   //CRM
   CustomerDetailRepository,
+  CustomerDetailSubRepository,
   CustomerFilesRepository,
   CustomerTypeGroupRepository,
   CustomerAddressRepository,
@@ -180,7 +181,9 @@ const services = [
   CustomerAddressRepository,
   CustomerBranchRepository,
   CustomerContactRepository,
+
   CustomerDetailRepository,
+  CustomerDetailSubRepository,
   CustomerTypeGroupRepository,
   CustomerFilesRepository,
   CustomerProjectRepository,
