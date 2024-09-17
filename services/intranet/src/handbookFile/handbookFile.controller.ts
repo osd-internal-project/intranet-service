@@ -51,6 +51,10 @@ export class handbookFileController {
     }
     Logger.debug(body)
     const data = {
+      fileName:body.fileName,
+      filetype:body.filetype,
+      author:body.author,
+      // status:body.status,
       fileoriginalName: file.originalname,
       fileLocation: file.path,
       fileId: file.filename,
