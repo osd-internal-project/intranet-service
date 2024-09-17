@@ -25,7 +25,6 @@ import { MaCarModule } from './ma-car/ma-car.module';
 import { MaCarTypeModule } from './ma-car-type/ma-car-type.module';
 import { MaCarBookModule } from './ma-car-book/ma-car-book.module';
 import { MaCarWrapupModule } from './ma-car-wrapup/ma-car-wrapup.module';
-import { HandbookFileModule } from './handbookFile/handbookFile.module';
 import { InformationNewsModule } from './informationNews/informationNews.module';
 import { NewsImageModule } from './newsImage/newsImage.module';
 import { NewsTypeModule } from './newsType/newsType.module';
@@ -33,6 +32,7 @@ import { PublicController } from './public/public.controller';
 import { HandbooktypeModule } from './handbooktype/handbooktype.module';
 import { SlideImageModule } from './slide-image/slide-image.module';
 import { maCarWrapupImageModule } from './maCarWrapupImage/maCarWrapupImage.module';
+import { HandbookFileModule } from './handbookFile/handbookFile.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
@@ -57,13 +57,13 @@ import { maCarWrapupImageModule } from './maCarWrapupImage/maCarWrapupImage.modu
     MaCarTypeModule,
     MaCarBookModule,
     MaCarWrapupModule,
-    HandbookFileModule,
     InformationNewsModule,
     NewsImageModule,
     NewsTypeModule,
     HandbooktypeModule,
     SlideImageModule,
     maCarWrapupImageModule,
+    HandbookFileModule
   ],
   controllers: [IntranetController, PublicController],
   providers: [IntranetService],
