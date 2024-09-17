@@ -4,7 +4,7 @@ import {
   CustomerFilesRepository,
   CustomerTypeRepository,
   CustomerResponsibleRepository,
-  CustomerGroupRepository,
+  CustomerTypeGroupRepository,
   CustomerChannelTypeRepository,
   CustomerJobTypeRepository,
   CustomerWorkTypeRepository,
@@ -14,6 +14,7 @@ import {
   AccessService,
   ExpendTypeRepository,
   ContractCompanyRepository,
+  CustomerProjectRepository,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 @Injectable()
@@ -22,7 +23,7 @@ export class CustomerDetailService {
     private readonly contractCompanyRepo: ContractCompanyRepository,
     private readonly customerDetailRepo: CustomerDetailRepository,
     private readonly customerFilesReposito: CustomerFilesRepository,
-    private readonly customerGroupRepo: CustomerGroupRepository,
+    private readonly customerTypeGroupRepo: CustomerTypeGroupRepository,
     private readonly customerResponsibleRepo: CustomerResponsibleRepository,
     private readonly customerTypeRepo: CustomerTypeRepository,
     private readonly customerChannelTypeRepo: CustomerChannelTypeRepository,
@@ -31,6 +32,7 @@ export class CustomerDetailService {
     private readonly customerRequestTypeRepo: CustomerRequestTypeRepository,
     private readonly customerPriorityRepo: CustomerPriorityRepository,
     private readonly expendTypeRepo: ExpendTypeRepository,
+    private readonly customerProjectRepo: CustomerProjectRepository,
     //User
     private readonly userMapOrganizeGroupOwnerRepo: UserMapOrganizeGroupOwnerRepository,
     private readonly accessService: AccessService,
@@ -177,8 +179,8 @@ export class CustomerDetailService {
   findContractCompany() {
     return this.contractCompanyRepo.findMany({});
   }
-  findConfigCustomerGroup() {
-    return this.customerGroupRepo.findMany({
+  findConfigCustomerTypeGroup() {
+    return this.customerTypeGroupRepo.findMany({
       where: { activeStatus: true },
     });
   }
@@ -254,26 +256,16 @@ export class CustomerDetailService {
   }
 
   async remove(id: number) {
-    const customer = (await this.customerDetailRepo.findOne({
-      where: { id: id },
-      select: { customerBranch: { select: { customerProject: true } } },
-    })) as any;
-    if (customer.customerBranch) {
-      let countProject = 0;
-      Logger.debug(customer);
-      customer.customerBranch.map((data) => {
-        if (data.customerProject.length > 0) {
-          countProject = countProject + 1;
-        }
+    const project = await this.customerProjectRepo.findMany({
+      where: {
+        customerBranch: { customerDetailSub: { customerDetailId: id } },
+      },
+    });
+    if (project) {
+      return this.customerDetailRepo.update({
+        where: { id: id },
+        data: { deleteStatus: true },
       });
-      if (countProject > 0) {
-        return this.customerDetailRepo.update({
-          where: { id: id },
-          data: { deleteStatus: true },
-        });
-      } else {
-        return this.customerDetailRepo.delete({ where: { id: id } });
-      }
     } else {
       return this.customerDetailRepo.delete({ where: { id: id } });
     }

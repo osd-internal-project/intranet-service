@@ -34,11 +34,11 @@ export class CustomerBranchService {
   }
   findDetailByCustomerId(id: number) {
     return this.customerBranchRepo.findMany({
-      where: { customerDetailId: id },
+      where: { customerDetailSub: { customerDetailId: id } },
       include: { customerAddress: true, customerContact: true },
     });
   }
-  async findCustomerProjectBycustomerBranchId(id: number) {
+  async findCustomerProjectBycustomerId(id: number) {
     // const rescustomerDetail = (await this.customerDetailRepo.findOne({
     //   where: { id: id },
     //   include: {
@@ -48,7 +48,7 @@ export class CustomerBranchService {
     const rescustomerProject = await this.customerProjectRepo.findMany({
       where: {
         // customerBranchId: { in: rescustomerDetail.customerBranch.id },
-        customerBranch: { customerDetailId: id },
+        customerBranch: { customerDetailSub: { customerDetailId: id } },
       },
       include: {
         customerBranch: true,

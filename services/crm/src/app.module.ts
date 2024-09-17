@@ -5,7 +5,7 @@ import { IntranetService } from './app.service';
 import configs from './configs';
 import { RequestLoggerMiddleware } from './middleware/request-logger.middleware';
 import { CustomerDetailModule } from './customer-detail/customer-detail.module';
-import { CustomerGroupModule } from './customer-group/customer-group.module';
+import { CustomerTypeGroupModule } from './customer-type-group/customer-type-group.module';
 import { CustomerFilesModule } from './customer-files/customer-files.module';
 import { CustomerBranchModule } from './customer-branch/customer-branch.module';
 import { CustomerAddressModule } from './customer-address/customer-address.module';
@@ -14,6 +14,7 @@ import { CustomerProjectTaskModule } from './customer-project-task/customer-proj
 import { CustomerProjectModule } from './customer-project/customer-project.module';
 import { CustomerProjectTicketModule } from './customer-project-ticket/customer-project-ticket.module';
 import { TicketHistoryLogsModule } from './ticket-history-logs/ticket-history-logs.module';
+import { CustomerDetailSubModule } from './customer-detail-sub/customer-detail-sub.module';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { TicketHistoryLogsModule } from './ticket-history-logs/ticket-history-lo
     CustomerBranchModule,
     CustomerContactModule,
     CustomerDetailModule,
-    CustomerGroupModule,
+    CustomerDetailSubModule,
+    CustomerTypeGroupModule,
     CustomerFilesModule,
     CustomerProjectModule,
     CustomerProjectTaskModule,

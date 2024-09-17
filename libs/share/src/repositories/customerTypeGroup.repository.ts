@@ -4,54 +4,54 @@ import { TQueryClient } from '../modules/prisma/types';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
-export class CustomerGroupRepository {
+export class CustomerTypeGroupRepository {
   constructor(private prisma: PrismaService) {}
 
   async findAll(option?: { prisma?: TQueryClient }) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.customerGroup.findMany();
+    return prisma.customerTypeGroup.findMany();
   }
   async findMany(
-    condition: Prisma.customerGroupFindFirstArgsBase,
+    condition: Prisma.customerTypeGroupFindFirstArgsBase,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.customerGroup.findMany(condition);
+    return prisma.customerTypeGroup.findMany(condition);
   }
   async findOne(
-    condition: Prisma.customerGroupFindFirstArgsBase,
+    condition: Prisma.customerTypeGroupFindFirstArgsBase,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.customerGroup.findFirst(condition);
+    return prisma.customerTypeGroup.findFirst(condition);
   }
   async create(
-    condition: Prisma.customerGroupCreateArgs,
+    condition: Prisma.customerTypeGroupCreateArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.customerGroup.create(condition);
+    return prisma.customerTypeGroup.create(condition);
   }
   async createMany(
-    data: Prisma.customerGroupCreateManyArgs,
+    data: Prisma.customerTypeGroupCreateManyArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.customerGroup.createMany(data);
+    return prisma.customerTypeGroup.createMany(data);
   }
   async update(
-    data: Prisma.customerGroupUpdateArgs,
+    data: Prisma.customerTypeGroupUpdateArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.customerGroup.update(data);
+    return prisma.customerTypeGroup.update(data);
   }
   async delete(
-    condition: Prisma.customerGroupDeleteArgs,
+    condition: Prisma.customerTypeGroupDeleteArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.customerGroup.delete(condition);
+    return prisma.customerTypeGroup.delete(condition);
   }
   async count(
     condition: Prisma.inventoryLotCountArgs,

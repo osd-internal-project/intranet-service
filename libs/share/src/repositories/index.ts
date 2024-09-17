@@ -79,7 +79,8 @@ export * from './customerAddress.repository';
 export * from './customerBranch.repository';
 export * from './customerContact.repository';
 export * from './customerDetail.repository';
-export * from './customerGroup.repository';
+export * from './customerDetailSub.repository';
+export * from './customerTypeGroup.repository';
 export * from './customerFiles.repository';
 export * from './customerProject.repository';
 export * from './customerProjectTask.repository';
@@ -100,7 +101,6 @@ export * from './Information.repository';
 export * from './newsType.repository';
 export * from './newsImage.repository';
 export * from './handbookFile.repository';
-export * from './handbook.repository';
 export * from './handbooktype.repository';
 
 //slide

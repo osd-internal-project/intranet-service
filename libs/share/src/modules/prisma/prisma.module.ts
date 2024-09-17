@@ -68,8 +68,9 @@ import {
   PublicizeSlideImagesRepository,
   //CRM
   CustomerDetailRepository,
+  CustomerDetailSubRepository,
   CustomerFilesRepository,
-  CustomerGroupRepository,
+  CustomerTypeGroupRepository,
   CustomerAddressRepository,
   CustomerBranchRepository,
   CustomerContactRepository,
@@ -93,13 +94,11 @@ import {
   newsTypeRepository,
   newsImageRepository,
   handbookFileRepository,
-  handbookRepository,
   handbooktypeRepository,
   SlideImageRepository,
   ExpendTypeRepository,
   TicketExpendRepository,
   ContractCompanyRepository,
-  
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -181,8 +180,10 @@ const services = [
   CustomerAddressRepository,
   CustomerBranchRepository,
   CustomerContactRepository,
+
   CustomerDetailRepository,
-  CustomerGroupRepository,
+  CustomerDetailSubRepository,
+  CustomerTypeGroupRepository,
   CustomerFilesRepository,
   CustomerProjectRepository,
   CustomerProjectTaskRepository,
@@ -204,7 +205,6 @@ const services = [
   newsTypeRepository,
   newsImageRepository,
   handbookFileRepository,
-  handbookRepository,
   handbooktypeRepository,
   SlideImageRepository,
 ];

@@ -16,7 +16,7 @@ export class handbookFileService {
     return this.handbookFileRepo.findMany({
       ...condition,
       orderBy: {
-        idbook: 'asc',
+        handbookid: 'asc',
       },
     });
   }
@@ -35,10 +35,10 @@ export class handbookFileService {
     return this.handbookFileRepo.findOne(condition);
   }
 
-  update(idbook: number, condition: Prisma.handbookFileUpdateArgs) {
+  update(handbookid: number, condition: Prisma.handbookFileUpdateArgs) {
     const base = {
       where: {
-        idbook: idbook,
+        handbookid: handbookid,
       },
       data: { ...condition },
     } as Prisma.handbookFileUpdateArgs;
