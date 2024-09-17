@@ -94,7 +94,6 @@ import {
   newsTypeRepository,
   newsImageRepository,
   handbookFileRepository,
-  handbookRepository,
   handbooktypeRepository,
   SlideImageRepository,
   ExpendTypeRepository,
@@ -206,7 +205,6 @@ const services = [
   newsTypeRepository,
   newsImageRepository,
   handbookFileRepository,
-  handbookRepository,
   handbooktypeRepository,
   SlideImageRepository,
 ];

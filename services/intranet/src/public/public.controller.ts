@@ -20,6 +20,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { createReadStream } from 'fs';
 import { env } from 'process';
 import { Response } from 'express';
+import { Buffer } from 'buffer';
 @Controller('public')
 export class PublicController {
   @Get('news-image/:filename')
@@ -37,29 +38,45 @@ export class PublicController {
   }
 
   @Get('handbook-file/:filename')
-getHandbookFile(
-  @Param('filename') fileName: string, 
-  @Query('fileimageName') fileimageName: string, // ใช้ @Query ในการรับค่า fileimageName
-  @Res() res: Response,
-): void {
-  console.log(fileName);
-  const filePath = join(`./undefined/handbookfile`, fileName); // ตรวจสอบ path ของไฟล์ให้ถูกต้อง
-  const file = createReadStream(filePath);
+  getHandbookFile(
+    @Param('filename') fileName: string,
+    @Query('fileoriginalName') fileoriginalName: string,
+    @Res() res: Response,
+  ): void {
+    console.log('Filename:', fileName);
+    console.log('Original Filename:', fileoriginalName);
 
-  // ตรวจสอบว่าไฟล์มีอยู่หรือไม่
-  file.on('error', (err) => {
-    console.error(err);
-    res.status(404).send('File not found');
-  });
+    // Encode filename for safe usage in URLs
+    const encodedFileName = encodeURIComponent(fileName);
 
-  // ตั้งค่า Content-Disposition โดยใช้ชื่อ fileimageName แทนที่ fileName ในการดาวน์โหลด
-  res.set({
-    'Content-Type': 'application/pdf', // ประเภทไฟล์อาจจะต้องเปลี่ยนตามประเภทของไฟล์ที่ใช้
-    'Content-Disposition': `attachment; fileName="${fileimageName || fileName}"`, // ใช้ fileimageName ถ้ามี ไม่เช่นนั้นใช้ fileName
-  });
+    // Replace unsafe characters with underscores
+    const safeOriginalFileName = (
+      fileoriginalName || 'handbook-file.pdf'
+    ).replace(/[^a-zA-Z0-9.\-_]/g, '_');
 
-  file.pipe(res); // ส่งไฟล์ไปยัง response
-}
+    // Decode the original file name back to its original form (in case it's Thai or another language)
+    const decodedOriginalFileName =  encodeURIComponent(
+      fileoriginalName || 'handbook-file.pdf',
+    );
+
+    console.log('Decoded Original Filename:', decodedOriginalFileName);
+
+    const filePath = join('./undefined/handbookfile', encodedFileName);
+    const file = createReadStream(filePath);
+
+    file.on('error', (err) => {
+      console.error('Error:', err);
+      return res.status(404).send('File not found');
+    });
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename="${fileoriginalName.replace(/[^\x00-\x7F]/g, '_')}"; filename*=UTF-8''${encodedFileName}`,
+    });
+
+    file.pipe(res);
+  }
+
 
 
   @Get('ma-car-wrapup-image/:maName')
