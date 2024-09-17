@@ -79,6 +79,7 @@ export * from './customerAddress.repository';
 export * from './customerBranch.repository';
 export * from './customerContact.repository';
 export * from './customerDetail.repository';
+export * from './customerDetailSub.repository';
 export * from './customerTypeGroup.repository';
 export * from './customerFiles.repository';
 export * from './customerProject.repository';

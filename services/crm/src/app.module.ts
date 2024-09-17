@@ -14,6 +14,7 @@ import { CustomerProjectTaskModule } from './customer-project-task/customer-proj
 import { CustomerProjectModule } from './customer-project/customer-project.module';
 import { CustomerProjectTicketModule } from './customer-project-ticket/customer-project-ticket.module';
 import { TicketHistoryLogsModule } from './ticket-history-logs/ticket-history-logs.module';
+import { CustomerDetailSubModule } from './customer-detail-sub/customer-detail-sub.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { TicketHistoryLogsModule } from './ticket-history-logs/ticket-history-lo
     CustomerBranchModule,
     CustomerContactModule,
     CustomerDetailModule,
+    CustomerDetailSubModule,
     CustomerTypeGroupModule,
     CustomerFilesModule,
     CustomerProjectModule,

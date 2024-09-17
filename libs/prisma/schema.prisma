@@ -1267,6 +1267,8 @@ model customerBranch {
     customerProject     customerProject[]
     customerDetailSub   customerDetailSub? @relation(fields: [customerDetailSubId], references: [id])
     customerDetailSubId Int?               @map("customer_detail_sub_id")
+    customerDetail      customerDetail?    @relation(fields: [customerDetailId], references: [id])
+    customerDetailId    Int?               @map("customer_detail_id")
 
     @@map("customer_branch")
 }
@@ -1326,15 +1328,15 @@ model customerDetail {
     //Action By
     createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz()
 
-    createdById   String?   @map("created_by_id") @db.VarChar(50)
-    ownerGroupId  String?   @map("owner_group_id") @db.VarChar(50)
-    createdByName String?   @map("created_by_name") @db.VarChar(255)
-    updatedAt     DateTime? @map("updated_at") @db.Timestamptz()
-    updatedById   String?   @map("updated_by_id") @db.VarChar(50)
-    updatedByName String?   @map("updated_by_name") @db.VarChar(255)
-    ownerGroup    String?   @map("owner_group") @db.VarChar(50)
-    deleteStatus  Boolean   @default(false) @map("delete_status") @db.Boolean
-
+    createdById       String?             @map("created_by_id") @db.VarChar(50)
+    ownerGroupId      String?             @map("owner_group_id") @db.VarChar(50)
+    createdByName     String?             @map("created_by_name") @db.VarChar(255)
+    updatedAt         DateTime?           @map("updated_at") @db.Timestamptz()
+    updatedById       String?             @map("updated_by_id") @db.VarChar(50)
+    updatedByName     String?             @map("updated_by_name") @db.VarChar(255)
+    ownerGroup        String?             @map("owner_group") @db.VarChar(50)
+    deleteStatus      Boolean             @default(false) @map("delete_status") @db.Boolean
+    customerBranch    customerBranch[]
     customerDetailSub customerDetailSub[]
 
     @@map("customer_detail")
@@ -1343,8 +1345,8 @@ model customerDetail {
 model customerDetailSub {
     id               Int              @unique @default(autoincrement()) @map("id")
     mainBranchStatus Boolean?         @map("main_branch_status") @db.Boolean
-    branchName       String?          @map("branch_name") @db.VarChar(255)
-    branchCode       String?          @map("branch_code") @db.VarChar(100)
+    name             String?          @map("branch_name") @db.VarChar(255)
+    code             String?          @map("branch_code") @db.VarChar(100)
     updatedBy        String?          @map("updated_by") @db.VarChar(100)
     updatedByID      String?          @map("updated_by_id") @db.VarChar(100)
     createdAt        DateTime?        @map("created_at") @db.Timestamptz()

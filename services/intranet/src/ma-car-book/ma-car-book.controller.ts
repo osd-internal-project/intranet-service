@@ -19,9 +19,9 @@ export class MaCarBookController {
     return this.maCarBookService.create(data);
   }
 
-  @Get()
-  findMany() {
-    return this.maCarBookService.findMany();
+  @Get(':skip/:take')
+  findMany(@Param('skip') skip: string, @Param('take') take: string) {
+    return this.maCarBookService.findMany(+skip, +take);
   }
 
   @Get(':createdById')
@@ -29,9 +29,13 @@ export class MaCarBookController {
     return this.maCarBookService.createdById(createdById);
   }
 
-  @Get(':id')
-  id(@Param('id') id: string) {
-    return this.maCarBookService.findManyid(+id);
+  @Get(':id/:skip/:take')
+  id(
+    @Param('id') id: string,
+    @Param('skip') skip: string,
+    @Param('take') take: string,
+  ) {
+    return this.maCarBookService.findManyid(id, +skip, +take);
   }
 
   @Patch(':id')
