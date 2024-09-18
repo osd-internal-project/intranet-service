@@ -47,7 +47,7 @@ export class SlideImageController {
       const data = {
         filePath: files[0].path,
         fileType: files[0].mimetype,
-        fileName: files[0].originalname,
+        fileName: Buffer.from(files[0].originalname, 'latin1').toString('utf8'),
         createdByName,
       } as Prisma.slideImageCreateInput;
       return this.SlideImageService.createfiles(data);
