@@ -162,22 +162,9 @@ model handbooktype {
     @@map("handbook_type")
 }
 
-// model handbook {
-//     idbook       Int            @unique @default(autoincrement()) @map("id_book")
-//     fileName     String?        @default("") @map("file_name") @db.VarChar(100)
-//     filetype     String?        @default("") @map("file_type") @db.VarChar(100)
-//     createdAt    DateTime?      @default(now()) @map("created_At")
-//     updatedAt    DateTime?      @default(now()) @map("updated_At")
-//     author       String?        @default("") @map("author") @db.VarChar(100)
-//     status       Boolean?       @default(true) @map("status") @db.Boolean
-//     handbookFile handbookFile[]
-
-//     @@map("hand_book")
-// }
-
 model handbookFile {
     handbookid       Int       @unique @default(autoincrement()) @map("handbook_id")
-    fileId           String    @map("file_id") @db.VarChar(50) @default(uuid())
+    fileId           String    @default(uuid()) @map("file_id") @db.VarChar(50)
     fileName         String?   @default("") @map("file_name") @db.VarChar(100)
     fileoriginalName String?   @default("") @map("file_origina_name") @db.VarChar(100)
     fileLocation     String?   @default("") @map("file_location") @db.VarChar(100)
@@ -185,8 +172,6 @@ model handbookFile {
     createdAt        DateTime? @default(now()) @map("created_At")
     updatedAt        DateTime? @default(now()) @map("updated_At")
     status           Boolean?  @default(true) @map("status") @db.Boolean
-    // handbook         handbook? @relation(fields: [idbook], references: [idbook])
-    // idbook           Int?      @map("id_book")
 
     @@map("handbook_file")
 }

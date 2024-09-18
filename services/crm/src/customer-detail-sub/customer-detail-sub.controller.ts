@@ -31,7 +31,16 @@ export class CustomerDetailSubController {
   findMany(@Query() query: object) {
     return this.customerDetailSubService.findMany({});
   }
-
+  @Get('/find-by-customer-id/:id')
+  findByCustomerId(@Param('id') id: string) {
+    return this.customerDetailSubService.findByCustomerId(+id);
+  }
+  @Get('/detail-list-by-customer/:customerId')
+  findDetailListByCustomerId(@Param('customerId') customerId: string) {
+    return this.customerDetailSubService.findDetailListByCustomerId(
+      +customerId,
+    );
+  }
   @Get(':id')
   findOneById(@Param('id') id: string) {
     return this.customerDetailSubService.findOneById(+id);

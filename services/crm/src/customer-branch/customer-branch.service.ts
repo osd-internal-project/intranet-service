@@ -23,18 +23,27 @@ export class CustomerBranchService {
     return this.customerBranchRepo.findMany(condition);
   }
 
-  findOneById(id: number) {
-    return this.customerBranchRepo.findOne({ where: { id: id } });
-  }
   findDetailById(id: number) {
     return this.customerBranchRepo.findOne({
       where: { id: id },
       include: { customerAddress: true, customerContact: true },
     });
   }
-  findDetailByCustomerId(id: number) {
+  findDetailListByCustomerId(
+    customerDetailSubId: number,
+    query: Prisma.customerBranchWhereInput,
+  ) {
     return this.customerBranchRepo.findMany({
-      where: { customerDetailSub: { customerDetailId: id } },
+      where: { ...query, customerDetailSubId: customerDetailSubId },
+      include: { customerAddress: true, customerContact: true },
+    });
+  }
+  findDetailListByCustomerSubId(
+    customerSubId: number,
+    query: Prisma.customerBranchWhereInput,
+  ) {
+    return this.customerBranchRepo.findMany({
+      where: { ...query, customerDetailSubId: customerSubId },
       include: { customerAddress: true, customerContact: true },
     });
   }
@@ -55,6 +64,9 @@ export class CustomerBranchService {
       },
     });
     return rescustomerProject;
+  }
+  findOneById(id: number) {
+    return this.customerBranchRepo.findOne({ where: { id: id } });
   }
   update(id: number, data: Prisma.customerBranchUpdateInput) {
     return this.customerBranchRepo.update({ where: { id: id }, data: data });
