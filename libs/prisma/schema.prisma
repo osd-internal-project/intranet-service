@@ -180,7 +180,7 @@ model handbookFile {
     fileId           String    @default(uuid()) @map("file_id") @db.VarChar(50)
     fileName         String?   @default("") @map("file_name") @db.VarChar(200)
     filetype         String?   @default("") @map("file_type") @db.VarChar(200)
-    fileoriginalName String?   @default("") @map("file_origina_name") @db.VarChar(200)
+    fileoriginalName String?   @default("") @map("file_origina_name") @db.VarChar(200) 
     fileLocation     String?   @default("") @map("file_location") @db.VarChar(100)
     author           String?   @default("") @map("author") @db.VarChar(100)
     createdAt        DateTime? @default(now()) @map("created_At")
