@@ -68,28 +68,35 @@ export class DataLeaveService {
 
     const leaveCountMap = this.countLeavesByTypeIdMap(dataLeaveWrapup);
 
-    console.log('DataleaveCountMap:', leaveCountMap);
+    // console.log('DataleaveCountMap:', leaveCountMap);
 
     const lastResult = dataTypeLeave.map((event) => {
       let leaveCount = leaveCountMap[event.typeId] || 0;
-      console.log('leaveCount:', leaveCount);
+      const leaveCountlimitMap =
+        this.countlimitLeavesByTypeIdMap(dataLeaveWrapup);
+      let leaveCountlimit = leaveCountlimitMap[event.typeId] || 0;
 
-      let leaveCountlimit = leaveCountMap[event.typeId];
-      const calHours = leaveCountlimit % 1;
+      // console.log('limitLeaveFour:', leaveCountlimitMap);
 
-      if (calHours >= 0.0 && calHours <= 0.2) {
-        leaveCountlimit += 0.2;
-      } else if (calHours > 0.2 && calHours <= 0.8) {
-        leaveCountlimit += 0.2;
-      }
-      console.log('calHours:', calHours);
+      // let leaveCount = leaveCountMap[event.typeId];
+      // const calHours = leaveCount % 1;
 
-      const limitLeaveLastResult =
+      // if (calHours >= 0.0 && calHours <= 0.2) {
+      //   leaveCount += 0.2;
+      // } else if (calHours > 0.2 && calHours <= 0.8) {
+      //   leaveCount += 0.2;
+      // }
+      // console.log('leaveCountlimit:', leaveCountlimit);
+      // console.log('event.limitLeaveFour:', event.limitLeaveFour);
+      // const limitLeaveLastResult = leaveCountlimit;
+
+      // const limitLeaveLastResult =
+      let limitLeaveLastResult =
         numberWorkStart <= 1
           ? Number(event.limitLeaveFour) - leaveCountlimit
-          : numberWorkStart >= 1 && numberWorkStart < 3
+          : numberWorkStart >= 1
           ? Number(event.limitLeaveOne) - leaveCountlimit
-          : numberWorkStart >= 3 && numberWorkStart < 5
+          : numberWorkStart >= 3
           ? Number(event.limitLeaveTwo) - leaveCountlimit
           : numberWorkStart >= 5
           ? Number(event.limitLeaveThree) - leaveCountlimit
@@ -150,9 +157,8 @@ export class DataLeaveService {
 
     return resUser;
   }
-  
-  countLeavesByTypeIdMap(leaveRecords) {
 
+  countLeavesByTypeIdMap(leaveRecords) {
     const test = leaveRecords.reduce((acc, record) => {
       const hours = record.leaveHour;
       if (!acc[record.typeId]) {
@@ -175,8 +181,32 @@ export class DataLeaveService {
 
       return acc;
     }, {});
+    return test;
+  }
 
-    console.log('Final result:', test);
+  countlimitLeavesByTypeIdMap(leaveRecords) {
+    const test = leaveRecords.reduce((acc, record) => {
+      const hours = record.leaveHour;
+      if (!acc[record.typeId]) {
+        acc[record.typeId] = 0;
+      }
+
+      let calLeave = hours / 8;
+      if (hours % 8 !== 0) {
+        calLeave = Math.floor(calLeave) + (hours % 8) / 10;
+      }
+      acc[record.typeId] += calLeave;
+      let leaveCount = acc[record.typeId];
+      const calHours = leaveCount % 1;
+
+      if (calHours >= 0.0 && calHours <= 0.2) {
+        leaveCount += 0.2;
+      }
+      acc[record.typeId] = leaveCount;
+      acc[record.typeId] = parseFloat(leaveCount.toFixed(2));
+
+      return acc;
+    }, {});
     return test;
   }
 
