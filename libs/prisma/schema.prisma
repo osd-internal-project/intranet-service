@@ -1506,6 +1506,7 @@ model ticketExpend {
     expendPrice             Float                  @map("expend_price")
     expendType              expendType?            @relation(fields: [expendCode], references: [expendCode])
     expendCode              String?                @map("expend_code")
+    processStatus           String?                @map("process_status") @db.Text()
     description             String?                @map("description") @db.Text()
     createdAt               DateTime               @default(now()) @map("created_at") @db.Timestamptz()
     updatedAt               DateTime               @default(now()) @map("updated_at") @db.Timestamptz()
