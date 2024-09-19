@@ -31,9 +31,9 @@ export class handbookFileService {
     return this.handbookFileRepo.findOne(base);
   }
 
-  findOnes(condition: Prisma.handbookFileFindFirstArgs) {
-    return this.handbookFileRepo.findOne(condition);
-  }
+  // findOnes(condition: Prisma.handbookFileFindFirstArgs) {
+  //   return this.handbookFileRepo.findOne(condition);
+  // }
 
   update(handbookid: number, condition: Prisma.handbookFileUpdateArgs) {
     const base = {

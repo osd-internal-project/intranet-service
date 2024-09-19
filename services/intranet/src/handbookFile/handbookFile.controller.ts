@@ -43,23 +43,22 @@ export class handbookFileController {
     @UploadedFile() file: Express.Multer.File,
     @Body() body,
   ) {
-    
-    Logger.debug(file)
+    Logger.debug(file);
     Logger.debug(body);
     if (!file) {
       throw new Error('File is undefined');
     }
-    Logger.debug(body)
+    Logger.debug('bodydata', body);
     const data = {
-      fileName:body.fileName,
-      filetype:body.filetype,
-      author:body.author,
-      // status:body.status,
+      fileName: body.fileName,
+      filetype: body.filetype,
+      author: body.author,
+      // status: body.status,
       fileoriginalName: file.originalname,
       fileLocation: file.path,
       fileId: file.filename,
     } as Prisma.handbookFileCreateInput;
-    Logger.debug(data)
+    Logger.debug('alldata', data);
     return this.handbookFileService.create({ data });
   }
 
@@ -92,34 +91,21 @@ export class handbookFileController {
     }),
   )
   async updateFile(
-    @Param('idbook') idbook: string,
+    @Param('handbookid') handbookid: number,
     @UploadedFile() file: Express.Multer.File,
+    @Body() body,
   ) {
-    if (!file) {
-      throw new BadRequestException('File is undefined');
-    }
-
-    // Get the existing images related to the idbook
-    const existingImages = this.handbookFileService.findMany({
-      where: { idbook: +idbook },
-      orderBy: { createdAt: 'asc' },
-    });
-
-    if (Array.isArray(existingImages) && existingImages.length >= 1) {
-      // ถ้ามีภาพเกิน 3 ภาพ ให้หยุดการอัพเดทและโยนข้อยกเว้น
-      throw new BadRequestException('Cannot upload more than 1 file.');
-    }
-
     const data = {
-      fileoriginalName: file.originalname,
-      fileLocation: file.path,
-      fileName: file.filename,
+      fileName: body.fileName,
+      filetype: body.filetype,
+      author: body.author,
+      status: body.status,
     } as Prisma.newsImageUpdateInput;
-
-    return this.handbookFileService.update(+idbook, {
+    Logger.debug(data);
+    return this.handbookFileService.update(+handbookid, {
       data,
       where: {
-        handbookid: +idbook,
+        handbookid: +handbookid,
       },
     });
   }
