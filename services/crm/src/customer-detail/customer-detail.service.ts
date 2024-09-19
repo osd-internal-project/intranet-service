@@ -122,6 +122,14 @@ export class CustomerDetailService {
               string_contains: customername,
             },
           },
+          { details: { path: ['firstNameEn'], string_contains: customername } },
+          { details: { path: ['firstNameEn'], string_contains: customername } },
+          {
+            details: {
+              path: ['customerNameEn'],
+              string_contains: customername,
+            },
+          },
         ],
       });
     }

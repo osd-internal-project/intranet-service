@@ -30,21 +30,37 @@ export class CustomerBranchController {
     return this.customerBranchService.findMany({});
   }
 
-  @Get(':id')
-  findOneById(@Param('id') id: string) {
-    return this.customerBranchService.findOneById(+id);
-  }
   @Get('/detail/:id')
   findDetailById(@Param('id') id: string) {
     return this.customerBranchService.findDetailById(+id);
   }
-  @Get('/both-address-contact/:id')
-  findDetailByCustomerId(@Param('id') id: string) {
-    return this.customerBranchService.findDetailByCustomerId(+id);
+  @Get('/detail-list-by-customer-sub/:customerSubId')
+  findDetailListByCustomerId(
+    @Param('customerSubId') customerSubId: string,
+    @Query() query: Prisma.customerBranchWhereInput,
+  ) {
+    return this.customerBranchService.findDetailListByCustomerId(
+      +customerSubId,
+      query,
+    );
+  }
+  @Get('/detail-list-by-customer-sub/:customerSubId')
+  findDetailListByCustomerSubId(
+    @Param('customerSubId') customerSubId: string,
+    @Query() query: Prisma.customerBranchWhereInput,
+  ) {
+    return this.customerBranchService.findDetailListByCustomerSubId(
+      +customerSubId,
+      query,
+    );
   }
   @Get('customer-project/:id')
   findCustomerProjectBycustomerBranchId(@Param('id') id: string) {
     return this.customerBranchService.findCustomerProjectBycustomerId(+id);
+  }
+  @Get(':id')
+  findOneById(@Param('id') id: string) {
+    return this.customerBranchService.findOneById(+id);
   }
   @Patch(':id')
   update(

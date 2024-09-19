@@ -37,47 +37,32 @@ export class PublicController {
     file.pipe(res);
   }
 
-  @Get('handbook-file/:filename')
+  @Get('/handbook-file/:fileId')
   getHandbookFile(
-    @Param('filename') fileName: string,
-    @Query('fileoriginalName') fileoriginalName: string,
+    @Param('fileId') fileId: string,
+    @Query('fileName') fileName: string,
     @Res() res: Response,
   ): void {
-    console.log('Filename:', fileName);
-    console.log('Original Filename:', fileoriginalName);
+    
 
-    // Encode filename for safe usage in URLs
-    const encodedFileName = encodeURIComponent(fileName);
-
-    // Replace unsafe characters with underscores
-    const safeOriginalFileName = (
-      fileoriginalName || 'handbook-file.pdf'
-    ).replace(/[^a-zA-Z0-9.\-_]/g, '_');
-
-    // Decode the original file name back to its original form (in case it's Thai or another language)
-    const decodedOriginalFileName =  encodeURIComponent(
-      fileoriginalName || 'handbook-file.pdf',
-    );
-
-    console.log('Decoded Original Filename:', decodedOriginalFileName);
-
-    const filePath = join('./undefined/handbookfile', encodedFileName);
+    // ระบุตำแหน่งไฟล์
+    const filePath = join('./undefined/handbookfile', fileId);
     const file = createReadStream(filePath);
-
+const fileNewName =decodeURIComponent(fileName) 
+    console.log(fileNewName,filePath)
     file.on('error', (err) => {
       console.error('Error:', err);
       return res.status(404).send('File not found');
     });
 
+    // ตั้งค่า Content-Disposition ให้รองรับชื่อไฟล์ภาษาไทย
     res.set({
       'Content-Type': 'application/pdf',
-      'Content-Disposition': `attachment; filename="${fileoriginalName.replace(/[^\x00-\x7F]/g, '_')}"; filename*=UTF-8''${encodedFileName}`,
+      'Content-Disposition': `attachment; filename="export.pdf"`,
     });
-
+    // ส่งไฟล์กลับไปยังผู้ใช้
     file.pipe(res);
   }
-
-
 
   @Get('ma-car-wrapup-image/:maName')
   getmaCarWrapupImage(

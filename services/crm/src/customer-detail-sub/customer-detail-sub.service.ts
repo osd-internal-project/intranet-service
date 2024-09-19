@@ -22,7 +22,17 @@ export class CustomerDetailSubService {
   findMany(condition: Prisma.customerDetailSubFindManyArgs) {
     return this.customerDetailSubRepo.findMany(condition);
   }
-
+  findByCustomerId(customerId: number) {
+    return this.customerDetailSubRepo.findMany({
+      where: { customerDetailId: customerId },
+      include: { customerBranch: true },
+    });
+  }
+  findDetailListByCustomerId(customerId: number) {
+    return this.customerDetailSubRepo.findMany({
+      where: { customerDetailId: customerId },
+    });
+  }
   findOneById(id: number) {
     return this.customerDetailSubRepo.findOne({ where: { id: id } });
   }

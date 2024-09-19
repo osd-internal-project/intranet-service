@@ -70,7 +70,14 @@ export class CustomerProjectService {
 
       include: {
         customerBranch: {
-          select: { branchCode: true, branchName: true, customerDetail: true },
+          select: {
+            branchCode: true,
+            branchName: true,
+            customerDetailSub: {
+              select: { code: true, name: true },
+            },
+            customerDetail: true,
+          },
         },
       },
       ...(take && { take: Number(take) }),
@@ -96,7 +103,14 @@ export class CustomerProjectService {
       include: {
         contractCompany: true,
         customerBranch: {
-          select: { branchCode: true, branchName: true, customerDetail: true },
+          select: {
+            branchCode: true,
+            branchName: true,
+            customerDetailSub: {
+              select: { code: true, name: true },
+            },
+            customerDetail: true,
+          },
         },
       },
     });
