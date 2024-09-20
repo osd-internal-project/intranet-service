@@ -254,7 +254,6 @@ export class UserController {
 
   @Get('find-owner-users/:positionId')
   dOwnerUserByPositionId(@Param('positionId') positionId: string) {
-    // console.log(positionId);
     return this.userService.findOwnerUserByPositionId(positionId);
   }
 
