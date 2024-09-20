@@ -77,37 +77,13 @@ export class handbookFileController {
     return this.handbookFileService.findOne(+handbookid);
   }
 
-  @Patch(':idbook')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: `${process.env.PATH_MOUNTDIR_IMAGES_UPLOAD}/handbookfile`,
-        filename: (req, file, cb) => {
-          const fileExtName = extname(file.originalname);
-          const randomName = uuidv4();
-          cb(null, `${randomName}${fileExtName}`);
-        },
-      }),
-    }),
-  )
-  async updateFile(
+  @Patch(':handbookid')
+  update(
     @Param('handbookid') handbookid: number,
-    @UploadedFile() file: Express.Multer.File,
-    @Body() body,
+    @Body() condition: Prisma.handbookFileUpdateArgs,
   ) {
-    const data = {
-      fileName: body.fileName,
-      filetype: body.filetype,
-      author: body.author,
-      status: body.status,
-    } as Prisma.newsImageUpdateInput;
-    Logger.debug(data);
-    return this.handbookFileService.update(+handbookid, {
-      data,
-      where: {
-        handbookid: +handbookid,
-      },
-    });
+    
+    return this.handbookFileService.update(+handbookid, condition);
   }
 
   @Delete(':handbookid')
