@@ -124,8 +124,6 @@ export class SlideImageController {
       `${pathMountDirUpload}/slide-image`,
       `${image.fileId}`,
     );
-    console.log('imagePath:', imagePath);
-
     return res.sendFile(imagePath, { root: './' });
   }
 

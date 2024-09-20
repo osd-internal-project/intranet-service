@@ -28,7 +28,7 @@ export class MaCarBookService {
     return { docs: data, total: count };
   }
 
-  async findManyid(id: string, skip: number, take: number) {
+  async findManyId(id: string, skip: number, take: number) {
     const data = await this.maCarBookRepository.findMany({
       where: {
         createdById: id,
@@ -48,6 +48,18 @@ export class MaCarBookService {
       },
     });
     return { docs: data, total: count };
+  }
+
+  async findManyAllId(id: string) {
+    const data = await this.maCarBookRepository.findMany({
+      where: {
+        createdById: id,
+      },
+      orderBy: {
+        id: 'asc',
+      },
+    });
+    return data;
   }
 
   createdById(createdById: string) {

@@ -35,7 +35,15 @@ export class MaCarBookController {
     @Param('skip') skip: string,
     @Param('take') take: string,
   ) {
-    return this.maCarBookService.findManyid(id, +skip, +take);
+    return this.maCarBookService.findManyId(id, +skip, +take);
+  }
+
+  @Get(':id')
+  byId(
+    @Param('id') id: string,
+   
+  ) {
+    return this.maCarBookService.findManyAllId(id, );
   }
 
   @Patch(':id')
