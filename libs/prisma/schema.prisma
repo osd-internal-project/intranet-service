@@ -818,8 +818,6 @@ model users {
     typeLeaveDisabledMap      typeLeaveDisabledMap[]
     userMapOrganizeGroup      userMapOrganizeGroup[]
     userMapOrganizeGroupOwner userMapOrganizeGroupOwner[]
-    headerUser                String[]                    @map("header_user")
-    headerUserGroup           String[]                    @map("header_user_group")
 }
 
 model userMapOrganizeGroup {
@@ -881,6 +879,8 @@ model userGroup {
     saleUsersId         String[] @map("sale_users_id")
     engineerUserGroupId String[] @map("engineer_user_group_id")
     engineerUsersId     String[] @map("engineer_users_id")
+    headerUser          String[] @map("header_user")
+    headerUserGroup     String[] @map("header_user_group")
     exceptionalSatatus  Boolean? @default(false) @map("exceptional_satatus")
     headId              String?  @map("head_id") @db.VarChar(50)
 
