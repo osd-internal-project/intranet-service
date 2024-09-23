@@ -818,8 +818,8 @@ model users {
     typeLeaveDisabledMap      typeLeaveDisabledMap[]
     userMapOrganizeGroup      userMapOrganizeGroup[]
     userMapOrganizeGroupOwner userMapOrganizeGroupOwner[]
-    headerUser                String[]
-    headerUserGroup           String[]
+    headerUser                String[]                    @map("header_user")
+    headerUserGroup           String[]                    @map("header_user_group")
 }
 
 model userMapOrganizeGroup {
