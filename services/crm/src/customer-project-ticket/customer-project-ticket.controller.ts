@@ -84,7 +84,10 @@ export class CustomerProjectTicketController {
   remove(@Param('id') id: string) {
     return this.customerProjectTicketService.remove(+id);
   }
-
+  @Get('expense/user/:userid')
+  findExpenseByUserId(@Param('userid') userId: string, @Query() query: any) {
+    return this.customerProjectTicketService.findExpenseByUserId(userId, query);
+  }
   @Patch('expense/:expenseid')
   updateExpense(
     @Param('expenseid') expenseId: string,
