@@ -51,6 +51,7 @@ export * from './userGroup.repository';
 export * from './userGroupMap.repository';
 export * from './userRole.repository';
 export * from './userRoleMap.repository';
+export * from './userGroupMapHeader.repository';
 
 //MA
 export * from './maTask.repository';

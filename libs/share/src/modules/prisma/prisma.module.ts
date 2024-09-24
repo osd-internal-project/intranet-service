@@ -52,6 +52,7 @@ import {
   UserGroupUserRoleMapRepository,
   UserMapOrganizeGroupRepository,
   UserMapOrganizeGroupOwnerRepository,
+  UserGroupMapHeaderRepository,
   //MA
   MaTaskRepository,
   MaTypeRepository,
@@ -141,6 +142,7 @@ const services = [
   UserMapOrganizeChartRepository,
   UserMapOrganizeGroupRepository,
   UserMapOrganizeGroupOwnerRepository,
+  UserGroupMapHeaderRepository,
   //Auth
   MasterPositionRepository,
   MasterRuleRepository,

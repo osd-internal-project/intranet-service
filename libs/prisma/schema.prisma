@@ -899,7 +899,6 @@ model userGroupMap {
 
 model userGroupMapHeader {
     id             Int        @unique @default(autoincrement()) @map("id")
-    userId         String?    @map("user_id")
     userGroupId    String?    @map("user_group_id")
     leaveGroupId   String[]   @map("leave_group_Id")
     leaveUserId    String[]   @map("leave_user_Id")
