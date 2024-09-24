@@ -37,15 +37,7 @@ export class CustomerDetailService {
     private readonly userMapOrganizeGroupOwnerRepo: UserMapOrganizeGroupOwnerRepository,
     private readonly accessService: AccessService,
   ) {}
-  startOfDate(date: string) {
-    const dateset = new Date(date).setUTCHours(0, 0, 0, 0);
-    return new Date(dateset);
-  }
 
-  endOfDate(date: string) {
-    const dateset = new Date(date).setUTCHours(23, 59, 59, 59);
-    return new Date(dateset);
-  }
   async create(data: Prisma.customerDetailCreateInput) {
     const responsible = data.responsible as any;
     let responsibleGroup = [];

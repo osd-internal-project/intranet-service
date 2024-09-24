@@ -7,12 +7,13 @@ import {
 } from '@inventory/share';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-
+import * as dayjs from 'dayjs';
+import { endOfDate, startOfDate } from 'src/utils';
 @Injectable()
 export class CustomerProjectTicketService {
   constructor(
     private readonly customerProjectTicketRepo: CustomerProjectTicketRepository,
-    private readonly ticketExpenseogsRepo: TicketExpenseRepository,
+    private readonly ticketExpenseRepo: TicketExpenseRepository,
     private readonly ticketHistoryLogsRepo: TicketHistoryLogsRepository,
     private readonly customerFilesRepo: CustomerFilesRepository,
     private readonly accessService: AccessService,
@@ -109,14 +110,46 @@ export class CustomerProjectTicketService {
   remove(id: number) {
     return this.customerProjectTicketRepo.delete({ where: { id: id } });
   }
+  async findExpenseByUserId(userId: string, query: any) {
+    const {
+      sCreatedDate,
+      eCreatedDate,
+      processStatus,
+      expenseCode,
+      take,
+      skip,
+    } = query;
+
+    const accessedUserIds =
+      await this.accessService.getExpenseAccessedUsersByHeaderUserId(userId);
+    const data = await this.ticketExpenseRepo.findMany({
+      where: {
+        // updatedById: { in: accessedUserIds },
+        ...(expenseCode && { expenseCode: expenseCode }),
+        ...(processStatus && { processStatus: processStatus }),
+        ...(sCreatedDate &&
+          eCreatedDate && {
+            createdAt: {
+              gte: startOfDate(sCreatedDate),
+              lte: endOfDate(eCreatedDate),
+            },
+          }),
+      },
+      include: { expenseType: true, customerProjectTicket: true },
+      orderBy: { createdAt: 'asc' },
+      ...(take && skip && { take: +take, skip: +skip }),
+    });
+    const count = await this.ticketExpenseRepo.count({});
+    return { data, count };
+  }
   updateExpense(id: number, data: Prisma.ticketExpenseUpdateInput) {
-    return this.ticketExpenseogsRepo.update({
+    return this.ticketExpenseRepo.update({
       where: { id: id },
       data: data,
     });
   }
   removeExpense(id: number) {
-    return this.ticketExpenseogsRepo.delete({
+    return this.ticketExpenseRepo.delete({
       where: { id: id },
     });
   }
