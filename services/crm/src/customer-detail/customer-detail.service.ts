@@ -12,7 +12,7 @@ import {
   CustomerRequestTypeRepository,
   UserMapOrganizeGroupOwnerRepository,
   AccessService,
-  ExpendTypeRepository,
+  ExpenseTypeRepository,
   ContractCompanyRepository,
   CustomerProjectRepository,
 } from '@inventory/share';
@@ -31,7 +31,7 @@ export class CustomerDetailService {
     private readonly customerWorkTypeRepo: CustomerWorkTypeRepository,
     private readonly customerRequestTypeRepo: CustomerRequestTypeRepository,
     private readonly customerPriorityRepo: CustomerPriorityRepository,
-    private readonly expendTypeRepo: ExpendTypeRepository,
+    private readonly expenseTypeRepo: ExpenseTypeRepository,
     private readonly customerProjectRepo: CustomerProjectRepository,
     //User
     private readonly userMapOrganizeGroupOwnerRepo: UserMapOrganizeGroupOwnerRepository,
@@ -197,8 +197,8 @@ export class CustomerDetailService {
       where: { activeStatus: true },
     });
   }
-  findConfigExpendType() {
-    return this.expendTypeRepo.findMany({});
+  findConfigExpenseType() {
+    return this.expenseTypeRepo.findMany({});
   }
   findConfigCustomerResponsible() {
     return this.customerResponsibleRepo.findMany({

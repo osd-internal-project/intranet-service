@@ -2,7 +2,7 @@ import {
   AccessService,
   CustomerFilesRepository,
   CustomerProjectTicketRepository,
-  TicketExpendRepository,
+  TicketExpenseRepository,
   TicketHistoryLogsRepository,
 } from '@inventory/share';
 import { Injectable } from '@nestjs/common';
@@ -12,7 +12,7 @@ import { Prisma } from '@prisma/client';
 export class CustomerProjectTicketService {
   constructor(
     private readonly customerProjectTicketRepo: CustomerProjectTicketRepository,
-    private readonly ticketExpendogsRepo: TicketExpendRepository,
+    private readonly ticketExpenseogsRepo: TicketExpenseRepository,
     private readonly ticketHistoryLogsRepo: TicketHistoryLogsRepository,
     private readonly customerFilesRepo: CustomerFilesRepository,
     private readonly accessService: AccessService,
@@ -59,7 +59,7 @@ export class CustomerProjectTicketService {
       where: { id: id },
       include: {
         ticketHistoryLogs: true,
-        ticketExpend: { include: { expendType: true } },
+        ticketExpense: { include: { expenseType: true } },
       },
     });
     const createFiles = await this.customerFilesRepo.findMany({
@@ -109,14 +109,14 @@ export class CustomerProjectTicketService {
   remove(id: number) {
     return this.customerProjectTicketRepo.delete({ where: { id: id } });
   }
-  updateExpend(id: number, data: Prisma.ticketExpendUpdateInput) {
-    return this.ticketExpendogsRepo.update({
+  updateExpense(id: number, data: Prisma.ticketExpenseUpdateInput) {
+    return this.ticketExpenseogsRepo.update({
       where: { id: id },
       data: data,
     });
   }
-  removeExpend(id: number) {
-    return this.ticketExpendogsRepo.delete({
+  removeExpense(id: number) {
+    return this.ticketExpenseogsRepo.delete({
       where: { id: id },
     });
   }

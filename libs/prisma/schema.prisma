@@ -167,7 +167,7 @@ model handbookFile {
     fileId           String    @default(uuid()) @map("file_id") @db.VarChar(50)
     fileName         String?   @default("") @map("file_name") @db.VarChar(200)
     filetype         String?   @default("") @map("file_type") @db.VarChar(200)
-    fileoriginalName String?   @default("") @map("file_origina_name") @db.VarChar(200) 
+    fileoriginalName String?   @default("") @map("file_origina_name") @db.VarChar(200)
     fileLocation     String?   @default("") @map("file_location") @db.VarChar(100)
     author           String?   @default("") @map("author") @db.VarChar(100)
     createdAt        DateTime? @default(now()) @map("created_At")
@@ -1495,17 +1495,17 @@ model customerProjectTicket {
     completeDate      DateTime?           @map("complete_date") @db.Timestamp()
     ticketHistoryLogs ticketHistoryLogs[]
     customerFiles     customerFiles[]
-    ticketExpend      ticketExpend[]
+    ticketExpense     ticketExpense[]
 
     @@map("customer_project_ticket")
 }
 
-model ticketExpend {
+model ticketExpense {
     id                      Int                    @unique @default(autoincrement())
-    expendAmount            Float                  @map("expend_amount")
-    expendPrice             Float                  @map("expend_price")
-    expendType              expendType?            @relation(fields: [expendCode], references: [expendCode])
-    expendCode              String?                @map("expend_code")
+    expenseAmount           Float                  @map("expense_amount")
+    expensePrice            Float                  @map("expense_price")
+    expenseType             expenseType?           @relation(fields: [expenseCode], references: [expenseCode])
+    expenseCode             String?                @map("expense_code")
     processStatus           String?                @map("process_status") @db.Text()
     description             String?                @map("description") @db.Text()
     createdAt               DateTime               @default(now()) @map("created_at") @db.Timestamptz()
@@ -1515,16 +1515,16 @@ model ticketExpend {
     customerProjectTicket   customerProjectTicket? @relation(fields: [customerProjectTicketId], references: [id])
     customerProjectTicketId Int?                   @map("customer_project_ticketId")
 
-    @@map("ticket_expend")
+    @@map("ticket_expense")
 }
 
-model expendType {
-    id           Int            @unique @default(autoincrement())
-    expendCode   String         @unique @map("expend_code") @db.VarChar(20)
-    expendName   String         @map("expend_name") @db.VarChar(200)
-    ticketExpend ticketExpend[]
+model expenseType {
+    id            Int             @unique @default(autoincrement())
+    expenseCode   String          @unique @map("expense_code") @db.VarChar(20)
+    expenseName   String          @map("expense_name") @db.VarChar(200)
+    ticketExpense ticketExpense[]
 
-    @@map("expend_type")
+    @@map("expense_type")
 }
 
 model customerChannelType {

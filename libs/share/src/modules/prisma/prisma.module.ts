@@ -96,8 +96,8 @@ import {
   handbookFileRepository,
   handbooktypeRepository,
   SlideImageRepository,
-  ExpendTypeRepository,
-  TicketExpendRepository,
+  ExpenseTypeRepository,
+  TicketExpenseRepository,
   ContractCompanyRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
@@ -188,8 +188,8 @@ const services = [
   CustomerProjectRepository,
   CustomerProjectTaskRepository,
   CustomerProjectTicketRepository,
-  TicketExpendRepository,
-  ExpendTypeRepository,
+  TicketExpenseRepository,
+  ExpenseTypeRepository,
   CustomerResponsibleRepository,
   CustomerTypeRepository,
   CustomerChannelTypeRepository,

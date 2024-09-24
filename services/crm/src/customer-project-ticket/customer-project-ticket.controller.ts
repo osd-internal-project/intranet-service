@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  Logger,
 } from '@nestjs/common';
 import { CustomerProjectTicketService } from './customer-project-ticket.service';
 import { Prisma } from '@prisma/client';
@@ -68,10 +69,11 @@ export class CustomerProjectTicketController {
   }
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body()
     updateCustomerProjectTicketDto: Prisma.customerProjectTicketUpdateInput,
   ) {
+    Logger.debug(id, updateCustomerProjectTicketDto);
     return this.customerProjectTicketService.update(
       +id,
       updateCustomerProjectTicketDto,
@@ -83,16 +85,16 @@ export class CustomerProjectTicketController {
     return this.customerProjectTicketService.remove(+id);
   }
 
-  @Patch('expend/:expendid')
-  updateExpend(
-    @Param('expendid') expendId: string,
+  @Patch('expense/:expenseid')
+  updateExpense(
+    @Param('expenseid') expenseId: string,
     @Body()
-    data: Prisma.ticketExpendUpdateInput,
+    data: Prisma.ticketExpenseUpdateInput,
   ) {
-    return this.customerProjectTicketService.updateExpend(+expendId, data);
+    return this.customerProjectTicketService.updateExpense(+expenseId, data);
   }
-  @Delete('expend/:expendid')
-  removeExpend(@Param('expendid') id: string) {
-    return this.customerProjectTicketService.removeExpend(+id);
+  @Delete('expense/:expenseid')
+  removeExpense(@Param('expenseid') id: string) {
+    return this.customerProjectTicketService.removeExpense(+id);
   }
 }
