@@ -3,6 +3,7 @@ import {
   dataLeaveFilesRepository,
   MasterTypeLeaveRepository,
   UsersRepository,
+  AccessService,
 } from '@inventory/share';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
@@ -15,6 +16,7 @@ export class DataLeaveService {
     private readonly dataleavefileRepo: dataLeaveFilesRepository,
     private readonly mastertypeLeaveRepo: MasterTypeLeaveRepository,
     private readonly usersRepo: UsersRepository,
+    private readonly accessService: AccessService,
   ) {}
 
   async create(condition: Prisma.dataLeaveCreateArgs) {
@@ -120,6 +122,7 @@ export class DataLeaveService {
     });
     return lastResult;
   }
+
   async findUserByUserId(userId: string) {
     const condition = {
       where: {
@@ -186,6 +189,12 @@ export class DataLeaveService {
       return acc;
     }, {});
     return test;
+  }
+
+  async findLeaveByUserId(userId: string) {
+    const accessedUserIds =
+      await this.accessService.getLeaveAccessedUsersByHeaderUserId(userId);
+    return accessedUserIds;
   }
 
   async update(condition: Prisma.dataLeaveUpdateArgs) {
