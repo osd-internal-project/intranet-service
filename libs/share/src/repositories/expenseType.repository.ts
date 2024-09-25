@@ -54,11 +54,11 @@ export class ExpenseTypeRepository {
     return prisma.expenseType.delete(condition);
   }
   async count(
-    condition: Prisma.inventoryLotCountArgs,
+    condition: Prisma.expenseTypeCountArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.inventoryLot.count(condition);
+    return prisma.expenseType.count(condition);
   }
   async aggregate(
     condition: Prisma.InventoryLotAggregateArgs,
