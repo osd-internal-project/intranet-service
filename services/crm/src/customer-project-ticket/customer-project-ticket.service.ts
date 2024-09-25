@@ -60,7 +60,10 @@ export class CustomerProjectTicketService {
       where: { id: id },
       include: {
         ticketHistoryLogs: true,
-        ticketExpense: { include: { expenseType: true } },
+        ticketExpense: {
+          include: { expenseType: true },
+          orderBy: { id: 'asc' },
+        },
       },
     });
     const createFiles = await this.customerFilesRepo.findMany({
@@ -124,7 +127,7 @@ export class CustomerProjectTicketService {
       await this.accessService.getExpenseAccessedUsersByHeaderUserId(userId);
     const data = await this.ticketExpenseRepo.findMany({
       where: {
-        // updatedById: { in: accessedUserIds },
+        updatedById: { in: accessedUserIds },
         ...(expenseCode && { expenseCode: expenseCode }),
         ...(processStatus && { processStatus: processStatus }),
         ...(sCreatedDate &&
