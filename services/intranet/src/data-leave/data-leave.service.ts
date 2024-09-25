@@ -65,32 +65,12 @@ export class DataLeaveService {
         createdAt: 'asc',
       },
     } as Prisma.dataLeaveFindFirstArgs);
-
     const leaveCountMap = this.countLeavesByTypeIdMap(dataLeaveWrapup);
-
-    // console.log('DataleaveCountMap:', leaveCountMap);
-
     const lastResult = dataTypeLeave.map((event) => {
       let leaveCount = leaveCountMap[event.typeId] || 0;
       const leaveCountlimitMap =
         this.countlimitLeavesByTypeIdMap(dataLeaveWrapup);
       let leaveCountlimit = leaveCountlimitMap[event.typeId] || 0;
-
-      // console.log('limitLeaveFour:', leaveCountlimitMap);
-
-      // let leaveCount = leaveCountMap[event.typeId];
-      // const calHours = leaveCount % 1;
-
-      // if (calHours >= 0.0 && calHours <= 0.2) {
-      //   leaveCount += 0.2;
-      // } else if (calHours > 0.2 && calHours <= 0.8) {
-      //   leaveCount += 0.2;
-      // }
-      // console.log('leaveCountlimit:', leaveCountlimit);
-      // console.log('event.limitLeaveFour:', event.limitLeaveFour);
-      // const limitLeaveLastResult = leaveCountlimit;
-
-      // const limitLeaveLastResult =
       let limitLeaveLastResult =
         numberWorkStart <= 1
           ? Number(event.limitLeaveFour) - leaveCountlimit
@@ -136,8 +116,6 @@ export class DataLeaveService {
         createdAt: event.createdAt,
         updatedAt: event.updatedAt,
       };
-      // console.log('limitLeaveLastResult:', mapdata.limitLeaveLastResult);
-
       return mapdata;
     });
     return lastResult;
@@ -198,13 +176,13 @@ export class DataLeaveService {
       acc[record.typeId] += calLeave;
       let leaveCount = acc[record.typeId];
       const calHours = leaveCount % 1;
-
-      if (calHours >= 0.0 && calHours <= 0.2) {
-        leaveCount += 0.2;
+      if (calLeave % 8 !== 0) {
+        if (calHours >= 0.0 && calHours <= 0.2) {
+          leaveCount += 0.2;
+        }
       }
       acc[record.typeId] = leaveCount;
       acc[record.typeId] = parseFloat(leaveCount.toFixed(2));
-
       return acc;
     }, {});
     return test;

@@ -52,6 +52,7 @@ import {
   UserGroupUserRoleMapRepository,
   UserMapOrganizeGroupRepository,
   UserMapOrganizeGroupOwnerRepository,
+  UserGroupMapHeaderRepository,
   //MA
   MaTaskRepository,
   MaTypeRepository,
@@ -96,8 +97,8 @@ import {
   handbookFileRepository,
   handbooktypeRepository,
   SlideImageRepository,
-  ExpendTypeRepository,
-  TicketExpendRepository,
+  ExpenseTypeRepository,
+  TicketExpenseRepository,
   ContractCompanyRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
@@ -141,6 +142,7 @@ const services = [
   UserMapOrganizeChartRepository,
   UserMapOrganizeGroupRepository,
   UserMapOrganizeGroupOwnerRepository,
+  UserGroupMapHeaderRepository,
   //Auth
   MasterPositionRepository,
   MasterRuleRepository,
@@ -188,8 +190,8 @@ const services = [
   CustomerProjectRepository,
   CustomerProjectTaskRepository,
   CustomerProjectTicketRepository,
-  TicketExpendRepository,
-  ExpendTypeRepository,
+  TicketExpenseRepository,
+  ExpenseTypeRepository,
   CustomerResponsibleRepository,
   CustomerTypeRepository,
   CustomerChannelTypeRepository,

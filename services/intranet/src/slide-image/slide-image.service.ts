@@ -35,4 +35,8 @@ export class SlideImageService {
     const condition = { where: { id: id } } as Prisma.slideImageDeleteArgs;
     return this.SlideImageRepository.delete(condition);
   }
+  findImage(fileId: string) {
+    const condition = { where: { fileId: fileId } } as Prisma.slideImageArgs;
+    return this.SlideImageRepository.findOne(condition);
+  }
 }

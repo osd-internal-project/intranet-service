@@ -18,16 +18,19 @@ import { Response } from 'express';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
+import config from '../configs';
+
+const pathMountDirUpload = config().pathMountDirUpload;
 
 @Controller('slide-image')
 export class SlideImageController {
   constructor(private readonly SlideImageService: SlideImageService) {}
 
-  @Post(':id')
+  @Post('/:id')
   @UseInterceptors(
     FilesInterceptor('files', 10, {
       storage: diskStorage({
-        destination: `${process.env.PATH_MOUNTDIR_UPLOAD}/slide-image`,
+        destination: `${pathMountDirUpload}/slide-image`,
         filename: (req, file, callback) => {
           const fileCode = `${uuidv4()}`;
           const fileType = extname(file.originalname);
@@ -45,6 +48,7 @@ export class SlideImageController {
   ) {
     if (id && type && files.length > 0) {
       const data = {
+        fileId: files[0].filename,
         filePath: files[0].path,
         fileType: files[0].mimetype,
         fileName: Buffer.from(files[0].originalname, 'latin1').toString('utf8'),
@@ -93,20 +97,34 @@ export class SlideImageController {
   //     });
   // }
 
-  @Get('undefined/slide-image/:file')
-  getFileSlide(@Param('file') filename: string, @Res() res: Response): void {
-    const filePath = join('./undefined/slide-image', filename);
-    fsPromises
-      .access(filePath)
-      .then(() => {
-        const file = createReadStream(filePath);
-        res.setHeader('Content-Type', 'image/jpeg');
-        res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
-        file.pipe(res);
-      })
-      .catch(() => {
-        res.status(404).send('File not found');
-      });
+  // @Get('/slide-image/:file')
+  // getFileSlide(@Param('file') filename: string, @Res() res: Response): void {
+  //   const filePath = join(`./undefined/slide-image`, filename);
+  //   fsPromises
+  //     .access(filePath)
+  //     .then(() => {
+  //       const file = createReadStream(filePath);
+  //       res.setHeader('Content-Type', 'image/jpeg');
+  //       res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
+  //       file.pipe(res);
+  //     })
+  //     .catch(() => {
+  //       res.status(404).send('File not found');
+  //     });
+  // }
+
+  @Get('/undefined/slide-image/:file')
+  async getimage(@Param('file') fileId: string, @Res() res: Response) {
+    const image = await this.SlideImageService.findImage(fileId); 
+    if (!image) {
+      return res.status(404).json({ message: 'Image not found' });
+    }
+
+    const imagePath = join(
+      `${pathMountDirUpload}/slide-image`,
+      `${image.fileId}`,
+    );
+    return res.sendFile(imagePath, { root: './' });
   }
 
   // @Get('undefined/slide-image/:file')
