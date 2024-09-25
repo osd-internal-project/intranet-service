@@ -45,6 +45,11 @@ export class DataLeaveController {
     return this.dataLeaveService.findUserByUserId(userId);
   }
 
+  @Get('leave/:userId')
+  findLeaveByUserId(@Param('userId') userId: string) {
+    return this.dataLeaveService.findLeaveByUserId(userId);
+  }
+
   @Patch(':id')
   update(@Body('condition') condition: Prisma.dataLeaveUpdateArgs) {
     return this.dataLeaveService.update(condition);

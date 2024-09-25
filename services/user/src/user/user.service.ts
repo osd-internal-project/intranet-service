@@ -404,4 +404,9 @@ export class UserService {
       grouplist: grouplist,
     };
   }
+  findByUserHeaderCondition(userId, condition) {
+    return this.userMapOrganizeGroupRepo.findMany({
+      where: { usersId: userId },
+    });
+  }
 }

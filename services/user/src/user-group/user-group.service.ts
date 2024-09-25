@@ -88,7 +88,6 @@ export class UserGroupService {
       userRole: string[];
     },
   ) {
-    console.log(data);
     await this.userGroupUserRoleMapRepo.deleteMany({
       where: { userGroupId: groupId },
     });
