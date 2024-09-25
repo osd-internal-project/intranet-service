@@ -28,11 +28,23 @@ export class UserGroupMapHeaderService {
     return this.userGroupMapHeaderRepo.findByCondition(condition);
   }
 
-  async update(id: number, data: Prisma.userGroupMapHeaderUpdateInput) {
+  update(id: number, data: Prisma.userGroupMapHeaderUpdateInput) {
     const condition = {
       where: { id: id },
       data: data,
-    } as Prisma.userGroupMapUpdateArgs;
+    } as Prisma.userGroupMapHeaderUpdateArgs;
+    return this.userGroupMapHeaderRepo.update(condition);
+  }
+
+
+  async updatePermission(groupId: string, data) {
+    const condition = {
+      where: { userGroupId: groupId },
+      data: data,
+    } as Prisma.userGroupMapHeaderUpdateArgs;
+    console.log(groupId);
+    console.log(data);
+    
     return await this.userGroupMapHeaderRepo.update(condition);
   }
 

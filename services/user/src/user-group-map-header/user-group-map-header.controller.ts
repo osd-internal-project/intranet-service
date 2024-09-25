@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Delete,
+  Param,
+} from '@nestjs/common';
 import { UserGroupMapHeaderService } from './user-group-map-header.service';
 import { Prisma } from '@prisma/client';
 @Controller('user-group-map-header')
@@ -24,12 +32,23 @@ export class UserGroupMapHeaderController {
     return this.userGroupMapHeaderService.findByCondition(condition);
   }
 
-  @Patch()
+  @Patch(':id')
   update(
-    @Body('id') id: number,
-    @Body('data') data: Prisma.userGroupMapHeaderUpdateInput,
+    @Param('id') id: number,
+    @Body() data: Prisma.userGroupMapHeaderUpdateInput,
   ) {
-    return this.userGroupMapHeaderService.update(id, data);
+    return this.userGroupMapHeaderService.update(+id, data);
+  }
+
+  @Patch('permission/:groupId')
+  updatePermission(
+    @Param('groupId') groupId: string,
+    @Body()
+    data,
+  ) {
+    console.log(groupId);
+
+    return this.userGroupMapHeaderService.updatePermission(groupId, data);
   }
 
   @Delete()
