@@ -53,7 +53,6 @@ export class handbookFileController {
       fileName: body.fileName,
       filetype: body.filetype,
       author: body.author,
-      // status: body.status,
       fileoriginalName: file.originalname,
       fileLocation: file.path,
       fileId: file.filename,
@@ -91,22 +90,22 @@ export class handbookFileController {
     return this.handbookFileService.remove(+handbookid);
   }
 
-  // @Get('/get-file/:id')
-  // @UseInterceptors(FileInterceptor('files'))
-  // async getfilesByFileName(
-  //   @Param('id') handbookid: number,
-  //   @Res() res: Response,
-  // ) {
-  //   try {
-  //     const file = await this.handbookFileService.findOnes({
-  //       where: { handbookid: +handbookid },
-  //     });
-  //     const filesPath = join(`${file.fileLocation}`);
-  //     res.sendFile(`${filesPath}`, { root: './' });
-  //   } catch (error) {
-  //     res
-  //       .status(404)
-  //       .sendFile('path/to/default/files.jpg', { root: './public' });
-  //   }
-  // }
+  @Get('/get-file/:id')
+  @UseInterceptors(FileInterceptor('files'))
+  async getfilesByFileName(
+    @Param('id') handbookid: number,
+    @Res() res: Response,
+  ) {
+    try {
+      const file = await this.handbookFileService.findOnes({
+        where: { handbookid: +handbookid },
+      });
+      const filesPath = join(`${file.fileLocation}`);
+      res.sendFile(`${filesPath}`, { root: './' });
+    } catch (error) {
+      res
+        .status(404)
+        .sendFile('path/to/default/files.jpg', { root: './public' });
+    }
+  } 
 }

@@ -191,8 +191,8 @@ export class AccessService {
       const accessedGroup = await this.prisma.userGroupMapHeader.findMany({
         where: {
           OR: [
-            { expanseGroupId: { hasSome: owerGroup.groupId } },
-            { expanseUserId: { hasSome: userId } },
+            { expenseGroupId: { hasSome: owerGroup.groupId } },
+            { expenseUserId: { hasSome: userId } },
           ],
         },
       });
