@@ -4,22 +4,6 @@ import { SentMessageInfo, Options } from 'nodemailer/lib/smtp-transport';
 
 @Injectable()
 export class EmailService {
-  private transporter: nodemailer.Transporter<SentMessageInfo, Options>;
-
-  constructor() {
-    this.transporter = nodemailer.createTransport({
-      
-      service:'gmail', // true สำหรับการใช้ port 465
-      auth: {
-        user: 'taksapongk70@gmail.com',
-        pass: 'mnot wowm sooe hmnh', // ใช้ App Password แทนรหัสผ่านปกติ
-      },
-      tls: {
-        rejectUnauthorized: false       // ใช้สำหรับ debug กรณีเซิร์ฟเวอร์มีใบรับรองที่ไม่เชื่อถือ
-      }
-    });
-  }
-
   async sendEmail(subject: string, text: string) {
     const mailOptions = {
       from: 'taksapongk70@gmail.com',
@@ -28,9 +12,19 @@ export class EmailService {
       text,
     };
     console.log(mailOptions);
-    
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 465,
+      auth: {
+        user: 'taksapongk70@gmail.com',
+        pass: 'mnot wowm sooe hmnh', // ใช้ App Password แทนรหัสผ่านปกติ
+      },
+      tls: {
+        rejectUnauthorized: false,
+      },
+    });
     try {
-      const info = await this.transporter.sendMail(mailOptions);
+      const info = await transporter.sendMail(mailOptions); // ใช้ transporter ที่สร้างในฟังก์ชัน
       console.log('Email sent: ' + info.response);
     } catch (error) {
       console.error('Error sending email:', error);
