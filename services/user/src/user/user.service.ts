@@ -65,6 +65,7 @@ export class UserService {
   findOneByCondition(condition: Prisma.usersFindFirstArgs) {
     condition = {
       ...condition,
+
       orderBy: [
         {
           createdAt: 'asc',
@@ -404,9 +405,16 @@ export class UserService {
       grouplist: grouplist,
     };
   }
+
   findByUserHeaderCondition(userId, condition) {
     return this.userMapOrganizeGroupRepo.findMany({
       where: { usersId: userId },
     });
   }
+  findUserHeaderById(userId) {
+    return this.userMapOrganizeGroupRepo.findMany({
+      where: { usersId: userId },
+    });
+  }
+
 }

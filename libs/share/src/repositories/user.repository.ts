@@ -11,6 +11,13 @@ export class UsersRepository {
     const prisma = option?.prisma ?? this.prisma;
     return prisma.users.findMany();
   }
+  async findMany(
+    condition: Prisma.usersFindFirstArgsBase,
+    option?: { prisma?: TQueryClient },
+  ) {
+    const prisma = option?.prisma ?? this.prisma;
+    return prisma.users.findMany(condition);
+  }
   async findByCondition(
     condition: Prisma.usersFindFirstArgsBase,
     option?: { prisma?: TQueryClient },
