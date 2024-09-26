@@ -1,13 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { MaCarWrapupRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
-
+import { EmailService } from '../Emailtranfer/email.service';
+import { header } from '../Emailtranfer/template/macarcreate';
 @Injectable()
 export class MaCarWrapupService {
-  constructor(private readonly macarwrapupRepo: MaCarWrapupRepository) {}
+  constructor(
+    private readonly macarwrapupRepo: MaCarWrapupRepository,
+    private readonly emailService: EmailService,
+  ) {}
+  async create(data: Prisma.maCarWrapupCreateArgs) {
+    const maCarWrapup = await this.macarwrapupRepo.create(data);
+    const emailContent = header(maCarWrapup);
 
-  create(data: Prisma.maCarWrapupCreateArgs) {
-    return this.macarwrapupRepo.create(data);
+    await this.emailService.sendEmail(
+      'aekittipon500@gmail.com',
+      `การสร้าง Task ลำดับที่ ${maCarWrapup.id}`,
+      emailContent,
+    );
+    return maCarWrapup;
   }
 
   async findAll(condition: Prisma.maCarWrapupFindManyArgs) {

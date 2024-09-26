@@ -4,23 +4,30 @@ import { SentMessageInfo, Options } from 'nodemailer/lib/smtp-transport';
 
 @Injectable()
 export class EmailService {
-  async sendEmail(subject: string, text: string) {
+  async sendEmail(to: string, subject: string, html: any) {
     const mailOptions = {
-      from: 'taksapongk70@gmail.com',
-      to: 'aekkung500@gmail.com',
+      from: 'aekkung500@gmail.com',
+      to,
       subject,
-      text,
+      html,
+      attachments: [
+        {
+          filename: 'j139049.png',
+          path: '../imagetemplate/j139049.png',
+          cid: 'unique@j139049.png'
+        }
+      ]
     };
     console.log(mailOptions);
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       port: 465,
       auth: {
-        user: 'taksapongk70@gmail.com',
-        pass: 'mnot wowm sooe hmnh', // ใช้ App Password แทนรหัสผ่านปกติ
+        user: 'aekkung500@gmail.com',
+        pass: 'khti vgpz pznj mhdh', // ใช้ App Password แทนรหัสผ่านปกติ
       },
       tls: {
-        rejectUnauthorized: false,
+        rejectUnauthorized: true,
       },
     });
     try {
