@@ -60,7 +60,10 @@ export class CustomerProjectTicketService {
       where: { id: id },
       include: {
         ticketHistoryLogs: true,
-        ticketExpense: { include: { expenseType: true } },
+        ticketExpense: {
+          include: { expenseType: true },
+          orderBy: { id: 'asc' },
+        },
       },
     });
     const createFiles = await this.customerFilesRepo.findMany({
@@ -124,7 +127,7 @@ export class CustomerProjectTicketService {
       await this.accessService.getExpenseAccessedUsersByHeaderUserId(userId);
     const data = await this.ticketExpenseRepo.findMany({
       where: {
-        // updatedById: { in: accessedUserIds },
+        updatedById: { in: accessedUserIds },
         ...(expenseCode && { expenseCode: expenseCode }),
         ...(processStatus && { processStatus: processStatus }),
         ...(sCreatedDate &&
@@ -139,7 +142,20 @@ export class CustomerProjectTicketService {
       orderBy: { createdAt: 'asc' },
       ...(take && skip && { take: +take, skip: +skip }),
     });
-    const count = await this.ticketExpenseRepo.count({});
+    const count = await this.ticketExpenseRepo.count({
+      where: {
+        updatedById: { in: accessedUserIds },
+        ...(expenseCode && { expenseCode: expenseCode }),
+        ...(processStatus && { processStatus: processStatus }),
+        ...(sCreatedDate &&
+          eCreatedDate && {
+            createdAt: {
+              gte: startOfDate(sCreatedDate),
+              lte: endOfDate(eCreatedDate),
+            },
+          }),
+      },
+    });
     return { data, count };
   }
   updateExpense(id: number, data: Prisma.ticketExpenseUpdateInput) {

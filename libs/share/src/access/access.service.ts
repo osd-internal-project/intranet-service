@@ -159,17 +159,26 @@ export class AccessService {
           ],
         },
       });
+
       const accessedGroupIds = accessedGroup.map((group) => group.userGroupId);
-      if (accessedGroup.length > 0) {
-        const accessedUsers =
-          await this.prisma.userMapOrganizeGroupOwner.findMany({
-            where: { ownerGroupId: { in: accessedGroupIds } },
-          });
-        const accessedUserIds = accessedUsers.map((user) => user.usersId);
-        return accessedUserIds;
-      } else {
-        return [];
-      }
+      const accessedUserGroupIds = accessedGroup.map(
+        (group) => group.leaveUserId,
+      );
+      const UserGroupIds = accessedUserGroupIds.flat();
+
+      // if (accessedGroup.length > 0) {
+      //   const accessedUsers =
+      //     await this.prisma.userMapOrganizeGroupOwner.findMany({
+      //       where: { ownerGroupId: { in: accessedGroupIds } },
+      //     });
+      //   const accessedUserIds = accessedUsers.map((user) => user.usersId);
+      //   console.log('accessedUserIds4:', accessedUserIds);
+
+      //   return accessedUserIds;
+      // } else {
+      //   return [];
+      // }
+      return UserGroupIds;
     } else {
       return [];
     }
@@ -182,8 +191,8 @@ export class AccessService {
       const accessedGroup = await this.prisma.userGroupMapHeader.findMany({
         where: {
           OR: [
-            { expanseGroupId: { hasSome: owerGroup.groupId } },
-            { expanseUserId: { hasSome: userId } },
+            { expenseGroupId: { hasSome: owerGroup.groupId } },
+            { expenseUserId: { hasSome: userId } },
           ],
         },
       });
