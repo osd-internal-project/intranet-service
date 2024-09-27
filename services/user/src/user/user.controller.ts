@@ -95,9 +95,6 @@ export class UserController {
     @Body('condition') condition: Prisma.usersFindManyArgs,
     @Param('userId') userId: Prisma.usersFindManyArgs,
   ) {
-    console.log(condition);
-    console.log(userId);
-
     return this.userService.findByUserHeaderCondition(userId, condition);
   }
 

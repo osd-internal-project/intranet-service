@@ -45,7 +45,7 @@ export class DataLeaveController {
     return this.dataLeaveService.findUserByUserId(userId);
   }
 
-  @Get('leave/:userId')
+  @Get('leave-header/:userId')
   findLeaveByUserId(@Param('userId') userId: string) {
     return this.dataLeaveService.findLeaveByUserId(userId);
   }
