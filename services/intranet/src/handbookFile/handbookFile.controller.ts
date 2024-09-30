@@ -49,7 +49,6 @@ export class handbookFileController {
     if (!file) {
       throw new Error('File is undefined');
     }
-console.log(`${process.env.PATH_MOUNTDIR_IMAGES_UPLOAD}/handbookfile`);
 
     console.log(file.path);
     const data = {
@@ -71,7 +70,6 @@ console.log(`${process.env.PATH_MOUNTDIR_IMAGES_UPLOAD}/handbookfile`);
         where: { handbookid: +handbookid },
       });
     }
-    console.log(process.env.PATH_MOUNTDIR_IMAGES_UPLOAD);
     return this.handbookFileService.findAll({});
   }
 
