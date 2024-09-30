@@ -34,7 +34,7 @@ export class maCarWrapupImageController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: `${process.env.PATH_MOUNTDIR_IMAGES_UPLOAD}/maCarImage`,
+        destination: `./uploads/maCarImage`,
         filename: (req, file, cb) => {
           const fileExtName = extname(file.originalname);
           const randomName = uuidv4();
@@ -78,7 +78,7 @@ export class maCarWrapupImageController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: `${process.env.PATH_MOUNTDIR_IMAGES_UPLOAD}/maCarImage`,
+        destination: `./uploads/maCarImage`,
         filename: (req, file, cb) => {
           const fileExtName = extname(file.originalname);
           const randomName = uuidv4();
@@ -124,12 +124,12 @@ export class maCarWrapupImageController {
     return this.maCarWrapupImageService.remove(+idwarpupImage);
   }
 
-  @Get('undefined/maCarImage/:file')
+  @Get('uploads/maCarImage/:file')
   getFileSlide(
     @Param('file') mafileNameImage: string,
     @Res() res: Response,
   ): void {
-    const filePath = join('./undefined/maCarImage', mafileNameImage);
+    const filePath = join('./uploads/maCarImage', mafileNameImage);
     fsPromises
       .access(filePath)
       .then(() => {

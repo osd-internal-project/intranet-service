@@ -2,11 +2,10 @@ import { Module } from '@nestjs/common';
 import { handbookFileService } from './handbookFile.service';
 import { handbookFileController } from './handbookFile.controller';
 import { PrismaModule } from '@inventory/share';
-import { EmailService } from '../Emailtranfer/email.service'; 
 
 @Module({
   imports: [PrismaModule],
   controllers: [handbookFileController],
-  providers: [handbookFileService,EmailService],
+  providers: [handbookFileService],
 })
 export class handbookFileModule {}
