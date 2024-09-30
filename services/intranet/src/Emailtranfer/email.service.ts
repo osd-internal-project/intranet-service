@@ -24,11 +24,11 @@ export class EmailService {
     console.log(mailOptions);
 
     const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
+      host: 'smtp-mail.outlook.com',
+      port: 587,
       auth: {
-        user: 'aekkung500@gmail.com',
-        pass: 'khti vgpz pznj mhdh', // ใช้ App Password แทนรหัสผ่านปกติ
+        user: 'aekittipon_500@hotmail.com',
+        pass: 'AEKittiponZA123', // ใช้ App Password แทนรหัสผ่านปกติ
       },
       tls: {
         rejectUnauthorized: true,

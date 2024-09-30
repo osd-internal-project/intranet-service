@@ -15,7 +15,7 @@ export class MaCarWrapupService {
     const emailContent = header(maCarWrapup);
 
     await this.emailService.sendEmail(
-      'aekittipon500@gmail.com ',
+      'aekittipon500@gmail.com',
       // , taksapongk@osd.co.th
       `การสร้าง Task ลำดับที่ ${maCarWrapup.id}`,
       emailContent,
