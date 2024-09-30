@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { handbookFileRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 import { promises as fsPromises } from 'fs';
-import { EmailService } from '../Emailtranfer/email.service';  // Import email service
+import { EmailService } from '../Emailtranfer/email.service'; // Import email service
 
 @Injectable()
 export class handbookFileService {
@@ -17,8 +17,8 @@ export class handbookFileService {
 
     // ส่งอีเมลแจ้งเตือนเมื่อสร้าง handbook ใหม่
     // await this.emailService.sendEmail(
-    //   // 'aekkung500@gmail.com', 
-    //   'New Handbook Created', 
+    //   // 'aekkung500@gmail.com',
+    //   'New Handbook Created',
     //   `A new handbook with ID ${handbook.handbookid} has been created.`
     // );
 
@@ -91,5 +91,13 @@ export class handbookFileService {
   findOnes(condition: Prisma.handbookFileFindFirstArgs) {
     return this.handbookFileRepo.findOne(condition);
   }
-  
+
+  findHandbookFilesAll(condition: Prisma.handbookFileFindManyArgs) {
+    return this.handbookFileRepo.findMany({
+      ...condition,
+      orderBy: {
+        handbookid: 'desc',
+      },
+    });
+  }
 }

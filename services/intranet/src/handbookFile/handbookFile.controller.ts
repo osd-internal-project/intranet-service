@@ -107,4 +107,14 @@ export class handbookFileController {
         .sendFile('path/to/default/files.jpg', { root: './public' });
     }
   }
+
+  @Get("downloadfiles")
+  findHandbookFilesAll(@Query('handbookid') handbookid?: number) {
+    if (handbookid) {
+      return this.handbookFileService.findAll({
+        where: { handbookid: +handbookid },
+      });
+    }
+    return this.handbookFileService.findHandbookFilesAll({});
+  }
 }
