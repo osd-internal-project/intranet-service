@@ -13,82 +13,188 @@
         justify-content: center;
         align-items: center;
         height: 100vh;
+        background-color: #EDF5FF;
       "
     >
       <div
         class="head"
-        style="
+        style="background-color: #ffffff;
           margin: 20px 10px 10px 0;
-          border: 10px solid rgb(88, 162, 247);
           width: 800px;
+          border-radius: 40px;
+          box-shadow: 0px 0px 10px 7px  rgba(0, 0, 0, 0.09);
         "
       >
+        
         <div
           class="image"
           style="
-            text-align: center;
-            /* border: 10px solid rgb(56, 73, 92); */
-            margin: 20px 20px 30px 20px;
+            text-align: left;
+            margin: 40px 20px 30px 40px;
           "
         >
           <img
-            style="width: 400px; height: 150px"
-            src="cid:unique@j139049.png" alt="OSD"
+            style="
+              width: 115px;
+              height: 45px;
+            "
+            src="./j139049.png"
+            alt="OSD"
           />
         </div>
-        <p style="text-align: center; font-size: 24px">
-          มีการสร้าง task MaCar warpup ใหม่
+        <div
+          style="
+            margin: 30px 100px 20px 100px;
+            text-align: right;
+          "
+        >วันที่ ${formatThaiDate(new Date(maCarWrapup.createdAt))}
+        </div>
+        <div style="margin: 0 10px 0 40px ;">
+          <p style="font-size: 16px ; font-weight: bold;">เรียน 
+            <samp style="font-weight:lighter;">ผู้ขออนุมัติการรอนุมัติ</samp>
+          </p>
         </p>
+          <p style="font-size: 16px ; font-weight: bold;">หัวข้อเรื่อง 
+            <samp style="font-weight:lighter;">การขอตรวจเช็คภาพรถ</samp>
+          </p>
+        </p>
+        </div>
+        
 
         <div
           class="image"
           style="
-            text-align: center;
-            margin: 20px 20px 10px 20px;
+            margin: 20px 40px 10px 40px;
             font-size: 16px;
           "
         >
           <p>
-            มีการทำ task ใหม่ ในลำดับที่ ${ maCarWrapup.id }
-            เพื่อการสร้างการตรวจสอบสภาพรถ
+            ขออนุญาตการตรวจเช็คสภาพรถในลำดับที่ ${maCarWrapup.id} เพื่อการตรวจสอบสภาพรถ ${maCarWrapup.carName} 
+            โดยการเช็คสภาพครั้งนี้เป็นการตรวจเช็ค ${maCarWrapup.typeName} เนื่อจากถึงระยะที่กำหนด ระยะ ${maCarWrapup.wrapupMiles} กิโลเมตร 
+            หรือ ระยะเวลาวันที่กำหนดที่เวลา ${maCarWrapup.dateStart} จึงเรียน เพื่อให้ผู้อนมัติทราบ
           </p>
+          <div style="margin: 40px 10px 0 0px ;">
+            <p style="font-size: 16px ; font-weight: bold;"> รายละเอียดดังนี้
+            </p>
+          </div>
           <div
             class="image"
             style="
               text-align: left;
-              margin: 20px 80px 10px 80px;
+              margin: 20px 80px 60px -10px;
               font-size: 16px;
             "
           >
-            <p>
-              สำหรับรถ :
-              <span style="font-weight: bold">${ maCarWrapup.carName }</span>
-            </p>
-
-            <p>โดยเลขไมล์รถเดิมอยู่ที่ : ${maCarWrapup.wrapupMiles} กิโลเมตร</p>
-            <p>
-              เพื่อเช็คสภาพในส่วนของ :
-              <span style="font-style: italic">${ maCarWrapup.typeName }</span>
-            </p>
-            <p>สถานที่ทำการตรวจสภาพที่ : ${maCarWrapup.vender}</p>
-            <p>โดยมีจุดประสงค์ในการตรวจสภาพดังนี้ :</p>
-            <p style="padding-left: 20px">${maCarWrapup.detail}</p>
-            <p>
-              มีค่าใช้จ่ายทั้งสิ้น :
-              <span style="color: green;font-size: 18px;"
-                >${formatCurrency( Number(maCarWrapup.cost), )} บาท</span
-              >
-            </p>
-            <p>หมายเหตุ : ${maCarWrapup.remark}</p>
-            <p>
-              โดยการสร้าง task จะเริ่มที่เวลา ${formatThaiDate( new
-              Date(maCarWrapup.createdAt), )}
-            </p>
-            <p>สถานะการตรวจเช็ค : ${maCarWrapup.status=== true 
-              ? 'ผ่านการตรวจเช็ค' 
-              : maCarWrapup.status === false 
-                ? 'ไม่ผ่านการตรวจเช็ค' 
-                : 'รอการอนุมัติ'}</p>
+            <table style="width: 100%; border-collapse: collapse">
+              <tr>
+                <td
+                  style="
+                    font-weight: bold;
+                    width: 35%;
+                    padding-left: 10px;
+                    vertical-align: top;
+                  "
+                >
+                  ชื่อรถ :
+                </td>
+                <td style="padding-left: 10px">${maCarWrapup.carName}</td>
+              </tr>
+              <tr>
+                <td
+                  style="
+                    font-weight: bold;
+                    padding-left: 10px;
+                    vertical-align: top;
+                  "
+                >
+                  เลขไมล์ :
+                </td>
+                <td style="padding-left: 10px">
+                  ${maCarWrapup.wrapupMiles} กิโลเมตร
+                </td>
+              </tr>
+              <tr>
+                <td
+                  style="
+                    font-weight: bold;
+                    padding-left: 10px;
+                    vertical-align: top;
+                  "
+                >
+                  วันที่ครบกำหนดตรวจสภาพ :
+                </td>
+                <td style="padding-left: 10px; font-style: italic">
+                  ${maCarWrapup.dateStart}
+                </td>
+              </tr>
+              <tr>
+                <td
+                  style="
+                    font-weight: bold;
+                    padding-left: 10px;
+                    vertical-align: top;
+                  "
+                >
+                  ประเภทการตรวจสภาพ :
+                </td>
+                <td style="padding-left: 10px">${maCarWrapup.typeName}</td>
+              </tr>
+              <tr>
+                <td
+                  style="
+                    font-weight: bold;
+                    padding-left: 10px;
+                    vertical-align: top;
+                  "
+                >
+                  สถานที่การตรวจสภาพ :
+                </td>
+                <td style="padding-left: 10px">${maCarWrapup.vender}</td>
+              </tr>
+              <tr>
+                <td
+                  style="
+                    font-weight: bold;
+                    padding-left: 10px;
+                    vertical-align: top;
+                  "
+                >
+                  รายละเอียดการตรวจสภาพ :
+                </td>
+                <td style="padding-left: 10px">${maCarWrapup.detail}</td>
+              </tr>
+              <tr>
+                <td
+                  style="
+                    font-weight: bold;
+                    padding-left: 10px;
+                    vertical-align: top;
+                  "
+                >
+                  ราคา :
+                </td>
+                <td style="padding-left: 10px; color: green; font-size: 18px">
+                  ${formatCurrency(Number(maCarWrapup.cost))} บาท
+                </td>
+              </tr>
+              <tr>
+                <td
+                  style="
+                    font-weight: bold;
+                    padding-left: 10px;
+                    vertical-align: top;
+                  "
+                >
+                  หมายเหตุ :
+                </td>
+                <td style="padding-left: 10px">${maCarWrapup.remark}</td>
+              </tr>
+            </table>
+          </div>
+          <div style="margin: 0 0 50px 0px ;">
+              <p style="font-size: 16px ; font-weight: bold;"> ผู้ขออนุมัติ : 
+                <samp style="font-weight: lighter;">${maCarWrapup.createbyName}</samp>
+              </p>
           </div>
         </div>
       </div>
