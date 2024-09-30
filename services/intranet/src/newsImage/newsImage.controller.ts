@@ -32,7 +32,7 @@ export class NewsImageController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: `${process.env.PATH_MOUNTDIR_IMAGES_UPLOAD}/newsimage`,
+        destination: `./uploads/newsimage`,
         filename: (req, file, cb) => {
           const fileExtName = extname(file.originalname);
           const randomName = uuidv4();
@@ -90,8 +90,6 @@ export class NewsImageController {
     if (!file) {
       throw new BadRequestException('File is undefined');
     }
-
-    // Get the existing images related to the newsId
     const existingImages = this.newsImageService.findMany({
       where: { newsId: +newsId },
       orderBy: { createdAt: 'asc' },
@@ -104,7 +102,7 @@ export class NewsImageController {
 
     const data = {
       fileimageName: file.originalname,
-      fileimagePath: file.path,
+      fileimagePath: `${process.env.PATH_MOUNTDIR_IMAGES_UPLOAD}/newsimage/${file.filename}`,
       fileName: file.filename,
     } as Prisma.newsImageUpdateInput;
 
@@ -120,12 +118,12 @@ export class NewsImageController {
     return this.newsImageService.remove(+imageId);
   }
 
-  @Get('undefined/newsimage/:file')
+  @Get('uploads/newsimage/:file')
   getFileSlide(
     @Param('file') fileimageName: string,
     @Res() res: Response,
   ): void {
-    const filePath = join('./undefined/newsimage', fileimageName);
+    const filePath = join('./uploads/newsimage', fileimageName);
     fsPromises
       .access(filePath)
       .then(() => {

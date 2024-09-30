@@ -12,15 +12,9 @@ import {
   StreamableFile,
   Res,
 } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
-import { diskStorage } from 'multer';
-import { v4 as uuidv4 } from 'uuid';
-import { extname, join } from 'path';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { join } from 'path';
 import { createReadStream } from 'fs';
-import { env } from 'process';
 import { Response } from 'express';
-import { Buffer } from 'buffer';
 @Controller('public')
 export class PublicController {
   @Get('news-image/:filename')
@@ -28,8 +22,7 @@ export class PublicController {
     @Param('filename') filename: string,
     @Res() res: Response,
   ): void {
-    // const filesPath =  join(`./undefined/newsimage`,filename);
-    const file = createReadStream(join(`./undefined/newsimage`, filename));
+    const file = createReadStream(join(`./uploads/newsimage`, filename));
     res.set({
       'Content-Type': 'image/jpeg',
       'Content-Disposition': `inline; filename="${file}"`,
@@ -43,10 +36,7 @@ export class PublicController {
     @Query('fileName') fileName: string,
     @Res() res: Response,
   ): void {
-    
-
-    // ระบุตำแหน่งไฟล์
-    const filePath = join('./undefined/handbookfile', fileId);
+    const filePath = join('./uploads/handbookfile', fileId);
     const file = createReadStream(filePath);
 const fileNewName =decodeURIComponent(fileName) 
     console.log(fileNewName,filePath)
@@ -54,13 +44,10 @@ const fileNewName =decodeURIComponent(fileName)
       console.error('Error:', err);
       return res.status(404).send('File not found');
     });
-
-    // ตั้งค่า Content-Disposition ให้รองรับชื่อไฟล์ภาษาไทย
     res.set({
       'Content-Type': 'application/pdf',
       'Content-Disposition': `attachment; filename="export.pdf"`,
     });
-    // ส่งไฟล์กลับไปยังผู้ใช้
     file.pipe(res);
   }
 
@@ -70,8 +57,7 @@ const fileNewName =decodeURIComponent(fileName)
     @Res() res: Response,
   ): void {
     console.log(maName);
-    // const filesPath =  join(`./undefined/handbookfile`,filename);
-    const file = createReadStream(join(`./undefined/maCarImage`, maName));
+    const file = createReadStream(join(`./uploads/maCarImage`, maName));
     res.set({
       'Content-Type': 'image/jpeg',
       'Content-Disposition': `inline; fileName="${file}"`,
