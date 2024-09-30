@@ -81,7 +81,6 @@ export class handbookFileController {
     @Param('handbookid') handbookid: number,
     @Body() condition: Prisma.handbookFileUpdateArgs,
   ) {
-    
     return this.handbookFileService.update(+handbookid, condition);
   }
 
@@ -93,13 +92,16 @@ export class handbookFileController {
   @Get('/get-file/:id')
   @UseInterceptors(FileInterceptor('files'))
   async getfilesByFileName(
-    @Param('id') handbookid: number,
+    @Param('id') handbookid: string,
     @Res() res: Response,
   ) {
     try {
       const file = await this.handbookFileService.findOnes({
         where: { handbookid: +handbookid },
       });
+      console.log(2);
+      console.log('file:', file);
+
       const filesPath = join(`${file.fileLocation}`);
       res.sendFile(`${filesPath}`, { root: './' });
     } catch (error) {
@@ -107,5 +109,5 @@ export class handbookFileController {
         .status(404)
         .sendFile('path/to/default/files.jpg', { root: './public' });
     }
-  } 
+  }
 }

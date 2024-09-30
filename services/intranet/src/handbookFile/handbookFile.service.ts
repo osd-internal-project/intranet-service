@@ -2,24 +2,24 @@ import { Injectable } from '@nestjs/common';
 import { handbookFileRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 import { promises as fsPromises } from 'fs';
-import { EmailService } from '../public/email.service';  // Import email service
+import { EmailService } from '../public/email.service'; // Import email service
 
 @Injectable()
 export class handbookFileService {
   [x: string]: any;
   constructor(
     private readonly handbookFileRepo: handbookFileRepository,
-    private readonly emailService: EmailService,  // Inject email service
+    private readonly emailService: EmailService, // Inject email service
   ) {}
 
   async create(data: Prisma.handbookFileCreateArgs) {
     const handbook = await this.handbookFileRepo.create(data);
-    
+
     // ส่งอีเมลแจ้งเตือนเมื่อสร้าง handbook ใหม่
     await this.emailService.sendEmail(
-      // 'aekkung500@gmail.com', 
-      'New Handbook Created', 
-      `A new handbook with ID ${handbook.handbookid} has been created.`
+      // 'aekkung500@gmail.com',
+      'New Handbook Created',
+      `A new handbook with ID ${handbook.handbookid} has been created.`,
     );
 
     return handbook;
@@ -35,12 +35,12 @@ export class handbookFileService {
     await this.emailService.sendEmail(
       // 'aekkung500@gmail.com',
       'Handbook Updated',
-      `Handbook with ID ${handbookid} has been updated.`
+      `Handbook with ID ${handbookid} has been updated.`,
     );
 
     return handbook;
   }
-  
+
   findAll(condition: Prisma.handbookFileFindManyArgs) {
     return this.handbookFileRepo.findMany({
       ...condition,
@@ -72,7 +72,7 @@ export class handbookFileService {
     await this.emailService.sendEmail(
       // 'aekkung500@gmail.com',
       'Handbook Deleted',
-      `Handbook with ID ${handbookid} has been deleted.`
+      `Handbook with ID ${handbookid} has been deleted.`,
     );
 
     return this.handbookFileRepo.delete(condition);
@@ -87,4 +87,9 @@ export class handbookFileService {
       console.error(`Error deleting file ${fileLocation}: ${err.message}`);
     }
   }
+
+  findOnes(condition: Prisma.handbookFileFindFirstArgs) {
+    return this.handbookFileRepo.findOne(condition);
+  }
+  
 }
