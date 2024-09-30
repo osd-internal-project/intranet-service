@@ -99,9 +99,6 @@ export class handbookFileController {
       const file = await this.handbookFileService.findOnes({
         where: { handbookid: +handbookid },
       });
-      console.log(2);
-      console.log('file:', file);
-
       const filesPath = join(`${file.fileLocation}`);
       res.sendFile(`${filesPath}`, { root: './' });
     } catch (error) {
