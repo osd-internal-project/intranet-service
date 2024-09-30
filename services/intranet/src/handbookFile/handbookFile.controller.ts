@@ -85,7 +85,6 @@ console.log(`${process.env.PATH_MOUNTDIR_IMAGES_UPLOAD}/handbookfile`);
     @Param('handbookid') handbookid: number,
     @Body() condition: Prisma.handbookFileUpdateArgs,
   ) {
-    
     return this.handbookFileService.update(+handbookid, condition);
   }
 
@@ -97,7 +96,7 @@ console.log(`${process.env.PATH_MOUNTDIR_IMAGES_UPLOAD}/handbookfile`);
   @Get('/get-file/:id')
   @UseInterceptors(FileInterceptor('files'))
   async getfilesByFileName(
-    @Param('id') handbookid: number,
+    @Param('id') handbookid: string,
     @Res() res: Response,
   ) {
     try {
@@ -111,5 +110,15 @@ console.log(`${process.env.PATH_MOUNTDIR_IMAGES_UPLOAD}/handbookfile`);
         .status(404)
         .sendFile('path/to/default/files.jpg', { root: './public' });
     }
-  } 
+  }
+
+  @Get("downloadfiles")
+  findHandbookFilesAll(@Query('handbookid') handbookid?: number) {
+    if (handbookid) {
+      return this.handbookFileService.findAll({
+        where: { handbookid: +handbookid },
+      });
+    }
+    return this.handbookFileService.findHandbookFilesAll({});
+  }
 }

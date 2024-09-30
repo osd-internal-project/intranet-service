@@ -23,7 +23,7 @@ export class handbookFileService {
 
     return handbook;
   }
-  
+
   findAll(condition: Prisma.handbookFileFindManyArgs) {
     return this.handbookFileRepo.findMany({
       ...condition,
@@ -62,5 +62,18 @@ export class handbookFileService {
     } catch (err) {
       console.error(`Error deleting file ${fileLocation}: ${err.message}`);
     }
+  }
+
+  findOnes(condition: Prisma.handbookFileFindFirstArgs) {
+    return this.handbookFileRepo.findOne(condition);
+  }
+
+  findHandbookFilesAll(condition: Prisma.handbookFileFindManyArgs) {
+    return this.handbookFileRepo.findMany({
+      ...condition,
+      orderBy: {
+        handbookid: 'desc',
+      },
+    });
   }
 }
