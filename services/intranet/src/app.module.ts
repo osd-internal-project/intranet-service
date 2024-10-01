@@ -64,6 +64,7 @@ import { handbookFileModule } from './handbookFile/handbookFile.module';
     SlideImageModule,
     maCarWrapupImageModule,
     handbookFileModule
+    
   ],
   controllers: [IntranetController, PublicController],
   providers: [IntranetService],

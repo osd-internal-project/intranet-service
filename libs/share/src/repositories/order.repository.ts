@@ -54,17 +54,17 @@ export class OrderRepository {
     return prisma.order.delete(condition);
   }
   async count(
-    condition: Prisma.inventoryLotCountArgs,
+    condition: Prisma.orderCountArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.inventoryLot.count(condition);
+    return prisma.order.count(condition);
   }
   async aggregate(
-    condition: Prisma.InventoryLotAggregateArgs,
+    condition: Prisma.OrderAggregateArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.inventoryLot.aggregate(condition);
+    return prisma.order.aggregate(condition);
   }
 }

@@ -6,10 +6,22 @@ import { promises as fsPromises } from 'fs';
 @Injectable()
 export class handbookFileService {
   [x: string]: any;
-  constructor(private readonly handbookFileRepo: handbookFileRepository) {}
+  constructor(
+    private readonly handbookFileRepo: handbookFileRepository,
+  ) {}
 
-  create(data: Prisma.handbookFileCreateArgs) {
-    return this.handbookFileRepo.create(data);
+  async create(data: Prisma.handbookFileCreateArgs) {
+    const handbook = await this.handbookFileRepo.create(data);
+    return handbook;
+  }
+
+  async update(handbookid: number, condition: Prisma.handbookFileUpdateArgs) {
+    const handbook = await this.handbookFileRepo.update({
+      where: { handbookid },
+      data: { ...condition },
+    });
+
+    return handbook;
   }
 
   findAll(condition: Prisma.handbookFileFindManyArgs) {
@@ -31,32 +43,17 @@ export class handbookFileService {
     return this.handbookFileRepo.findOne(base);
   }
 
-  // findOnes(condition: Prisma.handbookFileFindFirstArgs) {
-  //   return this.handbookFileRepo.findOne(condition);
-  // }
-
-  update(handbookid: number, condition: Prisma.handbookFileUpdateArgs) {
-    const base = {
-      where: {
-        handbookid: handbookid,
-      },
-      data: { ...condition },
-    } as Prisma.handbookFileUpdateArgs;
-    return this.handbookFileRepo.update(base);
-  }
-
   async remove(handbookid: number) {
-    const condition = {
-      where: {
-        handbookid: handbookid,
-      },
-    };
+    const condition = { where: { handbookid } };
     const filespdf = await this.handbookFileRepo.findMany(condition);
+
     filespdf.map((filespdf) => {
       this.deleteFile(filespdf.fileLocation);
     });
+
     return this.handbookFileRepo.delete(condition);
   }
+
   async deleteFile(fileLocation: string) {
     const filePath = `${fileLocation}`;
     try {
@@ -65,5 +62,18 @@ export class handbookFileService {
     } catch (err) {
       console.error(`Error deleting file ${fileLocation}: ${err.message}`);
     }
+  }
+
+  findOnes(condition: Prisma.handbookFileFindFirstArgs) {
+    return this.handbookFileRepo.findOne(condition);
+  }
+
+  findHandbookFilesAll(condition: Prisma.handbookFileFindManyArgs) {
+    return this.handbookFileRepo.findMany({
+      ...condition,
+      orderBy: {
+        handbookid: 'desc',
+      },
+    });
   }
 }

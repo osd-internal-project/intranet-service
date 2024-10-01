@@ -3,6 +3,8 @@ import {
   dataLeaveFilesRepository,
   MasterTypeLeaveRepository,
   UsersRepository,
+  AccessService,
+  UserGroupMapHeaderRepository,
 } from '@inventory/share';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
@@ -15,6 +17,8 @@ export class DataLeaveService {
     private readonly dataleavefileRepo: dataLeaveFilesRepository,
     private readonly mastertypeLeaveRepo: MasterTypeLeaveRepository,
     private readonly usersRepo: UsersRepository,
+    private readonly accessService: AccessService,
+    private readonly userGroupMapHeaderRepo: UserGroupMapHeaderRepository,
   ) {}
 
   async create(condition: Prisma.dataLeaveCreateArgs) {
@@ -120,6 +124,7 @@ export class DataLeaveService {
     });
     return lastResult;
   }
+
   async findUserByUserId(userId: string) {
     const condition = {
       where: {
@@ -186,6 +191,31 @@ export class DataLeaveService {
       return acc;
     }, {});
     return test;
+  }
+
+  async findLeaveByUserId(userId: string) {
+    const accessedUserIds = await this.accessService.getOwnerGroupByUserId(
+      userId,
+    );
+    if (accessedUserIds) {
+      const header = await this.userGroupMapHeaderRepo.findOne({
+        where: { userGroupId: accessedUserIds.groupId },
+      });
+      if (header) {
+        if (header.leaveUserId.length > 0) {
+          const users = await this.usersRepo.findMany({
+            where: {
+              userId: {
+                in: header.leaveUserId,
+              },
+            },
+          });
+          return users;
+        } else {
+        }
+      }
+    }
+    return [];
   }
 
   async update(condition: Prisma.dataLeaveUpdateArgs) {

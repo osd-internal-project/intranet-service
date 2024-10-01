@@ -51,6 +51,7 @@ export * from './userGroup.repository';
 export * from './userGroupMap.repository';
 export * from './userRole.repository';
 export * from './userRoleMap.repository';
+export * from './userGroupMapHeader.repository';
 
 //MA
 export * from './maTask.repository';
@@ -85,8 +86,8 @@ export * from './customerFiles.repository';
 export * from './customerProject.repository';
 export * from './customerProjectTask.repository';
 export * from './customerProjectTicket.repository';
-export * from './ticketExpend.repository';
-export * from './expendType.repository';
+export * from './ticketExpense.repository';
+export * from './expenseType.repository';
 export * from './customerResponsible.repository';
 export * from './customerType.repository';
 export * from './customerChannelType.repository';

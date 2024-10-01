@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { MasterRuleRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 
@@ -7,6 +7,7 @@ export class MasterRuleService {
   constructor(private masterRuleRepo: MasterRuleRepository) {}
 
   create(data: Prisma.masterRuleCreateInput) {
+    Logger.debug(data);
     const condition = { data: data } as Prisma.masterRuleCreateArgs;
     return this.masterRuleRepo.create(condition);
   }

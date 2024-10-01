@@ -4,61 +4,61 @@ import { TQueryClient } from '../modules/prisma/types';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
-export class TicketExpendRepository {
+export class ExpenseTypeRepository {
   constructor(private prisma: PrismaService) {}
 
   async findAll(option?: { prisma?: TQueryClient }) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.ticketExpend.findMany();
+    return prisma.expenseType.findMany();
   }
   async findMany(
-    condition: Prisma.ticketExpendFindFirstArgsBase,
+    condition: Prisma.expenseTypeFindFirstArgsBase,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.ticketExpend.findMany(condition);
+    return prisma.expenseType.findMany(condition);
   }
   async findOne(
-    condition: Prisma.ticketExpendFindFirstArgsBase,
+    condition: Prisma.expenseTypeFindFirstArgsBase,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.ticketExpend.findFirst(condition);
+    return prisma.expenseType.findFirst(condition);
   }
   async create(
-    condition: Prisma.ticketExpendCreateArgs,
+    condition: Prisma.expenseTypeCreateArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.ticketExpend.create(condition);
+    return prisma.expenseType.create(condition);
   }
   async createMany(
-    data: Prisma.ticketExpendCreateManyArgs,
+    data: Prisma.expenseTypeCreateManyArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.ticketExpend.createMany(data);
+    return prisma.expenseType.createMany(data);
   }
   async update(
-    data: Prisma.ticketExpendUpdateArgs,
+    data: Prisma.expenseTypeUpdateArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.ticketExpend.update(data);
+    return prisma.expenseType.update(data);
   }
   async delete(
-    condition: Prisma.ticketExpendDeleteArgs,
+    condition: Prisma.expenseTypeDeleteArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.ticketExpend.delete(condition);
+    return prisma.expenseType.delete(condition);
   }
   async count(
-    condition: Prisma.inventoryLotCountArgs,
+    condition: Prisma.expenseTypeCountArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.inventoryLot.count(condition);
+    return prisma.expenseType.count(condition);
   }
   async aggregate(
     condition: Prisma.InventoryLotAggregateArgs,

@@ -30,6 +30,12 @@ export class InformationController {
   findAll(@Query() query) {
     return this.informationNewsService.findAll(query);
   }
+  @Get("home/news")
+  findNewsAll(@Query() query) {
+    return this.informationNewsService.findNewsAll(query);
+  }
+
+  
 
   @Get(':newsId')
   findOne(@Param('newsId') newsId: number) {

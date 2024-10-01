@@ -29,6 +29,7 @@ export class ProfileRuleController {
   ) {
     try {
       const created = await this.profileRuleService.create(profile);
+
       if (created) {
         const mapRules = rules.map((rule) => ({
           masterRuleId: rule,

@@ -145,4 +145,61 @@ export class AccessService {
 
     return result;
   }
+
+  async getLeaveAccessedUsersByHeaderUserId(userId: string) {
+    const owerGroup = await this.prisma.userGroup.findFirst({
+      where: { userMapOrganizeGroupOwner: { some: { usersId: userId } } },
+    });
+    if (owerGroup) {
+      const accessedGroup = await this.prisma.userGroupMapHeader.findMany({
+        where: {
+          OR: [
+            { leaveGroupId: { hasSome: owerGroup.groupId } },
+            { leaveUserId: { hasSome: userId } },
+          ],
+        },
+      });
+      const accessedGroupIds = accessedGroup.map((group) => group.userGroupId);
+      if (accessedGroup.length > 0) {
+        const accessedUsers =
+          await this.prisma.userMapOrganizeGroupOwner.findMany({
+            where: { ownerGroupId: { in: accessedGroupIds } },
+          });
+        const accessedUserIds = accessedUsers.map((user) => user.usersId);
+        return accessedUserIds;
+      } else {
+        return [];
+      }
+    } else {
+      return [];
+    }
+  }
+  async getExpenseAccessedUsersByHeaderUserId(userId: string) {
+    const owerGroup = await this.prisma.userGroup.findFirst({
+      where: { userMapOrganizeGroupOwner: { some: { usersId: userId } } },
+    });
+    if (owerGroup) {
+      const accessedGroup = await this.prisma.userGroupMapHeader.findMany({
+        where: {
+          OR: [
+            { expenseGroupId: { hasSome: owerGroup.groupId } },
+            { expenseUserId: { hasSome: userId } },
+          ],
+        },
+      });
+      const accessedGroupIds = accessedGroup.map((group) => group.userGroupId);
+      if (accessedGroup.length > 0) {
+        const accessedUsers =
+          await this.prisma.userMapOrganizeGroupOwner.findMany({
+            where: { ownerGroupId: { in: accessedGroupIds } },
+          });
+        const accessedUserIds = accessedUsers.map((user) => user.usersId);
+        return accessedUserIds;
+      } else {
+        return [];
+      }
+    } else {
+      return [];
+    }
+  }
 }

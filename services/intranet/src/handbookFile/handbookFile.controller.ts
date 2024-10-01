@@ -29,7 +29,7 @@ export class handbookFileController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: `${process.env.PATH_MOUNTDIR_IMAGES_UPLOAD}/handbookfile`,
+        destination: `./uploads/handbookfile`,
         filename: (req, file, cb) => {
           const fileExtName = extname(file.originalname);
           const randomName = uuidv4();
@@ -38,27 +38,28 @@ export class handbookFileController {
       }),
     }),
   )
+  
+  
+  
   uploadFile(
     // @Param('handbookid') handbookid: string,
     @UploadedFile() file: Express.Multer.File,
     @Body() body,
   ) {
-    Logger.debug(file);
-    Logger.debug(body);
     if (!file) {
       throw new Error('File is undefined');
     }
-    Logger.debug('bodydata', body);
+
+    console.log(file.path);
     const data = {
       fileName: body.fileName,
       filetype: body.filetype,
       author: body.author,
-      // status: body.status,
       fileoriginalName: file.originalname,
       fileLocation: file.path,
       fileId: file.filename,
     } as Prisma.handbookFileCreateInput;
-    Logger.debug('alldata', data);
+    Logger.debug('data',data)
     return this.handbookFileService.create({ data });
   }
 
@@ -82,7 +83,6 @@ export class handbookFileController {
     @Param('handbookid') handbookid: number,
     @Body() condition: Prisma.handbookFileUpdateArgs,
   ) {
-    
     return this.handbookFileService.update(+handbookid, condition);
   }
 
@@ -91,22 +91,32 @@ export class handbookFileController {
     return this.handbookFileService.remove(+handbookid);
   }
 
-  // @Get('/get-file/:id')
-  // @UseInterceptors(FileInterceptor('files'))
-  // async getfilesByFileName(
-  //   @Param('id') handbookid: number,
-  //   @Res() res: Response,
-  // ) {
-  //   try {
-  //     const file = await this.handbookFileService.findOnes({
-  //       where: { handbookid: +handbookid },
-  //     });
-  //     const filesPath = join(`${file.fileLocation}`);
-  //     res.sendFile(`${filesPath}`, { root: './' });
-  //   } catch (error) {
-  //     res
-  //       .status(404)
-  //       .sendFile('path/to/default/files.jpg', { root: './public' });
-  //   }
-  // }
+  @Get('/get-file/:id')
+  @UseInterceptors(FileInterceptor('files'))
+  async getfilesByFileName(
+    @Param('id') handbookid: string,
+    @Res() res: Response,
+  ) {
+    try {
+      const file = await this.handbookFileService.findOnes({
+        where: { handbookid: +handbookid },
+      });
+      const filesPath = join(`${file.fileLocation}`);
+      res.sendFile(`${filesPath}`, { root: './' });
+    } catch (error) {
+      res
+        .status(404)
+        .sendFile('path/to/default/files.jpg', { root: './public' });
+    }
+  }
+
+  @Get("downloadfiles")
+  findHandbookFilesAll(@Query('handbookid') handbookid?: number) {
+    if (handbookid) {
+      return this.handbookFileService.findAll({
+        where: { handbookid: +handbookid },
+      });
+    }
+    return this.handbookFileService.findHandbookFilesAll({});
+  }
 }

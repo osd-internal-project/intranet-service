@@ -12,7 +12,7 @@ import {
   CustomerRequestTypeRepository,
   UserMapOrganizeGroupOwnerRepository,
   AccessService,
-  ExpendTypeRepository,
+  ExpenseTypeRepository,
   ContractCompanyRepository,
   CustomerProjectRepository,
 } from '@inventory/share';
@@ -31,21 +31,13 @@ export class CustomerDetailService {
     private readonly customerWorkTypeRepo: CustomerWorkTypeRepository,
     private readonly customerRequestTypeRepo: CustomerRequestTypeRepository,
     private readonly customerPriorityRepo: CustomerPriorityRepository,
-    private readonly expendTypeRepo: ExpendTypeRepository,
+    private readonly expenseTypeRepo: ExpenseTypeRepository,
     private readonly customerProjectRepo: CustomerProjectRepository,
     //User
     private readonly userMapOrganizeGroupOwnerRepo: UserMapOrganizeGroupOwnerRepository,
     private readonly accessService: AccessService,
   ) {}
-  startOfDate(date: string) {
-    const dateset = new Date(date).setUTCHours(0, 0, 0, 0);
-    return new Date(dateset);
-  }
 
-  endOfDate(date: string) {
-    const dateset = new Date(date).setUTCHours(23, 59, 59, 59);
-    return new Date(dateset);
-  }
   async create(data: Prisma.customerDetailCreateInput) {
     const responsible = data.responsible as any;
     let responsibleGroup = [];
@@ -197,8 +189,8 @@ export class CustomerDetailService {
       where: { activeStatus: true },
     });
   }
-  findConfigExpendType() {
-    return this.expendTypeRepo.findMany({});
+  findConfigExpenseType() {
+    return this.expenseTypeRepo.findMany({});
   }
   findConfigCustomerResponsible() {
     return this.customerResponsibleRepo.findMany({

@@ -54,17 +54,17 @@ export class CustomerWorkTypeRepository {
     return prisma.customerWorkType.delete(condition);
   }
   async count(
-    condition: Prisma.inventoryLotCountArgs,
+    condition: Prisma.customerWorkTypeCountArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.inventoryLot.count(condition);
+    return prisma.customerWorkType.count(condition);
   }
   async aggregate(
-    condition: Prisma.InventoryLotAggregateArgs,
+    condition: Prisma.CustomerWorkTypeAggregateArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.inventoryLot.aggregate(condition);
+    return prisma.customerWorkType.aggregate(condition);
   }
 }

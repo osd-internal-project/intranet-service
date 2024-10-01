@@ -11,10 +11,15 @@ import {
 } from '@nestjs/common';
 import { CustomerDetailService } from './customer-detail.service';
 import { Prisma } from '@prisma/client';
+import { sentMail } from '../utils/sent-mail';
 @Controller('customer-detail')
 export class CustomerDetailController {
   constructor(private readonly customerDetailService: CustomerDetailService) {}
-
+  @Get('test-send-mail')
+  async sendMail() {
+    return await sentMail();
+    // return [];
+  }
   @Post()
   create(@Body() createCustomerDetailDto: Prisma.customerDetailCreateInput) {
     return this.customerDetailService.create(createCustomerDetailDto);
@@ -47,9 +52,9 @@ export class CustomerDetailController {
   findConfigCustomerType() {
     return this.customerDetailService.findConfigCustomerType();
   }
-  @Get('config/expend-type')
-  findConfigExpendType() {
-    return this.customerDetailService.findConfigExpendType();
+  @Get('config/expense-type')
+  findConfigExpenseType() {
+    return this.customerDetailService.findConfigExpenseType();
   }
   @Get('config/ticket-configs')
   findConfigForTicket() {

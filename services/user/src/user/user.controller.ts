@@ -90,6 +90,14 @@ export class UserController {
     return this.userService.findOneByCondition(condition);
   }
 
+  @Post('condition-user-header/:userId')
+  findByUserHeaderCondition(
+    @Body('condition') condition: Prisma.usersFindManyArgs,
+    @Param('userId') userId: Prisma.usersFindManyArgs,
+  ) {
+    return this.userService.findByUserHeaderCondition(userId, condition);
+  }
+
   @Post('assign-groups/:userId')
   assignGroups(
     @Param('userId') userId: string,
