@@ -1,4 +1,4 @@
-export function approved(updatemacar: any) {
+export function warpupapproved(updatemacar: any) {
   const formatThaiDate = (date: Date) => {
     const buddhistYear = date.getFullYear() + 543;
     const formattedDate = date.toLocaleDateString('th-TH', {
