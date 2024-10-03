@@ -106,7 +106,7 @@
     "db:seed": "yarn prisma db seed",
     "dev": "cross-env NODE_ENV=local ts-node-dev --respawn --exit-child --transpile-only -r tsconfig-paths/register ./src/main.ts",
     "docker:build": "cd ../.. && docker build -t 'd-debt/inventory' -f services/inventory/Dockerfile .",
-    "docker:buildx": "cd ../.. && docker build --no-cache --platform linux/amd64 -t 'intra-user-be:v1.0.1' -f services/user/Dockerfile .",
+    "docker:buildx": "cd ../.. && docker build --no-cache --platform linux/amd64 -t 'intra-user-be:v1.0.2' -f services/user/Dockerfile .",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "generate": "prisma generate",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
