@@ -5,10 +5,8 @@ import { promises as fsPromises } from 'fs';
 
 @Injectable()
 export class handbookFileService {
-  [x: string]: any;
-  constructor(
-    private readonly handbookFileRepo: handbookFileRepository,
-  ) {}
+  // [x: string]: any;
+  constructor(private readonly handbookFileRepo: handbookFileRepository) {}
 
   async create(data: Prisma.handbookFileCreateArgs) {
     const handbook = await this.handbookFileRepo.create(data);
@@ -68,8 +66,8 @@ export class handbookFileService {
     return this.handbookFileRepo.findOne(condition);
   }
 
-  findHandbookFilesAll(condition: Prisma.handbookFileFindManyArgs) {
-    return this.handbookFileRepo.findMany({
+  async findMany(condition: Prisma.handbookFileFindManyArgs) {
+    return await this.handbookFileRepo.findMany({
       ...condition,
       orderBy: {
         handbookid: 'desc',

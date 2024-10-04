@@ -38,9 +38,6 @@ export class handbookFileController {
       }),
     }),
   )
-  
-  
-  
   uploadFile(
     // @Param('handbookid') handbookid: string,
     @UploadedFile() file: Express.Multer.File,
@@ -59,7 +56,6 @@ export class handbookFileController {
       fileLocation: file.path,
       fileId: file.filename,
     } as Prisma.handbookFileCreateInput;
-    Logger.debug('data',data)
     return this.handbookFileService.create({ data });
   }
 
@@ -97,6 +93,7 @@ export class handbookFileController {
     @Param('id') handbookid: string,
     @Res() res: Response,
   ) {
+    console.log(1);
     try {
       const file = await this.handbookFileService.findOnes({
         where: { handbookid: +handbookid },
@@ -110,13 +107,8 @@ export class handbookFileController {
     }
   }
 
-  @Get("downloadfiles")
-  findHandbookFilesAll(@Query('handbookid') handbookid?: number) {
-    if (handbookid) {
-      return this.handbookFileService.findAll({
-        where: { handbookid: +handbookid },
-      });
-    }
-    return this.handbookFileService.findHandbookFilesAll({});
+  @Post('fileAlls')
+  findMany(@Body('condition') condition: Prisma.handbookFileFindManyArgs) {
+    return this.handbookFileService.findMany(condition);
   }
 }

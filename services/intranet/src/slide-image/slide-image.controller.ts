@@ -19,44 +19,46 @@ import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import config from '../configs';
-
+import * as fs from 'fs';
 const pathMountDirUpload = config().pathMountDirUpload;
 
 @Controller('slide-image')
 export class SlideImageController {
   constructor(private readonly SlideImageService: SlideImageService) {}
 
-  @Post('/:id')
-  @UseInterceptors(
-    FilesInterceptor('files', 10, {
-      storage: diskStorage({
-        destination: `${pathMountDirUpload}/slide-image`,
-        filename: (req, file, callback) => {
-          const fileCode = `${uuidv4()}`;
-          const fileType = extname(file.originalname);
+  // @Post('/:id')
+  // @UseInterceptors(
+  //   FilesInterceptor('files', 10, {
+  //     storage: diskStorage({
+  //       destination: `${pathMountDirUpload}/slide-image`,
+  //       filename: (req, file, callback) => {
+  //         const fileCode = `${uuidv4()}`;
+  //         const fileType = extname(file.originalname);
 
-          callback(null, `${fileCode}${fileType}`);
-        },
-      }),
-    }),
-  )
-  async createSlide(
-    @Param('id') id: string,
-    @UploadedFiles() files: Express.Multer.File[],
-    @Body('type') type: string,
-    @Body('createdByName') createdByName: string,
-  ) {
-    if (id && type && files.length > 0) {
-      const data = {
-        fileId: files[0].filename,
-        filePath: files[0].path,
-        fileType: files[0].mimetype,
-        fileName: Buffer.from(files[0].originalname, 'latin1').toString('utf8'),
-        createdByName,
-      } as Prisma.slideImageCreateInput;
-      return this.SlideImageService.createfiles(data);
-    }
-  }
+  //         callback(null, `${fileCode}${fileType}`);
+  //       },
+  //     }),
+  //   }),
+  // )
+  // async createSlide(
+  //   @Param('id') id: string,
+  //   @UploadedFiles() files: Express.Multer.File[],
+  //   @Body('type') type: string,
+  //   @Body('createdByName') createdByName: string,
+  //   @Body('createdById') createdById: string,
+  // ) {
+  //   if (id && type && files.length > 0) {
+  //     const data = {
+  //       fileId: files[0].filename,
+  //       filePath: files[0].path,
+  //       fileType: files[0].mimetype,
+  //       fileName: Buffer.from(files[0].originalname, 'latin1').toString('utf8'),
+  //       createdByName,
+  //       createdById,
+  //     } as Prisma.slideImageCreateInput;
+  //     return this.SlideImageService.createfiles(data);
+  //   }
+  // }
 
   @Get()
   findAll() {
@@ -81,41 +83,27 @@ export class SlideImageController {
     return this.SlideImageService.remove(+id);
   }
 
-  // @Get('uploads/image/:file')
-  // getFile(@Param('file') filename: string, @Res() res: Response): void {
-  //   const filePath = join('./upload/image', filename);
-  //   fsPromises
-  //     .access(filePath)
-  //     .then(() => {
-  //       const file = createReadStream(filePath);
-  //       res.setHeader('Content-Type', 'image/jpeg');
-  //       res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
-  //       file.pipe(res);
-  //     })
-  //     .catch(() => {
-  //       res.status(404).send('File not found');
-  //     });
-  // }
-
-  // @Get('/slide-image/:file')
-  // getFileSlide(@Param('file') filename: string, @Res() res: Response): void {
-  //   const filePath = join(`./undefined/slide-image`, filename);
-  //   fsPromises
-  //     .access(filePath)
-  //     .then(() => {
-  //       const file = createReadStream(filePath);
-  //       res.setHeader('Content-Type', 'image/jpeg');
-  //       res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
-  //       file.pipe(res);
-  //     })
-  //     .catch(() => {
-  //       res.status(404).send('File not found');
-  //     });
-  // }
+  @Get('upload-image')
+  async getimages(@Res() res: Response) {
+    try {
+      const images = await this.SlideImageService.findImageAll();
+      if (!images || images.length === 0) {
+        return res.status(404).json({ message: 'No images found' });
+      }
+      const fileIds = images.map((image) => image.fileId);
+      const imagePaths = fileIds.map((fileId) => {
+        return join(`${pathMountDirUpload}/slide-image`, fileId);
+      });
+      res.json(imagePaths);
+    } catch (error) {
+      console.error('Error retrieving images:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  }
 
   @Get('/undefined/slide-image/:file')
   async getimage(@Param('file') fileId: string, @Res() res: Response) {
-    const image = await this.SlideImageService.findImage(fileId); 
+    const image = await this.SlideImageService.findImage(fileId);
     if (!image) {
       return res.status(404).json({ message: 'Image not found' });
     }
@@ -127,32 +115,63 @@ export class SlideImageController {
     return res.sendFile(imagePath, { root: './' });
   }
 
-  // @Get('undefined/slide-image/:file')
-  // async getFileSlide(
-  //   @Param('file') filename: string,
-  //   @Res() res: Response,
-  // ): Promise<void> {
-  //   const primaryFilePath = join('./undefined/slide-image', filename);
-  //   const secondaryFilePath = join(
-  //     './undefined/slide-image/19e0963b-e57a-4fd3-bb8e-303dc192d22a.png',
-  //   );
+  @Get('/upload/slide-image/:file')
+  async getImage(@Param('file') fileId: string, @Res() res: Response) {
+    const image = await this.SlideImageService.findImage(fileId);
+    if (!image) {
+      return res.status(404).json({ message: 'Image not found' });
+    }
 
-  //   try {
-  //     await fsPromises.access(primaryFilePath);
-  //     const file = createReadStream(primaryFilePath);
-  //     res.setHeader('Content-Type', 'image/jpeg');
-  //     res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
-  //     file.pipe(res);
-  //   } catch {
-  //     try {
-  //       await fsPromises.access(secondaryFilePath);
-  //       const file = createReadStream(secondaryFilePath);
-  //       res.setHeader('Content-Type', 'image/jpeg');
-  //       res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
-  //       file.pipe(res);
-  //     } catch {
-  //       res.status(404).send('File not found');
-  //     }
-  //   }
-  // }
+    const imagePath = join(
+      `${pathMountDirUpload}/slide-image`,
+      `${image.fileId}`,
+    );
+    return res.sendFile(imagePath, { root: './' });
+  }
+
+  @Get('upload-slide-images')
+  async getSlideImages(@Param('id') id: number[], @Res() res: Response) {
+    const images = await this.SlideImageService.findAlls(id);
+    const fileIds = images.map((image: any) => image.fileId);
+    let imagePath;
+    imagePath = join(`${pathMountDirUpload}/users-image`, `${fileIds}`);
+    res.sendFile(`${imagePath}`, { root: './' });
+  }
+
+  @Get('upload-images/:id')
+  async getImages(@Param('id') id: number, @Res() res: Response) {
+    const { fileId } = await this.SlideImageService.findByFileId(+id);
+    let imagePath;
+    imagePath = join(`${pathMountDirUpload}/slide-image`, `${fileId}`);
+    res.sendFile(`${imagePath}`, { root: './' });
+  }
+
+  @Post('upload-image')
+  @UseInterceptors(
+    FilesInterceptor('files', 1, {
+      storage: diskStorage({
+        destination: `${pathMountDirUpload}/slide-image`,
+        filename: (req, file, callback) => {
+          const fileCode = `${uuidv4()}`;
+          const fileType = extname(file.originalname);
+          callback(null, `${fileCode}${fileType}`);
+        },
+      }),
+    }),
+  )
+  async uploadImage(
+    @UploadedFiles() files: Express.Multer.File[],
+    @Body('createdByName') createdByName: string,
+    @Body('createdById') createdById: string,
+  ) {
+    const data = {
+      fileId: files[0].filename,
+      filePath: files[0].path,
+      fileType: files[0].mimetype,
+      fileName: Buffer.from(files[0].originalname, 'latin1').toString('utf8'),
+      createdByName,
+      createdById,
+    } as Prisma.slideImageCreateInput;
+    await this.SlideImageService.createfiles(data);
+  }
 }
