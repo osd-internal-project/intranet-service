@@ -107,7 +107,6 @@ export class SlideImageController {
     if (!image) {
       return res.status(404).json({ message: 'Image not found' });
     }
-
     const imagePath = join(
       `${pathMountDirUpload}/slide-image`,
       `${image.fileId}`,
@@ -121,21 +120,11 @@ export class SlideImageController {
     if (!image) {
       return res.status(404).json({ message: 'Image not found' });
     }
-
     const imagePath = join(
       `${pathMountDirUpload}/slide-image`,
       `${image.fileId}`,
     );
     return res.sendFile(imagePath, { root: './' });
-  }
-
-  @Get('upload-slide-images')
-  async getSlideImages(@Param('id') id: number[], @Res() res: Response) {
-    const images = await this.SlideImageService.findAlls(id);
-    const fileIds = images.map((image: any) => image.fileId);
-    let imagePath;
-    imagePath = join(`${pathMountDirUpload}/users-image`, `${fileIds}`);
-    res.sendFile(`${imagePath}`, { root: './' });
   }
 
   @Get('upload-images/:id')

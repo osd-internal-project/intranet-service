@@ -93,7 +93,6 @@ export class handbookFileController {
     @Param('id') handbookid: string,
     @Res() res: Response,
   ) {
-    console.log(1);
     try {
       const file = await this.handbookFileService.findOnes({
         where: { handbookid: +handbookid },
