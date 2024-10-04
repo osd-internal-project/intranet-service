@@ -1,12 +1,16 @@
 import * as nodemailer from 'nodemailer';
 
 const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  // service: 'gmail', // use SSL
+  // host: 'smtp.gmail.com',
+  // port: 465,
+  service: 'hotmail', // use SSL
+  // auth: {
+  //   user: 'taksapong70@gmail.com',
+  //   pass: 'mnot wowm sooe hmnh',
+  // },
   auth: {
-    user: 'taksapong70@gmail.com',
-    pass: 'mnot wowm sooe hmnh',
+    user: 'taksapongk@osd.co.th',
+    pass: 'z8kvu#t9',
   },
 });
 
@@ -14,10 +18,10 @@ const transporter = nodemailer.createTransport({
 export async function sentMail() {
   // send mail with defined transport object
   const info = await transporter.sendMail({
-    from: 'เราเอง', // sender address
-    to: 'aekkung500@gmail.com',
-    subject: 'Hello ✔', // Subject line
-    html: `<body><div >วันลา</div></body>`, // html body
+    from: 'taksapongk@osd.co.th', // sender address
+    to: 'wasmeej@osd.co.th',
+    subject: 'สวัสดีอาวัส ✔', // Subject line
+    html: `<body><div >Test Email</div></body>`, // html body
   });
 
   console.log('Message sent: %s', info.messageId);
