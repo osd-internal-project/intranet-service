@@ -24,7 +24,6 @@ import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import config from '../configs';
 const pathMountDirUpload = config().pathMountDirUpload;
 
-
 const uploadpath = process.env.PATH_MOUNTDIR_IMAGES_UPLOAD;
 const MAX_IMAGES = 3;
 @Controller('news-image')
@@ -121,30 +120,29 @@ export class NewsImageController {
     return this.newsImageService.remove(+imageId);
   }
 
- @Get('/upload/slide-image/:file')
+  @Get('/uploads/newsimage:file')
   async getImage(@Param('file') fileName: string, @Res() res: Response) {
     const image = await this.newsImageService.findImage(fileName);
     if (!image) {
       return res.status(404).json({ message: 'Image not found' });
     }
     const imagePath = join(
-      `${pathMountDirUpload}/slide-image`,
+      `${pathMountDirUpload}/newsimage`,
       `${image.fileName}`,
     );
     return res.sendFile(imagePath, { root: './' });
   }
 
-  @Get('/undefined/slide-image/:file')
+  @Get('/undefined/newsimage/:file')
   async getimage(@Param('file') fileName: string, @Res() res: Response) {
     const image = await this.newsImageService.findImage(fileName);
     if (!image) {
       return res.status(404).json({ message: 'Image not found' });
     }
     const imagePath = join(
-      `${pathMountDirUpload}/slide-image`,
+      `${pathMountDirUpload}/newsimage`,
       `${image.fileName}`,
     );
     return res.sendFile(imagePath, { root: './' });
   }
-
 }

@@ -114,7 +114,7 @@ export class SlideImageController {
     return res.sendFile(imagePath, { root: './' });
   }
 
-  @Get('/upload/slide-image/:file')
+  @Get('/uploads/slide-image/:file')
   async getImage(@Param('file') fileId: string, @Res() res: Response) {
     const image = await this.SlideImageService.findImage(fileId);
     if (!image) {
