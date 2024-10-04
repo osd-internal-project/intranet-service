@@ -67,4 +67,10 @@ export class NewsImageService {
       console.error(`Error deleting file ${fileimagePath}: ${err.message}`);
     }
   }
+
+  findImage(fileName: string) {
+    const condition = { where: { fileName: fileName } } as Prisma.slideImageArgs;
+    return this.newsImageNewsRepo.findOne(condition);
+  }
+
 }

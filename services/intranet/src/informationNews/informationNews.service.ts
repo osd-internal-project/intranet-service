@@ -20,6 +20,16 @@ export class informationNewsService {
     });
   }
 
+  async findNewsAll(condition: Prisma.informationNewsFindManyArgs) {
+    return await this.informationNewsRepo.findMany({
+      ...condition,
+      include: { newsImage: true },
+      orderBy: {
+        newsId: 'desc',
+      },
+    });
+  }
+
   async findOne(newsId: number) {
     const base = {};
 
@@ -27,7 +37,7 @@ export class informationNewsService {
       where: {
         newsId: newsId,
       },
-      include:{newsImage:true}
+      include: { newsImage: true },
     });
   }
 

@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { MasterRoomService } from './master-room.service';
 import { Prisma } from '@prisma/client';
 
@@ -8,7 +16,6 @@ export class MasterRoomController {
 
   @Post()
   create(@Body() data: Prisma.masterRoomCreateInput) {
-    console.log(data)
     return this.masterRoomService.create(data);
   }
 
@@ -21,6 +28,8 @@ export class MasterRoomController {
   findOne(@Param('id') id: string) {
     return this.masterRoomService.findOne(+id);
   }
+
+
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() data: Prisma.masterRoomUpdateInput) {

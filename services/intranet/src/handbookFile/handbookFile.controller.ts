@@ -29,7 +29,7 @@ export class handbookFileController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: `${process.env.PATH_MOUNTDIR_IMAGES_UPLOAD}/handbookfile`,
+        destination: `./uploads/handbookfile`,
         filename: (req, file, cb) => {
           const fileExtName = extname(file.originalname);
           const randomName = uuidv4();
@@ -43,12 +43,11 @@ export class handbookFileController {
     @UploadedFile() file: Express.Multer.File,
     @Body() body,
   ) {
-    Logger.debug(file);
-    Logger.debug(body);
     if (!file) {
       throw new Error('File is undefined');
     }
-    Logger.debug('bodydata', body);
+
+    console.log(file.path);
     const data = {
       fileName: body.fileName,
       filetype: body.filetype,
@@ -57,7 +56,6 @@ export class handbookFileController {
       fileLocation: file.path,
       fileId: file.filename,
     } as Prisma.handbookFileCreateInput;
-    Logger.debug('alldata', data);
     return this.handbookFileService.create({ data });
   }
 
@@ -81,7 +79,6 @@ export class handbookFileController {
     @Param('handbookid') handbookid: number,
     @Body() condition: Prisma.handbookFileUpdateArgs,
   ) {
-    
     return this.handbookFileService.update(+handbookid, condition);
   }
 
@@ -93,7 +90,7 @@ export class handbookFileController {
   @Get('/get-file/:id')
   @UseInterceptors(FileInterceptor('files'))
   async getfilesByFileName(
-    @Param('id') handbookid: number,
+    @Param('id') handbookid: string,
     @Res() res: Response,
   ) {
     try {
@@ -107,5 +104,10 @@ export class handbookFileController {
         .status(404)
         .sendFile('path/to/default/files.jpg', { root: './public' });
     }
-  } 
+  }
+
+  @Post('fileAlls')
+  findMany(@Body('condition') condition: Prisma.handbookFileFindManyArgs) {
+    return this.handbookFileService.findMany(condition);
+  }
 }

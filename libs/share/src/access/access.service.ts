@@ -159,26 +159,17 @@ export class AccessService {
           ],
         },
       });
-
       const accessedGroupIds = accessedGroup.map((group) => group.userGroupId);
-      const accessedUserGroupIds = accessedGroup.map(
-        (group) => group.leaveUserId,
-      );
-      const UserGroupIds = accessedUserGroupIds.flat();
-
-      // if (accessedGroup.length > 0) {
-      //   const accessedUsers =
-      //     await this.prisma.userMapOrganizeGroupOwner.findMany({
-      //       where: { ownerGroupId: { in: accessedGroupIds } },
-      //     });
-      //   const accessedUserIds = accessedUsers.map((user) => user.usersId);
-      //   console.log('accessedUserIds4:', accessedUserIds);
-
-      //   return accessedUserIds;
-      // } else {
-      //   return [];
-      // }
-      return UserGroupIds;
+      if (accessedGroup.length > 0) {
+        const accessedUsers =
+          await this.prisma.userMapOrganizeGroupOwner.findMany({
+            where: { ownerGroupId: { in: accessedGroupIds } },
+          });
+        const accessedUserIds = accessedUsers.map((user) => user.usersId);
+        return accessedUserIds;
+      } else {
+        return [];
+      }
     } else {
       return [];
     }
