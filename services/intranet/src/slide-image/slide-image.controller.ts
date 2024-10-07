@@ -65,10 +65,10 @@ export class SlideImageController {
     return this.SlideImageService.findAll();
   }
 
-  @Post()
-  create(@Body() data: Prisma.slideImageCreateInput) {
-    return this.SlideImageService.create(data);
-  }
+  // @Post()
+  // create(@Body() data: Prisma.slideImageCreateInput) {
+  //   return this.SlideImageService.create(data);
+  // }
 
   @Patch(':fileId')
   update(
