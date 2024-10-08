@@ -21,6 +21,8 @@ import { extname, join } from 'path';
 import { createReadStream, promises as fsPromises } from 'fs';
 import { Response } from 'express';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import config from '../configs';
+const pathMountDirUpload = config().pathMountDirUpload;
 
 const uploadpath = process.env.PATH_MOUNTDIR_IMAGES_UPLOAD;
 const MAX_IMAGES = 3;
@@ -118,25 +120,29 @@ export class NewsImageController {
     return this.newsImageService.remove(+imageId);
   }
 
-  @Get('uploads/newsimage/:file')
-  getFileSlide(
-    @Param('file') fileimageName: string,
-    @Res() res: Response,
-  ): void {
-    const filePath = join('./uploads/newsimage', fileimageName);
-    fsPromises
-      .access(filePath)
-      .then(() => {
-        const file = createReadStream(filePath);
-        res.setHeader('Content-Type', 'image/jpeg');
-        res.setHeader(
-          'Content-Disposition',
-          `inline; filename="${fileimageName}"`,
-        );
-        file.pipe(res);
-      })
-      .catch(() => {
-        res.status(404).send('File not found');
-      });
+  @Get('/uploads/newsimage:file')
+  async getImage(@Param('file') fileName: string, @Res() res: Response) {
+    const image = await this.newsImageService.findImage(fileName);
+    if (!image) {
+      return res.status(404).json({ message: 'Image not found' });
+    }
+    const imagePath = join(
+      `${pathMountDirUpload}/newsimage`,
+      `${image.fileName}`,
+    );
+    return res.sendFile(imagePath, { root: './' });
+  }
+
+  @Get('/undefined/newsimage/:file')
+  async getimage(@Param('file') fileName: string, @Res() res: Response) {
+    const image = await this.newsImageService.findImage(fileName);
+    if (!image) {
+      return res.status(404).json({ message: 'Image not found' });
+    }
+    const imagePath = join(
+      `${pathMountDirUpload}/newsimage`,
+      `${image.fileName}`,
+    );
+    return res.sendFile(imagePath, { root: './' });
   }
 }

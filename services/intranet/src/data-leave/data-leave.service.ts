@@ -5,6 +5,7 @@ import {
   UsersRepository,
   AccessService,
   UserGroupMapHeaderRepository,
+  UserGroupRepository,
 } from '@inventory/share';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
@@ -19,6 +20,7 @@ export class DataLeaveService {
     private readonly usersRepo: UsersRepository,
     private readonly accessService: AccessService,
     private readonly userGroupMapHeaderRepo: UserGroupMapHeaderRepository,
+    private userGroupRepo: UserGroupRepository,
   ) {}
 
   async create(condition: Prisma.dataLeaveCreateArgs) {
@@ -193,14 +195,58 @@ export class DataLeaveService {
     return test;
   }
 
-  async findLeaveByUserId(userId: string) {
+  // async findLeaveByUserId(userId: string) {
+  //   const accessedUserIds = await this.accessService.getOwnerGroupByUserId(
+  //     userId,
+  //   );
+  //   console.log('accessedUserIds:', accessedUserIds.parentGroupId);
+  //   const parentGroupId = await this.userGroupRepo.findOne({
+  //     where: { groupId: accessedUserIds.parentGroupId },
+  //   });
+  //   console.log('parentGroupId:', parentGroupId);
+
+  //   if (accessedUserIds) {
+  //     const header = await this.userGroupMapHeaderRepo.findOne({
+  //       where: { userGroupId: accessedUserIds.groupId },
+  //     });
+  //     console.log('header:', header);
+
+  //     if (header) {
+  //       if (header.leaveUserId.length > 0) {
+  //         const users = await this.usersRepo.findMany({
+  //           where: {
+  //             userId: {
+  //               in: header.leaveUserId,
+  //             },
+  //           },
+  //         });
+  //         return users;
+  //       }
+  //     }
+  //   }
+  //   return [];
+  // }
+
+  async findLeaveByUserIds(userId: string) {
     const accessedUserIds = await this.accessService.getOwnerGroupByUserId(
       userId,
     );
+    console.log('accessedUserIds:', accessedUserIds.parentGroupId);
+
     if (accessedUserIds) {
       const header = await this.userGroupMapHeaderRepo.findOne({
         where: { userGroupId: accessedUserIds.groupId },
       });
+      // console.log('header:', header);
+      const userGroupId = await this.userGroupRepo.findOne({
+        where: { groupId: accessedUserIds.parentGroupId },
+      });
+      console.log('parentGroupId:', userGroupId);
+      console.log('parentGroupIdsssssss:', userGroupId.parentGroupId);
+      const userGroupById = await this.userGroupMapHeaderRepo.findOne({
+        where: { userGroupId: userGroupId.parentGroupId },
+      });
+
       if (header) {
         if (header.leaveUserId.length > 0) {
           const users = await this.usersRepo.findMany({
@@ -211,7 +257,43 @@ export class DataLeaveService {
             },
           });
           return users;
+        }
+      }
+    }
+    return [];
+  }
+
+  async findLeaveByUserId(userId: string) {
+    const accessedUserIds = await this.accessService.getOwnerGroupByUserId(
+      userId,
+    );
+
+    if (accessedUserIds) {
+      let currentGroupId = accessedUserIds.groupId;
+      while (currentGroupId) {
+        const header = await this.userGroupMapHeaderRepo.findOne({
+          where: { userGroupId: currentGroupId },
+        });
+        if (header && header.leaveUserId.length > 0) {
+          const users = await this.usersRepo.findMany({
+            where: {
+              userId: {
+                in: header.leaveUserId,
+              },
+            },
+          });
+
+          if (users && users.length > 0) {
+            return users;
+          }
+        }
+        const userGroup = await this.userGroupRepo.findOne({
+          where: { groupId: currentGroupId },
+        });
+        if (userGroup && userGroup.parentGroupId) {
+          currentGroupId = userGroup.parentGroupId;
         } else {
+          break;
         }
       }
     }

@@ -1257,6 +1257,7 @@ model customerAddress {
     zipCode          String?         @map("noti_zip_code") @db.VarChar(10)
     customerBranch   customerBranch? @relation(fields: [customerBranchId], references: [id], onDelete: Cascade)
     customerBranchId Int?            @map("customer_branch_id")
+    maplink          String?         @map("maplink")
 
     @@map("customer_address")
 }
@@ -1277,6 +1278,7 @@ model customerBranch {
     customerDetailSubId Int?               @map("customer_detail_sub_id")
     customerDetail      customerDetail?    @relation(fields: [customerDetailId], references: [id])
     customerDetailId    Int?               @map("customer_detail_id")
+    remark              String?            @map("remark") @db.Text
 
     @@map("customer_branch")
 }

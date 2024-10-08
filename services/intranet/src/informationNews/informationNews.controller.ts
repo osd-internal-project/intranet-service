@@ -14,7 +14,6 @@ import { Prisma } from '@prisma/client';
 import { join } from 'path';
 import { createReadStream, promises as fsPromises } from 'fs';
 import { Response } from 'express';
-
 @Controller('informationNews')
 export class InformationController {
   constructor(
@@ -53,27 +52,5 @@ export class InformationController {
   @Delete(':newsId')
   remove(@Param('newsId') newsId: number) {
     return this.informationNewsService.remove(+newsId);
-  }
-
-  @Get('undefined/newsimage/:file')
-  getFileSlide(
-    @Param('file') fileimageName: string,
-    @Res() res: Response,
-  ): void {
-    const filePath = join('./undefined/newsimage', fileimageName);
-    fsPromises
-      .access(filePath)
-      .then(() => {
-        const file = createReadStream(filePath);
-        res.setHeader('Content-Type', 'image/jpeg');
-        res.setHeader(
-          'Content-Disposition',
-          `inline; filename="${fileimageName}"`,
-        );
-        file.pipe(res);
-      })
-      .catch(() => {
-        res.status(404).send('File not found');
-      });
   }
 }
