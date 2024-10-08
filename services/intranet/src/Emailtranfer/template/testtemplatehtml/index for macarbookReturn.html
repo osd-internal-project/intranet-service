@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>เขียนไปเรื่อย</title>
+    <title>ขอคืนรถ</title>
   </head>
   <body>
     <table
@@ -53,13 +53,13 @@
                 <p style="font-size: 16px; font-weight: bold">
                   เรียน
                   <samp style="font-weight: lighter"
-                    >การขออนุมัติเข้าใช้งานรถ</samp
+                    >การคืนรถ</samp
                   >
                 </p>
                 <p style="font-size: 16px; font-weight: bold">
                   หัวข้อเรื่อง
                   <samp style="font-weight: lighter">
-                    การขออนุมัติรถเพื่อนำไปใช้งาน ลำดับที่ ${updatemacar.id}
+                    การคืนรถ ลำดับที่ ${}
                   </samp>
                 </p>
               </td>
@@ -67,12 +67,10 @@
             <tr>
               <td style="padding: 20px 40px">
                 <p>
-                  ขออนุญาติการเข้าใช้งานรถ ${updatemacar.carName}
-                  เพื่อการใช้งานในจุดประสงค์ ${updatemacar.carName} โดยการตรวจเช็ค
-                  ${updatemacar.typeName} ถึงระยะที่กำหนดที่ระยะ
-                  ${updatemacar.wrapupMiles} กิโลเมตร หรือ
-                  ระยะเวลาวันที่กำหนดที่เวลา ${formatThaiDatenotime( new
-                  Date(updatemacar.dateStart), )} จึงอนุมัติให้ทำการดำเนินการ
+                  การคืนรถที่ใช้งานเสร็จสิ้น ${}
+                  สำหรับการใช้งานในจุดประสงค์ ${} สถานที่ไป ${} จังหวัด
+                  ${} มีผู้ร่วมเดินทางทั้งหมด ${} โดยเริ่มทำการจองวันที่ ${} จนถึงวันที่ ${}
+                  เลยเรียนมาเพื่อทราบสำหรับการคืนรถที่ใช้งานจบภารกิจแล้ว
                 </p>
               </td>
             </tr>
@@ -107,7 +105,7 @@
                         vertical-align: top;
                       "
                     >
-                      ประเภทการตรวจสภาพ :
+                      สถานที่ไป :
                     </td>
                     <td style="padding-left: 10px">${updatemacar.typeName}</td>
                   </tr>
@@ -119,7 +117,7 @@
                         vertical-align: top;
                       "
                     >
-                      สถานที่การตรวจสภาพ :
+                      จังหวัด :
                     </td>
                     <td style="padding-left: 10px">${updatemacar.vender}</td>
                   </tr>
@@ -131,7 +129,7 @@
                         vertical-align: top;
                       "
                     >
-                      รายละเอียดการตรวจสภาพ :
+                    รายละเอียด :
                     </td>
                     <td style="padding-left: 10px">${updatemacar.detail}</td>
                   </tr>

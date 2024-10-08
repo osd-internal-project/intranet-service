@@ -34,7 +34,6 @@ export class SlideImageController {
         filename: (req, file, callback) => {
           const fileCode = `${uuidv4()}`;
           const fileType = extname(file.originalname);
-
           callback(null, `${fileCode}${fileType}`);
         },
       }),
