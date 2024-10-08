@@ -63,11 +63,6 @@ export class SlideImageService {
     });
   }
 
-  findByFileId(id: number) {
-    const condition = { where: { id: id } } as Prisma.slideImageArgs;
-    return this.SlideImageRepository.findOne(condition);
-  }
-
   findImageAll() {
     return this.SlideImageRepository.findAll();
   }

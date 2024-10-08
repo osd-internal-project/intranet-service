@@ -20,6 +20,7 @@ import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import config from '../configs';
 import * as fs from 'fs';
+import { unlink } from 'node:fs/promises';
 const pathMountDirUpload = config().pathMountDirUpload;
 
 @Controller('slide-image')
@@ -78,9 +79,32 @@ export class SlideImageController {
     return this.SlideImageService.update(fileId, data);
   }
 
+  // @Delete(':id')
+  // remove(@Param('id') id: number) {
+  //   return this.SlideImageService.remove(+id);
+  // }
+
   @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.SlideImageService.remove(+id);
+  async deleteImage(
+    @Param('id') id: number,
+    @Param('file') fileId: string,
+    @Res() res: Response,
+  ) {
+    const image = await this.SlideImageService.findImage(fileId);
+    if (!image) {
+      return res.status(404).json({ message: 'Image not found' });
+    }
+    const imagePath = join(
+      `${pathMountDirUpload}/slide-image`,
+      `${image.fileId}`,
+    );
+    try {
+      await unlink(imagePath);
+      await this.SlideImageService.remove(+id);
+      return res.status(200).json({ message: 'Image deleted success' });
+    } catch (error) {
+      return res.status(500).json({ message: 'Failed to delete image', error });
+    }
   }
 
   @Get('upload-image')
@@ -96,7 +120,6 @@ export class SlideImageController {
       });
       res.json(imagePaths);
     } catch (error) {
-      console.error('Error retrieving images:', error);
       res.status(500).json({ message: 'Internal server error' });
     }
   }
@@ -125,14 +148,6 @@ export class SlideImageController {
       `${image.fileId}`,
     );
     return res.sendFile(imagePath, { root: './' });
-  }
-
-  @Get('upload-images/:id')
-  async getImages(@Param('id') id: number, @Res() res: Response) {
-    const { fileId } = await this.SlideImageService.findByFileId(+id);
-    let imagePath;
-    imagePath = join(`${pathMountDirUpload}/slide-image`, `${fileId}`);
-    res.sendFile(`${imagePath}`, { root: './' });
   }
 
   @Post('upload-image')
