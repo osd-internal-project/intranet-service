@@ -184,7 +184,7 @@ model emailTemplate {
     name     String    @default("") @map("name") @db.VarChar(100)
     formdoc  String    @default("") @map("form_doc") @db.Text
     createAt DateTime? @default(now()) @map("created_At") 
-    updateAt DateTime? @default(now()) @map("updated_At")
+    updateAt DateTime? @default(now()) @map("updated_At") 
 }
 
 model slideImage {
