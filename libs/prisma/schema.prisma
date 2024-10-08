@@ -179,6 +179,14 @@ model handbookFile {
     @@map("handbook_file")
 }
 
+model emailTemplate {
+    id       Int       @unique @default(autoincrement()) @map("id_form")
+    name     String    @default("") @map("name") @db.VarChar(100)
+    formdoc  String    @default("") @map("form_doc") @db.Text
+    createAt DateTime? @default(now()) @map("created_At") 
+    updateAt DateTime? @default(now()) @map("updated_At")
+}
+
 model slideImage {
     id            Int       @unique @default(autoincrement()) @map("id")
     fileId        String    @unique @default(uuid()) @map("file_id") @db.VarChar(50)
