@@ -183,8 +183,8 @@ model emailTemplate {
     id       Int       @unique @default(autoincrement()) @map("id_form")
     name     String    @default("") @map("name") @db.VarChar(100)
     formdoc  String    @default("") @map("form_doc") @db.Text
-    createAt DateTime? @default(now()) @map("created_At") 
-    updateAt DateTime? @default(now()) @map("updated_At") 
+    createAt DateTime? @default(now()) @map("created_At")
+    updateAt DateTime? @default(now()) @map("updated_At")
 }
 
 model slideImage {
@@ -1279,6 +1279,7 @@ model customerBranch {
     customerDetail      customerDetail?    @relation(fields: [customerDetailId], references: [id])
     customerDetailId    Int?               @map("customer_detail_id")
     remark              String?            @map("remark") @db.Text
+    activeStatus        Boolean?           @default(true) @map("active_status") @db.Boolean
 
     @@map("customer_branch")
 }
@@ -1364,6 +1365,7 @@ model customerDetailSub {
     customerDetailId Int?             @map("customer_detail_id")
     customerDetail   customerDetail?  @relation(fields: [customerDetailId], references: [id], onDelete: Cascade)
     customerBranch   customerBranch[]
+    activeStatus     Boolean?         @default(true) @map("active_status") @db.Boolean
 
     @@map("customer_detail_sub")
 }
