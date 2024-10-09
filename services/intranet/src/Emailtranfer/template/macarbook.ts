@@ -1,4 +1,4 @@
-export function approved(updatemacar: any) {
+export function macarbook(updatemacar: any) {
   const formatThaiDate = (date: Date) => {
     const buddhistYear = date.getFullYear() + 543;
     const formattedDate = date.toLocaleDateString('th-TH', {
@@ -45,7 +45,7 @@ export function approved(updatemacar: any) {
         width: 100%;
         height: 100vh;
         text-align: center;
-        background-color: #EDF5FF;
+        background-color: #edf5ff;
       "
       cellpadding="0"
       cellspacing="0"
@@ -86,13 +86,13 @@ export function approved(updatemacar: any) {
                 <p style="font-size: 16px; font-weight: bold">
                   เรียน
                   <samp style="font-weight: lighter"
-                    >การรอนุมัติการตรวจเช็คสภาพรถ</samp
+                    >การขออนุญาตการเข้าใช้งานรถ</samp
                   >
                 </p>
                 <p style="font-size: 16px; font-weight: bold">
                   หัวข้อเรื่อง
                   <samp style="font-weight: lighter">
-                    การรอนุมัติการตรวจเช็คสภาพรถ ลำดับที่ ${updatemacar.id}
+                    การขออนุญาตการเข้าใช้งานรถ ลำดับที่ ${updatemacar.Id}
                   </samp>
                 </p>
               </td>
@@ -100,13 +100,10 @@ export function approved(updatemacar: any) {
             <tr>
               <td style="padding: 20px 40px">
                 <p>
-                  อนุญาติให้มีการตรวจเช็คสภาพรถ ${updatemacar.id}
-                  เพื่อการตรวจสอบสภาพรถ ${updatemacar.carName} โดยการตรวจเช็ค
-                  ${updatemacar.typeName} ถึงระยะที่กำหนดที่ระยะ
-                  ${updatemacar.wrapupMiles} กิโลเมตร หรือ
-                  ระยะเวลาวันที่กำหนดที่เวลา ${formatThaiDatenotime(
-                    new Date(updatemacar.dateStart),
-                  )} จึงอนุมัติให้ทำการดำเนินการ
+                  ขออนุญาติการเข้าใช้งานรถ ${updatemacar.Id}
+                  เพื่อการใช้งานในจุดประสงค์ ${updatemacar.Id} สถานที่ไป ${updatemacar.Id} จังหวัด
+                  ${updatemacar.Id} มีผู้ร่วมเดินทางทั้งหมด ${updatemacar.Id} โดยเริ่มทำการจองวันที่ ${updatemacar.Id} จนถึงวันที่ ${updatemacar.Id}
+                  จึงขออนุมัติให้ทำการดำเนินการ
                 </p>
               </td>
             </tr>
@@ -141,7 +138,7 @@ export function approved(updatemacar: any) {
                         vertical-align: top;
                       "
                     >
-                      ประเภทการตรวจสภาพ :
+                      สถานที่ไป :
                     </td>
                     <td style="padding-left: 10px">${updatemacar.typeName}</td>
                   </tr>
@@ -153,7 +150,7 @@ export function approved(updatemacar: any) {
                         vertical-align: top;
                       "
                     >
-                      สถานที่การตรวจสภาพ :
+                      จังหวัด :
                     </td>
                     <td style="padding-left: 10px">${updatemacar.vender}</td>
                   </tr>
@@ -165,7 +162,7 @@ export function approved(updatemacar: any) {
                         vertical-align: top;
                       "
                     >
-                      รายละเอียดการตรวจสภาพ :
+                    รายละเอียด :
                     </td>
                     <td style="padding-left: 10px">${updatemacar.detail}</td>
                   </tr>
@@ -173,7 +170,7 @@ export function approved(updatemacar: any) {
               </td>
             </tr>
             <tr>
-              <td
+              <!-- <td
                 style="
                   text-align: center;
                   font-weight: bold;
@@ -188,21 +185,17 @@ export function approved(updatemacar: any) {
                   padding: 40px;
                 "
               >
-                ${
-                  updatemacar.status === true
-                    ? 'ผ่านการตรวจเช็ค'
-                    : updatemacar.status === false
-                    ? 'ไม่ผ่านการตรวจเช็ค'
-                    : 'รอการอนุมัติ'
-                }
-              </td>
+                ${ updatemacar.status === true ? 'ผ่านการตรวจเช็ค' :
+                updatemacar.status === false ? 'ไม่ผ่านการตรวจเช็ค' :
+                'รอการอนุมัติ' }
+              </td> -->
             </tr>
             <tr>
               <td style="padding: 0 40px">
                 <p style="font-size: 16px; font-weight: bold">
                   ผู้อนุมัติ :
                   <samp style="font-weight: lighter"
-                    >${updatemacar.createbyName}</samp
+                    >${ updatemacar.createbyName }</samp
                   >
                 </p>
               </td>

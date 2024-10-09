@@ -1,13 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { MaCarBookRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
+import { EmailService } from '../Emailtranfer/email.service';
+import { macarbook } from 'src/Emailtranfer/template/macarbook';
 
 @Injectable()
 export class MaCarBookService {
-  constructor(private readonly maCarBookRepository: MaCarBookRepository) {}
-  create(data: Prisma.maCarBookCreateInput) {
-    const condition = { data: data } as Prisma.maCarBookCreateArgs;
-    return this.maCarBookRepository.create(condition);
+  constructor(
+    private readonly maCarBookRepository: MaCarBookRepository,
+    private readonly emailService: EmailService,
+  ) {}
+  async create(data: Prisma.maCarBookCreateInput) {
+    const condition = await this.maCarBookRepository.create({ data: data });
+    const emailContent = macarbook(condition);
+    await this.emailService.sendEmail(
+       'your email', // email ที่ต้องการส่ง
+       `การสร้าง Task ลำดับที่ ${condition.id}`, //อันนี้ไตเติ้ล
+      emailContent, // เนื้อหาอันนี้จะเป็นการใช้ฟิวเข้าไป
+    );
+    return condition;
   }
 
   findAll() {

@@ -2,8 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { MaCarWrapupRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 import { EmailService } from '../Emailtranfer/email.service';
-import { header } from '../Emailtranfer/template/macarcreate';
-import { approved } from 'src/Emailtranfer/template/macarappove';
+import { warpup } from '../Emailtranfer/template/warpup';
+import { warpupapproved } from 'src/Emailtranfer/template/warpupappove';
+import { macarbook } from 'src/Emailtranfer/template/macarbook';
 @Injectable()
 export class MaCarWrapupService {
   constructor(
@@ -12,7 +13,7 @@ export class MaCarWrapupService {
   ) {}
   async create(data: Prisma.maCarWrapupCreateArgs) {
     const maCarWrapup = await this.macarwrapupRepo.create(data);
-    const emailContent = header(maCarWrapup);
+    const emailContent = warpup(maCarWrapup);
 
     await this.emailService.sendEmail(
       'aekittipon500@gmail.com',
@@ -56,7 +57,7 @@ export class MaCarWrapupService {
     console.log(`หลังจาก${updatemacar.id}`);
 
     if (updatemacar.status !== null) {
-      const emailContent = approved(updatemacar);
+      const emailContent = macarbook(updatemacar);
 
       console.log(`ข้างในการส่งจดหมายคือ ${emailContent}`);
       console.log(`ส่งจาก ${updatemacar.id}`);
