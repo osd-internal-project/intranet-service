@@ -21,9 +21,8 @@ import { extname, join } from 'path';
 import { createReadStream, promises as fsPromises } from 'fs';
 import { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
-
-const uploadpath = process.env.PATH_MOUNTDIR_IMAGES_UPLOAD;
-const MAX_IMAGES = 3;
+import configs from 'src/configs';
+const PORT = configs();
 @Controller('ma-car-wrapup-image')
 export class maCarWrapupImageController {
   constructor(
@@ -34,7 +33,7 @@ export class maCarWrapupImageController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: `./uploads/maCarImage`,
+        destination: `${PORT.pathMountDirUpload}/maCarImage`,
         filename: (req, file, cb) => {
           const fileExtName = extname(file.originalname);
           const randomName = uuidv4();
@@ -78,7 +77,7 @@ export class maCarWrapupImageController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: `./uploads/maCarImage`,
+        destination: `${PORT.pathMountDirUpload}/maCarImage`,
         filename: (req, file, cb) => {
           const fileExtName = extname(file.originalname);
           const randomName = uuidv4();
@@ -97,7 +96,7 @@ export class maCarWrapupImageController {
 
     // Get the existing images related to the carWrapupId
     const existingImages = this.maCarWrapupImageService.findMany({
-      where: { idwarpupImage : +carWrapupId },
+      where: { idwarpupImage: +carWrapupId },
       orderBy: { createdAt: 'asc' },
     });
 
@@ -129,7 +128,10 @@ export class maCarWrapupImageController {
     @Param('file') mafileNameImage: string,
     @Res() res: Response,
   ): void {
-    const filePath = join('./uploads/maCarImage', mafileNameImage);
+    const filePath = join(
+      `${PORT.pathMountDirUpload}/maCarImage`,
+      mafileNameImage,
+    );
     fsPromises
       .access(filePath)
       .then(() => {

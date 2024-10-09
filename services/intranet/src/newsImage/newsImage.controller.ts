@@ -21,11 +21,9 @@ import { extname, join } from 'path';
 import { createReadStream, promises as fsPromises } from 'fs';
 import { Response } from 'express';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import config from '../configs';
-const pathMountDirUpload = config().pathMountDirUpload;
+import configs from '../configs';
+const PORT = configs();
 
-const uploadpath = process.env.PATH_MOUNTDIR_IMAGES_UPLOAD;
-const MAX_IMAGES = 3;
 @Controller('news-image')
 export class NewsImageController {
   constructor(private readonly newsImageService: NewsImageService) {}
@@ -34,7 +32,7 @@ export class NewsImageController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: `./uploads/newsimage`,
+        destination: `${PORT.pathMountDirUpload}/newsimage`,
         filename: (req, file, cb) => {
           const fileExtName = extname(file.originalname);
           const randomName = uuidv4();
@@ -76,7 +74,7 @@ export class NewsImageController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: `${process.env.PATH_MOUNTDIR_IMAGES_UPLOAD}/newsimage`,
+        destination: `${process.env.PATH_MOUNTDIR_UPLOAD}/newsimage`,
         filename: (req, file, cb) => {
           const fileExtName = extname(file.originalname);
           const randomName = uuidv4();
@@ -104,7 +102,7 @@ export class NewsImageController {
 
     const data = {
       fileimageName: file.originalname,
-      fileimagePath: `${process.env.PATH_MOUNTDIR_IMAGES_UPLOAD}/newsimage/${file.filename}`,
+      fileimagePath: `${process.env.PATH_MOUNTDIR_UPLOAD}/newsimage/${file.filename}`,
       fileName: file.filename,
     } as Prisma.newsImageUpdateInput;
 
@@ -127,7 +125,7 @@ export class NewsImageController {
       return res.status(404).json({ message: 'Image not found' });
     }
     const imagePath = join(
-      `${pathMountDirUpload}/newsimage`,
+      `${PORT.pathMountDirUpload}/newsimage`,
       `${image.fileName}`,
     );
     return res.sendFile(imagePath, { root: './' });
@@ -140,7 +138,7 @@ export class NewsImageController {
       return res.status(404).json({ message: 'Image not found' });
     }
     const imagePath = join(
-      `${pathMountDirUpload}/newsimage`,
+      `${PORT.pathMountDirUpload}/newsimage`,
       `${image.fileName}`,
     );
     return res.sendFile(imagePath, { root: './' });
