@@ -100,6 +100,7 @@ import {
   ExpenseTypeRepository,
   TicketExpenseRepository,
   ContractCompanyRepository,
+  emailTemplateRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -209,6 +210,7 @@ const services = [
   handbookFileRepository,
   handbooktypeRepository,
   SlideImageRepository,
+  emailTemplateRepository,
 ];
 @Module({
   providers: [...services],
