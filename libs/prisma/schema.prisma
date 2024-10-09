@@ -183,8 +183,8 @@ model emailTemplate {
     id       Int       @unique @default(autoincrement()) @map("id_form")
     name     String    @default("") @map("name") @db.VarChar(100)
     formdoc  String    @default("") @map("form_doc") @db.Text
-    createAt DateTime? @default(now()) @map("created_At") 
-    updateAt DateTime? @default(now()) @map("updated_At") 
+    createAt DateTime? @default(now()) @map("created_At")
+    updateAt DateTime? @default(now()) @map("updated_At")
 }
 
 model slideImage {
@@ -200,7 +200,7 @@ model slideImage {
     updatedAt     DateTime? @map("updated_at") @db.Timestamptz()
     updatedById   String?   @map("updated_by_id") @db.VarChar(50)
     updatedByName String?   @map("updated_by_name") @db.VarChar(255)
-    deletedAt     DateTime? @map("deleted_at") @db.Timestamptz()
+    order         Int?      @map("order")
 
     @@map("slide_image")
 }
