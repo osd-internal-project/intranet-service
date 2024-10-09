@@ -5,7 +5,7 @@ import helmet from 'helmet';
 import config from './configs';
 import { IntranetMainModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as cors from "cors"
+import * as cors from 'cors';
 const PORT = config().port;
 
 async function bootstrap() {
@@ -16,11 +16,11 @@ async function bootstrap() {
   const app = await NestFactory.create(IntranetMainModule);
   app.setGlobalPrefix('api');
   app.enableCors();
-  app.use(cors())
+  app.use(cors());
   app.use(helmet());
   const prismaService = app.get(PrismaService);
   prismaService.enableShutdownHooks(app as any);
-  app.enableCors()
+  app.enableCors();
   app.useGlobalPipes(new ValidationPipe());
 
   const options = new DocumentBuilder()
