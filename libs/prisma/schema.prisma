@@ -200,7 +200,7 @@ model slideImage {
     updatedAt     DateTime? @map("updated_at") @db.Timestamptz()
     updatedById   String?   @map("updated_by_id") @db.VarChar(50)
     updatedByName String?   @map("updated_by_name") @db.VarChar(255)
-    deletedAt     DateTime? @map("deleted_at") @db.Timestamptz()
+    order         Int?      @map("order")
 
     @@map("slide_image")
 }
