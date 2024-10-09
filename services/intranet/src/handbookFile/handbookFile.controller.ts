@@ -21,6 +21,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { extname, join } from 'path';
 import { FileInterceptor } from '@nestjs/platform-express';
 
+import config from '../configs';
+const PORT = config();
 @Controller('handbook-file')
 export class handbookFileController {
   constructor(private readonly handbookFileService: handbookFileService) {}
@@ -29,7 +31,7 @@ export class handbookFileController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: `./uploads/handbookfile`,
+        destination: `${PORT.pathMountDirUpload}/handbookfile`,
         filename: (req, file, cb) => {
           const fileExtName = extname(file.originalname);
           const randomName = uuidv4();

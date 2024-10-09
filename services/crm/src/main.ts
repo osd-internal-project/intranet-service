@@ -2,11 +2,11 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { PrismaService } from '@inventory/share';
 import helmet from 'helmet';
-import config from './configs';
+import configs from './configs';
 import { IntranetMainModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
-const PORT = config().port;
+const PORT = configs().port;
 
 async function bootstrap() {
   (BigInt.prototype as any).toJSON = function () {

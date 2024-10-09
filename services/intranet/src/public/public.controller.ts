@@ -15,6 +15,8 @@ import {
 import { join } from 'path';
 import { createReadStream } from 'fs';
 import { Response } from 'express';
+import configs from 'src/configs';
+const PORT = configs();
 @Controller('public')
 export class PublicController {
   @Get('news-image/:filename')
@@ -22,7 +24,9 @@ export class PublicController {
     @Param('filename') filename: string,
     @Res() res: Response,
   ): void {
-    const file = createReadStream(join(`./uploads/newsimage`, filename));
+    const file = createReadStream(
+      join(`${PORT.pathMountDirUpload}/newsimage`, filename),
+    );
     res.set({
       'Content-Type': 'image/jpeg',
       'Content-Disposition': `inline; filename="${file}"`,
@@ -36,10 +40,10 @@ export class PublicController {
     @Query('fileName') fileName: string,
     @Res() res: Response,
   ): void {
-    const filePath = join('./uploads/handbookfile', fileId);
+    const filePath = join(`${PORT.pathMountDirUpload}/handbookfile`, fileId);
     const file = createReadStream(filePath);
-const fileNewName =decodeURIComponent(fileName) 
-    console.log(fileNewName,filePath)
+    const fileNewName = decodeURIComponent(fileName);
+    console.log(fileNewName, filePath);
     file.on('error', (err) => {
       console.error('Error:', err);
       return res.status(404).send('File not found');
@@ -57,7 +61,9 @@ const fileNewName =decodeURIComponent(fileName)
     @Res() res: Response,
   ): void {
     console.log(maName);
-    const file = createReadStream(join(`./uploads/maCarImage`, maName));
+    const file = createReadStream(
+      join(`${PORT.pathMountDirUpload}/maCarImage`, maName),
+    );
     res.set({
       'Content-Type': 'image/jpeg',
       'Content-Disposition': `inline; fileName="${file}"`,
