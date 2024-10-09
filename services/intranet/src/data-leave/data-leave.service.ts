@@ -227,42 +227,6 @@ export class DataLeaveService {
   //   return [];
   // }
 
-  async findLeaveByUserIds(userId: string) {
-    const accessedUserIds = await this.accessService.getOwnerGroupByUserId(
-      userId,
-    );
-    console.log('accessedUserIds:', accessedUserIds.parentGroupId);
-
-    if (accessedUserIds) {
-      const header = await this.userGroupMapHeaderRepo.findOne({
-        where: { userGroupId: accessedUserIds.groupId },
-      });
-      // console.log('header:', header);
-      const userGroupId = await this.userGroupRepo.findOne({
-        where: { groupId: accessedUserIds.parentGroupId },
-      });
-      console.log('parentGroupId:', userGroupId);
-      console.log('parentGroupIdsssssss:', userGroupId.parentGroupId);
-      const userGroupById = await this.userGroupMapHeaderRepo.findOne({
-        where: { userGroupId: userGroupId.parentGroupId },
-      });
-
-      if (header) {
-        if (header.leaveUserId.length > 0) {
-          const users = await this.usersRepo.findMany({
-            where: {
-              userId: {
-                in: header.leaveUserId,
-              },
-            },
-          });
-          return users;
-        }
-      }
-    }
-    return [];
-  }
-
   async findLeaveByUserId(userId: string) {
     const accessedUserIds = await this.accessService.getOwnerGroupByUserId(
       userId,
@@ -282,7 +246,6 @@ export class DataLeaveService {
               },
             },
           });
-
           if (users && users.length > 0) {
             return users;
           }
