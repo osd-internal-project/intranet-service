@@ -190,6 +190,14 @@ model emailTemplate {
     updateAt     DateTime? @default(now()) @map("updated_at")
 }
 
+model emailTemplateType {
+    idtype   Int       @unique @default(autoincrement()) @map("id_type")
+    nametype String?   @default("") @map("name") @db.VarChar(100)
+    author   String?   @default("") @map("author") @db.VarChar(100)
+    createAt DateTime? @default(now()) @map("created_At")
+    updateAt DateTime? @default(now()) @map("updated_At")
+}
+
 model slideImage {
     id            Int       @unique @default(autoincrement()) @map("id")
     fileId        String    @unique @default(uuid()) @map("file_id") @db.VarChar(50)
@@ -1282,6 +1290,7 @@ model customerBranch {
     customerDetail      customerDetail?    @relation(fields: [customerDetailId], references: [id])
     customerDetailId    Int?               @map("customer_detail_id")
     remark              String?            @map("remark") @db.Text
+    activeStatus        Boolean?           @default(true) @map("active_status") @db.Boolean
 
     @@map("customer_branch")
 }
@@ -1367,6 +1376,7 @@ model customerDetailSub {
     customerDetailId Int?             @map("customer_detail_id")
     customerDetail   customerDetail?  @relation(fields: [customerDetailId], references: [id], onDelete: Cascade)
     customerBranch   customerBranch[]
+    activeStatus     Boolean?         @default(true) @map("active_status") @db.Boolean
 
     @@map("customer_detail_sub")
 }
