@@ -181,8 +181,18 @@ model handbookFile {
 
 model emailTemplate {
     id       Int       @unique @default(autoincrement()) @map("id_form")
-    name     String    @default("") @map("name") @db.VarChar(100)
-    formdoc  String    @default("") @map("form_doc") @db.Text
+    name     String?   @default("") @map("name") @db.VarChar(100)
+    formdoc  String?   @default("") @map("form_doc") @db.Text
+    author   String?   @default("") @map("author") @db.VarChar(100)
+    typeemail String? @default("") @map("typeemail") @db.VarChar(100)
+    createAt DateTime? @default(now()) @map("created_At")
+    updateAt DateTime? @default(now()) @map("updated_At")
+}
+
+model emailTemplateType {
+    idtype   Int       @unique @default(autoincrement()) @map("id_type")
+    nametype String?   @default("") @map("name") @db.VarChar(100)
+    author   String?   @default("") @map("author") @db.VarChar(100)
     createAt DateTime? @default(now()) @map("created_At")
     updateAt DateTime? @default(now()) @map("updated_At")
 }
