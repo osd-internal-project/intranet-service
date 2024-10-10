@@ -18,11 +18,12 @@ import { Response } from 'express';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
-import configs from '../configs';
 // import * as fs from 'fs';
 import { promises as fs } from 'fs';
 import { unlink } from 'node:fs/promises';
-const pathMountDirUpload = configs().pathMountDirUpload;
+// const pathMountDirUpload = configs().pathMountDirUpload;
+import configs from '../configs';
+const PORT = configs();
 
 @Controller('slide-image')
 export class SlideImageController {
@@ -109,7 +110,7 @@ export class SlideImageController {
       return res.status(404).json({ message: 'Image not found' });
     }
     const imagePath = join(
-      `${pathMountDirUpload}/slide-image`,
+      `${PORT.pathMountDirUpload}/slide-image`,
       `${image.fileId}`,
     );
     try {
@@ -130,7 +131,7 @@ export class SlideImageController {
       }
       const fileIds = images.map((image) => image.fileId);
       const imagePaths = fileIds.map((fileId) => {
-        return join(`${pathMountDirUpload}/slide-image`, fileId);
+        return join(`${PORT.pathMountDirUpload}/slide-image`, fileId);
       });
       res.json(imagePaths);
     } catch (error) {
@@ -145,7 +146,7 @@ export class SlideImageController {
       return res.status(404).json({ message: 'Image not found' });
     }
     const imagePath = join(
-      `${pathMountDirUpload}/slide-image`,
+      `${PORT.pathMountDirUpload}/slide-image`,
       `${image.fileId}`,
     );
     return res.sendFile(imagePath, { root: './' });
@@ -158,7 +159,7 @@ export class SlideImageController {
       return res.status(404).json({ message: 'Image not found' });
     }
     const imagePath = join(
-      `${pathMountDirUpload}/slide-image`,
+      `${PORT.pathMountDirUpload}/slide-image`,
       `${image.fileId}`,
     );
     return res.sendFile(imagePath, { root: './' });
@@ -168,7 +169,7 @@ export class SlideImageController {
   @UseInterceptors(
     FilesInterceptor('files', 1, {
       storage: diskStorage({
-        destination: `${pathMountDirUpload}/slide-image`,
+        destination: `${PORT.pathMountDirUpload}/slide-image`,
         filename: (req, file, callback) => {
           const fileCode = `${uuidv4()}`;
           const fileType = extname(file.originalname);
