@@ -33,6 +33,7 @@ import { HandbooktypeModule } from './handbooktype/handbooktype.module';
 import { SlideImageModule } from './slide-image/slide-image.module';
 import { maCarWrapupImageModule } from './maCarWrapupImage/maCarWrapupImage.module';
 import { handbookFileModule } from './handbookFile/handbookFile.module';
+import { EmailTemplateModule } from './email-template/email-template.module';
 import { emailTemplateModule } from './emailtemplate/emailTemplate.module';
 import { emailTemplateTypeModule } from './emailTemplateType/emailTemplateType.module';
 @Module({
@@ -66,6 +67,7 @@ import { emailTemplateTypeModule } from './emailTemplateType/emailTemplateType.m
     SlideImageModule,
     maCarWrapupImageModule,
     handbookFileModule,
+    EmailTemplateModule,
     emailTemplateModule,
     emailTemplateTypeModule,
     
