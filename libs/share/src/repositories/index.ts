@@ -109,4 +109,5 @@ export * from './slideImage.repository';
 
 //emailtemplate
 export * from './emailTemplate.repository';
+export * from './emailTemplateType.repository';
 
