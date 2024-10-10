@@ -19,7 +19,8 @@ import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import config from '../configs';
-import * as fs from 'fs';
+// import * as fs from 'fs';
+import { promises as fs } from 'fs';
 import { unlink } from 'node:fs/promises';
 const pathMountDirUpload = config().pathMountDirUpload;
 
@@ -66,6 +67,11 @@ export class SlideImageController {
     return this.SlideImageService.findAll();
   }
 
+  @Get('order')
+  findorder() {
+    return this.SlideImageService.findorder();
+  }
+
   // @Post()
   // create(@Body() data: Prisma.slideImageCreateInput) {
   //   return this.SlideImageService.create(data);
@@ -77,6 +83,14 @@ export class SlideImageController {
     @Body() data: Prisma.slideImageUpdateInput,
   ) {
     return this.SlideImageService.update(fileId, data);
+  }
+
+  @Patch('order/:fileId')
+  updateTebleSlide(
+    @Param('fileId') fileId: string,
+    @Body() data: Prisma.slideImageUpdateInput,
+  ) {
+    return this.SlideImageService.updateTebleSlide(fileId, data);
   }
 
   // @Delete(':id')
@@ -99,8 +113,8 @@ export class SlideImageController {
       `${image.fileId}`,
     );
     try {
-      await unlink(imagePath);
       await this.SlideImageService.remove(+id);
+      await fs.unlink(imagePath);
       return res.status(200).json({ message: 'Image deleted success' });
     } catch (error) {
       return res.status(500).json({ message: 'Failed to delete image', error });
