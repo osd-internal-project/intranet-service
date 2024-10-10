@@ -14,6 +14,14 @@ export class SlideImageService {
     });
   }
 
+  findorder() {
+    return this.SlideImageRepository.findMany({
+      orderBy: {
+        order: 'asc',
+      },
+    });
+  }
+
   create(data: Prisma.slideImageCreateInput) {
     const condition = { data: data } as Prisma.slideImageCreateArgs;
     return this.SlideImageRepository.create(condition);
@@ -31,11 +39,21 @@ export class SlideImageService {
     return this.SlideImageRepository.update(condition);
   }
 
+  async updateTebleSlide(fileId: string, data: Prisma.slideImageUpdateInput) {
+    const condition = {
+      where: { fileId: fileId },
+      data: {
+        order: data.order,
+      },
+    } as Prisma.slideImageUpdateArgs;
+    return this.SlideImageRepository.update(condition);
+  }
+
   remove(id: number) {
     const condition = { where: { id: id } } as Prisma.slideImageDeleteArgs;
     return this.SlideImageRepository.delete(condition);
   }
-  
+
   findImage(fileId: string) {
     const condition = { where: { fileId: fileId } } as Prisma.slideImageArgs;
     return this.SlideImageRepository.findOne(condition);
