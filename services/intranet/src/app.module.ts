@@ -33,6 +33,7 @@ import { HandbooktypeModule } from './handbooktype/handbooktype.module';
 import { SlideImageModule } from './slide-image/slide-image.module';
 import { maCarWrapupImageModule } from './maCarWrapupImage/maCarWrapupImage.module';
 import { handbookFileModule } from './handbookFile/handbookFile.module';
+import { EmailTemplateModule } from './email-template/email-template.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
@@ -63,8 +64,8 @@ import { handbookFileModule } from './handbookFile/handbookFile.module';
     HandbooktypeModule,
     SlideImageModule,
     maCarWrapupImageModule,
-    handbookFileModule
-    
+    handbookFileModule,
+    EmailTemplateModule,
   ],
   controllers: [IntranetController, PublicController],
   providers: [IntranetService],

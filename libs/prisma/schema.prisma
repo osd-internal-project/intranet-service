@@ -180,11 +180,14 @@ model handbookFile {
 }
 
 model emailTemplate {
-    id       Int       @unique @default(autoincrement()) @map("id_form")
-    name     String    @default("") @map("name") @db.VarChar(100)
-    formdoc  String    @default("") @map("form_doc") @db.Text
-    createAt DateTime? @default(now()) @map("created_At")
-    updateAt DateTime? @default(now()) @map("updated_At")
+    id           Int       @unique @default(autoincrement()) @map("id")
+    templateId   String    @unique @default(uuid()) @map("template_id")
+    name         String    @default("") @map("name") @db.VarChar(100)
+    type         String    @default("") @map("type") @db.VarChar(100)
+    status       String    @default("") @map("status") @db.VarChar(10)
+    htmlTemplate String    @default("") @map("html_template") @db.Text
+    createAt     DateTime? @default(now()) @map("created_at")
+    updateAt     DateTime? @default(now()) @map("updated_at")
 }
 
 model slideImage {
