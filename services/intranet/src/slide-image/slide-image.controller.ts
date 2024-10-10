@@ -139,19 +139,6 @@ export class SlideImageController {
     }
   }
 
-  @Get('/undefined/slide-image/:file')
-  async getimage(@Param('file') fileId: string, @Res() res: Response) {
-    const image = await this.SlideImageService.findImage(fileId);
-    if (!image) {
-      return res.status(404).json({ message: 'Image not found' });
-    }
-    const imagePath = join(
-      `${PORT.pathMountDirUpload}/slide-image`,
-      `${image.fileId}`,
-    );
-    return res.sendFile(imagePath, { root: './' });
-  }
-
   @Get('/uploads/slide-image/:file')
   async getImage(@Param('file') fileId: string, @Res() res: Response) {
     const image = await this.SlideImageService.findImage(fileId);

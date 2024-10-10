@@ -57,21 +57,8 @@ export class InformationController {
     return this.informationNewsService.remove(+newsId);
   }
 
-  @Get('/uploads/newsimage:file')
+  @Get('/uploads/newsimage/:file')
   async getImage(@Param('file') fileName: string, @Res() res: Response) {
-    const image = await this.informationNewsService.findImage(fileName);
-    if (!image) {
-      return res.status(404).json({ message: 'Image not found' });
-    }
-    const imagePath = join(
-      `${PORT.pathMountDirUpload}/newsimage`,
-      `${image.fileName}`,
-    );
-    return res.sendFile(imagePath, { root: './' });
-  }
-
-  @Get('/undefined/newsimage/:file')
-  async getimage(@Param('file') fileName: string, @Res() res: Response) {
     const image = await this.informationNewsService.findImage(fileName);
     if (!image) {
       return res.status(404).json({ message: 'Image not found' });
