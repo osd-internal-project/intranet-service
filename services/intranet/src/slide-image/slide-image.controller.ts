@@ -18,11 +18,11 @@ import { Response } from 'express';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
-import config from '../configs';
+import configs from '../configs';
 // import * as fs from 'fs';
 import { promises as fs } from 'fs';
 import { unlink } from 'node:fs/promises';
-const pathMountDirUpload = config().pathMountDirUpload;
+const pathMountDirUpload = configs().pathMountDirUpload;
 
 @Controller('slide-image')
 export class SlideImageController {

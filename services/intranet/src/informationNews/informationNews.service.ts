@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { InformationRepository } from '@inventory/share';
+import { InformationRepository, newsImageRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class informationNewsService {
-  constructor(private readonly informationNewsRepo: InformationRepository) {}
+  constructor(
+    private readonly informationNewsRepo: InformationRepository,
+    private readonly newsImageRepos: newsImageRepository,
+  ) {}
 
   create(data: Prisma.informationNewsCreateArgs) {
     return this.informationNewsRepo.create(data);
@@ -57,5 +60,12 @@ export class informationNewsService {
         newsId: newsId,
       },
     });
+  }
+
+  findImage(fileName: string) {
+    const condition = {
+      where: { fileName: fileName },
+    } as Prisma.slideImageArgs;
+    return this.newsImageRepos.findOne(condition);
   }
 }
