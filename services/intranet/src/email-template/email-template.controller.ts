@@ -8,15 +8,15 @@ import {
   Delete,
 } from '@nestjs/common';
 import { EmailTemplateService } from './email-template.service';
-import { CreateEmailTemplateDto } from './dto/create-email-template.dto';
 import { UpdateEmailTemplateDto } from './dto/update-email-template.dto';
+import { Prisma } from '@prisma/client';
 
 @Controller('email-template')
 export class EmailTemplateController {
   constructor(private readonly emailTemplateService: EmailTemplateService) {}
 
   @Post()
-  create(@Body() createEmailTemplateDto: CreateEmailTemplateDto) {
+  create(@Body() createEmailTemplateDto: Prisma.emailTemplateCreateInput) {
     return this.emailTemplateService.create(createEmailTemplateDto);
   }
 

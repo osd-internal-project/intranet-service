@@ -2,12 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { CreateEmailTemplateDto } from './dto/create-email-template.dto';
 import { UpdateEmailTemplateDto } from './dto/update-email-template.dto';
 import { emailTemplateRepository } from '@inventory/share';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class EmailTemplateService {
   constructor(private readonly emailtemplateRepo: emailTemplateRepository) {}
-  create(createEmailTemplateDto: CreateEmailTemplateDto) {
-    return 'This action adds a new emailTemplate';
+  create(createEmailTemplateDto: Prisma.emailTemplateCreateInput) {
+    const base = {
+      data: createEmailTemplateDto,
+    };
+    return this.emailtemplateRepo.create(base);
   }
 
   findAll() {
