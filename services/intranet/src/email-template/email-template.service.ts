@@ -1,15 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { CreateEmailTemplateDto } from './dto/create-email-template.dto';
 import { UpdateEmailTemplateDto } from './dto/update-email-template.dto';
+import { emailTemplateRepository } from '@inventory/share';
 
 @Injectable()
 export class EmailTemplateService {
+  constructor(private readonly emailtemplateRepo: emailTemplateRepository) {}
   create(createEmailTemplateDto: CreateEmailTemplateDto) {
     return 'This action adds a new emailTemplate';
   }
 
   findAll() {
-    return `This action returns all emailTemplate`;
+    return this.emailtemplateRepo.findAll();
   }
 
   findOne(id: number) {

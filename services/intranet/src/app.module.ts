@@ -35,7 +35,7 @@ import { maCarWrapupImageModule } from './maCarWrapupImage/maCarWrapupImage.modu
 import { handbookFileModule } from './handbookFile/handbookFile.module';
 import { EmailTemplateModule } from './email-template/email-template.module';
 import { emailTemplateModule } from './emailtemplate/emailTemplate.module';
-import { emailTemplateTypeModule } from './emailTemplateType/emailTemplateType.module';
+// import { emailTemplateTypeModule } from './emailTemplateType/emailTemplateType.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
@@ -69,8 +69,7 @@ import { emailTemplateTypeModule } from './emailTemplateType/emailTemplateType.m
     handbookFileModule,
     EmailTemplateModule,
     emailTemplateModule,
-    emailTemplateTypeModule,
-    
+    // emailTemplateTypeModule,
   ],
   controllers: [IntranetController, PublicController],
   providers: [IntranetService],

@@ -186,16 +186,31 @@ model emailTemplate {
     type         String    @default("") @map("type") @db.VarChar(100)
     status       String    @default("") @map("status") @db.VarChar(10)
     htmlTemplate String    @default("") @map("html_template") @db.Text
-    createAt     DateTime? @default(now()) @map("created_at")
-    updateAt     DateTime? @default(now()) @map("updated_at")
+    createAt     DateTime? @default(now()) @map("created_at") @db.Timestamptz()
+    updateAt     DateTime? @default(now()) @map("updated_at") @db.Timestamptz()
+
+    @@map("email_template")
 }
 
 model emailTemplateType {
-    idtype   Int       @unique @default(autoincrement()) @map("id_type")
-    nametype String?   @default("") @map("name") @db.VarChar(100)
-    author   String?   @default("") @map("author") @db.VarChar(100)
-    createAt DateTime? @default(now()) @map("created_At")
-    updateAt DateTime? @default(now()) @map("updated_At")
+    id                  Int                  @unique @default(autoincrement()) @map("id")
+    name                String               @map("name") @db.VarChar(100)
+    createAt            DateTime             @default(now()) @map("created_At") @db.Timestamptz()
+    updateAt            DateTime             @default(now()) @map("updated_At") @db.Timestamptz()
+    emailTemplateFields emailTemplateFields?
+
+    @@map("email_template_type")
+}
+
+model emailTemplateFields {
+    id                Int                @unique @default(autoincrement()) @map("id")
+    idTemplateType    Int                @unique @default(autoincrement()) @map("id_template_type")
+    name              String             @map("name") @db.VarChar(100)
+    createAt          DateTime           @default(now()) @map("created_At")
+    updateAt          DateTime           @default(now()) @map("updated_At")
+    emailTemplateType emailTemplateType? @relation(fields: [idTemplateType], references: [id])
+
+    @@map("email_template_fields")
 }
 
 model slideImage {
