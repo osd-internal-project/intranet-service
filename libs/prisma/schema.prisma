@@ -193,22 +193,22 @@ model emailTemplate {
 }
 
 model emailTemplateType {
-    id                  Int                  @unique @default(autoincrement()) @map("id")
-    name                String               @map("name") @db.VarChar(100)
-    createAt            DateTime             @default(now()) @map("created_At") @db.Timestamptz()
-    updateAt            DateTime             @default(now()) @map("updated_At") @db.Timestamptz()
-    emailTemplateFields emailTemplateFields?
+    id                  Int                   @unique @default(autoincrement()) @map("id")
+    name                String                @map("name") @db.VarChar(100)
+    createAt            DateTime              @default(now()) @map("created_At") @db.Timestamptz()
+    updateAt            DateTime              @default(now()) @map("updated_At") @db.Timestamptz()
+    emailTemplateFields emailTemplateFields[]
 
     @@map("email_template_type")
 }
 
 model emailTemplateFields {
     id                Int                @unique @default(autoincrement()) @map("id")
-    idTemplateType    Int                @unique @default(autoincrement()) @map("id_template_type")
     name              String             @map("name") @db.VarChar(100)
     createAt          DateTime           @default(now()) @map("created_At")
     updateAt          DateTime           @default(now()) @map("updated_At")
     emailTemplateType emailTemplateType? @relation(fields: [idTemplateType], references: [id])
+    idTemplateType    Int?               @map("id_template_type")
 
     @@map("email_template_fields")
 }
