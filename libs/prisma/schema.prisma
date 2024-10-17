@@ -1417,6 +1417,16 @@ model customerResponsible {
     @@map("customer_responsible")
 }
 
+model customerProduct {
+    id           Int       @unique @default(autoincrement()) @map("id")
+    name         String    @map("name") @db.VarChar(255)
+    activeStatus Boolean   @default(true) @map("active_status") @db.Boolean
+    details      Json?     @map("details")
+    fields       Json?     @map("fields")
+    createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt    DateTime? @updatedAt @map("updated_at") @db.Timestamptz()
+}
+
 model customerType {
     id             Int      @unique @default(autoincrement()) @map("id")
     customerTypeId String?  @map("customer_type_id") @db.VarChar(20)
