@@ -4,7 +4,9 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class emailTemplateTypeService {
-  constructor(private readonly emailTemplateTypeRepo: emailTemplateTypeRepository) {}
+  constructor(
+    private readonly emailTemplateTypeRepo: emailTemplateTypeRepository,
+  ) {}
 
   create(data: Prisma.emailTemplateTypeCreateArgs) {
     return this.emailTemplateTypeRepo.create(data);
@@ -13,30 +15,16 @@ export class emailTemplateTypeService {
   async findAll(condition: Prisma.emailTemplateTypeFindManyArgs) {
     return await this.emailTemplateTypeRepo.findMany({
       ...condition,
-      orderBy: {
-        idtype: 'asc',
-      },
     });
   }
 
   async findNewsAll(condition: Prisma.emailTemplateTypeFindManyArgs) {
     return await this.emailTemplateTypeRepo.findMany({
       ...condition,
-      orderBy: {
-        idtype: 'desc',
-      },
     });
   }
 
-  async findOne(idtype: number) {
-    const base = {};
-
-    return await this.emailTemplateTypeRepo.findOne({
-      where: {
-        idtype: idtype,
-      },
-    });
-  }
+  async findOne(idtype: number) {}
 
   update(idtype: number, condition: Prisma.emailTemplateTypeUpdateArgs) {
     const base = {
@@ -48,11 +36,5 @@ export class emailTemplateTypeService {
     return this.emailTemplateTypeRepo.update(base);
   }
 
-  async remove(idtype: number) {
-    return await this.emailTemplateTypeRepo.delete({
-      where: {
-        idtype: idtype,
-      },
-    });
-  }
+  async remove(idtype: number) {}
 }

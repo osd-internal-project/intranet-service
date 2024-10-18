@@ -34,8 +34,8 @@ import { SlideImageModule } from './slide-image/slide-image.module';
 import { maCarWrapupImageModule } from './maCarWrapupImage/maCarWrapupImage.module';
 import { handbookFileModule } from './handbookFile/handbookFile.module';
 import { EmailTemplateModule } from './email-template/email-template.module';
-import { emailTemplateModule } from './emailtemplate/emailTemplate.module';
-import { emailTemplateTypeModule } from './emailTemplateType/emailTemplateType.module';
+import { EmailTemplateTypeModule } from './email-template-type/email-template-type.module';
+import { EmailTemplateFieldsModule } from './email-template-fields/email-template-fields.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
@@ -68,9 +68,8 @@ import { emailTemplateTypeModule } from './emailTemplateType/emailTemplateType.m
     maCarWrapupImageModule,
     handbookFileModule,
     EmailTemplateModule,
-    emailTemplateModule,
-    emailTemplateTypeModule,
-    
+    EmailTemplateTypeModule,
+    EmailTemplateFieldsModule,
   ],
   controllers: [IntranetController, PublicController],
   providers: [IntranetService],

@@ -183,19 +183,35 @@ model emailTemplate {
     id           Int       @unique @default(autoincrement()) @map("id")
     templateId   String    @unique @default(uuid()) @map("template_id")
     name         String    @default("") @map("name") @db.VarChar(100)
-    type         String    @default("") @map("type") @db.VarChar(100)
+    type         Int       @map("type") @db.Integer
     status       String    @default("") @map("status") @db.VarChar(10)
     htmlTemplate String    @default("") @map("html_template") @db.Text
-    createAt     DateTime? @default(now()) @map("created_at")
-    updateAt     DateTime? @default(now()) @map("updated_at")
+    createAt     DateTime? @default(now()) @map("created_at") @db.Timestamptz()
+    updateAt     DateTime? @default(now()) @map("updated_at") @db.Timestamptz()
+
+    @@map("email_template")
 }
 
 model emailTemplateType {
-    idtype   Int       @unique @default(autoincrement()) @map("id_type")
-    nametype String?   @default("") @map("name") @db.VarChar(100)
-    author   String?   @default("") @map("author") @db.VarChar(100)
-    createAt DateTime? @default(now()) @map("created_At")
-    updateAt DateTime? @default(now()) @map("updated_At")
+    id                  Int                   @unique @default(autoincrement()) @map("id")
+    name                String                @map("name") @db.VarChar(100)
+    createAt            DateTime              @default(now()) @map("created_At") @db.Timestamptz()
+    updateAt            DateTime              @default(now()) @map("updated_At") @db.Timestamptz()
+    emailTemplateFields emailTemplateFields[]
+
+    @@map("email_template_type")
+}
+
+model emailTemplateFields {
+    id                Int                @unique @default(autoincrement()) @map("id")
+    name              String             @map("name") @db.VarChar(100)
+    description       String?            @map("description") @db.VarChar(250)
+    createAt          DateTime           @default(now()) @map("created_At")
+    updateAt          DateTime           @default(now()) @map("updated_At")
+    emailTemplateType emailTemplateType? @relation(fields: [idTemplateType], references: [id])
+    idTemplateType    Int?               @map("id_template_type")
+
+    @@map("email_template_fields")
 }
 
 model slideImage {
@@ -1399,6 +1415,16 @@ model customerResponsible {
     updatedAt    DateTime @default(now()) @map("updated_at") @db.Timestamptz()
 
     @@map("customer_responsible")
+}
+
+model customerProduct {
+    id           Int       @unique @default(autoincrement()) @map("id")
+    name         String    @map("name") @db.VarChar(255)
+    activeStatus Boolean   @default(true) @map("active_status") @db.Boolean
+    details      Json?     @map("details")
+    fields       Json?     @map("fields")
+    createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt    DateTime? @updatedAt @map("updated_at") @db.Timestamptz()
 }
 
 model customerType {
