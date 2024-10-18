@@ -22,7 +22,6 @@ export class MasterTypeLeaveController {
 
   @Post()
   create(@Body('condition') condition: Prisma.masterTypeleaveCreateInput) {
-    console.log(condition);
     return this.mastertypeleaveService.create(condition);
   }
 

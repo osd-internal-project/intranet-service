@@ -137,33 +137,28 @@ export class DataLeaveService {
         id: 'desc',
       },
     } as Prisma.usersFindFirstArgs;
-
     const resUser = await this.usersRepo.findOne(condition);
-
     return resUser;
   }
 
   countLeavesByTypeIdMap(leaveRecords) {
     const test = leaveRecords.reduce((acc, record) => {
-      const hours = record.leaveHour;
+      let hours = record.leaveHour;
       if (!acc[record.typeId]) {
         acc[record.typeId] = 0;
       }
-
       let calLeave = hours / 8;
       if (hours % 8 !== 0) {
         calLeave = Math.floor(calLeave) + (hours % 8) / 10;
       }
       acc[record.typeId] += calLeave;
       let leaveCount = acc[record.typeId];
-      const calHours = leaveCount % 1;
-
+      const calHours = parseFloat((leaveCount % 1).toFixed(1));
       if (calHours >= 0.8 && calHours <= 1) {
         leaveCount += 0.2;
       }
       acc[record.typeId] = leaveCount;
       acc[record.typeId] = parseFloat(leaveCount.toFixed(2));
-
       return acc;
     }, {});
     return test;
@@ -175,17 +170,19 @@ export class DataLeaveService {
       if (!acc[record.typeId]) {
         acc[record.typeId] = 0;
       }
-
       let calLeave = hours / 8;
       if (hours % 8 !== 0) {
         calLeave = Math.floor(calLeave) + (hours % 8) / 10;
       }
       acc[record.typeId] += calLeave;
       let leaveCount = acc[record.typeId];
-      const calHours = leaveCount % 1;
+      const calHours = parseFloat((leaveCount % 1).toFixed(1));
       if (calLeave % 8 !== 0) {
-        if (calHours >= 0.0 && calHours <= 0.2) {
-          leaveCount += 0.2;
+        if (!Number.isInteger(calLeave)) {
+          const isInRange = calHours >= 0.0 && calHours <= 0.8;
+          if (isInRange) {
+            leaveCount += 0.2;
+          }
         }
       }
       acc[record.typeId] = leaveCount;
@@ -194,6 +191,32 @@ export class DataLeaveService {
     }, {});
     return test;
   }
+
+  // countlimitLeavesByTypeIdMap(leaveRecords) {
+  //   const test = leaveRecords.reduce((acc, record) => {
+  //     const hours = record.leaveHour;
+  //     if (!acc[record.typeId]) {
+  //       acc[record.typeId] = 0;
+  //     }
+
+  //     let calLeave = hours / 8;
+  //     if (hours % 8 !== 0) {
+  //       calLeave = Math.floor(calLeave) + (hours % 8) / 10;
+  //     }
+  //     acc[record.typeId] += calLeave;
+  //     let leaveCount = acc[record.typeId];
+  //     const calHours = leaveCount % 1;
+  //     if (calLeave % 8 !== 0) {
+  //       if (calHours >= 0.0 && calHours <= 0.2) {
+  //         leaveCount += 0.2;
+  //       }
+  //     }
+  //     acc[record.typeId] = leaveCount;
+  //     acc[record.typeId] = parseFloat(leaveCount.toFixed(2));
+  //     return acc;
+  //   }, {});
+  //   return test;
+  // }
 
   // async findLeaveByUserId(userId: string) {
   //   const accessedUserIds = await this.accessService.getOwnerGroupByUserId(
