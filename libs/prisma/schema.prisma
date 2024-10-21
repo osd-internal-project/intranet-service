@@ -1420,6 +1420,7 @@ model customerResponsible {
 model customerProduct {
     id           Int       @unique @default(autoincrement()) @map("id")
     name         String    @map("name") @db.VarChar(255)
+    description  String    @map("description") @db.Text
     activeStatus Boolean   @default(true) @map("active_status") @db.Boolean
     details      Json?     @map("details")
     fields       Json?     @map("fields")
