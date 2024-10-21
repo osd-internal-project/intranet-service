@@ -10,12 +10,13 @@ export class MaCarBookService {
     private readonly maCarBookRepository: MaCarBookRepository,
     private readonly emailService: EmailService,
   ) {}
+
   async create(data: Prisma.maCarBookCreateInput) {
     const condition = await this.maCarBookRepository.create({ data: data });
     const emailContent = macarbook(condition);
     await this.emailService.sendEmail(
-       'your email', // email ที่ต้องการส่ง
-       `การสร้าง Task ลำดับที่ ${condition.id}`, //อันนี้ไตเติ้ล
+      'your email', // email ที่ต้องการส่ง
+      `การสร้าง Task ลำดับที่ ${condition.id}`, //อันนี้ไตเติ้ล
       emailContent, // เนื้อหาอันนี้จะเป็นการใช้ฟิวเข้าไป
     );
     return condition;
@@ -66,6 +67,15 @@ export class MaCarBookService {
       where: {
         createdById: id,
       },
+      orderBy: {
+        id: 'asc',
+      },
+    });
+    return data;
+  }
+
+  async findAllfCheck() {
+    const data = await this.maCarBookRepository.findMany({
       orderBy: {
         id: 'asc',
       },
