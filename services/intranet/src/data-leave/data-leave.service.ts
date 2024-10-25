@@ -105,16 +105,6 @@ export class DataLeaveService {
             ? event.limitLeaveThree
             : null,
         limitLeaveLastResult: limitLeaveLastResult,
-        // limitLeaveLastResult:
-        //   numberWorkStart <= 1
-        //     ? Number(event.limitLeaveFour) - leaveCount
-        //     : numberWorkStart >= 1
-        //     ? Number(event.limitLeaveOne) - leaveCount
-        //     : numberWorkStart >= 3
-        //     ? Number(event.limitLeaveTwo) - leaveCount
-        //     : numberWorkStart >= 5
-        //     ? Number(event.limitLeaveThree) - leaveCount
-        //     : null,
         descriptionLeave: event.descriptionLeave,
         typeEveryDay: event.typeEveryDay,
         typeNameEn: event.typeNameEn,
@@ -165,7 +155,7 @@ export class DataLeaveService {
   }
 
   countlimitLeavesByTypeIdMap(leaveRecords) {
-    const test = leaveRecords.reduce((acc, record) => {
+    const data = leaveRecords.reduce((acc, record) => {
       const hours = record.leaveHour;
       if (!acc[record.typeId]) {
         acc[record.typeId] = 0;
@@ -189,66 +179,8 @@ export class DataLeaveService {
       acc[record.typeId] = parseFloat(leaveCount.toFixed(2));
       return acc;
     }, {});
-    return test;
+    return data;
   }
-
-  // countlimitLeavesByTypeIdMap(leaveRecords) {
-  //   const test = leaveRecords.reduce((acc, record) => {
-  //     const hours = record.leaveHour;
-  //     if (!acc[record.typeId]) {
-  //       acc[record.typeId] = 0;
-  //     }
-
-  //     let calLeave = hours / 8;
-  //     if (hours % 8 !== 0) {
-  //       calLeave = Math.floor(calLeave) + (hours % 8) / 10;
-  //     }
-  //     acc[record.typeId] += calLeave;
-  //     let leaveCount = acc[record.typeId];
-  //     const calHours = leaveCount % 1;
-  //     if (calLeave % 8 !== 0) {
-  //       if (calHours >= 0.0 && calHours <= 0.2) {
-  //         leaveCount += 0.2;
-  //       }
-  //     }
-  //     acc[record.typeId] = leaveCount;
-  //     acc[record.typeId] = parseFloat(leaveCount.toFixed(2));
-  //     return acc;
-  //   }, {});
-  //   return test;
-  // }
-
-  // async findLeaveByUserId(userId: string) {
-  //   const accessedUserIds = await this.accessService.getOwnerGroupByUserId(
-  //     userId,
-  //   );
-  //   console.log('accessedUserIds:', accessedUserIds.parentGroupId);
-  //   const parentGroupId = await this.userGroupRepo.findOne({
-  //     where: { groupId: accessedUserIds.parentGroupId },
-  //   });
-  //   console.log('parentGroupId:', parentGroupId);
-
-  //   if (accessedUserIds) {
-  //     const header = await this.userGroupMapHeaderRepo.findOne({
-  //       where: { userGroupId: accessedUserIds.groupId },
-  //     });
-  //     console.log('header:', header);
-
-  //     if (header) {
-  //       if (header.leaveUserId.length > 0) {
-  //         const users = await this.usersRepo.findMany({
-  //           where: {
-  //             userId: {
-  //               in: header.leaveUserId,
-  //             },
-  //           },
-  //         });
-  //         return users;
-  //       }
-  //     }
-  //   }
-  //   return [];
-  // }
 
   async findLeaveByUserId(userId: string) {
     const accessedUserIds = await this.accessService.getOwnerGroupByUserId(

@@ -130,4 +130,17 @@ export class NewsImageController {
     );
     return res.sendFile(imagePath, { root: './' });
   }
+
+  @Get('uploads/:fileName')
+  async getimages(@Param('file') fileName: string, @Res() res: Response) {
+    const image = await this.newsImageService.findImage(fileName);
+    if (!image) {
+      return res.status(404).json({ message: 'Image not found' });
+    }
+    const imagePath = join(
+      `${PORT.pathMountDirUpload}/newsimage`,
+      `${image.fileName}`,
+    );
+    return res.sendFile(imagePath, { root: './' });
+  }
 }
