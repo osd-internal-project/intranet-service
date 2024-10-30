@@ -1441,6 +1441,8 @@ model customerProduct {
     createdAt                 DateTime                    @default(now()) @map("created_at") @db.Timestamptz()
     updatedAt                 DateTime?                   @updatedAt @map("updated_at") @db.Timestamptz()
     customerProjectProductMap customerProjectProductMap[]
+
+    @@map("customer_product")
 }
 
 model customerType {
