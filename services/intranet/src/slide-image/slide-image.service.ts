@@ -59,6 +59,11 @@ export class SlideImageService {
     return this.SlideImageRepository.findOne(condition);
   }
 
+  findImages(id: number) {
+    const condition = { where: { id: id } } as Prisma.slideImageArgs;
+    return this.SlideImageRepository.findOne(condition);
+  }
+
   async updates(fileId: string, data: Prisma.usersUpdateInput) {
     const condition = {
       where: { fileId: fileId },
