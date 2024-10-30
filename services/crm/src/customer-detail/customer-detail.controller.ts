@@ -32,6 +32,7 @@ export class CustomerDetailController {
   findDatatable(@Query() query: any) {
     return this.customerDetailService.findDatatable(query);
   }
+
   // @Get('range-event')
   // findRangeEvent(@Query() query) {
   //   return this.customerDetailService.findRangeEvent(query);
