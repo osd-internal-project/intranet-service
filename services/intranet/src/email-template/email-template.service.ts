@@ -19,14 +19,32 @@ export class EmailTemplateService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} emailTemplate`;
+    const base = {
+      where: {
+        id: id,
+      },
+    };
+    return this.emailtemplateRepo.findOne(base);
   }
 
   update(id: number, updateEmailTemplateDto: UpdateEmailTemplateDto) {
-    return `This action updates a #${id} emailTemplate`;
+    const base = {
+      where: {
+        id: id,
+      },
+      data: {
+        ...updateEmailTemplateDto,
+      },
+    };
+    return this.emailtemplateRepo.update(base);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} emailTemplate`;
+    const base = {
+      where: {
+        id: id,
+      },
+    };
+    return this.emailtemplateRepo.delete(base);
   }
 }
