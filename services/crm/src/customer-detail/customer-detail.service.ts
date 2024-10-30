@@ -95,7 +95,15 @@ export class CustomerDetailService {
   }
 
   async findDatatable(query: any) {
-    const { refcode, customername, activestatus, take, skip, userid } = query;
+    const {
+      refcode,
+      customerGroupId,
+      customername,
+      activestatus,
+      take,
+      skip,
+      userid,
+    } = query;
 
     const ownerGroups = await this.accessService.getOwnerGroupId(userid);
     const ownerUserGroup = await this.accessService.getOwnerGroupByUserId(
@@ -133,22 +141,27 @@ export class CustomerDetailService {
         ],
       });
     }
+    Logger.debug(whereAnd);
+
     const findCondition = {
       where: {
+        // ...(customerGroupId && { customerGroupId: customerGroupId }),
         deleteStatus: false,
         ...(refcode && { referenceCode: { contains: refcode } }),
         ...(activestatus && { activeStatus: JSON.parse(activestatus) }),
-        AND: whereAnd,
+        ...(whereAnd.length > 0 && { AND: whereAnd }),
       },
       ...(take && { take: Number(take) }),
       ...(skip && { skip: Number(skip) }),
     } as Prisma.customerDetailFindManyArgs;
+    Logger.debug(findCondition);
     const countCondition = {
       where: {
+        // ...(customerGroupId && { customerGroupId: customerGroupId }),
         deleteStatus: false,
         ...(refcode && { referenceCode: { contains: refcode } }),
         ...(activestatus && { activeStatus: JSON.parse(activestatus) }),
-        AND: whereAnd,
+        ...(whereAnd.length > 0 && { AND: whereAnd }),
       },
     } as Prisma.customerDetailCountArgs;
     const data = await this.customerDetailRepo.findMany(findCondition);
@@ -156,7 +169,6 @@ export class CustomerDetailService {
 
     return { data: data, count: count };
   }
-
   findActiveForProject() {
     return this.customerDetailRepo.findMany({
       where: { deleteStatus: false, activeStatus: true },

@@ -103,6 +103,9 @@ import {
   emailTemplateRepository,
   emailTemplateTypeRepository,
   emailTemplateFieldsRepository,
+  CustomerProductRepository,
+  CustomerGroupRepository,
+  CustomerProjectProductMapRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -188,9 +191,12 @@ const services = [
 
   CustomerDetailRepository,
   CustomerDetailSubRepository,
+  CustomerGroupRepository,
   CustomerTypeGroupRepository,
   CustomerFilesRepository,
+  CustomerProductRepository,
   CustomerProjectRepository,
+  CustomerProjectProductMapRepository,
   CustomerProjectTaskRepository,
   CustomerProjectTicketRepository,
   TicketExpenseRepository,
