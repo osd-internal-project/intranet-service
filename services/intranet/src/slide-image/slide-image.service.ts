@@ -4,10 +4,10 @@ import { SlideImageRepository } from '@inventory/share';
 
 @Injectable()
 export class SlideImageService {
-  constructor(private readonly SlideImageRepository: SlideImageRepository) {}
+  constructor(private readonly slideImageRepository: SlideImageRepository) {}
 
   findAll() {
-    return this.SlideImageRepository.findMany({
+    return this.slideImageRepository.findMany({
       orderBy: {
         id: 'asc',
       },
@@ -15,7 +15,7 @@ export class SlideImageService {
   }
 
   findorder() {
-    return this.SlideImageRepository.findMany({
+    return this.slideImageRepository.findMany({
       orderBy: {
         order: 'asc',
       },
@@ -24,11 +24,11 @@ export class SlideImageService {
 
   create(data: Prisma.slideImageCreateInput) {
     const condition = { data: data } as Prisma.slideImageCreateArgs;
-    return this.SlideImageRepository.create(condition);
+    return this.slideImageRepository.create(condition);
   }
 
   createfiles(condition: Prisma.dataLeaveFilesCreateInput) {
-    return this.SlideImageRepository.create({ data: condition });
+    return this.slideImageRepository.create({ data: condition });
   }
 
   async update(fileId: string, data: Prisma.slideImageUpdateInput) {
@@ -36,7 +36,7 @@ export class SlideImageService {
       where: { fileId: fileId },
       data: data,
     } as Prisma.slideImageUpdateArgs;
-    return this.SlideImageRepository.update(condition);
+    return this.slideImageRepository.update(condition);
   }
 
   async updateTebleSlide(fileId: string, data: Prisma.slideImageUpdateInput) {
@@ -46,22 +46,22 @@ export class SlideImageService {
         order: data.order,
       },
     } as Prisma.slideImageUpdateArgs;
-    return this.SlideImageRepository.update(condition);
+    return this.slideImageRepository.update(condition);
   }
 
   remove(id: number) {
     const condition = { where: { id: id } } as Prisma.slideImageDeleteArgs;
-    return this.SlideImageRepository.delete(condition);
+    return this.slideImageRepository.delete(condition);
   }
 
   findImage(fileId: string) {
     const condition = { where: { fileId: fileId } } as Prisma.slideImageArgs;
-    return this.SlideImageRepository.findOne(condition);
+    return this.slideImageRepository.findOne(condition);
   }
 
   findImages(id: number) {
     const condition = { where: { id: id } } as Prisma.slideImageArgs;
-    return this.SlideImageRepository.findOne(condition);
+    return this.slideImageRepository.findOne(condition);
   }
 
   async updates(fileId: string, data: Prisma.usersUpdateInput) {
@@ -72,11 +72,11 @@ export class SlideImageService {
         updatedAt: new Date(),
       },
     } as Prisma.usersUpdateArgs;
-    return await this.SlideImageRepository.update(condition);
+    return await this.slideImageRepository.update(condition);
   }
 
   async uploadImags(fileId: string, files: Express.Multer.File) {
-    return this.SlideImageRepository.create({
+    return this.slideImageRepository.create({
       // where: {
       //   fileId: fileId,
       // },
@@ -87,6 +87,6 @@ export class SlideImageService {
   }
 
   findImageAll() {
-    return this.SlideImageRepository.findAll();
+    return this.slideImageRepository.findAll();
   }
 }

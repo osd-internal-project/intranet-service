@@ -10,39 +10,39 @@ import {
   UseInterceptors,
   UploadedFiles,
 } from '@nestjs/common';
-import { SlideImageService } from './slide-image.service';
 import { Prisma } from '@prisma/client';
 import { extname, join } from 'path';
 import { Response } from 'express';
-import {  FilesInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import { promises as fs } from 'fs';
 import configs from '../configs';
-const PORT = configs();
+import { SlideImageService } from './slide-image.service';
+const config = configs();
 
 @Controller('slide-image')
 export class SlideImageController {
-  constructor(private readonly SlideImageService: SlideImageService) {}
+  constructor(private readonly slideImageService: SlideImageService) {}
 
   @Get()
   findAll() {
-    return this.SlideImageService.findAll();
+    return this.slideImageService.findAll();
   }
 
   @Get('order')
   findorder() {
-    return this.SlideImageService.findorder();
+    return this.slideImageService.findorder();
   }
 
   @Get('/uploads/slide-image/:file')
   async getImage(@Param('file') fileId: string, @Res() res: Response) {
-    const image = await this.SlideImageService.findImage(fileId);
+    const image = await this.slideImageService.findImage(fileId);
     if (!image) {
       return res.status(404).json({ message: 'Image not found' });
     }
     const imagePath = join(
-      `${PORT.pathMountDirUpload}/slide-image`,
+      `${config.pathMountDirUpload}/slide-image`,
       `${image.fileId}`,
     );
     return res.sendFile(imagePath, { root: './' });
@@ -50,12 +50,12 @@ export class SlideImageController {
 
   @Get('uploads/:id')
   async getimages(@Param('file') id: number, @Res() res: Response) {
-    const image = await this.SlideImageService.findImages(id);
+    const image = await this.slideImageService.findImages(id);
     if (!image) {
       return res.status(404).json({ message: 'Image not found' });
     }
     const imagePath = join(
-      `${PORT.pathMountDirUpload}/slide-image`,
+      `${config.pathMountDirUpload}/slide-image`,
       `${image.fileId}`,
     );
     return res.sendFile(imagePath, { root: './' });
@@ -65,7 +65,7 @@ export class SlideImageController {
   @UseInterceptors(
     FilesInterceptor('files', 1, {
       storage: diskStorage({
-        destination: `${PORT.pathMountDirUpload}/slide-image`,
+        destination: `${config.pathMountDirUpload}/slide-image`,
         filename: (req, file, callback) => {
           const fileCode = `${uuidv4()}`;
           const fileType = extname(file.originalname);
@@ -87,7 +87,7 @@ export class SlideImageController {
       createdByName,
       createdById,
     } as Prisma.slideImageCreateInput;
-    await this.SlideImageService.createfiles(data);
+    await this.slideImageService.createfiles(data);
   }
 
   // @Post()
@@ -100,7 +100,7 @@ export class SlideImageController {
     @Param('fileId') fileId: string,
     @Body() data: Prisma.slideImageUpdateInput,
   ) {
-    return this.SlideImageService.update(fileId, data);
+    return this.slideImageService.update(fileId, data);
   }
 
   @Patch('order/:fileId')
@@ -108,7 +108,7 @@ export class SlideImageController {
     @Param('fileId') fileId: string,
     @Body() data: Prisma.slideImageUpdateInput,
   ) {
-    return this.SlideImageService.updateTebleSlide(fileId, data);
+    return this.slideImageService.updateTebleSlide(fileId, data);
   }
 
   // @Delete(':id')
@@ -122,16 +122,16 @@ export class SlideImageController {
     @Param('file') fileId: string,
     @Res() res: Response,
   ) {
-    const image = await this.SlideImageService.findImage(fileId);
+    const image = await this.slideImageService.findImage(fileId);
     if (!image) {
       return res.status(404).json({ message: 'Image not found' });
     }
     const imagePath = join(
-      `${PORT.pathMountDirUpload}/slide-image`,
+      `${config.pathMountDirUpload}/slide-image`,
       `${image.fileId}`,
     );
     try {
-      await this.SlideImageService.remove(+id);
+      await this.slideImageService.remove(+id);
       await fs.unlink(imagePath);
       return res.status(200).json({ message: 'Image deleted success' });
     } catch (error) {
