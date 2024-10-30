@@ -1051,7 +1051,7 @@ model maCarType {
 model maCarBook {
     id                    Int       @unique @default(autoincrement()) @map("id")
     carId                 String    @map("car_id") @db.VarChar(50)
-    carName               String    @map("car_name") @db.VarChar(150)
+    carName               String?    @map("car_name") @db.VarChar(150)
     carBookTitle          String?   @map("car_book_title") @db.VarChar(50)
     carBookProvince       String?   @map("car_book_province") @db.VarChar(250)
     carBookPlace          String?   @map("car_book_place") @db.VarChar(250)
@@ -1085,18 +1085,18 @@ model maCarBook {
 
 model maCarWrapup {
     id               Int                @unique @default(autoincrement()) @map("id")
-    carWrapupId      String             @unique @default(uuid()) @map("car_wrapup_id") @db.VarChar(50)
+    carWrapupId      String?             @unique @default(uuid()) @map("car_wrapup_id") @db.VarChar(50)
     carId            String?            @map("car_id") @db.VarChar(50)
-    carName          String             @map("car_name") @db.VarChar(100)
+    carName          String?             @map("car_name") @db.VarChar(100)
     typeId           Int?               @map("type_id")
-    typeName         String             @map("type_name") @db.VarChar(150)
+    typeName         String?             @map("type_name") @db.VarChar(150)
     vender           String             @map("vender") @db.VarChar(100)
     cost             Decimal?           @map("cost") @db.Money
     detail           String?            @map("detail") @db.Text
-    wrapupMiles      String             @map("wrapup_miles") @db.VarChar(150)
+    wrapupMiles      String?             @map("wrapup_miles") @db.VarChar(150)
     dateStart        DateTime?          @map("date_start") @db.Timestamptz()
     dateEnd          DateTime?          @map("date_end") @db.Timestamptz()
-    remark           String             @map("remark") @db.Text
+    remark           String?             @map("remark") @db.Text
     createdAt        DateTime           @default(now()) @map("created_at") @db.Timestamptz()
     updatedAt        DateTime?          @default(now()) @map("updated_at") @db.Timestamptz()
     status           Boolean?           @default(true) @map("stauts") @db.Boolean
