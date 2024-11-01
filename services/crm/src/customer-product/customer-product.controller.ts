@@ -30,6 +30,10 @@ export class CustomerProductController {
   findMany() {
     return this.customerProductService.findMany({});
   }
+  @Get('active')
+  findActive() {
+    return this.customerProductService.findActive();
+  }
   @Get('data-table')
   findDatatable(
     @Query('search') search: any,
@@ -42,7 +46,18 @@ export class CustomerProductController {
   findDetailById(@Param('id') id: string) {
     return this.customerProductService.findDetailById(+id);
   }
-
+  @Get('/find-by-customer-group/:customerGroupId')
+  findByCustmerGroup(@Param('customerGroupId') customerGroupId: string) {
+    return this.customerProductService.findByCustomerGroup(+customerGroupId);
+  }
+  @Get('/find-by-customer/:customerId')
+  findByCustmer(@Param('customerId') customerId: string) {
+    return this.customerProductService.findByCustomer(+customerId);
+  }
+  @Get('/find-by-customer-group/:customerGroupId')
+  findByBranch(@Param('branchId') branchId: string) {
+    return this.customerProductService.findByBranch(+branchId);
+  }
   @Get(':id')
   findOneById(@Param('id') id: string) {
     return this.customerProductService.findOneById(+id);

@@ -32,6 +32,10 @@ export class CustomerDetailController {
   findDatatable(@Query() query: any) {
     return this.customerDetailService.findDatatable(query);
   }
+  @Get(`list-by-customer-group/:id`)
+  findListByCustomerGroup(@Param('id') id: string) {
+    return this.customerDetailService.findListByCustomerGroup(+id);
+  }
 
   // @Get('range-event')
   // findRangeEvent(@Query() query) {

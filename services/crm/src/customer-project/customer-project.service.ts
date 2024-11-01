@@ -115,6 +115,36 @@ export class CustomerProjectService {
       },
     });
   }
+  findProjectsByProductIdAndParentId(
+    productid: number,
+    parentid: number,
+    type: string,
+  ) {
+    if (type === 'customer-group') {
+      return this.customerProjectRepo.findMany({
+        where: {
+          customerProjectProductMap: { some: { customerProductId: productid } },
+          customerBranch: { customerDetail: { customerGroupId: parentid } },
+        },
+      });
+    } else if (type === 'customer') {
+      return this.customerProjectRepo.findMany({
+        where: {
+          customerProjectProductMap: { some: { customerProductId: productid } },
+          customerBranch: { customerDetailId: parentid },
+        },
+      });
+    } else if (type === 'branch') {
+      return this.customerProjectRepo.findMany({
+        where: {
+          customerProjectProductMap: { some: { customerProductId: productid } },
+          customerBranchId: parentid,
+        },
+      });
+    } else {
+      return [];
+    }
+  }
   update(id: number, data: Prisma.customerProjectUpdateInput) {
     return this.customerProjectRepo.update({ where: { id: id }, data: data });
   }

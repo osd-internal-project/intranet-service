@@ -30,11 +30,11 @@ export class CustomerBranchService {
     });
   }
   findDetailListByCustomerId(
-    customerDetailSubId: number,
+    customerDetailId: number,
     query: Prisma.customerBranchWhereInput,
   ) {
     return this.customerBranchRepo.findMany({
-      where: { ...query, customerDetailSubId: customerDetailSubId },
+      where: { ...query, customerDetailId: customerDetailId },
       include: { customerAddress: true, customerContact: true },
     });
   }
