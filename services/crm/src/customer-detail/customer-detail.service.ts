@@ -209,7 +209,9 @@ export class CustomerDetailService {
       where: { activeStatus: true },
     });
   }
-
+  async findListByCustomerGroup(id: number) {
+    return this.customerDetailRepo.findMany({ where: { customerGroupId: id } });
+  }
   async findConfigForTicket() {
     const channelTypeList = await this.customerChannelTypeRepo.findMany({
       where: { activeStatus: true },

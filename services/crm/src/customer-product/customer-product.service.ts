@@ -17,6 +17,11 @@ export class CustomerProductService {
   findMany(condition: Prisma.customerProductFindManyArgs) {
     return this.customerProductRepo.findMany(condition);
   }
+  findActive() {
+    return this.customerProductRepo.findMany({
+      where: { activeStatus: true },
+    });
+  }
   async findDatatable(search?: any, take?: number, skip?: number) {
     const { name } = search || {};
     const data = await this.customerProductRepo.findMany({
@@ -34,6 +39,49 @@ export class CustomerProductService {
   findDetailById(id: number) {
     return this.customerProductRepo.findOne({
       where: { id: id },
+    });
+  }
+  findByCustomerGroup(customerGroupId: number) {
+    return this.customerProductRepo.findMany({
+      where: {
+        customerProjectProductMap: {
+          some: {
+            customerProject: {
+              customerBranch: {
+                customerDetail: { customerGroupId: customerGroupId },
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+  findByCustomer(customerId: number) {
+    return this.customerProductRepo.findMany({
+      where: {
+        customerProjectProductMap: {
+          some: {
+            customerProject: {
+              customerBranch: {
+                customerDetailId: customerId,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+  findByBranch(branchId: number) {
+    return this.customerProductRepo.findMany({
+      where: {
+        customerProjectProductMap: {
+          some: {
+            customerProject: {
+              customerBranchId: branchId,
+            },
+          },
+        },
+      },
     });
   }
   update(id: number, data: Prisma.customerProductUpdateInput) {

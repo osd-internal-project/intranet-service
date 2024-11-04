@@ -184,7 +184,7 @@ model emailTemplate {
     templateId   String    @unique @default(uuid()) @map("template_id")
     name         String    @default("") @map("name") @db.VarChar(100)
     type         Int       @map("type") @db.Integer
-    status       String    @default("") @map("status") @db.VarChar(10)
+    status       String    @default("Inactive") @map("status") @db.VarChar(10)
     htmlTemplate String    @default("") @map("html_template") @db.Text
     createAt     DateTime? @default(now()) @map("created_at") @db.Timestamptz()
     updateAt     DateTime? @default(now()) @map("updated_at") @db.Timestamptz()
@@ -915,7 +915,6 @@ model userGroup {
     organizedGroupId          String?                     @map("organized_group_id")
     description               String                      @default("") @map("description") @db.Text
     locationUserGroupMap      locationUserGroupMap[]
-    // userOwner            userOwner[]
     user                      users[]
     userMapOrganizeGroup      userMapOrganizeGroup[]
     userMapOrganizeGroupOwner userMapOrganizeGroupOwner[]
@@ -1358,6 +1357,7 @@ model customerDetail {
     customerCode          String    @map("customer_code") @db.VarChar(50)
     referenceCode         String?   @map("reference_code") @db.VarChar(50)
     departmentCode        String?   @map("department_code") @db.VarChar(50)
+    customerName          String?   @map("customer_name") @db.VarChar(255)
     prefixTh              String?   @default("") @map("prefix_th") @db.VarChar(10)
     firstNameTh           String?   @default("") @map("first_name_th") @db.VarChar(200)
     lastNameTh            String?   @default("") @map("last_name_th") @db.VarChar(200)

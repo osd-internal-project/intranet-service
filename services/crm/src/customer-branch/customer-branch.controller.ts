@@ -34,13 +34,13 @@ export class CustomerBranchController {
   findDetailById(@Param('id') id: string) {
     return this.customerBranchService.findDetailById(+id);
   }
-  @Get('/detail-list-by-customer-sub/:customerSubId')
+  @Get('/detail-list-by-customer/:customerId')
   findDetailListByCustomerId(
-    @Param('customerSubId') customerSubId: string,
+    @Param('customerId') customerId: string,
     @Query() query: Prisma.customerBranchWhereInput,
   ) {
     return this.customerBranchService.findDetailListByCustomerId(
-      +customerSubId,
+      +customerId,
       query,
     );
   }

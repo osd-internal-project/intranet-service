@@ -38,7 +38,18 @@ export class CustomerProjectController {
   findDetailById(@Param('id') id: string) {
     return this.customerProjectService.findDetailById(+id);
   }
-
+  @Get('/find-by-productid-and-parent/')
+  findProjectsByProductIdAndParentId(
+    @Query('productid') productId: string,
+    @Query('parentid') parentId: string,
+    @Query('type') type: string,
+  ) {
+    return this.customerProjectService.findProjectsByProductIdAndParentId(
+      +productId,
+      +parentId,
+      type,
+    );
+  }
   @Get(':id')
   findOneById(@Param('id') id: string) {
     return this.customerProjectService.findOneById(+id);
