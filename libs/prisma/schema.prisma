@@ -188,6 +188,7 @@ model emailTemplate {
     htmlTemplate String    @default("") @map("html_template") @db.Text
     createAt     DateTime? @default(now()) @map("created_at") @db.Timestamptz()
     updateAt     DateTime? @default(now()) @map("updated_at") @db.Timestamptz()
+    emailTemplateType emailTemplateType? @relation(fields: [type], references: [id], onDelete: Cascade)
 
     @@map("email_template")
 }
@@ -198,6 +199,7 @@ model emailTemplateType {
     createAt            DateTime              @default(now()) @map("created_At") @db.Timestamptz()
     updateAt            DateTime              @default(now()) @map("updated_At") @db.Timestamptz()
     emailTemplateFields emailTemplateFields[]
+    emailTemplate       emailTemplate[]
 
     @@map("email_template_type")
 }
@@ -208,7 +210,7 @@ model emailTemplateFields {
     description       String?            @map("description") @db.VarChar(250)
     createAt          DateTime           @default(now()) @map("created_At")
     updateAt          DateTime           @default(now()) @map("updated_At")
-    emailTemplateType emailTemplateType? @relation(fields: [idTemplateType], references: [id])
+    emailTemplateType emailTemplateType? @relation(fields: [idTemplateType], references: [id], onDelete: Cascade)
     idTemplateType    Int?               @map("id_template_type")
 
     @@map("email_template_fields")
