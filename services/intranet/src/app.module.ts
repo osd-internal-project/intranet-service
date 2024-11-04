@@ -36,6 +36,7 @@ import { handbookFileModule } from './handbookFile/handbookFile.module';
 import { EmailTemplateModule } from './email-template/email-template.module';
 import { EmailTemplateTypeModule } from './email-template-type/email-template-type.module';
 import { EmailTemplateFieldsModule } from './email-template-fields/email-template-fields.module';
+import { MasterHolidaysYearModule } from './master-holidays-year/master-holidays-year.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
@@ -70,6 +71,7 @@ import { EmailTemplateFieldsModule } from './email-template-fields/email-templat
     EmailTemplateModule,
     EmailTemplateTypeModule,
     EmailTemplateFieldsModule,
+    MasterHolidaysYearModule,
   ],
   controllers: [IntranetController, PublicController],
   providers: [IntranetService],

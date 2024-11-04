@@ -66,6 +66,7 @@ export * from './maCarWrapupImage.repository';
 // type data leave
 export * from './masterTypeLeave.repository';
 export * from './masterHolidays.repository';
+export * from './masterHolidaysYear.repository';
 export * from './masterRoom.repository';
 export * from './bookingRoom.repository';
 export * from './masterTypeLeaveMap.repository';

@@ -106,6 +106,7 @@ import {
   CustomerProductRepository,
   CustomerGroupRepository,
   CustomerProjectProductMapRepository,
+  MasterHolidaysYearRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -175,6 +176,7 @@ const services = [
   // data Leave
   MasterTypeLeaveRepository,
   MasterHolidaysRepository,
+  MasterHolidaysYearRepository,
   MasterTypeLeaveMapRepository,
   DataLeaveRepository,
   dataLeaveFilesRepository,

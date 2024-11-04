@@ -1,19 +1,44 @@
 import { Injectable } from '@nestjs/common';
-import { CreateMasterHolidayDto } from './dto/create-master-holiday.dto';
-import { UpdateMasterHolidayDto } from './dto/update-master-holiday.dto';
-import { MasterHolidaysRepository } from '@inventory/share';
+import {
+  MasterHolidaysRepository,
+  MasterHolidaysYearRepository,
+} from '@inventory/share';
 import { Prisma } from '@prisma/client';
+import { CreateMasterHolidayDto } from './dto/create-master-holiday.dto';
 
 @Injectable()
 export class MasterHolidaysService {
-  constructor(private readonly masterHolidaysRepo: MasterHolidaysRepository) {}
+  constructor(
+    private readonly masterHolidaysRepo: MasterHolidaysRepository,
+    private readonly masterHolidaysYearRepo: MasterHolidaysYearRepository,
+  ) {}
 
-  async create(createMasterHolidayDto: Prisma.masterHolidaysCreateArgs) {
-    return await this.masterHolidaysRepo.create(createMasterHolidayDto);
+  async create(createMasterHolidayDto: CreateMasterHolidayDto) {
+    return await this.masterHolidaysRepo.create({
+      data: {
+        holidaysName: createMasterHolidayDto.holidaysName,
+        holidaysDate: new Date(createMasterHolidayDto.holidaysDate),
+        masterHolidaysYear: {
+          create: { holidaysYear: createMasterHolidayDto.holidaysYear },
+        },
+      },
+    });
+  }
+
+  async findByYear(year: string) {
+    return this.masterHolidaysRepo.findMany({
+      where: {
+        masterHolidaysYear: { is: { holidaysYear: { equals: year } } },
+      },
+    });
   }
 
   async findAll() {
     return await this.masterHolidaysRepo.findAll();
+  }
+
+  async findAllYear() {
+    return await this.masterHolidaysYearRepo.findAll();
   }
 
   async findOne(id: number) {
@@ -34,11 +59,10 @@ export class MasterHolidaysService {
   }
 
   async remove(id: number) {
-    const condition = {
+    return await this.masterHolidaysRepo.delete({
       where: {
         id: id,
       },
-    };
-    return await this.masterHolidaysRepo.delete(condition);
+    });
   }
 }
