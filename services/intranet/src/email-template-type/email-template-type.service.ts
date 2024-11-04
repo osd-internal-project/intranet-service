@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateEmailTemplateTypeDto } from './dto/create-email-template-type.dto';
-import { UpdateEmailTemplateTypeDto } from './dto/update-email-template-type.dto';
 import { emailTemplateTypeRepository } from '@inventory/share';
 
 @Injectable()

@@ -30,6 +30,11 @@ export class EmailTemplateController {
     return this.emailTemplateService.findOne(+id);
   }
 
+  @Get('type/:id')
+  findByType(@Param('id') id: string) {
+    return this.emailTemplateService.findByType(+id);
+  }
+
   @Patch(':id')
   update(
     @Param('id') id: string,

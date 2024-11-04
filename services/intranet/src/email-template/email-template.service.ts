@@ -27,6 +27,15 @@ export class EmailTemplateService {
     return this.emailtemplateRepo.findOne(base);
   }
 
+  findByType(typeId: number) {
+    const base = {
+      where: {
+        type: typeId,
+      },
+    };
+    return this.emailtemplateRepo.findMany(typeId === 0 ? {} : base);
+  }
+
   update(id: number, updateEmailTemplateDto: UpdateEmailTemplateDto) {
     const base = {
       where: {
