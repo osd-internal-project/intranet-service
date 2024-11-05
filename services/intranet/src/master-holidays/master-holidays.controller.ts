@@ -16,8 +16,8 @@ export class MasterHolidaysController {
   constructor(private readonly masterHolidaysService: MasterHolidaysService) {}
 
   @Post()
-  create(@Body('condition') condition: Prisma.masterHolidaysCreateManyArgs) {
-    return this.masterHolidaysService.create(condition);
+  create(@Body() data: CreateMasterHolidayDto) {
+    return this.masterHolidaysService.create(data);
   }
 
   @Post('condition')
@@ -27,14 +27,18 @@ export class MasterHolidaysController {
     return this.masterHolidaysService.findMany(condition);
   }
 
-  @Get()
-  findAll() {
-    return this.masterHolidaysService.findAll();
-  }
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.masterHolidaysService.findOne(+id);
+  }
+
+  @Get('year/:year')
+  findByYearId(@Param('year') year: string) {
+    return this.masterHolidaysService.findByYear(year);
+  }
+  @Get()
+  findAll() {
+    return this.masterHolidaysService.findAll();
   }
 
   @Patch()

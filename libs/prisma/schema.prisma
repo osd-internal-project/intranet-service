@@ -180,14 +180,16 @@ model handbookFile {
 }
 
 model emailTemplate {
-    id           Int       @unique @default(autoincrement()) @map("id")
-    templateId   String    @unique @default(uuid()) @map("template_id")
-    name         String    @default("") @map("name") @db.VarChar(100)
-    type         Int       @map("type") @db.Integer
-    status       String    @default("Inactive") @map("status") @db.VarChar(10)
-    htmlTemplate String    @default("") @map("html_template") @db.Text
-    createAt     DateTime? @default(now()) @map("created_at") @db.Timestamptz()
-    updateAt     DateTime? @default(now()) @map("updated_at") @db.Timestamptz()
+    id                Int                @unique @default(autoincrement()) @map("id")
+    templateId        String             @unique @default(uuid()) @map("template_id")
+    name              String             @default("") @map("name") @db.VarChar(100)
+    type              Int                @map("type") @db.Integer
+    status            String             @default("Inactive") @map("status") @db.VarChar(10)
+    htmlTemplate      String             @default("") @map("html_template") @db.Text
+    used              Boolean            @default(false) @map("used") @db.Boolean
+    createAt          DateTime?          @default(now()) @map("created_at") @db.Timestamptz()
+    updateAt          DateTime?          @default(now()) @map("updated_at") @db.Timestamptz()
+    emailTemplateType emailTemplateType? @relation(fields: [type], references: [id], onDelete: Cascade)
 
     @@map("email_template")
 }
@@ -197,7 +199,9 @@ model emailTemplateType {
     name                String                @map("name") @db.VarChar(100)
     createAt            DateTime              @default(now()) @map("created_At") @db.Timestamptz()
     updateAt            DateTime              @default(now()) @map("updated_At") @db.Timestamptz()
+    templateUsedId      String?               @map("template_used_id") @db.VarChar(100)
     emailTemplateFields emailTemplateFields[]
+    emailTemplate       emailTemplate[]
 
     @@map("email_template_type")
 }
@@ -208,7 +212,7 @@ model emailTemplateFields {
     description       String?            @map("description") @db.VarChar(250)
     createAt          DateTime           @default(now()) @map("created_At")
     updateAt          DateTime           @default(now()) @map("updated_At")
-    emailTemplateType emailTemplateType? @relation(fields: [idTemplateType], references: [id])
+    emailTemplateType emailTemplateType? @relation(fields: [idTemplateType], references: [id], onDelete: Cascade)
     idTemplateType    Int?               @map("id_template_type")
 
     @@map("email_template_fields")
