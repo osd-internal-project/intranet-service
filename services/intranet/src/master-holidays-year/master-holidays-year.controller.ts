@@ -38,9 +38,9 @@ export class MasterHolidaysYearController {
     return this.masterHolidaysYearService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.masterHolidaysYearService.findOne(+id);
+  @Get(':year')
+  findOne(@Param('year') year: string) {
+    return this.masterHolidaysYearService.findOne(year);
   }
 
   @Patch(':id')

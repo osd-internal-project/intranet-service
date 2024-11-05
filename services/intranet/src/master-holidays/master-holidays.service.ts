@@ -19,7 +19,7 @@ export class MasterHolidaysService {
         holidaysName: createMasterHolidayDto.holidaysName,
         holidaysDate: new Date(createMasterHolidayDto.holidaysDate),
         masterHolidaysYear: {
-          create: { holidaysYear: createMasterHolidayDto.holidaysYear },
+          connect: { id: createMasterHolidayDto.holidaysYear },
         },
       },
     });

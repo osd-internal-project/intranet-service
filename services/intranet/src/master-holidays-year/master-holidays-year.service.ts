@@ -31,8 +31,10 @@ export class MasterHolidaysYearService {
     return this.masterHolidaysYearRepo.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} masterHolidaysYear`;
+  findOne(year: string) {
+    return this.masterHolidaysYearRepo.findOne({
+      where: { holidaysYear: year },
+    });
   }
 
   update(id: number, updateMasterHolidaysYearDto: UpdateMasterHolidaysYearDto) {
