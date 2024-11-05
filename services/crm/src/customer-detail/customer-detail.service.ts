@@ -172,6 +172,7 @@ export class CustomerDetailService {
   findActiveForProject() {
     return this.customerDetailRepo.findMany({
       where: { deleteStatus: false, activeStatus: true },
+      orderBy: { createdAt: 'asc' },
       // select: {
       //   id: true,
       //   prefixTh: true,
