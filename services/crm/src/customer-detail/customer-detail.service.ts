@@ -94,7 +94,92 @@ export class CustomerDetailService {
     });
   }
 
-  async findDatatable(query: any) {
+  async findDatatable(search: any) {
+    const { customerName, referenceCode, branchName, productName, userid } =
+      search || {};
+    // const { take, skip, userid } = query;
+    Logger.debug(search);
+    const ownerGroups = await this.accessService.getOwnerGroupId(userid);
+    const ownerUserGroup = await this.accessService.getOwnerGroupByUserId(
+      userid,
+    );
+    const whereAnd = [];
+    if (customerName) {
+      whereAnd.push({
+        OR: [
+          {
+            customerNameTh: { contains: customerName },
+          },
+          {
+            customerNameEn: { contains: customerName },
+          },
+        ],
+      });
+    }
+    if (branchName) {
+      whereAnd.push({
+        customerBranch: {
+          some: { branchName: { contains: branchName } },
+        },
+      });
+    }
+    if (productName) {
+      whereAnd.push({
+        customerBranch: {
+          some: {
+            customerProject: {
+              some: {
+                customerProjectProductMap: {
+                  some: {
+                    customerProduct: { name: { contains: productName } },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+    }
+    if (referenceCode) {
+      referenceCode: {
+        contains: referenceCode;
+      }
+    }
+    if (!ownerUserGroup.exceptionalSatatus) {
+      whereAnd.push({
+        OR: [
+          { responsibleId: { hasSome: userid } },
+          { responsibleGroup: { hasSome: ownerGroups } },
+        ],
+      });
+    }
+
+    const findCondition = {
+      where: {
+        ...(whereAnd.length > 0 && { AND: whereAnd }),
+
+        deleteStatus: false,
+      },
+    } as Prisma.customerDetailFindManyArgs;
+
+    const countCondition = {
+      where: {
+        ...(whereAnd.length > 0 && { AND: whereAnd }),
+        deleteStatus: false,
+      },
+    } as Prisma.customerDetailCountArgs;
+    const data = await this.customerDetailRepo.findMany(findCondition);
+    const count = await this.customerDetailRepo.count(countCondition);
+
+    return { data: data, count: count };
+  }
+  findActiveForProject() {
+    return this.customerDetailRepo.findMany({
+      where: { deleteStatus: false, activeStatus: true },
+      orderBy: { createdAt: 'asc' },
+    });
+  }
+  async findDatatableBak(query: any) {
     const {
       refcode,
       customerGroupId,
@@ -151,8 +236,8 @@ export class CustomerDetailService {
         ...(activestatus && { activeStatus: JSON.parse(activestatus) }),
         ...(whereAnd.length > 0 && { AND: whereAnd }),
       },
-      // ...(take && { take: Number(take) }),
-      // ...(skip && { skip: Number(skip) }),
+      ...(take && { take: Number(take) }),
+      ...(skip && { skip: Number(skip) }),
     } as Prisma.customerDetailFindManyArgs;
 
     const countCondition = {
@@ -168,26 +253,6 @@ export class CustomerDetailService {
     const count = await this.customerDetailRepo.count(countCondition);
 
     return { data: data, count: count };
-  }
-  findActiveForProject() {
-    return this.customerDetailRepo.findMany({
-      where: { deleteStatus: false, activeStatus: true },
-      orderBy: { createdAt: 'asc' },
-      // select: {
-      //   id: true,
-      //   prefixTh: true,
-      //   firstNameTh: true,
-      //   lastNameTh: true,
-      //   customerBranch: {
-      //     select: {
-      //       id: true,
-      //       branchName: true,
-      //       customerAddress: true,
-      //       customerContact: true,
-      //     },
-      //   },
-      // },
-    });
   }
   findContractCompany() {
     return this.contractCompanyRepo.findMany({});
