@@ -151,10 +151,10 @@ export class CustomerDetailService {
         ...(activestatus && { activeStatus: JSON.parse(activestatus) }),
         ...(whereAnd.length > 0 && { AND: whereAnd }),
       },
-      ...(take && { take: Number(take) }),
-      ...(skip && { skip: Number(skip) }),
+      // ...(take && { take: Number(take) }),
+      // ...(skip && { skip: Number(skip) }),
     } as Prisma.customerDetailFindManyArgs;
-    Logger.debug(findCondition);
+
     const countCondition = {
       where: {
         // ...(customerGroupId && { customerGroupId: customerGroupId }),

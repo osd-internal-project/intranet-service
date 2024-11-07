@@ -41,9 +41,11 @@ export class CustomerProductService {
       where: { id: id },
     });
   }
-  findByCustomerGroup(customerGroupId: number) {
+  findByCustomerGroup(customerGroupId: number, search: any) {
+    const { productName } = search || {};
     return this.customerProductRepo.findMany({
       where: {
+        ...(productName && { name: { contains: productName } }),
         customerProjectProductMap: {
           some: {
             customerProject: {
@@ -56,9 +58,11 @@ export class CustomerProductService {
       },
     });
   }
-  findByCustomer(customerId: number) {
+  findByCustomer(customerId: number, search: any) {
+    const { productName } = search || {};
     return this.customerProductRepo.findMany({
       where: {
+        ...(productName && { name: { contains: productName } }),
         customerProjectProductMap: {
           some: {
             customerProject: {
@@ -71,9 +75,12 @@ export class CustomerProductService {
       },
     });
   }
-  findByBranch(branchId: number) {
+  findByBranch(branchId: number, search: any) {
+    const { productName } = search || {};
+
     return this.customerProductRepo.findMany({
       where: {
+        ...(productName && { name: { contains: productName } }),
         customerProjectProductMap: {
           some: {
             customerProject: {
