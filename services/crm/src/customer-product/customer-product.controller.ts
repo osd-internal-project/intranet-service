@@ -47,16 +47,28 @@ export class CustomerProductController {
     return this.customerProductService.findDetailById(+id);
   }
   @Get('/find-by-customer-group/:customerGroupId')
-  findByCustmerGroup(@Param('customerGroupId') customerGroupId: string) {
-    return this.customerProductService.findByCustomerGroup(+customerGroupId);
+  findByCustmerGroup(
+    @Param('customerGroupId') customerGroupId: string,
+    @Query('search') search: any,
+  ) {
+    return this.customerProductService.findByCustomerGroup(
+      +customerGroupId,
+      search,
+    );
   }
   @Get('/find-by-customer/:customerId')
-  findByCustmer(@Param('customerId') customerId: string) {
-    return this.customerProductService.findByCustomer(+customerId);
+  findByCustmer(
+    @Param('customerId') customerId: string,
+    @Query('search') search: any,
+  ) {
+    return this.customerProductService.findByCustomer(+customerId, search);
   }
-  @Get('/find-by-customer-group/:customerGroupId')
-  findByBranch(@Param('branchId') branchId: string) {
-    return this.customerProductService.findByBranch(+branchId);
+  @Get('/find-by-branch/:branchId')
+  findByBranch(
+    @Param('branchId') branchId: string,
+    @Query('search') search: any,
+  ) {
+    return this.customerProductService.findByBranch(+branchId, search);
   }
   @Get(':id')
   findOneById(@Param('id') id: string) {

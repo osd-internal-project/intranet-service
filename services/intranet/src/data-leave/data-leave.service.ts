@@ -31,7 +31,7 @@ export class DataLeaveService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} dataLeave`;
+    return this.dataleaveRepo.findOne({ where: { id: id } });
   }
 
   async findMany(condition: Prisma.dataLeaveFindManyArgs) {

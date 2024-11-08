@@ -136,7 +136,14 @@ export class CustomerProjectService {
           customerBranch: {
             select: {
               branchName: true,
-              customerDetail: { select: { details: true } },
+
+              customerDetail: {
+                select: {
+                  customerNameTh: true,
+                  customerNameEn: true,
+                  details: true,
+                },
+              },
             },
           },
         },
@@ -157,7 +164,13 @@ export class CustomerProjectService {
           customerBranch: {
             select: {
               branchName: true,
-              customerDetail: { select: { details: true } },
+              customerDetail: {
+                select: {
+                  customerNameTh: true,
+                  customerNameEn: true,
+                  details: true,
+                },
+              },
             },
           },
         },
@@ -181,6 +194,8 @@ export class CustomerProjectService {
               customerDetail: {
                 select: {
                   details: true,
+                  customerNameTh: true,
+                  customerNameEn: true,
                 },
               },
             },

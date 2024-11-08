@@ -186,6 +186,7 @@ model emailTemplate {
     type              Int                @map("type") @db.Integer
     status            String             @default("Inactive") @map("status") @db.VarChar(10)
     htmlTemplate      String             @default("") @map("html_template") @db.Text
+    used              Boolean            @default(false) @map("used") @db.Boolean
     createAt          DateTime?          @default(now()) @map("created_at") @db.Timestamptz()
     updateAt          DateTime?          @default(now()) @map("updated_at") @db.Timestamptz()
     emailTemplateType emailTemplateType? @relation(fields: [type], references: [id], onDelete: Cascade)
@@ -198,6 +199,7 @@ model emailTemplateType {
     name                String                @map("name") @db.VarChar(100)
     createAt            DateTime              @default(now()) @map("created_At") @db.Timestamptz()
     updateAt            DateTime              @default(now()) @map("updated_At") @db.Timestamptz()
+    templateUsedId      String?               @map("template_used_id") @db.VarChar(100)
     emailTemplateFields emailTemplateFields[]
     emailTemplate       emailTemplate[]
 

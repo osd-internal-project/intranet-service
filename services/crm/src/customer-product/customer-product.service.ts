@@ -41,14 +41,27 @@ export class CustomerProductService {
       where: { id: id },
     });
   }
-  findByCustomerGroup(customerGroupId: number) {
+  findByCustomerGroup(customerGroupId: number, search: any) {
+    const { productName, customerName, referenceCode, branchName } =
+      search || {};
     return this.customerProductRepo.findMany({
       where: {
+        ...(productName && { name: { contains: productName } }),
         customerProjectProductMap: {
           some: {
             customerProject: {
               customerBranch: {
-                customerDetail: { customerGroupId: customerGroupId },
+                ...(branchName && { branchName: { contains: branchName } }),
+                customerDetail: {
+                  ...(customerName && {
+                    OR: [
+                      { customerNameTh: { contains: customerName } },
+                      { customerNameEn: { contains: customerName } },
+                    ],
+                  }),
+                  ...(referenceCode && { referenceCode: referenceCode }),
+                  customerGroupId: customerGroupId,
+                },
               },
             },
           },
@@ -56,14 +69,27 @@ export class CustomerProductService {
       },
     });
   }
-  findByCustomer(customerId: number) {
+  findByCustomer(customerId: number, search: any) {
+    const { productName, customerName, referenceCode, branchName } =
+      search || {};
     return this.customerProductRepo.findMany({
       where: {
+        ...(productName && { name: { contains: productName } }),
         customerProjectProductMap: {
           some: {
             customerProject: {
               customerBranch: {
                 customerDetailId: customerId,
+                ...(branchName && { branchName: { contains: branchName } }),
+                customerDetail: {
+                  ...(customerName && {
+                    OR: [
+                      { customerNameTh: { contains: customerName } },
+                      { customerNameEn: { contains: customerName } },
+                    ],
+                  }),
+                  ...(referenceCode && { referenceCode: referenceCode }),
+                },
               },
             },
           },
@@ -71,13 +97,29 @@ export class CustomerProductService {
       },
     });
   }
-  findByBranch(branchId: number) {
+  findByBranch(branchId: number, search: any) {
+    const { productName, customerName, referenceCode, branchName } =
+      search || {};
+
     return this.customerProductRepo.findMany({
       where: {
+        ...(productName && { name: { contains: productName } }),
         customerProjectProductMap: {
           some: {
             customerProject: {
               customerBranchId: branchId,
+              customerBranch: {
+                ...(branchName && { branchName: { contains: branchName } }),
+                customerDetail: {
+                  ...(customerName && {
+                    OR: [
+                      { customerNameTh: { contains: customerName } },
+                      { customerNameEn: { contains: customerName } },
+                    ],
+                  }),
+                  ...(referenceCode && { referenceCode: referenceCode }),
+                },
+              },
             },
           },
         },

@@ -25,6 +25,11 @@ export class EmailTemplateController {
     return this.emailTemplateService.findAll();
   }
 
+  @Get('/options')
+  optionsTemplate() {
+    return this.emailTemplateService.optionsTemplate();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.emailTemplateService.findOne(+id);

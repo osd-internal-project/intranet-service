@@ -37,11 +37,11 @@ export class CustomerBranchController {
   @Get('/detail-list-by-customer/:customerId')
   findDetailListByCustomerId(
     @Param('customerId') customerId: string,
-    @Query() query: Prisma.customerBranchWhereInput,
+    @Query('search') search: Prisma.customerBranchWhereInput,
   ) {
     return this.customerBranchService.findDetailListByCustomerId(
       +customerId,
-      query,
+      search,
     );
   }
   @Get('/detail-list-by-customer-sub/:customerSubId')

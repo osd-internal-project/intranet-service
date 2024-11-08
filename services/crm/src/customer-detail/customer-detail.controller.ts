@@ -29,8 +29,8 @@ export class CustomerDetailController {
     return this.customerDetailService.findMany(query);
   }
   @Get('data-table')
-  findDatatable(@Query() query: any) {
-    return this.customerDetailService.findDatatable(query);
+  findDatatable(@Query('search') search: any) {
+    return this.customerDetailService.findDatatable(search);
   }
   @Get(`list-by-customer-group/:id`)
   findListByCustomerGroup(@Param('id') id: string) {

@@ -17,6 +17,13 @@ export class EmailTemplateService {
   findAll() {
     return this.emailtemplateRepo.findAll();
   }
+  optionsTemplate() {
+    return this.emailtemplateRepo.findMany({
+      where: {
+        status: 'active',
+      },
+    });
+  }
 
   findOne(id: number) {
     const base = {
@@ -28,12 +35,23 @@ export class EmailTemplateService {
   }
 
   findByType(typeId: number) {
-    const base = {
+    const base: Prisma.emailTemplateFindManyArgs = {
       where: {
         type: typeId,
       },
+      include: {
+        emailTemplateType: true,
+      },
     };
-    return this.emailtemplateRepo.findMany(typeId === 0 ? {} : base);
+    return this.emailtemplateRepo.findMany(
+      typeId === 0
+        ? {
+            include: {
+              emailTemplateType: true,
+            },
+          }
+        : base,
+    );
   }
 
   update(id: number, updateEmailTemplateDto: UpdateEmailTemplateDto) {
