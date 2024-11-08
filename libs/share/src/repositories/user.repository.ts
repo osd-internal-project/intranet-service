@@ -60,4 +60,11 @@ export class UsersRepository {
     const prisma = option?.prisma ?? this.prisma;
     return prisma.users.delete(condition);
   }
+  async count(
+    condition: Prisma.usersCountArgs,
+    option?: { prisma?: TQueryClient },
+  ) {
+    const prisma = option?.prisma ?? this.prisma;
+    return prisma.users.count(condition);
+  }
 }

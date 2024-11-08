@@ -16,6 +16,7 @@ import { UserRoleModule } from './user-role/user-role.module';
 import { MasterRuleModule } from './master-rule/master-rule.module';
 import { MasterPositionModule } from './master-position/master-position.module';
 import { UserGroupMapHeaderModule } from './user-group-map-header/user-group-map-header.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { UserGroupMapHeaderModule } from './user-group-map-header/user-group-map
     UserGroupModule,
     UserGroupMapModule,
     UserGroupMapHeaderModule,
+    UsersModule,
   ],
   controllers: [EvoteController],
   providers: [EvoteService],

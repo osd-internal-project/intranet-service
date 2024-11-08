@@ -856,6 +856,7 @@ model users {
     departmentId              Int?                        @map("department_id")
     ownerGroupId              String?                     @map("owner_group_id") @db.VarChar(50)
     imageId                   String?                     @map("image_id") @db.VarChar(255)
+    userType                  String?                      @map("user_type") @db.VarChar(20)
     ownerGroup                userGroup?                  @relation(fields: [ownerGroupId], references: [groupId])
     masterPosition            masterPosition?             @relation(fields: [positionId], references: [posId])
     department                departMent?                 @relation(fields: [departmentId], references: [id])

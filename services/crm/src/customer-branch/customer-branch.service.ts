@@ -29,12 +29,32 @@ export class CustomerBranchService {
       include: { customerAddress: true, customerContact: true },
     });
   }
-  findDetailListByCustomerId(
-    customerDetailId: number,
-    query: Prisma.customerBranchWhereInput,
-  ) {
+  findDetailListByCustomerId(customerDetailId: number, search: any) {
+    const { customerName, referenceCode, branchName, productName } =
+      search || {};
     return this.customerBranchRepo.findMany({
-      where: { ...query, customerDetailId: customerDetailId },
+      where: {
+        customerDetailId: customerDetailId,
+        ...(productName && {
+          customerProject: {
+            some: {
+              customerProjectProductMap: {
+                some: { customerProduct: { name: productName } },
+              },
+            },
+          },
+        }),
+        ...(branchName && { branchName: { contains: branchName } }),
+        customerDetail: {
+          ...(referenceCode && { referenceCode: referenceCode }),
+          ...(customerName && {
+            OR: [
+              { customerNameEn: { contains: customerName } },
+              { customerNameTh: { contains: customerName } },
+            ],
+          }),
+        },
+      },
       include: { customerAddress: true, customerContact: true },
     });
   }

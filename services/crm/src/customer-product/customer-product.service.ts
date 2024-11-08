@@ -70,7 +70,8 @@ export class CustomerProductService {
     });
   }
   findByCustomer(customerId: number, search: any) {
-    const { productName } = search || {};
+    const { productName, customerName, referenceCode, branchName } =
+      search || {};
     return this.customerProductRepo.findMany({
       where: {
         ...(productName && { name: { contains: productName } }),
@@ -79,6 +80,16 @@ export class CustomerProductService {
             customerProject: {
               customerBranch: {
                 customerDetailId: customerId,
+                ...(branchName && { branchName: { contains: branchName } }),
+                customerDetail: {
+                  ...(customerName && {
+                    OR: [
+                      { customerNameTh: { contains: customerName } },
+                      { customerNameEn: { contains: customerName } },
+                    ],
+                  }),
+                  ...(referenceCode && { referenceCode: referenceCode }),
+                },
               },
             },
           },
@@ -87,7 +98,8 @@ export class CustomerProductService {
     });
   }
   findByBranch(branchId: number, search: any) {
-    const { productName } = search || {};
+    const { productName, customerName, referenceCode, branchName } =
+      search || {};
 
     return this.customerProductRepo.findMany({
       where: {
@@ -96,6 +108,18 @@ export class CustomerProductService {
           some: {
             customerProject: {
               customerBranchId: branchId,
+              customerBranch: {
+                ...(branchName && { branchName: { contains: branchName } }),
+                customerDetail: {
+                  ...(customerName && {
+                    OR: [
+                      { customerNameTh: { contains: customerName } },
+                      { customerNameEn: { contains: customerName } },
+                    ],
+                  }),
+                  ...(referenceCode && { referenceCode: referenceCode }),
+                },
+              },
             },
           },
         },
