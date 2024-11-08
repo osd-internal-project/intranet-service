@@ -15,6 +15,15 @@ export class MasterTypeLeaveService {
     return this.mastertypeleaveRepo.findAll();
   }
 
+  findByTypeId(id: number) {
+    const base: Prisma.masterTypeleaveFindFirstArgs = {
+      where: {
+        typeId: id,
+      },
+    };
+    return this.mastertypeleaveRepo.findOne(base);
+  }
+
   async findByCondition(condition: Prisma.masterTypeleaveFindManyArgs) {
     condition = {
       ...condition,
@@ -26,7 +35,8 @@ export class MasterTypeLeaveService {
     };
     return await this.mastertypeleaveRepo.findMany(condition);
   }
-  
+
+
   findOneByCondition(condition: Prisma.masterTypeleaveFindFirstArgsBase) {
     condition = {
       ...condition,

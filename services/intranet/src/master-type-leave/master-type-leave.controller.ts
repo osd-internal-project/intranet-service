@@ -20,6 +20,11 @@ export class MasterTypeLeaveController {
     return this.mastertypeleaveService.findAll();
   }
 
+  @Get(':id')
+  findByTypeId(@Param('id') id: string) {
+    return this.mastertypeleaveService.findByTypeId(+id);
+  }
+
   @Post()
   create(@Body('condition') condition: Prisma.masterTypeleaveCreateInput) {
     return this.mastertypeleaveService.create(condition);
