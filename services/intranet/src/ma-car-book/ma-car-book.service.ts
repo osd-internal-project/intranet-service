@@ -74,11 +74,9 @@ export class MaCarBookService {
     return data;
   }
 
-  async findAllfCheck() {
-    const data = await this.maCarBookRepository.findMany({
-      orderBy: {
-        id: 'asc',
-      },
+  async findOne(carId: string) {
+    const data = await this.maCarBookRepository.findOne({
+      where: { carId: carId },
     });
     return data;
   }

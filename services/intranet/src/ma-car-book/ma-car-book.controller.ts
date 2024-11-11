@@ -19,9 +19,14 @@ export class MaCarBookController {
     return this.maCarBookService.create(data);
   }
 
-  @Get('fileCheck')
-  fileCheck() {
-    return this.maCarBookService.findAllfCheck();
+  @Get()
+  findAll() {
+    return this.maCarBookService.findAll();
+  }
+
+  @Get('carId/:carId')
+  findOne(@Param('carId') carId: string) {
+    return this.maCarBookService.findOne(carId);
   }
 
   @Get(':skip/:take')
