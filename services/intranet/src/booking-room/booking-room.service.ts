@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AccessService, BookingRoomRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
+import dayjs from 'dayjs';
 
 @Injectable()
 export class BookingRoomService {
@@ -27,7 +28,25 @@ export class BookingRoomService {
   findOne(id: number) {
     return `This action returns a #${id} bookingRoom`;
   }
-
+  countBookingRoomCountByRoomAndRange(
+    roomId: string,
+    startDate: string,
+    endDate: string,
+  ) {
+    return this.bookingRoomRepository.count({
+      where: {
+        roomId: roomId,
+        OR: [
+          { startDate: { gte: new Date(startDate), lte: new Date(endDate) } },
+          { endDate: { gte: new Date(startDate), lte: new Date(endDate) } },
+          {
+            startDate: { lte: new Date(startDate) },
+            endDate: { gte: new Date(endDate) },
+          },
+        ],
+      },
+    });
+  }
   async update(id: number, data: Prisma.bookingRoomUpdateInput) {
     const condition = {
       where: { id: id },

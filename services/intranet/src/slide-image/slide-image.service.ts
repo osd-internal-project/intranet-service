@@ -54,7 +54,7 @@ export class SlideImageService {
     return this.slideImageRepository.delete(condition);
   }
 
-  findImage(fileId: string) {
+  findFirst(fileId: string) {
     const condition = { where: { fileId: fileId } } as Prisma.slideImageArgs;
     return this.slideImageRepository.findOne(condition);
   }

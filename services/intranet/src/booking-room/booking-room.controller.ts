@@ -47,7 +47,18 @@ export class BookingRoomController {
   // findMany(@Query('skip') skip: number, @Query('take') take: number) {
   //   return this.bookingRoomService.findMany(+skip, +take);
   // }
-
+  @Get('count-by-room-and-range')
+  countBookingRoomCountByRoomAndRange(
+    @Query('roomId') roomId: string,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ) {
+    return this.bookingRoomService.countBookingRoomCountByRoomAndRange(
+      roomId,
+      startDate,
+      endDate,
+    );
+  }
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.bookingRoomService.findOne(+id);
