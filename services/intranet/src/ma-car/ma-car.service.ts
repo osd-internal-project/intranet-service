@@ -23,7 +23,7 @@ export class MaCarService {
   }
 
   findMany(carId: string) {
-    return this.maCarRepository.findMany({
+    return this.maCarRepository.findOne({
       where: {
         carId: carId,
       },
