@@ -11,7 +11,9 @@ export class maCarWrapupImageService {
   }) {
     throw new Error('Method not implemented.');
   }
-  constructor(private readonly maCarWrapupImageNewsRepo: MaCarWrapupImageRepository) {}
+  constructor(
+    private readonly maCarWrapupImageNewsRepo: MaCarWrapupImageRepository,
+  ) {}
 
   create(data: Prisma.maCarWrapupImageCreateArgs) {
     return this.maCarWrapupImageNewsRepo.create(data);
@@ -54,17 +56,17 @@ export class maCarWrapupImageService {
     };
     const images = await this.maCarWrapupImageNewsRepo.findMany(condition);
     images.map((image) => {
-      this.deleteFile(image.mafilePart);
+      this.deleteFile(image.filePath);
     });
     return await this.maCarWrapupImageNewsRepo.delete(condition);
   }
-  async deleteFile(mafilePart: string) {
-    const filePath = `${mafilePart}`;
+  async deleteFile(filePath: string) {
+    const filepart = `${filePath}`;
     try {
       await fsPromises.unlink(filePath);
-      console.log(`File ${mafilePart} has been deleted successfully.`);
+      console.log(`File ${filepart} has been deleted successfully.`);
     } catch (err) {
-      console.error(`Error deleting file ${mafilePart}: ${err.message}`);
+      console.error(`Error deleting file ${filepart}: ${err.message}`);
     }
   }
 }

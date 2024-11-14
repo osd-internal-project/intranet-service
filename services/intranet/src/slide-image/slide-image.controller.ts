@@ -35,7 +35,7 @@ export class SlideImageController {
     return this.slideImageService.findorder();
   }
 
-  @Get('/uploads/slide-image/:file')
+  @Get('/get-file/:file')
   async getImage(@Param('file') fileId: string, @Res() res: Response) {
     const image = await this.slideImageService.findImage(fileId);
     if (!image) {

@@ -11,16 +11,14 @@ export class MaCarWrapupService {
     private readonly macarwrapupRepo: MaCarWrapupRepository,
     private readonly emailService: EmailService,
   ) {}
-  async create(data: Prisma.maCarWrapupCreateArgs) {
-    const maCarWrapup = await this.macarwrapupRepo.create(data);
-    const emailContent = warpup(maCarWrapup);
-
-    await this.emailService.sendEmail(
-      'aekittipon500@gmail.com',
-      // , taksapongk@osd.co.th
-      `การสร้าง Task ลำดับที่ ${maCarWrapup.id}`,
-      emailContent,
-    );
+  async create(data: Prisma.maCarWrapupCreateInput) {
+    const maCarWrapup = await this.macarwrapupRepo.create({ data: data });
+    // const emailContent = warpup(maCarWrapup);
+    // await this.emailService.sendEmail(
+    //   'taksapongk@osd.co.th',
+    //   `การสร้าง Task ลำดับที่ ${maCarWrapup.id}`,
+    //   emailContent,
+    // );
     return maCarWrapup;
   }
 

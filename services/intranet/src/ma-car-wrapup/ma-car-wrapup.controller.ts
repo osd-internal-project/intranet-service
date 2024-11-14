@@ -16,7 +16,7 @@ export class MaCarWrapupController {
   constructor(private readonly maCarWrapupService: MaCarWrapupService) {}
 
   @Post()
-  create(@Body() data: Prisma.maCarWrapupCreateArgs) {
+  create(@Body() data: Prisma.maCarWrapupCreateInput) {
     return this.maCarWrapupService.create(data);
   }
 
@@ -35,7 +35,6 @@ export class MaCarWrapupController {
     @Param('carWrapupId') carWrapupId: string,
     @Body() condition: Prisma.maCarWrapupUpdateArgs,
   ) {
-    
     return this.maCarWrapupService.update(carWrapupId, condition);
   }
 
