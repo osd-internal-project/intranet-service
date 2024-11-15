@@ -30,6 +30,12 @@ export class DataLeaveController {
     return this.dataLeaveService.findAll();
   }
 
+  @Get('condition')
+  findFirstByCondition(@Query() params: Prisma.dataLeaveCreateInput) {
+    return this.dataLeaveService.findOneByCondition(params);
+  }
+  
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.dataLeaveService.findOne(+id);

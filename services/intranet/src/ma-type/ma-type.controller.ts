@@ -27,21 +27,23 @@ export class MaTypeController {
   remove(@Param('id') id: string) {
     return this.maTypeService.remove(+id);
   }
+  @Get()
+  findAll() {
+    return this.maTypeService.findAll();
+  }
+  @Get('condition')
+  findMany(@Param('condition') condition: Prisma.maTypeFindFirstArgs) {
+    return this.maTypeService.findMany(condition);
+  }
+
   @Get('active')
   findActive() {
     return this.maTypeService.findActive();
-  }
-  @Get('many')
-  findMany(@Param('condition') condition: Prisma.maTypeFindFirstArgs) {
-    return this.maTypeService.findMany(condition);
   }
   @Get(':id')
   findOne(@Param('condition') condition: Prisma.maTypeFindFirstArgs) {
     return this.maTypeService.findOne(condition);
   }
 
-  @Get()
-  findAll() {
-    return this.maTypeService.findAll();
-  }
+ 
 }
