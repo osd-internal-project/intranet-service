@@ -1,12 +1,16 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+import { Injectable, Logger } from '@nestjs/common';
+import { CreateUserDto, CreateUserId24Dto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersRepository } from '@inventory/share';
 import { UserType } from './type';
+import { Id24Service, IdCheckingData } from 'src/id24/id24.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private usersRepo: UsersRepository) {}
+  constructor(
+    private usersRepo: UsersRepository,
+    private id24Service: Id24Service,
+  ) {}
 
   dateToStartofDay(data: Date) {
     const date = new Date(data);
@@ -36,8 +40,65 @@ export class UsersService {
     return result;
   }
 
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  async create(createUserDto: CreateUserDto) {
+    const createId24 = {
+      username: createUserDto.username.replace(/\s/g, ''),
+      email: createUserDto.email.replace(/\s/g, ''),
+      group: [createUserDto.dataModule, createUserDto.masterDataModule],
+      active: true,
+      type: createUserDto.userType,
+      ldapQuery: createUserDto.ldapQuery,
+      phone: '',
+    } as CreateUserId24Dto;
+
+    const id24Service =
+      createUserDto.userType === UserType.LDAP
+        ? this.id24Service.createUserLdap(createId24)
+        : this.id24Service.createUser(createId24);
+    try {
+      const response = await id24Service;
+      Logger.debug(`User created successfully on id24`, response.data.id);
+      await this.id24Service.resetPassword(
+        response.data.id,
+        createUserDto.password,
+      );
+      await this.id24Service.updateActive(
+        response.data.id,
+        createUserDto.activeStatus,
+      );
+
+      Logger.debug(`User resetPassword successfully on id24`, response.data.id);
+      const user = await this.usersRepo.create({
+        data: {
+          username: createUserDto.username.replace(/\s/g, ''),
+          firstNameTh: createUserDto.firstNameTh,
+          lastNameTh: createUserDto.lastNameTh,
+          activeStatus: createUserDto.activeStatus,
+          email: createUserDto.email.replace(/\s/g, ''),
+          token: response.data.id,
+          groupOwner: {
+            connect: { groupId: createUserDto.groupOwnerId },
+          },
+          userType: createUserDto.userType,
+          ldapQuery: createUserDto.ldapQuery,
+          dataModule: createUserDto.dataModule,
+        },
+      });
+      Logger.debug(`User created successfully on service`, response.data.id);
+      return {
+        success: true,
+        message: 'User created successfully',
+        data: user,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        success: false,
+        message: 'An error occurred while creating the user',
+        error: error,
+      };
+    }
+    return this.usersRepo.create({ data: createUserDto });
   }
 
   async findAll(query: any) {
@@ -87,6 +148,12 @@ export class UsersService {
     };
   }
 
+  async getGroups() {
+    return await this.id24Service.getGroups(
+      '6c692c98-1899-4cf0-ab32-b4f76e42409a',
+    );
+  }
+
   findOne(id: number) {
     return `This action returns a #${id} user`;
   }
@@ -127,7 +194,7 @@ export class UsersService {
   }
 
   async validateEmail(email: string) {
-    const duplicatedEmail = await this.userRepo.findFirst({
+    const duplicatedEmail = await this.usersRepo.findOne({
       where: {
         email: { equals: email, mode: 'insensitive' },
       },
@@ -138,28 +205,6 @@ export class UsersService {
         message: 'This email already exists.',
         error: 'Bad Request',
       };
-    }
-  }
-
-  async validateLicense(status: string) {
-    const checkLicense = await this.userRepo.count({ where: { active: true } });
-
-    if (status === 'create') {
-      if (checkLicense >= +userLicense) {
-        return {
-          statusCode: 200,
-          message: `Users active max in ${userLicense} license`,
-          error: 'Bad Request',
-        };
-      }
-    } else {
-      if (checkLicense >= +userLicense) {
-        return {
-          statusCode: 200,
-          message: `Users active max in ${userLicense} license`,
-          error: 'Bad Request',
-        };
-      }
     }
   }
 
