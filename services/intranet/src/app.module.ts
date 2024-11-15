@@ -31,7 +31,7 @@ import { NewsTypeModule } from './newsType/newsType.module';
 import { PublicController } from './public/public.controller';
 import { HandbooktypeModule } from './handbooktype/handbooktype.module';
 import { SlideImageModule } from './slide-image/slide-image.module';
-import { maCarWrapupImageModule } from './maCarWrapupImage/maCarWrapupImage.module';
+import { maCarWrapupImageModule } from './ma-car-wrapup-image/ma-car-wrapup-image';
 import { handbookFileModule } from './handbookFile/handbookFile.module';
 import { EmailTemplateModule } from './email-template/email-template.module';
 import { EmailTemplateTypeModule } from './email-template-type/email-template-type.module';

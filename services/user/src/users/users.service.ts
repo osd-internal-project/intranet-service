@@ -118,52 +118,52 @@ export class UsersService {
     }
   }
 
-  async validateCheck(body: IdCheckingData) {
-    return await this.id24Service.validateCheck({
-      username: body.username,
-      email: body.email,
-      type: body.type,
-    });
-  }
+  // async validateCheck(body: IdCheckingData) {
+  //   return await this.id24Service.validateCheck({
+  //     username: body.username,
+  //     email: body.email,
+  //     type: body.type,
+  //   });
+  // }
 
-  async validateEmail(email: string) {
-    const duplicatedEmail = await this.userRepo.findFirst({
-      where: {
-        email: { equals: email, mode: 'insensitive' },
-      },
-    });
-    if (duplicatedEmail) {
-      return {
-        statusCode: 200,
-        message: 'This email already exists.',
-        error: 'Bad Request',
-      };
-    }
-  }
+  // async validateEmail(email: string) {
+  //   const duplicatedEmail = await this.userRepo.findFirst({
+  //     where: {
+  //       email: { equals: email, mode: 'insensitive' },
+  //     },
+  //   });
+  //   if (duplicatedEmail) {
+  //     return {
+  //       statusCode: 200,
+  //       message: 'This email already exists.',
+  //       error: 'Bad Request',
+  //     };
+  //   }
+  // }
 
-  async validateLicense(status: string) {
-    const checkLicense = await this.userRepo.count({ where: { active: true } });
+  // async validateLicense(status: string) {
+  //   const checkLicense = await this.userRepo.count({ where: { active: true } });
 
-    if (status === 'create') {
-      if (checkLicense >= +userLicense) {
-        return {
-          statusCode: 200,
-          message: `Users active max in ${userLicense} license`,
-          error: 'Bad Request',
-        };
-      }
-    } else {
-      if (checkLicense >= +userLicense) {
-        return {
-          statusCode: 200,
-          message: `Users active max in ${userLicense} license`,
-          error: 'Bad Request',
-        };
-      }
-    }
-  }
+  //   if (status === 'create') {
+  //     if (checkLicense >= +userLicense) {
+  //       return {
+  //         statusCode: 200,
+  //         message: `Users active max in ${userLicense} license`,
+  //         error: 'Bad Request',
+  //       };
+  //     }
+  //   } else {
+  //     if (checkLicense >= +userLicense) {
+  //       return {
+  //         statusCode: 200,
+  //         message: `Users active max in ${userLicense} license`,
+  //         error: 'Bad Request',
+  //       };
+  //     }
+  //   }
+  // }
 
-  async validatePassword(password: string) {
-    return this.id24Service.validatePassword(password);
-  }
+  // async validatePassword(password: string) {
+  //   return this.id24Service.validatePassword(password);
+  // }
 }
