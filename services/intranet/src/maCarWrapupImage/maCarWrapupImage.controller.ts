@@ -34,10 +34,9 @@ export class maCarWrapupImageController {
     FileInterceptor('file', {
       storage: diskStorage({
         destination: `${PORT.pathMountDirUpload}/maCarImage`,
-        filename: (req, file, cb) => {
-          const fileExtName = extname(file.originalname);
-          const randomName = uuidv4();
-          cb(null, `${randomName}${fileExtName}`);
+        filename: (req, file, callback) => {
+          const fileType = file.originalname;
+          callback(null, `${fileType}`);
         },
       }),
     }),
@@ -49,11 +48,13 @@ export class maCarWrapupImageController {
     if (!file) {
       throw new Error('File is undefined');
     }
+    const fileType = extname(file.originalname);
+    const fileName = file.filename;
     const data = {
       carWrapupId: carWrapupId,
-      mafileNameImage: file.originalname,
-      mafilePart: file.path,
-      maName: file.filename,
+      fileName: fileName,
+      filePath: file.path,
+      fileType: fileType,
     } as Prisma.maCarWrapupImageCreateInput;
     return this.maCarWrapupImageService.create({ data: data });
   }
@@ -71,6 +72,27 @@ export class maCarWrapupImageController {
   @Get(':idwarpupImage')
   findOne(@Param('idwarpupImage') idwarpupImage: number) {
     return this.maCarWrapupImageService.findOne(+idwarpupImage);
+  }
+
+  @Get('/get_image/:carWrapupID')
+  @UseInterceptors(FileInterceptor('image'))
+  async getimage(
+    @Param('carWrapupID') carWrapupID: string,
+    @Res() res: Response,
+  ) {
+    const data = await this.maCarWrapupImageService.findOne(+carWrapupID);
+    try {
+      const imagePath = join(
+        `${PORT.pathMountDirUpload}/maCarImage`,
+        `${data.fileName}`,
+      );
+      console.log(imagePath);
+      res.sendFile(`${imagePath}`);
+    } catch (error) {
+      res
+        .status(404)
+        .sendFile('path/to/default/image.jpg', { root: './public' });
+    }
   }
 
   @Patch(':carWrapupId')
@@ -101,14 +123,13 @@ export class maCarWrapupImageController {
     });
 
     if (Array.isArray(existingImages) && existingImages.length >= 3) {
-      // ถ้ามีภาพเกิน 3 ภาพ ให้หยุดการอัพเดทและโยนข้อยกเว้น
       throw new BadRequestException('Cannot upload more than 3 images.');
     }
 
     const data = {
-      mafileNameImage: file.originalname,
-      mafilePart: file.path,
-      maName: file.filename,
+      fileName: file.originalname,
+      filePath: file.path,
+      fileType: file.filename,
     } as Prisma.maCarWrapupImageUpdateInput;
 
     return this.maCarWrapupImageService.update(carWrapupId, {

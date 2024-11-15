@@ -856,7 +856,7 @@ model users {
     departmentId              Int?                        @map("department_id")
     ownerGroupId              String?                     @map("owner_group_id") @db.VarChar(50)
     imageId                   String?                     @map("image_id") @db.VarChar(255)
-    userType                  String?                      @map("user_type") @db.VarChar(20)
+    userType                  String?                     @map("user_type") @db.VarChar(20)
     ownerGroup                userGroup?                  @relation(fields: [ownerGroupId], references: [groupId])
     masterPosition            masterPosition?             @relation(fields: [positionId], references: [posId])
     department                departMent?                 @relation(fields: [departmentId], references: [id])
@@ -1124,14 +1124,14 @@ model maCarWrapup {
 }
 
 model maCarWrapupImage {
-    idwarpupImage   Int          @unique @default(autoincrement()) @map("idwarpup_image")
-    maName          String       @map("mafile_name") @db.VarChar(150)
-    mafileNameImage String       @map("mafile_name_image") @db.VarChar(150)
-    mafilePart      String       @map("mafile_part") @db.VarChar(150)
-    createdAt       DateTime?    @default(now()) @map("created_at")
-    updatedAt       DateTime?    @default(now()) @map("updated_at")
-    maCarWrapup     maCarWrapup? @relation(fields: [carWrapupId], references: [carWrapupId])
-    carWrapupId     String?      @map("car_wrapup_id")
+    idwarpupImage Int          @unique @default(autoincrement()) @map("idwarpup_image")
+    fileName      String?      @map("file_name") @db.VarChar(150)
+    filePath      String?      @map("file_path") @db.VarChar(150)
+    fileType      String?      @map("file_type") @db.VarChar(150)
+    createdAt     DateTime?    @default(now()) @map("created_at")
+    updatedAt     DateTime?    @default(now()) @map("updated_at")
+    maCarWrapup   maCarWrapup? @relation(fields: [carWrapupId], references: [carWrapupId])
+    carWrapupId   String?      @map("car_wrapup_id")
 
     @@map("ma_car_wrapup_image")
 }
