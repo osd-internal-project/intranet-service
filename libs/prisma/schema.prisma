@@ -667,6 +667,22 @@ model order {
     orderLot orderLot[]
 }
 
+model notiActionLogs {
+    id           Int      @unique @default(autoincrement()) @map("id")
+    sendUserId   String?  @map("send_user_id") @db.VarChar(50)
+    sendUserName String?  @map("send_user_name") @db.VarChar(255)
+    toUserId     String?  @map("to_user_id") @db.VarChar(50)
+    toUserName   String?  @map("to_user_name") @db.VarChar(255)
+    createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+    refId        Int      @map("ref_id")
+    type         String?  @map("type") @db.VarChar(20)
+    action       String?  @map("action") @db.VarChar(20)
+    notiStatus   String?  @map("noti_status") @db.VarChar(20)
+
+    @@map("noti_action_logs")
+}
+
 model orderLot {
     id              Int            @unique @default(autoincrement()) @map("id")
     lotNo           String?        @map("lot_no") @db.VarChar(20)
