@@ -80,6 +80,7 @@ export class AuthController {
         userMapOrganizeGroupOwner,
         departmentId,
         typeLeaveDisabledMap,
+        startWork,
       } = user;
       const payload = {
         userId,
@@ -96,6 +97,7 @@ export class AuthController {
         userMapOwnerGroupId: userMapOrganizeGroupOwner,
         typeLeaveDisabledMap: typeLeaveDisabledMap,
         departmentId,
+        startWork,
       };
       const token = this.authguardService.createToken(payload);
       await this.userService.updateRefreshToken(
@@ -206,6 +208,7 @@ export class AuthController {
         masterPosition,
         firstNameEn,
         lastNameEn,
+        startWork,
       } = payload;
       const newPayload = {
         userId,
@@ -218,6 +221,7 @@ export class AuthController {
         position: masterPosition,
         firstNameEn,
         lastNameEn,
+        startWork,
       };
 
       const token = this.authguardService.createToken(newPayload);

@@ -34,14 +34,14 @@ export class DataLeaveService {
     return this.dataleaveRepo.findOne({ where: { id: id } });
   }
 
-  findOneByCondition(params: Prisma.dataLeaveCreateInput) { 
+  findOneByCondition(params: Prisma.dataLeaveCreateInput) {
     const base: Prisma.dataLeaveFindFirstArgs = {
       where: {
         userId: params.userId,
         typeId: +params.typeId,
       },
     };
-    return this.dataleaveRepo.findOne(base);
+    return this.dataleaveRepo.findMany(base);
   }
 
   async findMany(condition: Prisma.dataLeaveFindManyArgs) {
