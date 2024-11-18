@@ -68,27 +68,27 @@ export class UsersService {
       );
 
       Logger.debug(`User resetPassword successfully on id24`, response.data.id);
-      const user = await this.usersRepo.create({
-        data: {
-          username: createUserDto.username.replace(/\s/g, ''),
-          firstNameTh: createUserDto.firstNameTh,
-          lastNameTh: createUserDto.lastNameTh,
-          activeStatus: createUserDto.activeStatus,
-          email: createUserDto.email.replace(/\s/g, ''),
-          token: response.data.id,
-          groupOwner: {
-            connect: { groupId: createUserDto.groupOwnerId },
-          },
-          userType: createUserDto.userType,
-          ldapQuery: createUserDto.ldapQuery,
-          dataModule: createUserDto.dataModule,
-        },
-      });
+      // const user = await this.usersRepo.create({
+      //   data: {
+      //     username: createUserDto.username.replace(/\s/g, ''),
+      //     firstNameTh: createUserDto.firstNameTh,
+      //     lastNameTh: createUserDto.lastNameTh,
+      //     activeStatus: createUserDto.activeStatus,
+      //     email: createUserDto.email.replace(/\s/g, ''),
+      //     token: response.data.id,
+      //     groupOwner: {
+      //       connect: { groupId: createUserDto.groupOwnerId },
+      //     },
+      //     userType: createUserDto.userType,
+      //     ldapQuery: createUserDto.ldapQuery,
+      //     dataModule: createUserDto.dataModule,
+      //   },
+      // });
       Logger.debug(`User created successfully on service`, response.data.id);
       return {
         success: true,
         message: 'User created successfully',
-        data: user,
+        // data: user,
       };
     } catch (error) {
       console.log(error);
@@ -185,13 +185,13 @@ export class UsersService {
     }
   }
 
-  // async validateCheck(body: IdCheckingData) {
-  //   return await this.id24Service.validateCheck({
-  //     username: body.username,
-  //     email: body.email,
-  //     type: body.type,
-  //   });
-  // }
+  async validateCheck(body: IdCheckingData) {
+    return await this.id24Service.validateCheck({
+      username: body.username,
+      email: body.email,
+      type: body.type,
+    });
+  }
 
   async validateEmail(email: string) {
     const duplicatedEmail = await this.usersRepo.findOne({

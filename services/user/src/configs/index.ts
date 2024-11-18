@@ -5,4 +5,6 @@ export default () => ({
   id24TokenPublicKey: process.env.ID24_TOKEN_PUBLIC_KEY,
   // pathMountDirUpload: process.env.PATH_MOUNTDIR_UPLOAD,
   pathMountDirUpload: process.env.PATH_MOUNTDIR_UPLOAD,
+  Authorization: process.env.AUTHORRIZATION,
+  id24LoginUrl: process.env.ID24_LOGIN_URL,
 });

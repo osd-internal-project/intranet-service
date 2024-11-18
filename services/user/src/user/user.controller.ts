@@ -65,12 +65,12 @@ export class UserController {
         HttpStatus.BAD_REQUEST,
       );
     } else {
-      const saltOrRounds = 10;
-      const hashedPassword = await bcrypt.hash(
-        data.password.trim(),
-        saltOrRounds,
-      );
-      data.password = hashedPassword;
+      // const saltOrRounds = 10;
+      // const hashedPassword = await bcrypt.hash(
+      //   data.password.trim(),
+      //   saltOrRounds,
+      // );
+      // data.password = hashedPassword;
       return this.userService.create(data);
     }
   }
