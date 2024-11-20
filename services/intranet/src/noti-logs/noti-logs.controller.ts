@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { NotiLogsService } from './noti-logs.service';
 import { Prisma } from '@prisma/client';
@@ -22,6 +23,13 @@ export class NotiLogsController {
   @Get()
   findAll() {
     return this.notiLogsService.findAll();
+  }
+  @Get('user/:userid')
+  findByUser(
+    @Param('userid') userId: string,
+    @Query() query: { notiStatus?: string; action?: string },
+  ) {
+    return this.notiLogsService.findByUser(userId, query);
   }
 
   @Get(':id')

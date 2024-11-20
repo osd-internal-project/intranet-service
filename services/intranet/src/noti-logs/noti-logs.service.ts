@@ -17,6 +17,19 @@ export class NotiLogsService {
   async findAll() {
     return await this.notificationlogsRepo.findAll();
   }
+  async findByUser(
+    userId: string,
+    query: { notiStatus?: string; action?: string },
+  ) {
+    const { notiStatus, action } = query;
+    return await this.notificationlogsRepo.findOne({
+      where: {
+        toUserId: userId,
+        ...(notiStatus && { notiStatus: notiStatus }),
+        ...(action && { action: action }),
+      },
+    });
+  }
 
   async findOne(id: number) {
     return await this.notificationlogsRepo.findOne({
