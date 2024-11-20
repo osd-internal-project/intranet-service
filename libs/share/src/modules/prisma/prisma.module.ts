@@ -107,6 +107,7 @@ import {
   CustomerGroupRepository,
   CustomerProjectProductMapRepository,
   MasterHolidaysYearRepository,
+  NotificationLogsRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -212,6 +213,7 @@ const services = [
   CustomerWorkTypeRepository,
   CustomerRequestTypeRepository,
   TicketHistoryLogsRepository,
+  NotificationLogsRepository,
   //access
   AccessService,
   InformationRepository,

@@ -1,8 +1,8 @@
+import configs from './configs';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { IntranetController } from './app.controller';
 import { IntranetService } from './app.service';
-import configs from './configs';
 import { RequestLoggerMiddleware } from './middleware/request-logger.middleware';
 import { ResultCleanlinesModule } from './result-cleanlines/result-cleanlines.module';
 import { HousekeeperModule } from './housekeeper/housekeeper.module';
