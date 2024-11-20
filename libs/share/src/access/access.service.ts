@@ -154,7 +154,12 @@ export class AccessService {
       const accessedGroup = await this.prisma.userGroupMapHeader.findMany({
         where: {
           OR: [
-            { leaveGroupId: { hasSome: owerGroup.groupId } },
+            {
+              AND: [
+                { leaveGroupId: { hasSome: owerGroup.groupId } },
+                { leaveUserId: { isEmpty: true } },
+              ],
+            },
             { leaveUserId: { hasSome: userId } },
           ],
         },
@@ -184,6 +189,44 @@ export class AccessService {
           OR: [
             { expenseGroupId: { hasSome: owerGroup.groupId } },
             { expenseUserId: { hasSome: userId } },
+          ],
+        },
+      });
+      const accessedGroupIds = accessedGroup.map((group) => group.userGroupId);
+      if (accessedGroup.length > 0) {
+        const accessedUsers =
+          await this.prisma.userMapOrganizeGroupOwner.findMany({
+            where: { ownerGroupId: { in: accessedGroupIds } },
+          });
+        const accessedUserIds = accessedUsers.map((user) => user.usersId);
+        return accessedUserIds;
+      } else {
+        return [];
+      }
+    } else {
+      return [];
+    }
+  }
+
+  async getAccessedByHeaderUserIdAndType(
+    headerUserId: string,
+    processType: string,
+  ) {
+    const owerGroup = await this.prisma.userGroup.findFirst({
+      where: { userMapOrganizeGroupOwner: { some: { usersId: headerUserId } } },
+    });
+    if (owerGroup) {
+      const accessedGroup = await this.prisma.userGroupMapHeader.findMany({
+        where: {
+          type: processType,
+          OR: [
+            {
+              AND: [
+                { headerGroupId: { hasSome: owerGroup.groupId } },
+                { headerUserId: { isEmpty: true } },
+              ],
+            },
+            { headerUserId: { hasSome: headerUserId } },
           ],
         },
       });
