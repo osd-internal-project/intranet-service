@@ -66,6 +66,7 @@ export class AuthController {
 
     const createTokenAndReturn = async (user: any) => {
       const {
+        id,
         userId,
         username,
         firstNameTh,
@@ -83,6 +84,7 @@ export class AuthController {
         startWork,
       } = user;
       const payload = {
+        id,
         userId,
         username,
         firstNameTh,
@@ -198,6 +200,7 @@ export class AuthController {
       }
 
       const {
+        id,
         userId,
         username,
         firstNameTh,
@@ -211,6 +214,7 @@ export class AuthController {
         startWork,
       } = payload;
       const newPayload = {
+        id,
         userId,
         username,
         firstNameTh,

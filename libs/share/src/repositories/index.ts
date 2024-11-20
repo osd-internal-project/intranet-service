@@ -115,3 +115,5 @@ export * from './slideImage.repository';
 export * from './emailTemplate.repository';
 export * from './emailTemplateType.repository';
 export * from './emailTemplateFields.repository';
+
+export * from './notificationLogs.repository';
