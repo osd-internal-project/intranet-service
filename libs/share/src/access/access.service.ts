@@ -245,4 +245,15 @@ export class AccessService {
       return [];
     }
   }
+  async getHeaderGroupIdByUserId(userId: string, processType: string) {
+    const userOwnerGroup = await this.getOwnerGroupByUserId(userId);
+    const headerGroup = await this.prisma.userGroupMapHeader.findFirst({
+      where: { userGroupId: userOwnerGroup.groupId, type: processType },
+    });
+    if (headerGroup) {
+      return headerGroup.headerGroupId;
+    } else {
+      return [];
+    }
+  }
 }
