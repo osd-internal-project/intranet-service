@@ -28,7 +28,7 @@ export class NotiLogsService {
 
     return await this.notificationlogsRepo.count({
       where: {
-        sendUserId: { in: acessLeaveUsers },
+        // sendUserId: { in: acessLeaveUsers },
         ...(notiStatus && { notiStatus: notiStatus }),
         ...(action && { action: action }),
       },

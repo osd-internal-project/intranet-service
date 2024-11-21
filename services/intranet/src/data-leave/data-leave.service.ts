@@ -1,11 +1,11 @@
 import {
   DataLeaveRepository,
-  dataLeaveFilesRepository,
   MasterTypeLeaveRepository,
   UsersRepository,
   AccessService,
   UserGroupMapHeaderRepository,
   UserGroupRepository,
+  NotificationLogsRepository,
 } from '@inventory/share';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
@@ -15,16 +15,31 @@ import * as dayjs from 'dayjs';
 export class DataLeaveService {
   constructor(
     private readonly dataleaveRepo: DataLeaveRepository,
-    private readonly dataleavefileRepo: dataLeaveFilesRepository,
     private readonly mastertypeLeaveRepo: MasterTypeLeaveRepository,
     private readonly usersRepo: UsersRepository,
     private readonly accessService: AccessService,
     private readonly userGroupMapHeaderRepo: UserGroupMapHeaderRepository,
     private userGroupRepo: UserGroupRepository,
+    private notificationlogsRepo: NotificationLogsRepository,
+    private readonly userRepo: UsersRepository,
   ) {}
 
   async create(condition: Prisma.dataLeaveCreateArgs) {
-    return await this.dataleaveRepo.create(condition);
+    const leaveLetter = await this.dataleaveRepo.create(condition);
+    if (leaveLetter) {
+      await this.notificationlogsRepo.create({
+        data: {
+          sendUserId: leaveLetter.userId,
+          sendUserName: `${leaveLetter.firstName} ${leaveLetter.lastName}`,
+          refId: leaveLetter.id,
+          type: 'leave',
+          action: 'waitting',
+          notiStatus: 'no-action',
+        },
+      });
+    }
+
+    return leaveLetter;
   }
   findAll() {
     return this.dataleaveRepo.findAll();
@@ -34,23 +49,70 @@ export class DataLeaveService {
     return this.dataleaveRepo.findOne({ where: { id: id } });
   }
 
-  findOneByCondition(params: Prisma.dataLeaveCreateInput) {
-    const base: Prisma.dataLeaveFindFirstArgs = {
+  async findMany(userId: string) {
+    const UserIdArray =
+      await this.accessService.getLeaveAccessedUsersByHeaderUserId(userId);
+    const groupOwner = await this.accessService.getOwnerGroupByUserId(userId);
+    const usersInGroup = this.userRepo.findMany({
       where: {
-        userId: params.userId,
-        typeId: +params.typeId,
+        userMapOrganizeGroupOwner: {
+          some: { ownerGroupId: groupOwner.groupId },
+        },
       },
-    };
-    return this.dataleaveRepo.findMany(base);
-  }
+    });
 
-  async findMany(condition: Prisma.dataLeaveFindManyArgs) {
     return await this.dataleaveRepo.findMany({
-      ...condition,
+      where: {
+        userId: {
+          in: UserIdArray,
+        },
+      },
       orderBy: {
         id: 'desc',
       },
     });
+  }
+
+  async findGroup(userId: string) {
+    const groupOwner = await this.accessService.getOwnerGroupByUserId(userId);
+    const usersInGroup = await this.userRepo.findMany({
+      where: {
+        userMapOrganizeGroupOwner: {
+          some: { ownerGroupId: groupOwner.groupId },
+        },
+      },
+      select: {
+        userId: true,
+      },
+    });
+
+    console.log(usersInGroup);
+
+    return await this.dataleaveRepo.findMany({
+      where: {
+        userId: {
+          in: usersInGroup.map((user) => user.userId),
+        },
+      },
+      orderBy: {
+        id: 'desc',
+      },
+    });
+  }
+
+  async findManyByCondition(params: any) {
+    const base = {
+      where: {
+        ...params,
+        ...(params.typeId && { typeId: +params.typeId }),
+      },
+      include: {
+        dataLeaveFiles: true,
+      },
+      orderBy: { id: 'asc' },
+    } as any;
+
+    return this.dataleaveRepo.findMany(base);
   }
 
   async findDetailTypeLeaveByUserId(userId: string) {

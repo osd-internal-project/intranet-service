@@ -24,18 +24,19 @@ export class MasterTypeLeaveService {
     return this.mastertypeleaveRepo.findOne(base);
   }
 
-  async findByCondition(condition: Prisma.masterTypeleaveFindManyArgs) {
-    condition = {
-      ...condition,
+  async findByCondition(params: Prisma.masterTypeleaveCreateInput) {
+    const condition = {
+      where: {
+        ...params,
+      },
       orderBy: [
         {
           id: 'asc',
         },
       ],
-    };
+    } as any;
     return await this.mastertypeleaveRepo.findMany(condition);
   }
-
 
   findOneByCondition(condition: Prisma.masterTypeleaveFindFirstArgsBase) {
     condition = {
