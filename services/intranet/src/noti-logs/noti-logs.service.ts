@@ -24,7 +24,6 @@ export class NotiLogsService {
     const { notiStatus, action } = query;
     return await this.notificationlogsRepo.findOne({
       where: {
-        toUserId: userId,
         ...(notiStatus && { notiStatus: notiStatus }),
         ...(action && { action: action }),
       },

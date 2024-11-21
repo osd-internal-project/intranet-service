@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { TpyeDataLeaveMapService } from './tpye-data-leave-map.service';
 import { Prisma } from '@prisma/client';
@@ -21,11 +22,9 @@ export class TpyeDataLeaveMapController {
     return this.tpyeDataLeaveMapService.create(condition);
   }
 
-  @Post('condition')
-  findMany(
-    @Body('condition') condition: Prisma.typeLeaveDisabledMapFindManyArgs,
-  ) {
-    return this.tpyeDataLeaveMapService.findMany(condition);
+  @Get('condition')
+  findMany(@Query() params: { userId: string; masterTypeleaveId: string }) {
+    return this.tpyeDataLeaveMapService.findMany(params);
   }
 
   @Get()
