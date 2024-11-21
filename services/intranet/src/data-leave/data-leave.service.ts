@@ -83,11 +83,11 @@ export class DataLeaveService {
     } as Prisma.dataLeaveFindFirstArgs);
     const leaveCountMap = this.countLeavesByTypeIdMap(dataLeaveWrapup);
     const lastResult = dataTypeLeave.map((event) => {
-      let leaveCount = leaveCountMap[event.typeId] || 0;
+      const leaveCount = leaveCountMap[event.typeId] || 0;
       const leaveCountlimitMap =
         this.countlimitLeavesByTypeIdMap(dataLeaveWrapup);
-      let leaveCountlimit = leaveCountlimitMap[event.typeId] || 0;
-      let limitLeaveLastResult =
+      const leaveCountlimit = leaveCountlimitMap[event.typeId] || 0;
+      const limitLeaveLastResult =
         numberWorkStart <= 1
           ? Number(event.limitLeaveFour) - leaveCountlimit
           : numberWorkStart >= 1
@@ -143,7 +143,7 @@ export class DataLeaveService {
 
   countLeavesByTypeIdMap(leaveRecords) {
     const test = leaveRecords.reduce((acc, record) => {
-      let hours = record.leaveHour;
+      const hours = record.leaveHour;
       if (!acc[record.typeId]) {
         acc[record.typeId] = 0;
       }
@@ -232,7 +232,7 @@ export class DataLeaveService {
     return await this.dataleaveRepo.update(condition);
   }
 
-  remove(id: Number) {
+  remove(id: number) {
     const dataLeaveid = { where: { id: id } } as Prisma.dataLeaveDeleteArgs;
     return this.dataleaveRepo.delete(dataLeaveid);
   }

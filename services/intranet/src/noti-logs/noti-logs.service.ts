@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { NotificationLogsRepository } from '@inventory/share';
+import { AccessService, NotificationLogsRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class NotiLogsService {
   constructor(
     private readonly notificationlogsRepo: NotificationLogsRepository,
+    private readonly accessService: AccessService,
   ) {}
   async create(data: Prisma.notiActionLogsCreateInput) {
     const base: Prisma.notiActionLogsCreateArgs = {
@@ -22,9 +23,12 @@ export class NotiLogsService {
     query: { notiStatus?: string; action?: string },
   ) {
     const { notiStatus, action } = query;
-    return await this.notificationlogsRepo.findOne({
+    const acessLeaveUsers =
+      await this.accessService.getLeaveAccessedUsersByHeaderUserId(userId);
+
+    return await this.notificationlogsRepo.count({
       where: {
-        toUserId: userId,
+        sendUserId: { in: acessLeaveUsers },
         ...(notiStatus && { notiStatus: notiStatus }),
         ...(action && { action: action }),
       },
