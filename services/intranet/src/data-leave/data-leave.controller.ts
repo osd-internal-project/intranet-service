@@ -40,7 +40,7 @@ export class DataLeaveController {
     return this.dataLeaveService.findMany(userId);
   }
 
-  @Get(':id')
+  @Get('/:id')
   findOne(@Param('id') id: string) {
     return this.dataLeaveService.findOne(+id);
   }
