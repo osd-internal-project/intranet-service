@@ -53,6 +53,12 @@ export class UserService {
       where: {
         ...condition.where,
       },
+      include: {
+        userMapOrganizeGroupOwner: {
+          select: { group: { select: { groupName: true } } },
+        },
+      },
+
       orderBy: [
         {
           createdAt: 'asc',
@@ -316,7 +322,9 @@ export class UserService {
     return result;
   }
 
-  async findUsersByOwnergroup(ownerGroup: { [key: string]: string }) {
+  async findUsersSameAndLowersByOwnergroup(ownerGroup: {
+    [key: string]: string;
+  }) {
     const group: string[] = Object.values(ownerGroup);
     const allGroup = await this.findAllRelatedGroupRows(group);
 
@@ -336,6 +344,13 @@ export class UserService {
         userId: true,
         firstNameTh: true,
         lastNameTh: true,
+      },
+    });
+  }
+  async findUserInOnwerGroupByUserGroupId(userGroupId: string) {
+    return this.usersRepo.findByCondition({
+      where: {
+        userMapOrganizeGroupOwner: { some: { ownerGroupId: userGroupId } },
       },
     });
   }

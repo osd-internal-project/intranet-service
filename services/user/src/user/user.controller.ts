@@ -273,9 +273,15 @@ export class UserController {
   findSaleUserBySalePermission(@Param('userid') userId: string) {
     return this.userService.findSaleUserBySalePermission(userId);
   }
-  @Get('find-users-by-ownergroup')
-  findUsersByOwnergroup(@Query() group: { [key: string]: string }) {
-    return this.userService.findUsersByOwnergroup(group);
+  @Get('find-same-and-lower-users-by-ownergroup')
+  findUsersSameAndLowersByOwnergroup(
+    @Query() group: { [key: string]: string },
+  ) {
+    return this.userService.findUsersSameAndLowersByOwnergroup(group);
+  }
+  @Get('user-in-owner-group/:usergroupid')
+  findUserInOnwerGroupByUserGroupId(@Param('usergroupid') userGroupId: string) {
+    return this.userService.findUserInOnwerGroupByUserGroupId(userGroupId);
   }
 
   @Patch()
