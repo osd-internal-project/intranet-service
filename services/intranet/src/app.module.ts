@@ -1,8 +1,8 @@
+import configs from './configs';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { IntranetController } from './app.controller';
 import { IntranetService } from './app.service';
-import configs from './configs';
 import { RequestLoggerMiddleware } from './middleware/request-logger.middleware';
 import { ResultCleanlinesModule } from './result-cleanlines/result-cleanlines.module';
 import { HousekeeperModule } from './housekeeper/housekeeper.module';
@@ -37,6 +37,7 @@ import { EmailTemplateModule } from './email-template/email-template.module';
 import { EmailTemplateTypeModule } from './email-template-type/email-template-type.module';
 import { EmailTemplateFieldsModule } from './email-template-fields/email-template-fields.module';
 import { MasterHolidaysYearModule } from './master-holidays-year/master-holidays-year.module';
+import { NotiLogsModule } from './noti-logs/noti-logs.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
@@ -72,6 +73,7 @@ import { MasterHolidaysYearModule } from './master-holidays-year/master-holidays
     EmailTemplateTypeModule,
     EmailTemplateFieldsModule,
     MasterHolidaysYearModule,
+    NotiLogsModule,
   ],
   controllers: [IntranetController, PublicController],
   providers: [IntranetService],

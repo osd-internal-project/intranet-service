@@ -671,12 +671,11 @@ model notiActionLogs {
     id           Int      @unique @default(autoincrement()) @map("id")
     sendUserId   String?  @map("send_user_id") @db.VarChar(50)
     sendUserName String?  @map("send_user_name") @db.VarChar(255)
-    toUserId     String?  @map("to_user_id") @db.VarChar(50)
-    toUserName   String?  @map("to_user_name") @db.VarChar(255)
+    toGroupIds   String?  @map("to_group_ids") @db.VarChar(50)
     createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz()
     updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz()
     refId        Int      @map("ref_id")
-    type         String?  @map("type") @db.VarChar(20)
+    type         String?  @map("type") @db.VarChar(20) //leave ,expense ,bookingroom ,macar ,ma ,housekeeper
     action       String?  @map("action") @db.VarChar(20)
     notiStatus   String?  @map("noti_status") @db.VarChar(20)
 
@@ -974,6 +973,9 @@ model userGroupMapHeader {
     leaveUserId    String[]   @map("leave_user_Id")
     expenseGroupId String[]   @map("expense_group_Id")
     expenseUserId  String[]   @map("expense_user_Id")
+    headerGroupId  String[]   @map("header_group_Id")
+    headerUserId   String[]   @map("header_user_Id")
+    type           String?    @map("type") @db.VarChar(20) //leave ,expense ,bookingroom ,macar ,ma ,housekeeper
     userGroup      userGroup? @relation(fields: [userGroupId], references: [groupId], onDelete: Cascade)
 
     @@map("user_group_map_header")

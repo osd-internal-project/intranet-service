@@ -36,16 +36,29 @@ export class UserGroupMapHeaderService {
     return this.userGroupMapHeaderRepo.update(condition);
   }
 
-
-  async updatePermission(groupId: string, data) {
-    const condition = {
-      where: { userGroupId: groupId },
-      data: data,
-    } as Prisma.userGroupMapHeaderUpdateArgs;
-    console.log(groupId);
-    console.log(data);
-    
-    return await this.userGroupMapHeaderRepo.update(condition);
+  async updatePermission(
+    groupId: string,
+    data: { headerGroupId: string[]; type: string },
+  ) {
+    const record = await this.userGroupMapHeaderRepo.findOne({
+      where: { type: data.type, userGroupId: groupId },
+    });
+    if (record) {
+      const condition = {
+        where: { userGroupId: groupId, type: data.type },
+        data: data,
+      } as Prisma.userGroupMapHeaderUpdateArgs;
+      console.log(groupId);
+      console.log(data);
+      return await this.userGroupMapHeaderRepo.updateMany(condition);
+    } else {
+      const condition = {
+        data: { userGroupId: groupId, ...data },
+      } as Prisma.userGroupMapHeaderCreateArgs;
+      console.log(groupId);
+      console.log(data);
+      return await this.userGroupMapHeaderRepo.create(condition);
+    }
   }
 
   async remove(id: number) {

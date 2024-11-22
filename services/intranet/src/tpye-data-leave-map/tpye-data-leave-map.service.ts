@@ -16,8 +16,14 @@ export class TpyeDataLeaveMapService {
     return `This action returns all tpyeDataLeaveMap`;
   }
 
-  async findMany(condition: Prisma.typeLeaveDisabledMapFindManyArgs) {
-    return await this.masterTypeLeaveMapRepo.findMany(condition);
+  async findMany(params: { userId: string; masterTypeleaveId: string }) {
+    const base: Prisma.typeLeaveDisabledMapFindManyArgs = {
+      where: {
+        userId: +params.userId,
+        masterTypeleaveId: +params.masterTypeleaveId,
+      },
+    };
+    return await this.masterTypeLeaveMapRepo.findMany(base);
   }
 
   findOne(id: number) {

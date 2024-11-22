@@ -20,23 +20,27 @@ export class DataLeaveController {
     return this.dataLeaveService.create(condition);
   }
 
-  @Post('condition')
-  findMany(@Body('condition') condition: Prisma.dataLeaveFindManyArgs) {
-    return this.dataLeaveService.findMany(condition);
-  }
-
   @Get()
   findAll() {
     return this.dataLeaveService.findAll();
   }
 
   @Get('condition')
-  findFirstByCondition(@Query() params: Prisma.dataLeaveCreateInput) {
-    return this.dataLeaveService.findOneByCondition(params);
+  findFirstByCondition(@Query() params: any) {
+    return this.dataLeaveService.findManyByCondition(params);
   }
-  
 
-  @Get(':id')
+  @Get('findGroup/:userId')
+  findGroup(@Param('userId') userId: string) {
+    return this.dataLeaveService.findGroup(userId);
+  }
+
+  @Get(':userId')
+  findMany(@Param('userId') userId: string) {
+    return this.dataLeaveService.findMany(userId);
+  }
+
+  @Get('/:id')
   findOne(@Param('id') id: string) {
     return this.dataLeaveService.findOne(+id);
   }

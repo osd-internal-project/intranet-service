@@ -44,10 +44,8 @@ export class UserGroupMapHeaderController {
   updatePermission(
     @Param('groupId') groupId: string,
     @Body()
-    data,
+    data: { headerGroupId: string[]; type: string },
   ) {
-    console.log(groupId);
-
     return this.userGroupMapHeaderService.updatePermission(groupId, data);
   }
 

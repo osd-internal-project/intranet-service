@@ -6,6 +6,7 @@ import {
   Patch,
   Delete,
   Param,
+  Query,
 } from '@nestjs/common';
 import { MasterTypeLeaveService } from './master-type-leave.service';
 import { Prisma } from '@prisma/client';
@@ -15,9 +16,21 @@ export class MasterTypeLeaveController {
     private readonly mastertypeleaveService: MasterTypeLeaveService,
   ) {}
 
+  @Post()
+  create(@Body('condition') condition: Prisma.masterTypeleaveCreateInput) {
+    return this.mastertypeleaveService.create(condition);
+  }
+
   @Get()
   findAll() {
     return this.mastertypeleaveService.findAll();
+  }
+
+  @Get('condition')
+  async findByCondition(@Query() params: Prisma.masterTypeleaveCreateInput) {
+    console.log(params);
+
+    return await this.mastertypeleaveService.findByCondition(params);
   }
 
   @Get(':id')
@@ -25,17 +38,6 @@ export class MasterTypeLeaveController {
     return this.mastertypeleaveService.findByTypeId(+id);
   }
 
-  @Post()
-  create(@Body('condition') condition: Prisma.masterTypeleaveCreateInput) {
-    return this.mastertypeleaveService.create(condition);
-  }
-
-  @Post('condition')
-  async findByCondition(
-    @Body('condition') condition: Prisma.masterTypeleaveFindManyArgs,
-  ) {
-    return await this.mastertypeleaveService.findByCondition(condition);
-  }
   @Post('conditionId')
   async findByConditionTypeId(
     @Body('condition') condition: Prisma.masterTypeleaveFindManyArgs,
