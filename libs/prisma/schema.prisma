@@ -878,6 +878,7 @@ model users {
     masterPosition            masterPosition?             @relation(fields: [positionId], references: [posId])
     department                departMent?                 @relation(fields: [departmentId], references: [id])
     startWork                 DateTime?                   @map("start_work")
+    ldapQuery                 String?                     @map("ldap_query")
     userGroupMap              userGroupMap[]
     roleProfileMap            roleProfileMap[]
     userRoleMap               userRoleMap[]
