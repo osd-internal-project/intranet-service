@@ -7,4 +7,5 @@ export default () => ({
   pathMountDirUpload: process.env.PATH_MOUNTDIR_UPLOAD,
   Authorization: process.env.AUTHORRIZATION,
   id24LoginUrl: process.env.ID24_LOGIN_URL,
+  masterGroupId24: process.env.MASTER_GROUP_ID24,
 });

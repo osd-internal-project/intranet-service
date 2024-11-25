@@ -2,17 +2,21 @@ export class CreateUserDto {
   userType: string;
   username: string;
   email: string;
-  activeStatus: boolean;
   password: string;
   cfpassword: string;
+  activeStatus: boolean;
   firstNameTh: string;
   lastNameTh: string;
+  firstNameEn: string;
+  lastNameEn: string;
   phoneNumber: string;
   masterPositionId: number;
-  ldapQuery?: string;
+  departmentId: string;
   dataModule: string;
-  masterDataModule: string;
+  organizeId: string;
+  groupList: string[];
   groupOwnerId: string;
+  ldapQuery?: string;
 }
 
 export class CreateUserId24Dto {

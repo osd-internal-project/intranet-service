@@ -871,9 +871,9 @@ model users {
     departmentId              Int?                        @map("department_id")
     ownerGroupId              String?                     @map("owner_group_id") @db.VarChar(50)
     imageId                   String?                     @map("image_id") @db.VarChar(255)
-    userType                  String?                     @map("user_type") @db.VarChar(20)
-    token                     String?                     @map("token") @db.VarChar(20)
-    dataModule                String?                     @map("data_module") @db.VarChar(20)
+    userType                  String?                     @map("user_type") @db.VarChar(50)
+    token                     String?                     @map("token") @db.VarChar(50)
+    dataModule                String?                     @map("data_module") @db.VarChar(50)
     ownerGroup                userGroup?                  @relation(fields: [ownerGroupId], references: [groupId])
     masterPosition            masterPosition?             @relation(fields: [positionId], references: [posId])
     department                departMent?                 @relation(fields: [departmentId], references: [id])
@@ -1285,10 +1285,10 @@ model organizedChart {
 }
 
 model userMapOrganizeChart {
-    id         Int             @unique @default(autoincrement()) @map("id")
-    positions  organizedChart? @relation(fields: [positionId], references: [positionId])
-    users      users?          @relation(fields: [userId], references: [userId])
-    positionId String?
+    id         Int            @unique @default(autoincrement()) @map("id")
+    positions  organizedChart @relation(fields: [positionId], references: [positionId])
+    users      users?         @relation(fields: [userId], references: [userId])
+    positionId String
     userId     String?
 
     @@map("user_map_organize_chart")

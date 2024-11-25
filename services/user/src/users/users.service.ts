@@ -4,6 +4,10 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersRepository } from '@inventory/share';
 import { UserType } from './type';
 import { Id24Service, IdCheckingData } from 'src/id24/id24.service';
+import config from '../configs';
+import { Prisma } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
+const { masterGroupId24 } = config();
 
 @Injectable()
 export class UsersService {
@@ -41,10 +45,15 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto) {
+    const saltOrRounds = 10;
+    const hashedPassword = await bcrypt.hash(
+      createUserDto.password.trim(),
+      saltOrRounds,
+    );
     const createId24 = {
       username: createUserDto.username.replace(/\s/g, ''),
       email: createUserDto.email.replace(/\s/g, ''),
-      group: [createUserDto.dataModule, createUserDto.masterDataModule],
+      group: [createUserDto.dataModule, masterGroupId24],
       active: true,
       type: createUserDto.userType,
       ldapQuery: createUserDto.ldapQuery,
@@ -58,37 +67,69 @@ export class UsersService {
     try {
       const response = await id24Service;
       Logger.debug(`User created successfully on id24`, response.data.id);
-      await this.id24Service.resetPassword(
-        response.data.id,
-        createUserDto.password,
-      );
+      if (createUserDto.userType !== UserType.LDAP) {
+        await this.id24Service.resetPassword(
+          response.data.id,
+          createUserDto.password,
+        );
+        Logger.debug(
+          `User resetPassword successfully on id24`,
+          response.data.id,
+        );
+      } else {
+        await this.id24Service.updateGroup(response.data.id, [
+          createUserDto.dataModule,
+          masterGroupId24,
+        ]);
+      }
+
       await this.id24Service.updateActive(
         response.data.id,
         createUserDto.activeStatus,
       );
 
-      Logger.debug(`User resetPassword successfully on id24`, response.data.id);
-      // const user = await this.usersRepo.create({
-      //   data: {
-      //     username: createUserDto.username.replace(/\s/g, ''),
-      //     firstNameTh: createUserDto.firstNameTh,
-      //     lastNameTh: createUserDto.lastNameTh,
-      //     activeStatus: createUserDto.activeStatus,
-      //     email: createUserDto.email.replace(/\s/g, ''),
-      //     token: response.data.id,
-      //     groupOwner: {
-      //       connect: { groupId: createUserDto.groupOwnerId },
-      //     },
-      //     userType: createUserDto.userType,
-      //     ldapQuery: createUserDto.ldapQuery,
-      //     dataModule: createUserDto.dataModule,
-      //   },
-      // });
+      const user = await this.usersRepo.create({
+        data: {
+          username: createUserDto.username,
+          password: hashedPassword,
+          firstNameTh: createUserDto.firstNameTh,
+          lastNameTh: createUserDto.lastNameTh,
+          firstNameEn: createUserDto.firstNameEn,
+          lastNameEn: createUserDto.lastNameEn,
+          email: createUserDto.email,
+          phoneNumber: createUserDto.phoneNumber,
+          activeStatus: createUserDto.activeStatus,
+          organizedGroupId: '',
+          userType: createUserDto.userType,
+          token: response.data.id,
+          dataModule: createUserDto.dataModule,
+          ownerGroup: { connect: { groupId: createUserDto.groupOwnerId } },
+          masterPosition: {
+            connect: { posId: createUserDto.masterPositionId },
+          },
+          userGroupMap: {
+            createMany: {
+              data: createUserDto.groupList.map((item: string) => ({
+                userGroupId: item,
+              })),
+              skipDuplicates: true,
+            },
+          },
+          userMapOrganizeChart: {
+            createMany: {
+              data: {
+                positionId: createUserDto.departmentId,
+              },
+              skipDuplicates: true,
+            },
+          },
+        },
+      });
       Logger.debug(`User created successfully on service`, response.data.id);
       return {
         success: true,
         message: 'User created successfully',
-        // data: user,
+        data: user,
       };
     } catch (error) {
       console.log(error);
@@ -98,7 +139,6 @@ export class UsersService {
         error: error,
       };
     }
-    return this.usersRepo.create({ data: createUserDto });
   }
 
   async findAll(query: any) {
