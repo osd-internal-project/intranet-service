@@ -208,43 +208,35 @@ export class AccessService {
     }
   }
 
-  async getAccessedByHeaderUserIdAndType(
-    headerUserId: string,
-    processType: string,
-  ) {
-    const owerGroup = await this.prisma.userGroup.findFirst({
-      where: { userMapOrganizeGroupOwner: { some: { usersId: headerUserId } } },
-    });
-    if (owerGroup) {
-      const accessedGroup = await this.prisma.userGroupMapHeader.findMany({
-        where: {
-          type: processType,
-          OR: [
-            {
-              AND: [
-                { headerGroupId: { hasSome: owerGroup.groupId } },
-                { headerUserId: { isEmpty: true } },
-              ],
-            },
-            { headerUserId: { hasSome: headerUserId } },
-          ],
-        },
-      });
-      const accessedGroupIds = accessedGroup.map((group) => group.userGroupId);
-      if (accessedGroup.length > 0) {
-        const accessedUsers =
-          await this.prisma.userMapOrganizeGroupOwner.findMany({
-            where: { ownerGroupId: { in: accessedGroupIds } },
-          });
-        const accessedUserIds = accessedUsers.map((user) => user.usersId);
-        return accessedUserIds;
-      } else {
-        return [];
-      }
-    } else {
-      return [];
-    }
-  }
+  // async getAccessedByHeaderUserIdAndType(
+  //   headerUserId: string,
+  //   processType: string,
+  // ) {
+  //   const owerGroup = await this.prisma.userGroup.findFirst({
+  //     where: { userMapOrganizeGroupOwner: { some: { usersId: headerUserId } } },
+  //   });
+  //   if (owerGroup) {
+  //     const accessedGroup = await this.prisma.userGroupMapHeader.findMany({
+  //       where: {
+  //         type: processType,
+  //         headerUserId: { hasSome: headerUserId },
+  //       },
+  //     });
+  //     const accessedGroupIds = accessedGroup.map((group) => group.userGroupId);
+  //     if (accessedGroup.length > 0) {
+  //       const accessedUsers =
+  //         await this.prisma.userMapOrganizeGroupOwner.findMany({
+  //           where: { ownerGroupId: { in: accessedGroupIds } },
+  //         });
+  //       const accessedUserIds = accessedUsers.map((user) => user.usersId);
+  //       return accessedUserIds;
+  //     } else {
+  //       return [];
+  //     }
+  //   } else {
+  //     return [];
+  //   }
+  // }
   async getHeaderGroupIdByUserId(userId: string, processType: string) {
     const userOwnerGroup = await this.getOwnerGroupByUserId(userId);
     const headerGroup = await this.prisma.userGroupMapHeader.findFirst({

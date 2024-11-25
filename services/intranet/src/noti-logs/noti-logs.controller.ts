@@ -27,9 +27,9 @@ export class NotiLogsController {
   @Get('user/:userid')
   findByUser(
     @Param('userid') userId: string,
-    @Query() query: { notiStatus?: string; action?: string },
+    // @Query() query: { notiStatus?: string; action?: string; type: string },
   ) {
-    return this.notiLogsService.findByUser(userId, query);
+    return this.notiLogsService.findByUser(userId);
   }
 
   @Get(':id')

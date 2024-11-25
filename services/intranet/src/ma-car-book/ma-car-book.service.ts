@@ -1,25 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { MaCarBookRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
-import { EmailService } from '../Emailtranfer/email.service';
-import { macarbook } from 'src/Emailtranfer/template/macarbook';
 
 @Injectable()
 export class MaCarBookService {
-  constructor(
-    private readonly maCarBookRepository: MaCarBookRepository,
-    private readonly emailService: EmailService,
-  ) {}
+  constructor(private readonly maCarBookRepository: MaCarBookRepository) {}
 
   async create(data: Prisma.maCarBookCreateInput) {
-    const condition = await this.maCarBookRepository.create({ data: data });
-    const emailContent = macarbook(condition);
-    await this.emailService.sendEmail(
-      'your email', // email ที่ต้องการส่ง
-      `การสร้าง Task ลำดับที่ ${condition.id}`, //อันนี้ไตเติ้ล
-      emailContent, // เนื้อหาอันนี้จะเป็นการใช้ฟิวเข้าไป
-    );
-    return condition;
+    return await this.maCarBookRepository.create({ data: data });
   }
 
   findAll() {
@@ -99,7 +87,7 @@ export class MaCarBookService {
     });
   }
 
-  update(id: Number, data: Prisma.maCarBookUpdateInput) {
+  update(id: number, data: Prisma.maCarBookUpdateInput) {
     const condition = {
       where: { id: id },
       data: data,
@@ -107,7 +95,7 @@ export class MaCarBookService {
     return this.maCarBookRepository.update(condition);
   }
 
-  remove(id: Number) {
+  remove(id: number) {
     const condition = { where: { id: id } } as Prisma.maCarBookDeleteArgs;
     return this.maCarBookRepository.delete(condition);
   }
