@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { AccessService, NotificationLogsRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 
@@ -22,6 +22,7 @@ export class NotiLogsService {
     // const { notiStatus, action, type } = query;
     const ownergroup = await this.accessService.getOwnerGroupByUserId(userId);
     const data = [];
+    Logger.debug(ownergroup.groupId);
     const leaves = await this.notificationlogsRepo.count({
       where: {
         toGroupIds: { has: ownergroup.groupId },
@@ -36,7 +37,7 @@ export class NotiLogsService {
         action: 'waitting',
         title: 'วันลารอ Approve',
         count: leaves,
-        path: '/page/leave-control-management/leave-letter',
+        path: '/page/leave-control-management/leave-history-admin',
       });
     }
     const expenses = await this.notificationlogsRepo.count({
