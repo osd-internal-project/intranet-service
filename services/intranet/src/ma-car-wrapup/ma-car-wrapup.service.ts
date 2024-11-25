@@ -1,24 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { MaCarWrapupRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
-import { EmailService } from '../Emailtranfer/email.service';
-import { warpup } from '../Emailtranfer/template/warpup';
-import { warpupapproved } from 'src/Emailtranfer/template/warpupappove';
-import { macarbook } from 'src/Emailtranfer/template/macarbook';
+
 @Injectable()
 export class MaCarWrapupService {
-  constructor(
-    private readonly macarwrapupRepo: MaCarWrapupRepository,
-    private readonly emailService: EmailService,
-  ) {}
+  constructor(private readonly macarwrapupRepo: MaCarWrapupRepository) {}
   async create(data: Prisma.maCarWrapupCreateInput) {
     const maCarWrapup = await this.macarwrapupRepo.create({ data: data });
-    // const emailContent = warpup(maCarWrapup);
-    // await this.emailService.sendEmail(
-    //   'taksapongk@osd.co.th',
-    //   `การสร้าง Task ลำดับที่ ${maCarWrapup.id}`,
-    //   emailContent,
-    // );
+
     return maCarWrapup;
   }
 
@@ -54,17 +43,6 @@ export class MaCarWrapupService {
     const updatemacar = await this.macarwrapupRepo.update(base);
     console.log(`หลังจาก${updatemacar.id}`);
 
-    if (updatemacar.status !== null) {
-      const emailContent = macarbook(updatemacar);
-
-      console.log(`ข้างในการส่งจดหมายคือ ${emailContent}`);
-      console.log(`ส่งจาก ${updatemacar.id}`);
-      await this.emailService.sendEmail(
-        'aekittipon500@gmail.com',
-        `การอนุมัติ Task ลำดับที่ ${updatemacar.id}`,
-        emailContent,
-      );
-    }
     return updatemacar;
   }
 

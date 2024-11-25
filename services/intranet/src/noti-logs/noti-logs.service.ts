@@ -18,21 +18,45 @@ export class NotiLogsService {
   async findAll() {
     return await this.notificationlogsRepo.findAll();
   }
-  async findByUser(
-    userId: string,
-    query: { notiStatus?: string; action?: string },
-  ) {
-    const { notiStatus, action } = query;
-    const acessLeaveUsers =
-      await this.accessService.getLeaveAccessedUsersByHeaderUserId(userId);
-
-    return await this.notificationlogsRepo.count({
+  async findByUser(userId: string) {
+    // const { notiStatus, action, type } = query;
+    const ownergroup = await this.accessService.getOwnerGroupByUserId(userId);
+    const data = [];
+    const leaves = await this.notificationlogsRepo.count({
       where: {
-        // sendUserId: { in: acessLeaveUsers },
-        ...(notiStatus && { notiStatus: notiStatus }),
-        ...(action && { action: action }),
+        toGroupIds: { has: ownergroup.groupId },
+        notiStatus: 'no-action',
+        type: 'leave',
+        action: 'waitting',
       },
     });
+    if (leaves > 0) {
+      data.push({
+        type: 'leaves',
+        action: 'waitting',
+        title: 'วันลารอ Approve',
+        count: leaves,
+        path: '/page/leave-control-management/leave-letter',
+      });
+    }
+    const expenses = await this.notificationlogsRepo.count({
+      where: {
+        toGroupIds: { has: ownergroup.groupId },
+        notiStatus: 'no-action',
+        type: 'expense',
+        action: 'waitting',
+      },
+    });
+    if (expenses > 0) {
+      data.push({
+        type: 'expense',
+        action: 'waitting',
+        title: 'การเบอก Approve',
+        count: expenses,
+        path: '/page/expense',
+      });
+    }
+    return data;
   }
 
   async findOne(id: number) {
