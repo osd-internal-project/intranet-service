@@ -24,7 +24,7 @@ export class NotiLogsService {
     const data = [];
     const leaves = await this.notificationlogsRepo.count({
       where: {
-        toGroupIds: ownergroup.groupId,
+        toGroupIds: { has: ownergroup.groupId },
         notiStatus: 'no-action',
         type: 'leave',
         action: 'waitting',
@@ -41,7 +41,7 @@ export class NotiLogsService {
     }
     const expenses = await this.notificationlogsRepo.count({
       where: {
-        toGroupIds: ownergroup.groupId,
+        toGroupIds: { has: ownergroup.groupId },
         notiStatus: 'no-action',
         type: 'expense',
         action: 'waitting',
