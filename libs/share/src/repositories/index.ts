@@ -117,3 +117,10 @@ export * from './emailTemplateType.repository';
 export * from './emailTemplateFields.repository';
 
 export * from './notificationLogs.repository';
+
+// hr-management
+export * from './employeeProfile.repository';
+export * from './personalInformations.repository';
+export * from './familyInformations.repository';
+export * from './educationInformations.repository';
+export * from './experienceInformations.repository';

@@ -1,26 +1,69 @@
 import { Injectable } from '@nestjs/common';
 import { CreateEmployeeProfileDto } from './dto/create-employee-profile.dto';
 import { UpdateEmployeeProfileDto } from './dto/update-employee-profile.dto';
+import { Prisma } from '@prisma/client';
+import { EmployeeProfileRepository } from '@inventory/share';
 
 @Injectable()
 export class EmployeeProfileService {
-  create(createEmployeeProfileDto: CreateEmployeeProfileDto) {
-    return 'This action adds a new employeeProfile';
+  constructor(
+    private readonly employeeprofileRepo: EmployeeProfileRepository,
+  ) {}
+
+  create(createEmployeeProfile: Prisma.employeeProfilesCreateInput) {
+    const condition: Prisma.employeeProfilesCreateArgs = {
+      data: {
+        ...createEmployeeProfile,
+      },
+    };
+    return this.employeeprofileRepo.create(condition);
   }
 
   findAll() {
-    return `This action returns all employeeProfile`;
+    return this.employeeprofileRepo.findAll;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} employeeProfile`;
+  findMany(take: number, skip: number) {
+    const condition: Prisma.employeeProfilesFindManyArgs = {
+      take: take,
+      skip: skip,
+      orderBy: {
+        empId: 'desc',
+      },
+    };
+    return this.employeeprofileRepo.findMany(condition);
   }
 
-  update(id: number, updateEmployeeProfileDto: UpdateEmployeeProfileDto) {
-    return `This action updates a #${id} employeeProfile`;
+  findOne(userId: string) {
+    const condition: Prisma.employeeProfilesFindFirstArgs = {
+      where: {
+        userId: userId,
+      },
+    };
+    return this.employeeprofileRepo.findOne(condition);
+  }
+
+  update(
+    id: number,
+    updateEmployeeProfilesUpdateInput: Prisma.employeeProfilesUpdateInput,
+  ) {
+    const condition: Prisma.employeeProfilesUpdateArgs = {
+      where: {
+        id: id,
+      },
+      data: {
+        ...updateEmployeeProfilesUpdateInput,
+      },
+    };
+    return this.employeeprofileRepo.update(condition);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} employeeProfile`;
+    const condition: Prisma.employeeProfilesDeleteArgs = {
+      where: {
+        id: id,
+      },
+    };
+    return this.employeeprofileRepo.delete(condition);
   }
 }

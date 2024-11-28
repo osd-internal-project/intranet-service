@@ -8,7 +8,11 @@ import { EmployeeProfileModule } from './employee-profile/employee-profile.modul
 import { EmployeeRegisterModule } from './employee-register/employee-register.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true, load: [configs] }), EmployeeProfileModule, EmployeeRegisterModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
+    EmployeeProfileModule,
+    EmployeeRegisterModule,
+  ],
   controllers: [IntranetController],
   providers: [IntranetService],
 })

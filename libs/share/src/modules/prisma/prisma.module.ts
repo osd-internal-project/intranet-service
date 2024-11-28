@@ -108,6 +108,11 @@ import {
   CustomerProjectProductMapRepository,
   MasterHolidaysYearRepository,
   NotificationLogsRepository,
+  EmployeeProfileRepository,
+  PersonalInformationsRepository,
+  FamilyInformationsRepository,
+  EducationInformationsRepository,
+  ExperienceInformationsRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -225,6 +230,12 @@ const services = [
   emailTemplateRepository,
   emailTemplateTypeRepository,
   emailTemplateFieldsRepository,
+  // HR-management
+  EmployeeProfileRepository,
+  PersonalInformationsRepository,
+  FamilyInformationsRepository,
+  EducationInformationsRepository,
+  ExperienceInformationsRepository,
 ];
 @Module({
   providers: [...services],
