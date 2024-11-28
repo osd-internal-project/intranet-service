@@ -374,13 +374,14 @@ model masterObjective {
 }
 
 model masterPosition {
-    id        Int       @unique @default(autoincrement()) @map("id")
-    posId     Int       @unique @default(autoincrement()) @map("pos_id")
-    nameTh    String?   @default("") @map("name_th") @db.VarChar(100)
-    nameEn    String?   @default("") @map("name_en") @db.VarChar(100)
-    createdAt DateTime? @default(now()) @map("created_at")
-    updatedAt DateTime? @default(now()) @map("updated_at")
-    user      users[]
+    id               Int                @unique @default(autoincrement()) @map("id")
+    posId            Int                @unique @default(autoincrement()) @map("pos_id")
+    nameTh           String?            @default("") @map("name_th") @db.VarChar(100)
+    nameEn           String?            @default("") @map("name_en") @db.VarChar(100)
+    createdAt        DateTime?          @default(now()) @map("created_at")
+    updatedAt        DateTime?          @default(now()) @map("updated_at")
+    user             users[]
+    employeeProfiles employeeProfiles[]
 
     @@map("master_position")
 }
@@ -951,6 +952,7 @@ model userGroup {
     exceptionalSatatus  Boolean?             @default(false) @map("exceptional_satatus")
     headId              String?              @map("head_id") @db.VarChar(50)
     userGroupMapHeader  userGroupMapHeader[]
+    employeeProfiles    employeeProfiles[]
 
     @@map("user_group")
 }
@@ -1258,12 +1260,13 @@ model bookingRoom {
 }
 
 model departMent {
-    id         Int      @unique @default(autoincrement()) @map("id")
-    departId   Int      @unique @map("depart_id") @db.Integer
-    departName String   @unique @map("depart_name") @db.VarChar(100)
-    createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt  DateTime @default(now()) @map("updated_at") @db.Timestamptz()
-    users      users[]
+    id               Int                @unique @default(autoincrement()) @map("id")
+    departId         Int                @unique @map("depart_id") @db.Integer
+    departName       String             @unique @map("depart_name") @db.VarChar(100)
+    createdAt        DateTime           @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt        DateTime           @default(now()) @map("updated_at") @db.Timestamptz()
+    users            users[]
+    employeeProfiles employeeProfiles[]
 
     @@map("department")
 }
@@ -1727,4 +1730,108 @@ model ticketHistoryLogs {
     customerProjectTicketId Int?                   @map("customer_project_ticket_id")
 
     @@map("ticket_history_logs")
+}
+
+// HR-Management 
+
+model employeeProfiles {
+    id                     Int                     @unique @default(autoincrement()) @map("id")
+    userId                 String                  @unique @default(uuid()) @map("user_id") @db.VarChar(50)
+    empId                  String?                 @map("emp_id") @db.VarChar(50)
+    username               String                  @map("username") @db.VarChar(100)
+    firstNameTH            String                  @map("firstname_th") @db.VarChar(250)
+    lastNameTH             String                  @map("lastname_th") @db.VarChar(250)
+    firstNameEN            String                  @map("firstname_en") @db.VarChar(250)
+    lastNameEN             String                  @map("lastname_en") @db.VarChar(250)
+    birthDate              DateTime                @map("birth_date") @db.Timestamptz()
+    gender                 String                  @map("gender") @db.VarChar(50)
+    address                String                  @map("address") @db.VarChar(500)
+    email                  String                  @map("email") @db.VarChar(250)
+    phoneNumber            String                  @map("phone_number") @db.VarChar(10)
+    extensionNumber        String                  @map("extension_number") @db.VarChar(10)
+    startWork              DateTime                @map("start_work") @db.Timestamptz()
+    promotionStatus        String                  @default("trial") @map("promotion_status") @db.VarChar(50)
+    status                 Boolean                 @default(true) @map("status") @db.Boolean
+    positionId             Int?                    @map("position_id") @db.Integer
+    departmentId           Int?                    @map("department_id") @db.Integer
+    personalId             Int?                    @map("personal_id") @db.Integer
+    ownerGroupId           String?                 @map("owner_group_id") @db.VarChar(50)
+    emgergencyContactId    Int?                    @map("emergency_contact_id") @db.Integer
+    educationformationsId  Int?                    @map("education_formation_id") @db.Integer
+    experienceformationsId Int?                    @map("experience_formation_id") @db.Integer
+    imageId                String?                 @map("image_id") @db.VarChar(255)
+    createdAt              DateTime                @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt              DateTime                @default(now()) @map("updated_at") @db.Timestamptz()
+    ownerGroup             userGroup?              @relation(fields: [ownerGroupId], references: [groupId])
+    masterPosition         masterPosition?         @relation(fields: [positionId], references: [posId])
+    department             departMent?             @relation(fields: [departmentId], references: [id])
+    personalInformations   personalInformations?   @relation(fields: [personalId], references: [id])
+    emergencyContact       emergencyContact?       @relation(fields: [emgergencyContactId], references: [id])
+    educationInformations  educationInformations?  @relation(fields: [educationformationsId], references: [id])
+    experienceInformations experienceInformations? @relation(fields: [experienceformationsId], references: [id])
+}
+
+model personalInformations {
+    id                 Int                @unique @default(autoincrement()) @map("id")
+    personalId         String             @unique @default(uuid()) @map("personal_id") @db.VarChar(50)
+    passportNumber     String             @map("passpoer_number") @db.VarChar(250)
+    passportExpired    DateTime           @map("passport_expired") @db.Timestamptz()
+    phoneNumber        String?            @map("phone_number") @db.VarChar(10)
+    nationality        String             @map("nationality") @db.VarChar(50)
+    religion           String             @map("religion") @db.VarChar(50)
+    maritalStatus      String             @map("marital_status") @db.VarChar(50)
+    employmentOfSpouse Boolean            @default(false) @map("employment_of_spouse") @db.Boolean
+    children           String?            @default("0") @map("children") @db.VarChar(50)
+    createdAt          DateTime           @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt          DateTime           @default(now()) @map("updated_at") @db.Timestamptz()
+    employeeProfiles   employeeProfiles[]
+}
+
+model emergencyContact {
+    id               Int                @unique @default(autoincrement()) @map("id")
+    emgergencyId     String             @unique @default(uuid()) @map("emergency_id") @db.VarChar(50)
+    fullname         String             @map("fullname") @db.VarChar(250)
+    relationship     String             @map("relationship") @db.VarChar(50)
+    phoneNumber      String             @map("phone_number") @db.VarChar(10)
+    createdAt        DateTime           @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt        DateTime           @default(now()) @map("updated_at") @db.Timestamptz()
+    employeeProfiles employeeProfiles[]
+}
+
+model familyInformations {
+    id                   Int      @unique @default(autoincrement()) @map("id")
+    familyInformationsId String   @unique @default(uuid()) @map("family_information_id") @db.VarChar(50)
+    fullname             String   @map("fullname") @db.VarChar(250)
+    relationship         String   @map("relationship") @db.VarChar(50)
+    birthDate            DateTime @map("birth_date") @db.Timestamptz()
+    phoneNumber          String   @map("phone_number") @db.VarChar(10)
+    createdAt            DateTime @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt            DateTime @default(now()) @map("updated_at") @db.Timestamptz()
+}
+
+model educationInformations {
+    id                    Int                @unique @default(autoincrement()) @map("id")
+    educationformationsId String             @unique @default(uuid()) @map("education_information_id") @db.VarChar(50)
+    institution           String             @map("institution") @db.VarChar(250)
+    subject               String             @map("subject") @db.VarChar(250)
+    startDate             DateTime           @map("start_date") @db.Timestamptz()
+    completeDate          DateTime           @map("complete_date") @db.Timestamptz()
+    degree                String             @map("degree") @db.VarChar(250)
+    grade                 String             @map("grade") @db.VarChar(10)
+    createdAt             DateTime           @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt             DateTime           @default(now()) @map("updated_at") @db.Timestamptz()
+    employeeProfiles      employeeProfiles[]
+}
+
+model experienceInformations {
+    id                     Int                @unique @default(autoincrement()) @map("id")
+    experienceformationsId String             @unique @default(uuid()) @map("education_information_id") @db.VarChar(50)
+    companyName            String             @map("company_name") @db.VarChar(250)
+    location               String             @map("location") @db.VarChar(250)
+    jobPosition            String             @map("job_position") @db.VarChar(250)
+    periodFrom             DateTime           @default(now()) @map("period_from") @db.Timestamptz()
+    periodTo               DateTime           @default(now()) @map("period_to") @db.Timestamptz()
+    createdAt              DateTime           @default(now()) @map("created_at") @db.Timestamptz()
+    updatedAt              DateTime           @default(now()) @map("updated_at") @db.Timestamptz()
+    employeeProfiles       employeeProfiles[]
 }
