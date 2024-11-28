@@ -179,6 +179,25 @@ export class UsersService {
     const total = await this.usersRepo.count({ where: search });
     const data = await this.usersRepo.findMany({
       where: search,
+      select: {
+        id: true,
+        userId: true,
+        userType: true,
+        username: true,
+        email: true,
+        activeStatus: true,
+        firstNameTh: true,
+        lastNameTh: true,
+        firstNameEn: true,
+        lastNameEn: true,
+        ldapQuery: true,
+        phoneNumber: true,
+        masterPosition: true,
+        userMapOrganizeChart: true,
+        userMapOrganizeGroupOwner: true,
+        dataModule: true,
+        positionId: true,
+      },
       skip: +query.skip,
       take: +query.take,
     });
