@@ -283,10 +283,10 @@ export class UserController {
   findUserInOnwerGroupByUserGroupId(@Param('usergroupid') userGroupId: string) {
     return this.userService.findUserInOnwerGroupByUserGroupId(userGroupId);
   }
-  @Get('header-by-userid/:userid')
+  @Get('header-user-by-userid/:userid')
   // @UseInterceptors(UserInterceptor)
-  findHeaderByUserId(@Param('userid') userId: string) {
-    return this.userService.findHeaderByUserId(userId);
+  findHeaderUserByUserId(@Param('userid') userId: string) {
+    return this.userService.findHeaderUserByUserId(userId);
   }
 
   @Patch()

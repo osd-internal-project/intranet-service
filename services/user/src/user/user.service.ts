@@ -354,7 +354,7 @@ export class UserService {
       },
     });
   }
-  async findHeaderByUserId(userId: string) {
+  async findHeaderUserByUserId(userId: string) {
     const headerGroupIds = await this.accessService.getHeaderGroupIdByUserId(
       userId,
       'overtime',
