@@ -354,6 +354,19 @@ export class UserService {
       },
     });
   }
+  async findHeaderByUserId(userId: string) {
+    const headerGroupIds = await this.accessService.getHeaderGroupIdByUserId(
+      userId,
+      'overtime',
+    );
+    const headers = await this.userGroupRepo.findByCondition({
+      where: { headId: { in: headerGroupIds } },
+    });
+    const headerIds = headers.map((header) => header.headId);
+    return this.usersRepo.findByCondition({
+      where: { userId: { in: headerIds } },
+    });
+  }
   async getPermissionByUserId(userId: string) {
     const resViewOrganizeIdGroupId =
       await this.userMapOrganizeGroupRepo.findMany({
