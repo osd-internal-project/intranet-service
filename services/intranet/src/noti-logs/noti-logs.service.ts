@@ -52,7 +52,7 @@ export class NotiLogsService {
       data.push({
         type: 'expense',
         action: 'waitting',
-        title: 'การเบอก Approve',
+        title: 'การเบิก Approve',
         count: expenses,
         path: '/page/expense',
       });
