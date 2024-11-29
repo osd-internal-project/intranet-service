@@ -276,6 +276,7 @@ export class UsersService {
       where: { token: token },
       select: {
         id: true,
+        userId: true,
         username: true,
         firstNameTh: true,
         lastNameTh: true,
