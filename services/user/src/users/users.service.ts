@@ -270,6 +270,43 @@ export class UsersService {
   async validatePassword(password: string) {
     return this.id24Service.validatePassword(password);
   }
+
+  findByToken(token: string) {
+    return this.usersRepo.findOne({
+      where: { token: token },
+      select: {
+        id: true,
+        username: true,
+        firstNameTh: true,
+        lastNameTh: true,
+        token: true,
+        phoneNumber: true,
+        email: true,
+        userType: true,
+        createdAt: true,
+        updatedAt: true,
+        ldapQuery: true,
+        ownerGroup: {
+          select: {
+            groupId: true,
+            groupName: true,
+          },
+        },
+        userGroupMap: {
+          select: {
+            userGroup: {
+              select: {
+                groupId: true,
+                groupName: true,
+              },
+            },
+          },
+        },
+        dataModule: true,
+      },
+      orderBy: { id: 'asc' },
+    });
+  }
   // async validateEmail(email: string) {
   //   const duplicatedEmail = await this.userRepo.findFirst({
   //     where: {

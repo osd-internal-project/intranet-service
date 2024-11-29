@@ -8,12 +8,14 @@ import {
   Delete,
   Query,
   Req,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { IdCheckingData } from 'src/id24/id24.service';
 import { UserType } from './type';
+import { UserInterceptor } from '@inventory/share';
 
 @Controller('users')
 export class UsersController {
@@ -59,6 +61,13 @@ export class UsersController {
   // @UseInterceptors(UserInterceptor)
   validatePassword(@Body('password') password: string) {
     return this.usersService.validatePassword(password);
+  }
+
+  @Get('findByToken')
+  @UseInterceptors(UserInterceptor)
+  findByToken(@Req() req: any) {
+    const token = req.body.sub;
+    return this.usersService.findByToken(token);
   }
 
   @Get('groups')
