@@ -23,10 +23,10 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   const options = new DocumentBuilder()
-    .setTitle('inventory API')
-    .setDescription('The inventory API description')
+    .setTitle('Hr API')
+    .setDescription('The Hr API description')
     .setVersion('1.0')
-    .addTag('inventory')
+    .addTag('Hr')
     .build();
 
   const document = SwaggerModule.createDocument(app, options);

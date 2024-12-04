@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateEmployeeProfileDto } from './dto/create-employee-profile.dto';
-import { UpdateEmployeeProfileDto } from './dto/update-employee-profile.dto';
 import { Prisma } from '@prisma/client';
 import { EmployeeProfileRepository } from '@inventory/share';
 
@@ -20,7 +18,7 @@ export class EmployeeProfileService {
   }
 
   findAll() {
-    return this.employeeprofileRepo.findAll;
+    return this.employeeprofileRepo.findAll();
   }
 
   findMany(take: number, skip: number) {
@@ -41,6 +39,47 @@ export class EmployeeProfileService {
       },
     };
     return this.employeeprofileRepo.findOne(condition);
+  }
+
+  async count(params: {
+    valueOne: string;
+    valueTwo: boolean;
+    valueThree: boolean;
+    valueFour: string;
+  }) {
+    const { valueTwo, valueThree, valueFour } = params;
+    const conditionStatusActive: Prisma.employeeProfilesCountArgs = {
+      where: {
+        status: Boolean(valueTwo),
+      },
+    };
+    const conditionStatusInActive: Prisma.employeeProfilesCountArgs = {
+      where: {
+        status: Boolean(valueThree),
+      },
+    };
+    const conditionStatusPromotion: Prisma.employeeProfilesCountArgs = {
+      where: {
+        promotionStatus: { not: valueFour },
+      },
+    };
+    const resultAll = await this.employeeprofileRepo.count({});
+    const resultActive = await this.employeeprofileRepo.count(
+      conditionStatusActive,
+    );
+    const resultInActive = await this.employeeprofileRepo.count(
+      conditionStatusInActive,
+    );
+    const resultApproved = await this.employeeprofileRepo.count(
+      conditionStatusPromotion,
+    );
+    return {
+      status: 'success',
+      total: resultAll,
+      active: resultActive,
+      inactive: resultInActive,
+      new: resultApproved,
+    };
   }
 
   update(

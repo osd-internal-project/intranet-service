@@ -186,6 +186,7 @@ export class UsersService {
         username: true,
         email: true,
         activeStatus: true,
+        departmentId: true,
         firstNameTh: true,
         lastNameTh: true,
         firstNameEn: true,
@@ -287,6 +288,7 @@ export class UsersService {
         createdAt: true,
         updatedAt: true,
         ldapQuery: true,
+        departmentId: true,
         ownerGroup: {
           select: {
             groupId: true,

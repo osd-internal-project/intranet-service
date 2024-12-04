@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { EmployeeProfileService } from './employee-profile.service';
 import { Prisma } from '@prisma/client';
@@ -24,6 +25,11 @@ export class EmployeeProfileController {
   @Get()
   findAll() {
     return this.employeeProfileService.findAll();
+  }
+
+  @Get('count')
+  count(@Query() query: any) {
+    return this.employeeProfileService.count(query);
   }
   @Get(':take/:skip')
   findByCondition(@Param('take') take: string, @Param('skip') skip: string) {
