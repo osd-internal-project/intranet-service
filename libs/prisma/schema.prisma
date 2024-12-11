@@ -1738,6 +1738,7 @@ model employeeProfiles {
     id                     Int                     @unique @default(autoincrement()) @map("id")
     userId                 String                  @unique @default(uuid()) @map("user_id") @db.VarChar(50)
     empId                  String?                 @map("emp_id") @db.VarChar(50)
+    idCard                 String?                 @map("id_card") @db.VarChar(50)
     username               String                  @map("username") @db.VarChar(100)
     firstNameTH            String                  @map("firstname_th") @db.VarChar(250)
     lastNameTH             String                  @map("lastname_th") @db.VarChar(250)
