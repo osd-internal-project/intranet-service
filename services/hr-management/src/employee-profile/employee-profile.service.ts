@@ -1,20 +1,83 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { EmployeeProfileRepository } from '@inventory/share';
+import {
+  EmployeeProfileRepository,
+  PersonalInformationsRepository,
+} from '@inventory/share';
 
 @Injectable()
 export class EmployeeProfileService {
   constructor(
     private readonly employeeprofileRepo: EmployeeProfileRepository,
+    private readonly personalinformationsRepo: PersonalInformationsRepository, // private readonly personalinformationsRepo: PersonalInformationsRepository, // private readonly personalinformationsRepo: PersonalInformationsRepository, // private readonly personalinformationsRepo: PersonalInformationsRepository,
   ) {}
 
-  create(createEmployeeProfile: Prisma.employeeProfilesCreateInput) {
+  async create(createEmployeeProfile: any) {
+    console.log(createEmployeeProfile);
+    let personalInformation;
+    if (
+      Array.isArray(createEmployeeProfile.personalInformation) &&
+      createEmployeeProfile.personalInformation.length > 0
+    ) {
+      personalInformation = this.personalinformationsRepo.create({
+        data: { ...createEmployeeProfile.personalInformation[0] },
+      });
+    }
+
+    let emergencyContact;
+
+    if (
+      Array.isArray(createEmployeeProfile.emergencyContact) &&
+      createEmployeeProfile.emergencyContact.length > 0
+    ) {
+      personalInformation = this.personalinformationsRepo.create({
+        data: { ...createEmployeeProfile.personalInformation[0] },
+      });
+    }
+
     const condition: Prisma.employeeProfilesCreateArgs = {
       data: {
-        ...createEmployeeProfile,
+        empId: createEmployeeProfile.empId,
+        idCard: createEmployeeProfile.idCard,
+        username: createEmployeeProfile.username,
+        firstNameTH: createEmployeeProfile.firstNameTH,
+        lastNameTH: createEmployeeProfile.lastNameTH,
+        firstNameEN: createEmployeeProfile.firstNameEN,
+        lastNameEN: createEmployeeProfile.lastNameEN,
+        birthDate: createEmployeeProfile.birthDate,
+        gender: createEmployeeProfile.gender,
+        address: createEmployeeProfile.address,
+        email: createEmployeeProfile.email,
+        phoneNumber: createEmployeeProfile.phoneNumber,
+        extensionNumber: createEmployeeProfile.extensionNumber,
+        startWork: createEmployeeProfile.startWork,
+        promotionStatus: createEmployeeProfile.promotionStatus,
+        masterPosition: {
+          connect: { posId: createEmployeeProfile.positionId },
+        },
+        department: {
+          connect: { id: createEmployeeProfile.departmentId },
+        },
+        personalInformations: {
+          connect: { id: personalInformation.id },
+        },
+        status: true,
       },
     };
-    return this.employeeprofileRepo.create(condition);
+    // const data = await this.employeeprofileRepo.create(condition);
+
+    // return { status: data ? 200 : 500, data: data ? data : null };
+  }
+
+  async uploadImags(userId: string, files: Express.Multer.File) {
+    return await this.employeeprofileRepo.update({
+      where: {
+        userId: userId,
+      },
+      data: {
+        imageId: files.filename,
+      },
+    });
   }
 
   findAll() {
@@ -25,8 +88,12 @@ export class EmployeeProfileService {
     const condition: Prisma.employeeProfilesFindManyArgs = {
       take: take,
       skip: skip,
+      include: {
+        department: true,
+        masterPosition: true,
+      },
       orderBy: {
-        empId: 'desc',
+        id: 'desc',
       },
     };
     return this.employeeprofileRepo.findMany(condition);
@@ -50,12 +117,12 @@ export class EmployeeProfileService {
     const { valueTwo, valueThree, valueFour } = params;
     const conditionStatusActive: Prisma.employeeProfilesCountArgs = {
       where: {
-        status: Boolean(valueTwo),
+        status: true,
       },
     };
     const conditionStatusInActive: Prisma.employeeProfilesCountArgs = {
       where: {
-        status: Boolean(valueThree),
+        status: false,
       },
     };
     const conditionStatusPromotion: Prisma.employeeProfilesCountArgs = {

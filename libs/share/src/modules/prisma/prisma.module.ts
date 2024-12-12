@@ -113,6 +113,7 @@ import {
   FamilyInformationsRepository,
   EducationInformationsRepository,
   ExperienceInformationsRepository,
+  MasterDataCompanyRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -236,6 +237,7 @@ const services = [
   FamilyInformationsRepository,
   EducationInformationsRepository,
   ExperienceInformationsRepository,
+  MasterDataCompanyRepository,
 ];
 @Module({
   providers: [...services],

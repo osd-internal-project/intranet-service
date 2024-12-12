@@ -124,3 +124,5 @@ export * from './personalInformations.repository';
 export * from './familyInformations.repository';
 export * from './educationInformations.repository';
 export * from './experienceInformations.repository';
+export * from './emergencyContact.repository';
+export * from './masterDataCompany.repository';
