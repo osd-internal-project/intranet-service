@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import {
+  EducationInformationsRepository,
+  EmergencyContactRepository,
   EmployeeProfileRepository,
+  ExperienceInformationsRepository,
+  FamilyInformationsRepository,
   PersonalInformationsRepository,
 } from '@inventory/share';
 
@@ -9,32 +13,14 @@ import {
 export class EmployeeProfileService {
   constructor(
     private readonly employeeprofileRepo: EmployeeProfileRepository,
-    private readonly personalinformationsRepo: PersonalInformationsRepository, // private readonly personalinformationsRepo: PersonalInformationsRepository, // private readonly personalinformationsRepo: PersonalInformationsRepository, // private readonly personalinformationsRepo: PersonalInformationsRepository,
+    private readonly personalinformationsRepo: PersonalInformationsRepository,
+    private readonly emergencycontactRepo: EmergencyContactRepository,
+    private readonly familyinformationsRepo: FamilyInformationsRepository,
+    private readonly educationinformationsRepo: EducationInformationsRepository,
+    private readonly experienceinformationsRepo: ExperienceInformationsRepository,
   ) {}
 
   async create(createEmployeeProfile: any) {
-    console.log(createEmployeeProfile);
-    let personalInformation;
-    if (
-      Array.isArray(createEmployeeProfile.personalInformation) &&
-      createEmployeeProfile.personalInformation.length > 0
-    ) {
-      personalInformation = this.personalinformationsRepo.create({
-        data: { ...createEmployeeProfile.personalInformation[0] },
-      });
-    }
-
-    let emergencyContact;
-
-    if (
-      Array.isArray(createEmployeeProfile.emergencyContact) &&
-      createEmployeeProfile.emergencyContact.length > 0
-    ) {
-      personalInformation = this.personalinformationsRepo.create({
-        data: { ...createEmployeeProfile.personalInformation[0] },
-      });
-    }
-
     const condition: Prisma.employeeProfilesCreateArgs = {
       data: {
         empId: createEmployeeProfile.empId,
@@ -58,15 +44,72 @@ export class EmployeeProfileService {
         department: {
           connect: { id: createEmployeeProfile.departmentId },
         },
-        personalInformations: {
-          connect: { id: personalInformation.id },
-        },
         status: true,
       },
     };
-    // const data = await this.employeeprofileRepo.create(condition);
+    const data = await this.employeeprofileRepo.create(condition);
 
-    // return { status: data ? 200 : 500, data: data ? data : null };
+    if (
+      Array.isArray(createEmployeeProfile.personalInformation) &&
+      createEmployeeProfile.personalInformation.length > 0
+    ) {
+      await this.personalinformationsRepo.create({
+        data: {
+          ...createEmployeeProfile.personalInformation[0],
+          userId: data.userId,
+        },
+      });
+    }
+    if (
+      Array.isArray(createEmployeeProfile.emergencyContact) &&
+      createEmployeeProfile.emergencyContact.length > 0
+    ) {
+      createEmployeeProfile.emergencyContact.map(
+        async (record: any, index: number) => {
+          await this.emergencycontactRepo.create({
+            data: { ...record, userId: data.userId },
+          });
+        },
+      );
+    }
+    if (
+      Array.isArray(createEmployeeProfile.familyInformations) &&
+      createEmployeeProfile.familyInformations.length > 0
+    ) {
+      createEmployeeProfile.familyInformations.map(
+        async (record: any, index: number) => {
+          await this.familyinformationsRepo.create({
+            data: { ...record, userId: data.userId },
+          });
+        },
+      );
+    }
+    if (
+      Array.isArray(createEmployeeProfile.educationInformations) &&
+      createEmployeeProfile.educationInformations.length > 0
+    ) {
+      createEmployeeProfile.educationInformations.map(
+        async (record: any, index: number) => {
+          await this.educationinformationsRepo.create({
+            data: { ...record, userId: data.userId },
+          });
+        },
+      );
+    }
+    if (
+      Array.isArray(createEmployeeProfile.experienceInformations) &&
+      createEmployeeProfile.experienceInformations.length > 0
+    ) {
+      createEmployeeProfile.experienceInformations.map(
+        async (record: any, index: number) => {
+          await this.experienceinformationsRepo.create({
+            data: { ...record, userId: data.userId },
+          });
+        },
+      );
+    }
+
+    return { status: data ? 200 : 500, data: data ? data : null };
   }
 
   async uploadImags(userId: string, files: Express.Multer.File) {
