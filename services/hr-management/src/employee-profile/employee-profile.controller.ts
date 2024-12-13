@@ -68,7 +68,6 @@ export class EmployeeProfileController {
   @Get('/upload-image/:userId')
   async getimage(@Param('userId') userId: any, @Res() res: Response) {
     const { imageId } = await this.employeeProfileService.findOne(userId);
-
     let imagePath;
     if (imageId === null) {
       imagePath = join(`${pathMountDirUpload}/default`, `emp-avatar.png`);
@@ -78,9 +77,6 @@ export class EmployeeProfileController {
     if (!fs.existsSync(imagePath)) {
       imagePath = join(`${pathMountDirUpload}/default`, `emp-avatar.png`);
     }
-
-    console.log(imagePath);
-    
     res.sendFile(`${imagePath}`, { root: './' });
   }
 

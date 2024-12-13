@@ -57,6 +57,11 @@ export class EmployeeProfileService {
         data: {
           ...createEmployeeProfile.personalInformation[0],
           userId: data.userId,
+          employmentOfSpouse:
+            createEmployeeProfile.personalInformation[0].employmentOfSpouse ===
+            'yes'
+              ? true
+              : false,
         },
       });
     }
@@ -108,6 +113,8 @@ export class EmployeeProfileService {
         },
       );
     }
+
+    console.log(data);
 
     return { status: data ? 200 : 500, data: data ? data : null };
   }
