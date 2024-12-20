@@ -15,6 +15,8 @@ import { MasterUnitModule } from './master-unit/master-unit.module';
 import { VenderModule } from './vender/vender.module';
 import { RequestLoggerMiddleware } from './middleware/request-logger.middleware';
 import { UnitModule } from './unit/unit.module';
+import { VenderGroupModule } from './vender-group/vender-group.module';
+import { VenderTypeModule } from './vender-type/vender-type.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
@@ -28,6 +30,8 @@ import { UnitModule } from './unit/unit.module';
     MasterProductTypeModule,
     MasterUnitModule,
     VenderModule,
+    VenderGroupModule,
+    VenderTypeModule,
     UnitModule,
   ],
   controllers: [EvoteController],
