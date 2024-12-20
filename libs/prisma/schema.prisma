@@ -17,18 +17,6 @@ model brand {
     updatedAt DateTime @default(now()) @map("updated_at")
 }
 
-model contact {
-    id           Int     @unique @default(autoincrement()) @map("id")
-    contactID    String  @unique @default(uuid()) @map("contact_id")
-    contact_name String? @default("") @map("contact_name") @db.VarChar(100)
-    phoneNumber  String? @default("") @map("phone_number") @db.VarChar(20)
-    fax_number   String? @default("") @map("fax_number") @db.VarChar(20)
-    email        String? @default("") @map("email") @db.VarChar(100)
-    description  String? @default("") @map("description") @db.VarChar(100)
-    vender       vender? @relation(fields: [venderID], references: [venderID], onDelete: Cascade)
-    venderID     String? @map("vender_id")
-}
-
 model dataLeaveFiles {
     id          Int        @unique @default(autoincrement())
     fileCode    String?    @map("file_code") @db.VarChar(200)
@@ -816,30 +804,6 @@ model transaction {
     requesterGroupId   String?   @map("requester_group_id") @db.VarChar(50)
     requesterGroupName String?   @map("requester_group_name") @db.VarChar(200)
     detailLot          String?   @map("detail_lot") @db.VarChar(250)
-}
-
-model vender {
-    id           Int       @unique @default(autoincrement()) @map("id")
-    venderName   String    @map("vender_name") @db.VarChar(100)
-    status       Boolean   @default(true) @map("status") @db.Boolean
-    description  String?   @default("") @map("description") @db.VarChar(100)
-    venderID     String    @unique @default(uuid()) @map("vender_id")
-    house_number String?   @default("") @map("house_number") @db.VarChar(10)
-    group        String?   @default("") @map("group") @db.VarChar(10)
-    village      String?   @default("") @map("village") @db.VarChar(100)
-    alley        String?   @default("") @map("alley") @db.VarChar(50)
-    road         String?   @default("") @map("road") @db.VarChar(50)
-    sub_district String?   @default("") @map("sub_district") @db.VarChar(50)
-    district     String?   @default("") @map("district") @db.VarChar(50)
-    province     String?   @default("") @map("province") @db.VarChar(50)
-    post_code    String?   @default("") @map("post_code") @db.VarChar(20)
-    phoneNumber  String?   @default("") @map("phone_number") @db.VarChar(20)
-    fax_number   String?   @default("") @map("fax_number") @db.VarChar(20)
-    email        String?   @default("") @map("email") @db.VarChar(100)
-    IDcard       String?   @default("") @map("id_card") @db.VarChar(100)
-    createdAt    DateTime  @default(now()) @map("created_at")
-    updatedAt    DateTime  @default(now()) @map("updated_at")
-    contact      contact[]
 }
 
 model unit {
@@ -1864,4 +1828,55 @@ model experienceInformations {
     employeeProfiles       employeeProfiles? @relation(fields: [userId], references: [userId])
 
     @@map("experience_informations")
+}
+
+//Vender
+model vender {
+    id           Int       @unique @default(autoincrement()) @map("id")
+    venderName   String    @map("vender_name") @db.VarChar(100)
+    status       Boolean   @default(true) @map("status") @db.Boolean
+    description  String?   @default("") @map("description") @db.VarChar(100)
+    venderID     String    @unique @default(uuid()) @map("vender_id")
+    house_number String?   @default("") @map("house_number") @db.VarChar(10)
+    group        String?   @default("") @map("group") @db.VarChar(10)
+    village      String?   @default("") @map("village") @db.VarChar(100)
+    alley        String?   @default("") @map("alley") @db.VarChar(50)
+    road         String?   @default("") @map("road") @db.VarChar(50)
+    sub_district String?   @default("") @map("sub_district") @db.VarChar(50)
+    district     String?   @default("") @map("district") @db.VarChar(50)
+    province     String?   @default("") @map("province") @db.VarChar(50)
+    post_code    String?   @default("") @map("post_code") @db.VarChar(20)
+    phoneNumber  String?   @default("") @map("phone_number") @db.VarChar(20)
+    fax_number   String?   @default("") @map("fax_number") @db.VarChar(20)
+    email        String?   @default("") @map("email") @db.VarChar(100)
+    IDcard       String?   @default("") @map("id_card") @db.VarChar(100)
+    createdAt    DateTime  @default(now()) @map("created_at")
+    updatedAt    DateTime  @default(now()) @map("updated_at")
+    contact      contact[]
+}
+
+model venderType {
+    id             Int    @unique @default(autoincrement()) @map("id")
+    venderTypeName String @map("vender_type_name")
+
+    @@map("vender_type")
+}
+
+model venderGroup {
+    id              Int    @unique @default(autoincrement()) @map("id")
+    venderGroupName String @map("vender_group_name")
+
+    @@map("vender_group")
+}
+
+model contact {
+    id           Int     @unique @default(autoincrement()) @map("id")
+    contactID    String  @unique @default(uuid()) @map("contact_id")
+    contact_name String? @default("") @map("contact_name") @db.VarChar(100)
+    phoneNumber  String? @default("") @map("phone_number") @db.VarChar(20)
+    fax_number   String? @default("") @map("fax_number") @db.VarChar(20)
+    email        String? @default("") @map("email") @db.VarChar(100)
+    description  String? @default("") @map("description") @db.VarChar(100)
+    vender       vender? @relation(fields: [venderID], references: [venderID], onDelete: Cascade)
+    venderID     String? @map("vender_id")
 }

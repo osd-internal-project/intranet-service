@@ -29,7 +29,6 @@ import {
   TransactionRepository,
   LocationRepository,
   LocationUserGroupMapRepository,
-  VenderRepository,
   UnitRepository,
   FloorRepository,
   HouseKeeperRepository,
@@ -115,6 +114,10 @@ import {
   ExperienceInformationsRepository,
   MasterDataCompanyRepository,
   EmergencyContactRepository,
+  //Vender
+  VenderRepository,
+  VenderGroupRepository,
+  VenderTypeRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -168,7 +171,7 @@ const services = [
   UserRoleRepository,
   UserRoleMapRepository,
   UsersRepository,
-  VenderRepository,
+
   UserGroupRepository,
   UserGroupMapRepository,
   UserGroupUserRoleMapRepository,
@@ -240,6 +243,10 @@ const services = [
   ExperienceInformationsRepository,
   MasterDataCompanyRepository,
   EmergencyContactRepository,
+  //Vender
+  VenderRepository,
+  VenderGroupRepository,
+  VenderTypeRepository,
 ];
 @Module({
   providers: [...services],

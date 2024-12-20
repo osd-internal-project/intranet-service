@@ -46,7 +46,7 @@ export * from './profileRuleMap.repository';
 export * from './roleProfileMap.repository';
 export * from './transaction.repository';
 export * from './user.repository';
-export * from './vender.repository';
+
 export * from './userGroup.repository';
 export * from './userGroupMap.repository';
 export * from './userRole.repository';
@@ -126,3 +126,7 @@ export * from './educationInformations.repository';
 export * from './experienceInformations.repository';
 export * from './emergencyContact.repository';
 export * from './masterDataCompany.repository';
+//vender
+export * from './vender.repository';
+export * from './venderGroup.repository';
+export * from './venderType.repository';
