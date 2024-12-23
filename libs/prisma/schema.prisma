@@ -1880,3 +1880,33 @@ model contact {
     vender       vender? @relation(fields: [venderID], references: [venderID], onDelete: Cascade)
     venderID     String? @map("vender_id")
 }
+
+model overtime {
+    id                      Int       @unique @default(autoincrement()) @map("id")
+    overTimeID              String    @unique @default(uuid()) @map("overtime_id")
+    fullname                String    @map("fullname") @db.VarChar(250)
+    userId                  String    @map("user_id") @db.VarChar(50)
+    dateStart               DateTime  @default(now()) @map("date_start") @db.Timestamp()
+    partTimeType            String?   @map("part_time_type") @db.VarChar(50)
+    startTime               String?   @map("start_time") @db.VarChar(50)
+    endTime                 String?   @map("end_time") @db.VarChar(50)
+    breakTime               String?   @map("break_time") @db.VarChar(50)
+    workingTime             String?   @map("working_time") @db.VarChar(50)
+    totalTime               String?   @map("total_time") @db.VarChar(50)
+    detailWork              String?   @map("detail_work") @db.VarChar(250)
+    typeDate                String?   @map("type_date") @db.VarChar(50)
+    customerName            String?   @map("customer_name") @db.VarChar(250)
+    checkTravelUpCountry    Boolean?  @default(false) @map("check_travel_upcountry") @db.Boolean
+    checkOvernight          Boolean?  @default(false) @map("check_overnight") @db.Boolean
+    checkTravelByCompanyCar Boolean?  @default(false) @map("check_travel_by_company_car") @db.Boolean
+    carName                 String?   @map("car_name") @db.VarChar(250)
+    carId                   String?   @map("car_id") @db.VarChar(250)
+    checkDistance           Boolean?  @default(false) @map("check_distance") @db.Boolean
+    other                   String?   @map("other") @db.VarChar(250)
+    phoneNumber             String?   @map("phone_number") @db.VarChar(10)
+    status                  String?   @map("status") @db.VarChar(20)
+    approvedDate            DateTime? @map("approved_at") @db.Timestamp()
+    approvedUser            String?   @map("approved_user") @db.VarChar(100)
+    approvedDetail          String?   @map("approved_detail") @db.VarChar(250)
+
+}
