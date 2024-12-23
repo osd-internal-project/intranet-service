@@ -1187,6 +1187,16 @@ model masterRoom {
     @@map("master_room")
 }
 
+model masterRefreshment {
+    id                     Int     @id @default(autoincrement()) @map("id")
+    refreshmentId          String  @unique @default(uuid()) @map("refreshment_id") @db.VarChar(50)
+    refreshmentName        String  @map("refreshment_name") @db.VarChar(255)
+    refreshmentStatus      Boolean @default(true) @map("refreshment_status") @db.Boolean
+    refreshmentDescription String  @map("refreshment_description") @db.VarChar(255)
+
+    @@map("master_refreshment")
+}
+
 model masterRoomType {
     id         Int          @unique @default(autoincrement()) @map("id")
     name       String       @map("name") @db.VarChar(255)
@@ -1216,6 +1226,7 @@ model bookingRoom {
     member           String      @map("member") @db.VarChar(255)
     outSider         String      @map("out_sider") @db.VarChar(255)
     guest            String?     @map("guest") @db.VarChar(255)
+    refreshment      String?     @map("refreshment") @db.VarChar(255)
     note             String?     @default("") @map("note") @db.VarChar(255)
     createdAt        DateTime    @default(now()) @map("created_at") @db.Timestamptz()
     updatedAt        DateTime    @default(now()) @map("updated_at") @db.Timestamptz()
@@ -1909,5 +1920,4 @@ model overtime {
     approvedDate            DateTime? @map("approved_at") @db.Timestamp()
     approvedUser            String?   @map("approved_user") @db.VarChar(100)
     approvedDetail          String?   @map("approved_detail") @db.VarChar(250)
-
 }
