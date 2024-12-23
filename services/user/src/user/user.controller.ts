@@ -285,8 +285,8 @@ export class UserController {
   }
   @Get('header-user-by-userid/:userid')
   // @UseInterceptors(UserInterceptor)
-  findHeaderUserByUserId(@Param('userid') userId: string) {
-    return this.userService.findHeaderUserByUserId(userId);
+  async findHeaderUserByUserId(@Param('userid') userId: string) {
+    return await this.userService.findHeaderUserByUserId(userId);
   }
 
   @Patch()

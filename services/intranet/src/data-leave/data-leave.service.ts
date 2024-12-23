@@ -83,8 +83,6 @@ export class DataLeaveService {
       },
     });
 
-    console.log(usersInGroup);
-
     return await this.dataleaveRepo.findMany({
       where: {
         userId: {
@@ -249,6 +247,22 @@ export class DataLeaveService {
       return acc;
     }, {});
     return data;
+  }
+
+  async findHeaderId(userId: string) {
+    const res = await this.accessService.getHeaderGroupIdByUserId(
+      userId,
+      'leave',
+    );
+    const findUserHeader = await this.userRepo.findMany({
+      where: {
+        userId: '77217f39-2b3b-4911-8592-72bf1a8bbf91',
+      },
+    });
+
+    console.log(findUserHeader);
+
+    return res;
   }
 
   async findLeaveByUserId(userId: string) {
