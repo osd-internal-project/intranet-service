@@ -130,3 +130,4 @@ export * from './masterDataCompany.repository';
 export * from './vender.repository';
 export * from './venderGroup.repository';
 export * from './venderType.repository';
+export * from './overtime.repository';

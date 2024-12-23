@@ -118,6 +118,7 @@ import {
   VenderRepository,
   VenderGroupRepository,
   VenderTypeRepository,
+  OverTimeRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -161,6 +162,7 @@ const services = [
   UserMapOrganizeGroupRepository,
   UserMapOrganizeGroupOwnerRepository,
   UserGroupMapHeaderRepository,
+  OverTimeRepository,
   //Auth
   MasterPositionRepository,
   MasterRuleRepository,
