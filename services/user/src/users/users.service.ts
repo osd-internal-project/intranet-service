@@ -289,6 +289,12 @@ export class UsersService {
         updatedAt: true,
         ldapQuery: true,
         departmentId: true,
+        masterPosition: {
+          select: {
+            posId: true,
+            nameEn: true,
+          },
+        },
         ownerGroup: {
           select: {
             groupId: true,

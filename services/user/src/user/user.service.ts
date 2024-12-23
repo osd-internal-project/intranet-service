@@ -363,7 +363,7 @@ export class UserService {
       where: { headId: { in: headerGroupIds } },
     });
     const headerIds = headers.map((header) => header.headId);
-    return this.usersRepo.findByCondition({
+    return await this.usersRepo.findByCondition({
       where: { userId: { in: headerIds } },
     });
   }
