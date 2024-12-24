@@ -9,28 +9,17 @@ export class MasterProductCategoriesService {
   ) {}
 
   create(data: Prisma.masterProductCategoriesCreateInput) {
-    const condition = {
-      data: data,
-    } as Prisma.masterProductCategoriesCreateArgs;
-    return this.masterProductCategoriesRepo.create(condition);
+    return this.masterProductCategoriesRepo.create({ data: data });
   }
 
   findAll() {
     return this.masterProductCategoriesRepo.findAll();
   }
-  findOne(condition: Prisma.masterProductCategoriesFindManyArgs) {
-    return this.masterProductCategoriesRepo.findOne(condition);
+  findMany(search: any) {
+    return this.masterProductCategoriesRepo.findMany({ where: search });
   }
-  findMany(condition: Prisma.masterProductCategoriesFindManyArgs) {
-    condition = {
-      ...condition,
-      orderBy: [
-        {
-          createdAt: 'asc',
-        },
-      ],
-    };
-    return this.masterProductCategoriesRepo.findMany(condition);
+  findFirst(id: number) {
+    return this.masterProductCategoriesRepo.findFirst({ where: { id } });
   }
 
   async update(id: number, data: Prisma.masterProductCategoriesUpdateInput) {

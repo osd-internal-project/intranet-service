@@ -196,7 +196,7 @@ export class MasterProductService {
       },
       orderBy: { createdAt: 'asc' },
     } as Prisma.masterProductFindManyArgs;
-    const data = await this.masterProductRepo.findOne(base);
+    const data = await this.masterProductRepo.findFirst(base);
 
     return data;
   }
@@ -452,7 +452,7 @@ export class MasterProductService {
         },
       },
     } as Prisma.masterProductFindFirstArgs;
-    return await this.masterProductRepo.findOne(base);
+    return await this.masterProductRepo.findFirst(base);
   }
 
   async update(id: number, data: Prisma.masterProductUpdateInput) {
@@ -465,7 +465,7 @@ export class MasterProductService {
 
   async remove(pid: string) {
     const id = Number(pid);
-    const product = (await this.masterProductRepo.findOne({
+    const product = (await this.masterProductRepo.findFirst({
       where: { id: id },
       select: { masterProductImages: true },
     })) as any;
