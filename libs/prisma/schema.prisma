@@ -1909,5 +1909,12 @@ model overtime {
     approvedDate            DateTime? @map("approved_at") @db.Timestamp()
     approvedUser            String?   @map("approved_user") @db.VarChar(100)
     approvedDetail          String?   @map("approved_detail") @db.VarChar(250)
+}
 
+model masterDataConfigTimeOT {
+    id                Int   @unique @default(autoincrement()) @map("id")
+    partTimeCondition Json? @map("part_time_condition") @db.JsonB
+    workTime          Json? @map("work_time") @db.JsonB
+
+    @@map("masterdata_config_time_ot")
 }
