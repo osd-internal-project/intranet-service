@@ -6,6 +6,7 @@ import {
   Patch,
   Delete,
   Param,
+  Query,
 } from '@nestjs/common';
 import { MasterProductCategoriesService } from './master-product-categories.service';
 import { Prisma } from '@prisma/client';
@@ -17,21 +18,7 @@ export class MasterProductCategoriesController {
 
   @Post()
   async create(@Body('data') data: Prisma.masterProductCategoriesCreateInput) {
-    const lastRow = await this.masterProductCategoriesService.findOne({
-      orderBy: {
-        id: 'desc',
-      },
-    });
-    let categoryCode = null;
-    if (lastRow) {
-      categoryCode = 'INV-C-' + String(lastRow.id + 1).padStart(6, '0');
-    } else {
-      categoryCode = 'INV-C-000001';
-    }
-    return this.masterProductCategoriesService.create({
-      categoryCode: categoryCode,
-      ...data,
-    });
+    return this.masterProductCategoriesService.create(data);
   }
 
   @Get()
@@ -39,29 +26,31 @@ export class MasterProductCategoriesController {
     return this.masterProductCategoriesService.findAll();
   }
 
-  @Get('count')
-  count() {
-    return this.masterProductCategoriesService.count();
-  }
-
-  @Post('condition')
+  @Get('many')
   findMany(
-    @Body('condition') condition: Prisma.masterProductCategoriesFindManyArgs,
+    @Query('search') condition: Prisma.masterProductCategoriesFindManyArgs,
   ) {
     return this.masterProductCategoriesService.findMany(condition);
   }
-
+  @Get(':id')
+  findFirst(@Param('id') id: string) {
+    return this.masterProductCategoriesService.findFirst(+id);
+  }
   @Patch()
   update(
-    @Body('id') id: number,
+    @Param('id') id: string,
     @Body('data') data: Prisma.masterProductCategoriesUpdateInput,
   ) {
-    return this.masterProductCategoriesService.update(id, data);
+    return this.masterProductCategoriesService.update(+id, data);
   }
 
-  @Delete(':param')
-  remove(@Param('param') param: string) {
-    const id = Number(param);
-    return this.masterProductCategoriesService.remove(id);
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.masterProductCategoriesService.remove(+id);
+  }
+
+  @Get('count')
+  count() {
+    return this.masterProductCategoriesService.count();
   }
 }

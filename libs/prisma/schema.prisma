@@ -458,8 +458,7 @@ model masterProduct {
 
 model masterProductCategories {
     id                 Int                  @unique @default(autoincrement()) @map("id")
-    categoryCode       String               @unique @map("category_code") @db.VarChar(20)
-    categoryName       String               @map("category_name") @db.VarChar(200)
+    name               String               @map("category_name") @db.VarChar(200)
     status             Boolean              @default(true) @map("status") @db.Boolean
     createdAt          DateTime             @default(now()) @map("created_at")
     updatedAt          DateTime             @default(now()) @map("updated_at")
@@ -525,8 +524,7 @@ model masterProductHazardtypeMap {
 
 model masterProductGroup {
     id          Int      @unique @default(autoincrement()) @map("id")
-    groupCode   String   @unique @map("group_code") @db.VarChar(20)
-    groupName   String   @map("group_name") @db.VarChar(200)
+    name        String   @unique @map("group_code") @db.VarChar(20)
     status      Boolean  @default(true) @map("status") @db.Boolean
     description String?  @map("description") @db.Text
     createdAt   DateTime @default(now()) @map("created_at")
@@ -564,10 +562,9 @@ model masterProductLocationMap {
 
 model masterProductType {
     id           Int      @unique @default(autoincrement()) @map("id")
-    typeCode     String   @unique @map("type_code") @db.VarChar(20)
-    typeName     String   @map("type_name") @db.VarChar(200)
+    name         String   @map("type_name") @db.VarChar(200)
     activeStatus Boolean  @default(true) @map("active_status") @db.Boolean
-    typeDesc     String?  @map("type_desc") @db.Text
+    typeDesc     String?  @map("description") @db.Text
     createdAt    DateTime @default(now()) @map("created_at")
     updatedAt    DateTime @default(now()) @map("updated_at")
 
@@ -1919,6 +1916,9 @@ model overtime {
     approvedDate            DateTime? @map("approved_at") @db.Timestamp()
     approvedUser            String?   @map("approved_user") @db.VarChar(100)
     approvedDetail          String?   @map("approved_detail") @db.VarChar(250)
+    averageOnetime          Decimal?  @map("average_one_time") @db.Decimal()
+    averageOneSectimes      Decimal?  @map("average_one_sec_times") @db.Decimal()
+    averageThreetimes       Decimal?  @map("average_three_time") @db.Decimal()
 }
 
 model masterDataConfigTimeOT {

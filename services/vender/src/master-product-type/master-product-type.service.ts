@@ -16,8 +16,8 @@ export class MasterProductTypeService {
   findAll() {
     return this.masterProductTypeRepo.findAll();
   }
-  findOne(condition: Prisma.masterProductTypeFindManyArgs) {
-    return this.masterProductTypeRepo.findOne(condition);
+  findFirst(condition: Prisma.masterProductTypeFindManyArgs) {
+    return this.masterProductTypeRepo.findFirst(condition);
   }
 
   findMany(condition: Prisma.masterProductTypeFindManyArgs) {

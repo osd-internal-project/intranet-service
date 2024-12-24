@@ -18,7 +18,7 @@ export class MasterProductCategoriesRepository {
     const prisma = option?.prisma ?? this.prisma;
     return prisma.masterProductCategories.findMany(condition);
   }
-  async findOne(
+  async findFirst(
     condition: Prisma.masterProductCategoriesFindFirstArgsBase,
     option?: { prisma?: TQueryClient },
   ) {
