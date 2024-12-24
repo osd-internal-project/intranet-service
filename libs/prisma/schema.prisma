@@ -1184,6 +1184,16 @@ model masterRoom {
     @@map("master_room")
 }
 
+model masterRefreshment {
+    id                     Int     @id @default(autoincrement()) @map("id")
+    refreshmentId          String  @unique @default(uuid()) @map("refreshment_id") @db.VarChar(50)
+    refreshmentName        String  @map("refreshment_name") @db.VarChar(255)
+    refreshmentStatus      Boolean @default(true) @map("refreshment_status") @db.Boolean
+    refreshmentDescription String  @map("refreshment_description") @db.VarChar(255)
+
+    @@map("master_refreshment")
+}
+
 model masterRoomType {
     id         Int          @unique @default(autoincrement()) @map("id")
     name       String       @map("name") @db.VarChar(255)
@@ -1906,4 +1916,15 @@ model overtime {
     approvedDate            DateTime? @map("approved_at") @db.Timestamp()
     approvedUser            String?   @map("approved_user") @db.VarChar(100)
     approvedDetail          String?   @map("approved_detail") @db.VarChar(250)
+    averageOnetime          Decimal?  @map("average_one_time") @db.Decimal()
+    averageOneSectimes      Decimal?  @map("average_one_sec_times") @db.Decimal()
+    averageThreetimes       Decimal?  @map("average_three_time") @db.Decimal()
+}
+
+model masterDataConfigTimeOT {
+    id                Int   @unique @default(autoincrement()) @map("id")
+    partTimeCondition Json? @map("part_time_condition") @db.JsonB
+    workTime          Json? @map("work_time") @db.JsonB
+
+    @@map("masterdata_config_time_ot")
 }

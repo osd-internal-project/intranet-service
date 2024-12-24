@@ -66,6 +66,8 @@ import {
   BookingRoomRepository,
   MaTaskFilesRepository,
   PublicizeSlideImagesRepository,
+  //Refreshment
+  MasterRefreshmentRepository,
   //CRM
   CustomerDetailRepository,
   CustomerDetailSubRepository,
@@ -119,6 +121,7 @@ import {
   VenderGroupRepository,
   VenderTypeRepository,
   OverTimeRepository,
+  MasterConfigTimeOtRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -196,6 +199,8 @@ const services = [
   //Room
   MasterRoomRepository,
   BookingRoomRepository,
+  //Refreshment
+  MasterRefreshmentRepository,
   //publicize
   PublicizeSlideImagesRepository,
   //CRM
@@ -249,6 +254,7 @@ const services = [
   VenderRepository,
   VenderGroupRepository,
   VenderTypeRepository,
+  MasterConfigTimeOtRepository,
 ];
 @Module({
   providers: [...services],
