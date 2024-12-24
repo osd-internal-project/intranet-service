@@ -19,8 +19,8 @@ export class MasterRefreshmentService {
 
   async findMany(skip: number, take: number) {
     const condition = {
-      skip,
       take,
+      skip,
     } as Prisma.masterRefreshmentFindFirstArgsBase;
     const count = await this.masterRefreshmentRepository.count({});
     const result = await this.masterRefreshmentRepository.findMany(condition);

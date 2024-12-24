@@ -23,7 +23,7 @@ export class MasterRefreshmentController {
   @Get()
   findAll(@Query('skip') skip?: number, @Query('take') take?: number) {
     if (skip !== undefined && take !== undefined) {
-      return this.masterRefreshmentService.findMany(+skip, +take);
+      return this.masterRefreshmentService.findMany(+take, +skip);
     }
     return this.masterRefreshmentService.findAll();
   }
