@@ -1919,6 +1919,9 @@ model overtime {
     approvedDate            DateTime? @map("approved_at") @db.Timestamp()
     approvedUser            String?   @map("approved_user") @db.VarChar(100)
     approvedDetail          String?   @map("approved_detail") @db.VarChar(250)
+    averageOnetime          Decimal?  @map("average_one_time") @db.Decimal()
+    averageOneSectimes      Decimal?  @map("average_one_sec_times") @db.Decimal()
+    averageThreetimes       Decimal?  @map("average_three_time") @db.Decimal()
 }
 
 model masterDataConfigTimeOT {
