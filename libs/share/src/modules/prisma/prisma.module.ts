@@ -66,6 +66,8 @@ import {
   BookingRoomRepository,
   MaTaskFilesRepository,
   PublicizeSlideImagesRepository,
+  //Refreshment
+  MasterRefreshmentRepository,
   //CRM
   CustomerDetailRepository,
   CustomerDetailSubRepository,
@@ -196,6 +198,8 @@ const services = [
   //Room
   MasterRoomRepository,
   BookingRoomRepository,
+  //Refreshment
+  MasterRefreshmentRepository,
   //publicize
   PublicizeSlideImagesRepository,
   //CRM

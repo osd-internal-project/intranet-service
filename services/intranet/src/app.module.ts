@@ -12,6 +12,7 @@ import { MaTypeModule } from './ma-type/ma-type.module';
 import { DepartmentModule } from './department/department.module';
 import { MasterRoomModule } from './master-room/master-room.module';
 import { BookingRoomModule } from './booking-room/booking-room.module';
+import { MasterRefreshmentModule } from './master-refreshment/master-refreshment.module';
 import { OrganizeChartModule } from './organize-chart/organize-chart.module';
 import { MasterTypeLeaveModule } from './master-type-leave/master-type-leave.module';
 import { MasterHolidaysModule } from './master-holidays/master-holidays.module';
@@ -49,6 +50,7 @@ import { NotiLogsModule } from './noti-logs/noti-logs.module';
     DepartmentModule,
     MasterRoomModule,
     BookingRoomModule,
+    MasterRefreshmentModule,
     OrganizeChartModule,
     MasterTypeLeaveModule,
     MasterHolidaysModule,

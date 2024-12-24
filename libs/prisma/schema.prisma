@@ -1187,6 +1187,16 @@ model masterRoom {
     @@map("master_room")
 }
 
+model masterRefreshment {
+    id                     Int     @id @default(autoincrement()) @map("id")
+    refreshmentId          String  @unique @default(uuid()) @map("refreshment_id") @db.VarChar(50)
+    refreshmentName        String  @map("refreshment_name") @db.VarChar(255)
+    refreshmentStatus      Boolean @default(true) @map("refreshment_status") @db.Boolean
+    refreshmentDescription String  @map("refreshment_description") @db.VarChar(255)
+
+    @@map("master_refreshment")
+}
+
 model masterRoomType {
     id         Int          @unique @default(autoincrement()) @map("id")
     name       String       @map("name") @db.VarChar(255)
