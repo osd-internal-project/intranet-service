@@ -1,0 +1,68 @@
+2024-12-24T02:06:51.435562Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("services/intranet/src/master-refreshment/master-refreshment.service.ts")}
+2024-12-24T02:06:51.443809Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@inventory/intranet"), path: AnchoredSystemPathBuf("services/intranet") }}))
+2024-12-24T02:06:54.464464Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2024-12-24T02:06:54.464739Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf(".turbo/daemon/851745cac2a20044-turbo.log.2024-12-24"), AnchoredSystemPathBuf(".turbo/daemon/851745cac2a20044-turbo.log.2024-12-23")}
+2024-12-24T02:06:54.464749Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2024-12-24T02:31:06.353206Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf(".turbo/cookies/1.cookie")}
+2024-12-24T02:31:06.353261Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2024-12-24T02:31:06.553714Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf(".turbo/cookies/2.cookie")}
+2024-12-24T02:31:06.553729Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2024-12-24T02:31:35.654097Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("libs/share/src/repositories/masterRefreshment.repository.ts")}
+2024-12-24T02:31:35.654111Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@inventory/share"), path: AnchoredSystemPathBuf("libs/share") }}))
+2024-12-24T02:38:44.657752Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("services/intranet/src/master-refreshment/master-refreshment.controller.ts")}
+2024-12-24T02:38:44.657788Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@inventory/intranet"), path: AnchoredSystemPathBuf("services/intranet") }}))
+2024-12-24T02:38:44.927896Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("services/intranet/src/master-refreshment/master-refreshment.controller.ts")}
+2024-12-24T02:38:44.927911Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@inventory/intranet"), path: AnchoredSystemPathBuf("services/intranet") }}))
+2024-12-24T02:38:44.928055Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2024-12-24T02:38:45.057788Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("services/intranet/src/master-refreshment/master-refreshment.controller.ts")}
+2024-12-24T02:38:45.057804Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@inventory/intranet"), path: AnchoredSystemPathBuf("services/intranet") }}))
+2024-12-24T02:38:45.181738Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2024-12-24T02:46:26.472038Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("services/intranet/src/master-refreshment/master-refreshment.controller.ts")}
+2024-12-24T02:46:26.472536Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@inventory/intranet"), path: AnchoredSystemPathBuf("services/intranet") }}))
+2024-12-24T02:46:26.774448Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("services/intranet/src/master-refreshment/master-refreshment.controller.ts")}
+2024-12-24T02:46:26.774464Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@inventory/intranet"), path: AnchoredSystemPathBuf("services/intranet") }}))
+2024-12-24T02:46:26.774584Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2024-12-24T02:46:28.061447Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("services/intranet/src/master-refreshment/master-refreshment.controller.ts")}
+2024-12-24T02:46:28.061477Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@inventory/intranet"), path: AnchoredSystemPathBuf("services/intranet") }}))
+2024-12-24T02:46:28.155992Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2024-12-24T02:46:28.261042Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("services/intranet/src/master-refreshment/master-refreshment.controller.ts")}
+2024-12-24T02:46:28.261057Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@inventory/intranet"), path: AnchoredSystemPathBuf("services/intranet") }}))
+2024-12-24T02:46:28.365829Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2024-12-24T02:46:28.461071Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("services/intranet/src/master-refreshment/master-refreshment.controller.ts")}
+2024-12-24T02:46:28.461085Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@inventory/intranet"), path: AnchoredSystemPathBuf("services/intranet") }}))
+2024-12-24T02:46:28.565237Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2024-12-24T02:46:59.261569Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("services/intranet/src/master-refreshment/master-refreshment.service.ts")}
+2024-12-24T02:46:59.261587Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@inventory/intranet"), path: AnchoredSystemPathBuf("services/intranet") }}))
+2024-12-24T02:47:43.561693Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("services/intranet/src/master-refreshment/master-refreshment.service.ts")}
+2024-12-24T02:47:43.561708Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@inventory/intranet"), path: AnchoredSystemPathBuf("services/intranet") }}))
+2024-12-24T02:47:43.761940Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("services/intranet/src/master-refreshment/master-refreshment.service.ts")}
+2024-12-24T02:47:43.761955Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@inventory/intranet"), path: AnchoredSystemPathBuf("services/intranet") }}))
+2024-12-24T02:47:43.855460Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2024-12-24T04:45:07.575151Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("libs/share/src/modules/prisma/prisma.module.ts"), AnchoredSystemPathBuf("libs/share/src/repositories/masterConfigTimeOt.repository.ts"), AnchoredSystemPathBuf("libs/share/src/repositories/index.ts"), AnchoredSystemPathBuf("libs/prisma/schema.prisma")}
+2024-12-24T04:45:07.577301Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@inventory/prisma"), path: AnchoredSystemPathBuf("libs/prisma") }, WorkspacePackage { name: Other("@inventory/share"), path: AnchoredSystemPathBuf("libs/share") }}))
+2024-12-24T07:35:28.110735Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("services/intranet/src/master-refreshment/master-refreshment.service.ts")}
+2024-12-24T07:35:28.113267Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@inventory/intranet"), path: AnchoredSystemPathBuf("services/intranet") }}))
+2024-12-24T07:35:31.080571Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("services/intranet/src/master-refreshment/master-refreshment.service.ts")}
+2024-12-24T07:35:31.080598Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@inventory/intranet"), path: AnchoredSystemPathBuf("services/intranet") }}))
+2024-12-24T07:36:24.484910Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("services/intranet/src/master-refreshment/master-refreshment.service.ts")}
+2024-12-24T07:36:24.485301Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@inventory/intranet"), path: AnchoredSystemPathBuf("services/intranet") }}))
+2024-12-24T07:36:24.751493Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("services/intranet/src/master-refreshment/master-refreshment.service.ts")}
+2024-12-24T07:36:24.751506Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@inventory/intranet"), path: AnchoredSystemPathBuf("services/intranet") }}))
+2024-12-24T07:36:24.751863Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2024-12-24T07:36:24.881081Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("services/intranet/src/master-refreshment/master-refreshment.service.ts")}
+2024-12-24T07:36:24.881115Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@inventory/intranet"), path: AnchoredSystemPathBuf("services/intranet") }}))
+2024-12-24T07:36:25.078140Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2024-12-24T07:38:18.383446Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("services/intranet/src/master-refreshment/master-refreshment.service.ts")}
+2024-12-24T07:38:18.383702Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@inventory/intranet"), path: AnchoredSystemPathBuf("services/intranet") }}))
+2024-12-24T07:38:21.782159Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("services/intranet/src/master-refreshment/master-refreshment.service.ts")}
+2024-12-24T07:38:21.782187Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@inventory/intranet"), path: AnchoredSystemPathBuf("services/intranet") }}))
+2024-12-24T07:38:22.111165Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("services/intranet/src/master-refreshment/master-refreshment.service.ts")}
+2024-12-24T07:38:22.111182Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@inventory/intranet"), path: AnchoredSystemPathBuf("services/intranet") }}))
+2024-12-24T07:38:22.111450Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2024-12-24T07:38:53.182301Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("services/intranet/src/master-refreshment/master-refreshment.controller.ts")}
+2024-12-24T07:38:53.182352Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@inventory/intranet"), path: AnchoredSystemPathBuf("services/intranet") }}))
+2024-12-24T07:38:56.282552Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("services/intranet/src/master-refreshment/master-refreshment.controller.ts")}
+2024-12-24T07:38:56.282585Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@inventory/intranet"), path: AnchoredSystemPathBuf("services/intranet") }}))
+2024-12-24T07:38:56.581688Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("services/intranet/src/master-refreshment/master-refreshment.controller.ts")}
+2024-12-24T07:38:56.581702Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@inventory/intranet"), path: AnchoredSystemPathBuf("services/intranet") }}))
+2024-12-24T07:38:56.657468Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
