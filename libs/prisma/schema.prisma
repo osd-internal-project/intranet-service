@@ -458,7 +458,8 @@ model masterProduct {
 
 model masterProductCategories {
     id                 Int                  @unique @default(autoincrement()) @map("id")
-    name               String               @map("category_name") @db.VarChar(200)
+    name               String               @map("name") @db.VarChar(200)
+    description        String?              @map("description") @db.Text
     status             Boolean              @default(true) @map("status") @db.Boolean
     createdAt          DateTime             @default(now()) @map("created_at")
     updatedAt          DateTime             @default(now()) @map("updated_at")
@@ -524,9 +525,9 @@ model masterProductHazardtypeMap {
 
 model masterProductGroup {
     id          Int      @unique @default(autoincrement()) @map("id")
-    name        String   @unique @map("group_code") @db.VarChar(20)
-    status      Boolean  @default(true) @map("status") @db.Boolean
+    name        String   @map("name") @db.VarChar(200)
     description String?  @map("description") @db.Text
+    status      Boolean  @default(true) @map("status") @db.Boolean
     createdAt   DateTime @default(now()) @map("created_at")
     updatedAt   DateTime @default(now()) @map("updated_at")
 
@@ -561,12 +562,12 @@ model masterProductLocationMap {
 }
 
 model masterProductType {
-    id           Int      @unique @default(autoincrement()) @map("id")
-    name         String   @map("type_name") @db.VarChar(200)
-    activeStatus Boolean  @default(true) @map("active_status") @db.Boolean
-    typeDesc     String?  @map("description") @db.Text
-    createdAt    DateTime @default(now()) @map("created_at")
-    updatedAt    DateTime @default(now()) @map("updated_at")
+    id          Int      @unique @default(autoincrement()) @map("id")
+    name        String   @map("name") @db.VarChar(200)
+    status      Boolean  @default(true) @map("status") @db.Boolean
+    description String?  @map("description") @db.Text
+    createdAt   DateTime @default(now()) @map("created_at")
+    updatedAt   DateTime @default(now()) @map("updated_at")
 
     @@map("master_product_type")
 }
