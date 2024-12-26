@@ -39,6 +39,7 @@ import { EmailTemplateTypeModule } from './email-template-type/email-template-ty
 import { EmailTemplateFieldsModule } from './email-template-fields/email-template-fields.module';
 import { MasterHolidaysYearModule } from './master-holidays-year/master-holidays-year.module';
 import { NotiLogsModule } from './noti-logs/noti-logs.module';
+import { MasterConfigOvertimeModule } from './master-config-ot/master-config-ot.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
@@ -76,6 +77,7 @@ import { NotiLogsModule } from './noti-logs/noti-logs.module';
     EmailTemplateFieldsModule,
     MasterHolidaysYearModule,
     NotiLogsModule,
+    MasterConfigOvertimeModule,
   ],
   controllers: [IntranetController, PublicController],
   providers: [IntranetService],
