@@ -8,4 +8,4 @@ import { OverTimeService } from './overtime.service';
   controllers: [OvetimeController],
   providers: [OverTimeService],
 })
-export class DepartmentModule {}
+export class OvertimeModule {}

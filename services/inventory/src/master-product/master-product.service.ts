@@ -196,9 +196,9 @@ export class MasterProductService {
       },
       orderBy: { createdAt: 'asc' },
     } as Prisma.masterProductFindManyArgs;
-    const data = await this.masterProductRepo.findOne(base);
+    // const data = await this.masterProductRepo.findOne(base);
 
-    return data;
+    // return data;
   }
 
   async findByInventoryId(
@@ -452,7 +452,7 @@ export class MasterProductService {
         },
       },
     } as Prisma.masterProductFindFirstArgs;
-    return await this.masterProductRepo.findOne(base);
+    // return await this.masterProductRepo.findOne(base);
   }
 
   async update(id: number, data: Prisma.masterProductUpdateInput) {
@@ -465,15 +465,15 @@ export class MasterProductService {
 
   async remove(pid: string) {
     const id = Number(pid);
-    const product = (await this.masterProductRepo.findOne({
-      where: { id: id },
-      select: { masterProductImages: true },
-    })) as any;
-    if (product?.masterProductImages) {
-      product?.masterProductImages.map((image: any) =>
-        this.deleteFile(image.path),
-      );
-    }
+    // const product = (await this.masterProductRepo.findOne({
+    //   where: { id: id },
+    //   select: { masterProductImages: true },
+    // })) as any;
+    // if (product?.masterProductImages) {
+    //   product?.masterProductImages.map((image: any) =>
+    //     this.deleteFile(image.path),
+    //   );
+    // }
 
     if (id) {
       const condition = {

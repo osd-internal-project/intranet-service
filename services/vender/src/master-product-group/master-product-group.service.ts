@@ -7,20 +7,20 @@ export class MasterProductGroupService {
   constructor(private masterProductGroupRepo: MasterProductGroupRepository) {}
 
   async create(data: Prisma.masterProductGroupCreateInput) {
-    const lastRow = await this.masterProductGroupRepo.findOne({
-      orderBy: {
-        id: 'desc',
-      },
-    });
-    let groupCode = null;
-    if (lastRow) {
-      groupCode = 'INV-G-' + String(lastRow.id + 1).padStart(6, '0');
-    } else {
-      groupCode = 'INV-G-000001';
-    }
-    data.groupCode = groupCode;
-    const condition = { data: data } as Prisma.masterProductGroupCreateArgs;
-    return this.masterProductGroupRepo.create(condition);
+    // const lastRow = await this.masterProductGroupRepo.findOne({
+    //   orderBy: {
+    //     id: 'desc',
+    //   },
+    // });
+    // let groupCode = null;
+    // if (lastRow) {
+    //   groupCode = 'INV-G-' + String(lastRow.id + 1).padStart(6, '0');
+    // } else {
+    //   groupCode = 'INV-G-000001';
+    // }
+    // data.groupCode = groupCode;
+    // const condition = { data: data } as Prisma.masterProductGroupCreateArgs;
+    // return this.masterProductGroupRepo.create(condition);
   }
 
   findAll() {
