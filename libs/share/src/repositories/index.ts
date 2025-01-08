@@ -52,7 +52,7 @@ export * from './userGroupMap.repository';
 export * from './userRole.repository';
 export * from './userRoleMap.repository';
 export * from './userGroupMapHeader.repository';
-
+export * from './userHeaderType.repository';
 //MA
 export * from './maTask.repository';
 export * from './maTaskFiles.repository';
