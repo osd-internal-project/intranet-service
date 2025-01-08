@@ -19,7 +19,7 @@ export class MasterProductCategoriesService {
     return this.masterProductCategoriesRepo.findAll();
   }
   findOne(condition: Prisma.masterProductCategoriesFindManyArgs) {
-    return this.masterProductCategoriesRepo.findOne(condition);
+    // return this.masterProductCategoriesRepo.findOne(condition);
   }
   findMany(condition: Prisma.masterProductCategoriesFindManyArgs) {
     condition = {

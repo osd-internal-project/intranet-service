@@ -18,21 +18,21 @@ export class MasterProductTypeController {
 
   @Post()
   async create(@Body('data') data: Prisma.masterProductTypeCreateInput) {
-    const lastRow = await this.masterProductTypeService.findOne({
-      orderBy: {
-        id: 'desc',
-      },
-    });
-    let typeCode = null;
-    if (lastRow) {
-      typeCode = 'INV-T-' + String(lastRow.id + 1).padStart(6, '0');
-    } else {
-      typeCode = 'INV-T-000001';
-    }
-    return this.masterProductTypeService.create({
-      typeCode: typeCode,
-      ...data,
-    });
+    // const lastRow = await this.masterProductTypeService.findOne({
+    //   orderBy: {
+    //     id: 'desc',
+    //   },
+    // });
+    // let typeCode = null;
+    // if (lastRow) {
+    //   typeCode = 'INV-T-' + String(lastRow.id + 1).padStart(6, '0');
+    // } else {
+    //   typeCode = 'INV-T-000001';
+    // }
+    // return this.masterProductTypeService.create({
+    //   typeCode: typeCode,
+    //   ...data,
+    // });
     // return this.masterProductTypeService.create(data);
   }
 

@@ -22,14 +22,14 @@ export class MasterProductCategoriesController {
         id: 'desc',
       },
     });
-    let categoryCode = null;
-    if (lastRow) {
-      categoryCode = 'INV-C-' + String(lastRow.id + 1).padStart(6, '0');
-    } else {
-      categoryCode = 'INV-C-000001';
-    }
+    // let categoryCode = null;
+    // if (lastRow) {
+    //   categoryCode = 'INV-C-' + String(lastRow.id + 1).padStart(6, '0');
+    // } else {
+    //   categoryCode = 'INV-C-000001';
+    // }
     return this.masterProductCategoriesService.create({
-      categoryCode: categoryCode,
+      // categoryCode: categoryCode,
       ...data,
     });
   }
