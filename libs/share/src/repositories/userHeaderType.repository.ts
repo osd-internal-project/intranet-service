@@ -11,14 +11,14 @@ export class UserHeaderTypeRepository {
     const prisma = option?.prisma ?? this.prisma;
     return prisma.userHeaderType.findMany();
   }
-  async findByCondition(
+  async findMany(
     condition: Prisma.userHeaderTypeFindFirstArgsBase,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
     return prisma.userHeaderType.findMany(condition);
   }
-  async findOne(
+  async findFirst(
     condition: Prisma.userHeaderTypeFindFirstArgsBase,
     option?: { prisma?: TQueryClient },
   ) {

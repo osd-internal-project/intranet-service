@@ -11,14 +11,14 @@ export class UserGroupMapHeaderRepository {
     const prisma = option?.prisma ?? this.prisma;
     return prisma.userGroupMapHeader.findMany();
   }
-  async findByCondition(
+  async findMany(
     condition: Prisma.userGroupMapHeaderFindFirstArgsBase,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
     return prisma.userGroupMapHeader.findMany(condition);
   }
-  async findOne(
+  async findFirst(
     condition: Prisma.userGroupMapHeaderFindFirstArgsBase,
     option?: { prisma?: TQueryClient },
   ) {

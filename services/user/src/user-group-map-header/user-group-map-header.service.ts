@@ -25,7 +25,7 @@ export class UserGroupMapHeaderService {
         },
       ],
     };
-    return this.userGroupMapHeaderRepo.findByCondition(condition);
+    return this.userGroupMapHeaderRepo.findMany(condition);
   }
 
   update(id: number, data: Prisma.userGroupMapHeaderUpdateInput) {
@@ -40,7 +40,7 @@ export class UserGroupMapHeaderService {
     groupId: string,
     data: { headerGroupId: string[]; type: string },
   ) {
-    const record = await this.userGroupMapHeaderRepo.findOne({
+    const record = await this.userGroupMapHeaderRepo.findFirst({
       where: { type: data.type, userGroupId: groupId },
     });
     if (record) {
@@ -77,7 +77,7 @@ export class UserGroupMapHeaderService {
         },
       ],
     } as Prisma.userGroupMapHeaderFindManyArgs;
-    const group = await this.userGroupMapHeaderRepo.findByCondition(condition);
+    const group = await this.userGroupMapHeaderRepo.findMany(condition);
     const grouplist = [];
     group.map((item) => grouplist.push(item.userGroupId));
 
