@@ -51,7 +51,7 @@ import {
   UserGroupUserRoleMapRepository,
   UserMapOrganizeGroupRepository,
   UserMapOrganizeGroupOwnerRepository,
-  UserGroupMapHeaderRepository,
+  UserGroupMapPermissionRepository,
   //MA
   MaTaskRepository,
   MaTypeRepository,
@@ -122,7 +122,7 @@ import {
   VenderTypeRepository,
   OverTimeRepository,
   MasterConfigTimeOtRepository,
-  UserHeaderTypeRepository,
+  UserPermissionTypeRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -165,8 +165,8 @@ const services = [
   UserMapOrganizeChartRepository,
   UserMapOrganizeGroupRepository,
   UserMapOrganizeGroupOwnerRepository,
-  UserGroupMapHeaderRepository,
-  UserHeaderTypeRepository,
+  UserGroupMapPermissionRepository,
+  UserPermissionTypeRepository,
   OverTimeRepository,
   //Auth
   MasterPositionRepository,

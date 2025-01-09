@@ -435,12 +435,12 @@ export class UserService {
     };
   }
 
-  findByUserHeaderCondition(userId, condition) {
+  findByUserPermissionCondition(userId, condition) {
     return this.userMapOrganizeGroupRepo.findMany({
       where: { usersId: userId },
     });
   }
-  findUserHeaderById(userId) {
+  findUserPermissionById(userId) {
     return this.userMapOrganizeGroupRepo.findMany({
       where: { usersId: userId },
     });

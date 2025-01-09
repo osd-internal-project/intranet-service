@@ -4,68 +4,68 @@ import { TQueryClient } from '../modules/prisma/types';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
-export class UserHeaderTypeRepository {
+export class UserPermissionTypeRepository {
   constructor(private prisma: PrismaService) {}
 
   async findAll(option?: { prisma?: TQueryClient }) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.userHeaderType.findMany();
+    return prisma.userPermissionType.findMany();
   }
   async findMany(
-    condition: Prisma.userHeaderTypeFindFirstArgsBase,
+    condition: Prisma.userPermissionTypeFindFirstArgsBase,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.userHeaderType.findMany(condition);
+    return prisma.userPermissionType.findMany(condition);
   }
   async findFirst(
-    condition: Prisma.userHeaderTypeFindFirstArgsBase,
+    condition: Prisma.userPermissionTypeFindFirstArgsBase,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.userHeaderType.findFirst(condition);
+    return prisma.userPermissionType.findFirst(condition);
   }
   async create(
-    condition: Prisma.userHeaderTypeCreateArgs,
+    condition: Prisma.userPermissionTypeCreateArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.userHeaderType.create(condition);
+    return prisma.userPermissionType.create(condition);
   }
   async createMany(
-    data: Prisma.userHeaderTypeCreateManyArgs,
+    data: Prisma.userPermissionTypeCreateManyArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.userHeaderType.createMany(data);
+    return prisma.userPermissionType.createMany(data);
   }
   async update(
-    data: Prisma.userHeaderTypeUpdateArgs,
+    data: Prisma.userPermissionTypeUpdateArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.userHeaderType.update(data);
+    return prisma.userPermissionType.update(data);
   }
   async updateMany(
-    data: Prisma.userHeaderTypeUpdateManyArgs,
+    data: Prisma.userPermissionTypeUpdateManyArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.userHeaderType.updateMany(data);
+    return prisma.userPermissionType.updateMany(data);
   }
   async delete(
-    condition: Prisma.userHeaderTypeDeleteArgs,
+    condition: Prisma.userPermissionTypeDeleteArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.userHeaderType.delete(condition);
+    return prisma.userPermissionType.delete(condition);
   }
 
   async deleteMany(
-    condition: Prisma.userHeaderTypeDeleteManyArgs,
+    condition: Prisma.userPermissionTypeDeleteManyArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.userHeaderType.deleteMany(condition);
+    return prisma.userPermissionType.deleteMany(condition);
   }
 }
