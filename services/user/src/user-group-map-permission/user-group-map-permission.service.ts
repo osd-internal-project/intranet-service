@@ -18,16 +18,15 @@ export class UserGroupMapPermissionService {
     return this.userGroupMapPermissionRepo.findAll();
   }
 
-  findByCondition(condition: Prisma.userGroupMapPermissionFindManyArgs) {
-    condition = {
-      ...condition,
+  findMany(condition: Prisma.userGroupMapPermissionWhereInput) {
+    return this.userGroupMapPermissionRepo.findMany({
+      where: { ...condition },
       orderBy: [
         {
           id: 'asc',
         },
       ],
-    };
-    return this.userGroupMapPermissionRepo.findMany(condition);
+    });
   }
 
   update(id: number, data: Prisma.userGroupMapPermissionUpdateInput) {

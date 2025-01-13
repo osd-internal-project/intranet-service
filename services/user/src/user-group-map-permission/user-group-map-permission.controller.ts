@@ -6,6 +6,7 @@ import {
   Patch,
   Delete,
   Param,
+  Query,
 } from '@nestjs/common';
 import { UserGroupMapPermissionService } from './user-group-map-permission.service';
 import { Prisma } from '@prisma/client';
@@ -25,11 +26,9 @@ export class UserGroupMapPermissionController {
     return this.userGroupMapPermissionService.findAll();
   }
 
-  @Post('condition')
-  findByCondition(
-    @Body('condition') condition: Prisma.userGroupMapPermissionFindManyArgs,
-  ) {
-    return this.userGroupMapPermissionService.findByCondition(condition);
+  @Get('many')
+  findMany(@Query('condition') condition: Prisma.userPermissionTypeWhereInput) {
+    return this.userGroupMapPermissionService.findMany(condition);
   }
 
   @Patch(':id')

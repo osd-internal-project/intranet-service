@@ -17,7 +17,7 @@ export class UserPermissionTypeController {
   ) {}
 
   @Post()
-  create(@Body() data: Prisma.userPermissionTypeCreateInput) {
+  create(@Body('data') data: Prisma.userPermissionTypeCreateInput) {
     return this.userPermissionTypeService.create(data);
   }
 
@@ -26,7 +26,7 @@ export class UserPermissionTypeController {
     return this.userPermissionTypeService.findAll();
   }
 
-  @Get('meny')
+  @Get('many')
   findMany(
     @Query('condition') condition: Prisma.userPermissionTypeFindManyArgs,
   ) {
@@ -38,14 +38,14 @@ export class UserPermissionTypeController {
   }
   @Patch(':id')
   update(
-    @Param('id') id: number,
-    @Body() data: Prisma.userPermissionTypeUpdateInput,
+    @Param('id') id: string,
+    @Body('data') data: Prisma.userPermissionTypeUpdateInput,
   ) {
     return this.userPermissionTypeService.update(+id, data);
   }
 
-  @Delete()
-  remove(@Body('id') id: number) {
-    return this.userPermissionTypeService.remove(id);
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.userPermissionTypeService.remove(+id);
   }
 }

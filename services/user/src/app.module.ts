@@ -17,6 +17,7 @@ import { MasterRuleModule } from './master-rule/master-rule.module';
 import { MasterPositionModule } from './master-position/master-position.module';
 import { UserGroupMapPermissionModule } from './user-group-map-permission/user-group-map-permission.module';
 import { UsersModule } from './users/users.module';
+import { UserPermissionTypeModule } from './user-permission-type/user-permission-type.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { UsersModule } from './users/users.module';
     UserGroupMapModule,
     UserGroupMapPermissionModule,
     UsersModule,
+    UserPermissionTypeModule,
   ],
   controllers: [EvoteController],
   providers: [EvoteService],
