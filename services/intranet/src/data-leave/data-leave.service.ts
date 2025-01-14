@@ -273,7 +273,7 @@ export class DataLeaveService {
     if (accessedUserIds) {
       let currentGroupId = accessedUserIds.groupId;
       while (currentGroupId) {
-        const header = await this.userGroupMapPermissionRepo.findOne({
+        const header = await this.userGroupMapPermissionRepo.findFirst({
           where: { userGroupId: currentGroupId },
         });
         if (header && header.leaveUserId.length > 0) {
