@@ -97,7 +97,10 @@ export class UserController {
   ) {
     return this.userService.findByUserPermissionCondition(userId, condition);
   }
-
+  @Post('users-in-owner-groups')
+  findUsersInOnwerGroups(@Body('groups') userGroupIds: string[]) {
+    return this.userService.findUsersInOnwerGroups(userGroupIds);
+  }
   @Post('assign-groups/:userId')
   assignGroups(
     @Param('userId') userId: string,
@@ -283,6 +286,7 @@ export class UserController {
   findUserInOnwerGroupByUserGroupId(@Param('usergroupid') userGroupId: string) {
     return this.userService.findUserInOnwerGroupByUserGroupId(userGroupId);
   }
+
   @Get('header-user-by-userid/:userid')
   // @UseInterceptors(UserInterceptor)
   async findHeaderUserByUserId(@Param('userid') userId: string) {

@@ -27,7 +27,7 @@ export class UserGroupMapPermissionController {
   }
 
   @Get('many')
-  findMany(@Query('condition') condition: Prisma.userPermissionTypeWhereInput) {
+  findMany(@Query('condition') condition: Prisma.userModuleWhereInput) {
     return this.userGroupMapPermissionService.findMany(condition);
   }
 

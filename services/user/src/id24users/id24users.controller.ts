@@ -10,14 +10,14 @@ import {
   Req,
   UseInterceptors,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { UsersService } from './id24users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { IdCheckingData } from 'src/id24/id24.service';
 import { UserType } from './type';
 import { UserInterceptor } from '@inventory/share';
 
-@Controller('users')
+@Controller('id24users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
