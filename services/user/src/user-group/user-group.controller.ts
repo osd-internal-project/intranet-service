@@ -7,6 +7,7 @@ import {
   Delete,
   Param,
   Logger,
+  Query,
 } from '@nestjs/common';
 import { UserGroupService } from './user-group.service';
 import { Prisma } from '@prisma/client';
@@ -27,7 +28,10 @@ export class UserGroupController {
   findOwnerFormOrganizedByUser(@Param('userid') userid) {
     return this.userGroupService.findOwnerFormOrganizedByUser(userid);
   }
-
+  @Get('find-group-by-moduleid-and-groupid/')
+  findGroupByModuleidAndGroupid(@Query('condition') condition) {
+    return this.userGroupService.findGroupByModuleidAndGroupid(condition);
+  }
   @Get(':organizeid')
   findByOrganizeId(@Param('organizeid') organizeId: string) {
     return this.userGroupService.findByOrganizeId(organizeId);

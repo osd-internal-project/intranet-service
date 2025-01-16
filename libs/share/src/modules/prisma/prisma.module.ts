@@ -51,7 +51,7 @@ import {
   UserGroupUserRoleMapRepository,
   UserMapOrganizeGroupRepository,
   UserMapOrganizeGroupOwnerRepository,
-  UserGroupMapPermissionRepository,
+  UserPermissionGroupRepository,
   //MA
   MaTaskRepository,
   MaTypeRepository,
@@ -165,7 +165,7 @@ const services = [
   UserMapOrganizeChartRepository,
   UserMapOrganizeGroupRepository,
   UserMapOrganizeGroupOwnerRepository,
-  UserGroupMapPermissionRepository,
+  UserPermissionGroupRepository,
   UserModuleRepository,
   OverTimeRepository,
   //Auth

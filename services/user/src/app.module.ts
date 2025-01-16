@@ -15,7 +15,7 @@ import { UserRoleMapModule } from './user-role-map/user-role-map.module';
 import { UserRoleModule } from './user-role/user-role.module';
 import { MasterRuleModule } from './master-rule/master-rule.module';
 import { MasterPositionModule } from './master-position/master-position.module';
-import { UserGroupMapPermissionModule } from './user-group-map-permission/user-group-map-permission.module';
+import { UserPermissionGroupModule } from './user-permission-group/user-permission-group.module';
 import { UsersModule } from './id24users/id24users.module';
 import { UserModuleModule } from './user-module/user-module.module';
 
@@ -34,7 +34,7 @@ import { UserModuleModule } from './user-module/user-module.module';
     UserModule,
     UserGroupModule,
     UserGroupMapModule,
-    UserGroupMapPermissionModule,
+    UserPermissionGroupModule,
     UsersModule,
     UserModuleModule,
   ],

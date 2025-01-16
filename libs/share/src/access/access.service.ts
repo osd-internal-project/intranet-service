@@ -78,48 +78,69 @@ export class AccessService {
   }
   //Owner Group
   async getOwnerGroupByUserId(userId: string) {
-    return await this.prisma.userGroup.findFirst({
-      where: { userMapOrganizeGroupOwner: { some: { usersId: userId } } },
+    const userdetaill = await this.prisma.users.findFirst({
+      where: { userId: userId },
     });
-  }
-  //Sale Group
-  async getSaleUsersBySalePermission(userId: string) {
-    const permissionGroup = await this.prisma.userGroup.findFirst({
-      where: { userMapOrganizeGroupOwner: { some: { usersId: userId } } },
-    });
-    if (permissionGroup.saleUsersId.length > 0) {
-      const userList = permissionGroup.saleUsersId;
-      return userList;
-    } else if (permissionGroup.saleUserGroupId.length > 0) {
-      const allGroup = await this.findAllRelatedGroupRows(
-        permissionGroup.saleUserGroupId,
-      );
-      const groups = await this.prisma.userMapOrganizeGroupOwner.findMany({
-        where: { ownerGroupId: { in: allGroup } },
+    if (userdetaill) {
+      return await this.prisma.userGroup.findFirst({
+        where: { groupId: userdetaill.ownerGroupId },
       });
-      const userList = groups.map((group) => group.usersId);
-      return userList;
+    } else {
+      return undefined;
+    }
+  }
+  async getPermissionGroupByUserId(moduleCode: string, userId: string) {
+    const userdetaill = await this.prisma.users.findFirst({
+      where: { userId: userId },
+    });
+    if (userdetaill) {
+      return await this.prisma.userPermissionGroup.findFirst({
+        where: {
+          userGroupId: userdetaill.ownerGroupId,
+          userModule: { code: moduleCode },
+        },
+      });
     } else {
       return [];
     }
   }
-  //Engineer Group
-  async getEngineerUsersBySalePermission(userId: string) {
-    const permissionGroup = await this.prisma.userGroup.findFirst({
-      where: { userMapOrganizeGroupOwner: { some: { usersId: userId } } },
+  async getPermissionUsersByUserId(moduleCode: string, userId: string) {
+    const userdetaill = await this.prisma.users.findFirst({
+      where: { userId: userId },
     });
-    if (permissionGroup.engineerUsersId.length > 0) {
-      const userList = permissionGroup.engineerUsersId;
-      return userList;
-    } else if (permissionGroup.engineerUserGroupId.length > 0) {
-      const allGroup = await this.findAllRelatedGroupRows(
-        permissionGroup.engineerUserGroupId,
-      );
-      const groups = await this.prisma.userMapOrganizeGroupOwner.findMany({
-        where: { ownerGroupId: { in: allGroup } },
+    const permissionGroup = await this.prisma.userPermissionGroup.findFirst({
+      where: {
+        userGroupId: userdetaill.ownerGroupId,
+        userModule: { code: moduleCode },
+      },
+    });
+    if (permissionGroup.permissionGroupIds) {
+      return await this.prisma.users.findMany({
+        where: { ownerGroupId: { in: permissionGroup.permissionGroupIds } },
       });
-      const userList = groups.map((group) => group.usersId);
-      return userList;
+    } else {
+      return [];
+    }
+  }
+  async getPermissionGroupByGroupId(moduleCode: string, groupId: string) {
+    return await this.prisma.userPermissionGroup.findFirst({
+      where: {
+        userGroupId: groupId,
+        userModule: { code: moduleCode },
+      },
+    });
+  }
+  async getPermissionUsersByGroupId(moduleCode: string, groupId: string) {
+    const permissionGroup = await this.prisma.userPermissionGroup.findFirst({
+      where: {
+        userGroupId: groupId,
+        userModule: { code: moduleCode },
+      },
+    });
+    if (permissionGroup.permissionGroupIds) {
+      return await this.prisma.users.findMany({
+        where: { ownerGroupId: { in: permissionGroup.permissionGroupIds } },
+      });
     } else {
       return [];
     }
@@ -127,7 +148,6 @@ export class AccessService {
   async findAllRelatedGroupRows(idList: string[]) {
     const result = [];
     const groupList = [...idList];
-
     while (groupList.length > 0) {
       const currentId = groupList.pop();
 
@@ -144,108 +164,5 @@ export class AccessService {
     }
 
     return result;
-  }
-
-  async getLeaveAccessedUsersByHeaderUserId(userId: string) {
-    const owerGroup = await this.prisma.userGroup.findFirst({
-      where: { userMapOrganizeGroupOwner: { some: { usersId: userId } } },
-    });
-    if (owerGroup) {
-      const accessedGroup = await this.prisma.userGroupMapPermission.findMany({
-        where: {
-          OR: [
-            {
-              AND: [
-                { leaveGroupId: { hasSome: owerGroup.groupId } },
-                { leaveUserId: { isEmpty: true } },
-              ],
-            },
-            { leaveUserId: { hasSome: userId } },
-          ],
-        },
-      });
-      const accessedGroupIds = accessedGroup.map((group) => group.userGroupId);
-      if (accessedGroup.length > 0) {
-        const accessedUsers =
-          await this.prisma.userMapOrganizeGroupOwner.findMany({
-            where: { ownerGroupId: { in: accessedGroupIds } },
-          });
-        const accessedUserIds = accessedUsers.map((user) => user.usersId);
-        return accessedUserIds;
-      } else {
-        return [];
-      }
-    } else {
-      return [];
-    }
-  }
-  async getExpenseAccessedUsersByHeaderUserId(userId: string) {
-    const owerGroup = await this.prisma.userGroup.findFirst({
-      where: { userMapOrganizeGroupOwner: { some: { usersId: userId } } },
-    });
-    if (owerGroup) {
-      const accessedGroup = await this.prisma.userGroupMapPermission.findMany({
-        where: {
-          OR: [
-            { expenseGroupId: { hasSome: owerGroup.groupId } },
-            { expenseUserId: { hasSome: userId } },
-          ],
-        },
-      });
-      const accessedGroupIds = accessedGroup.map((group) => group.userGroupId);
-      if (accessedGroup.length > 0) {
-        const accessedUsers =
-          await this.prisma.userMapOrganizeGroupOwner.findMany({
-            where: { ownerGroupId: { in: accessedGroupIds } },
-          });
-        const accessedUserIds = accessedUsers.map((user) => user.usersId);
-        return accessedUserIds;
-      } else {
-        return [];
-      }
-    } else {
-      return [];
-    }
-  }
-
-  // async getAccessedByHeaderUserIdAndType(
-  //   headerUserId: string,
-  //   processType: string,
-  // ) {
-  //   const owerGroup = await this.prisma.userGroup.findFirst({
-  //     where: { userMapOrganizeGroupOwner: { some: { usersId: headerUserId } } },
-  //   });
-  //   if (owerGroup) {
-  //     const accessedGroup = await this.prisma.userGroupMapPermission.findMany({
-  //       where: {
-  //         type: processType,
-  //         headerUserId: { hasSome: headerUserId },
-  //       },
-  //     });
-  //     const accessedGroupIds = accessedGroup.map((group) => group.userGroupId);
-  //     if (accessedGroup.length > 0) {
-  //       const accessedUsers =
-  //         await this.prisma.userMapOrganizeGroupOwner.findMany({
-  //           where: { ownerGroupId: { in: accessedGroupIds } },
-  //         });
-  //       const accessedUserIds = accessedUsers.map((user) => user.usersId);
-  //       return accessedUserIds;
-  //     } else {
-  //       return [];
-  //     }
-  //   } else {
-  //     return [];
-  //   }
-  // }
-  async getHeaderGroupIdByUserId(userId: string, processType: string) {
-    const userOwnerGroup = await this.getOwnerGroupByUserId(userId);
-    const headerGroup = await this.prisma.userGroupMapPermission.findFirst({
-      where: { userGroupId: userOwnerGroup.groupId, type: processType },
-    });
-    if (headerGroup) {
-      return headerGroup.permissionGroupId;
-    } else {
-      return [];
-    }
   }
 }
