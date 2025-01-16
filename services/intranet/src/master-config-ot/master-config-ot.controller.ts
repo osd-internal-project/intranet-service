@@ -31,6 +31,10 @@ export class MasterConfigOvertimeController {
   findOne(@Param('id') id: string) {
     return this.masterconfigovertimeService.findOne(+id);
   }
+  @Get('/by-date/:date')
+  findByDate(@Param('date') date: string) {
+    return this.masterconfigovertimeService.findbyDate(date);
+  }
 
   @Get('find-many')
   async findByConditionTypeId(

@@ -1,21 +1,37 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import {
   MasterConfigTimeOtRepository,
+  MasterHolidaysRepository,
   OverTimeRepository,
 } from '@inventory/share';
-import { Prisma } from '@prisma/client';
-
 import * as dayjs from 'dayjs';
+import { calculate } from './manage-cal';
 
 @Injectable()
 export class OverTimeService {
   constructor(
     private readonly overtimeRepo: OverTimeRepository,
     private readonly masterconfigtimeotRepo: MasterConfigTimeOtRepository,
+    private readonly masterholidayRepo: MasterHolidaysRepository,
   ) {}
   async create(createDepartmentDto: Prisma.overtimeCreateInput) {
     const findConfigTimeOt = await this.masterconfigtimeotRepo.findAll();
-    const workTimeValues = Object.values(findConfigTimeOt[0].workTime);
+    const workTimeValues = Object.values(findConfigTimeOt[0].partTimeCondition);
+
+    const holiday = await this.masterholidayRepo.findMany({
+      where: {
+        masterHolidaysYear: {
+          is: { holidaysYear: { equals: dayjs(new Date()).format('YYYY') } },
+        },
+      },
+    });
+
+    const filterHolidays = holiday.find(
+      (event: any) =>
+        dayjs(event.holidaysDate).locale('th').format('YYYY-MM-DD') ===
+        dayjs(createDepartmentDto.dateStart).locale('th').format('YYYY-MM-DD'),
+    );
 
     const result = workTimeValues.find(
       (entry) => entry.index === dayjs(createDepartmentDto.dateStart).day(),
@@ -24,52 +40,96 @@ export class OverTimeService {
     const endTimeSplit = createDepartmentDto.endTime.split(':');
     const resultstartTimeSplit = result.startTime.split(':');
     const resultendTimeSplit = result.endTime.split(':');
+    const OvertimeTime = result.startOt.split(':');
     const total = +resultendTimeSplit[0] - +startTimeSplit[0];
     const minStart = startTimeSplit[1] === '30' ? 0.5 : 0;
     const minEndTime = endTimeSplit[1] === '30' ? 0.5 : 0;
     const totalMin = minEndTime - minStart;
 
     let averageOnetime = 0;
+    let averageTwotime = 0;
     let averageThreetimes = 0;
+    let totalTime = 0;
+    let breakTime = 0;
+    let workingTime = 0;
 
-    console.log(totalMin);
-    console.log(total);
+    const cal = await calculate(
+      filterHolidays,
+      result,
+      endTimeSplit,
+      startTimeSplit,
+      totalTime,
+      breakTime,
+      workingTime,
+      resultstartTimeSplit,
+      resultendTimeSplit,
+      OvertimeTime,
+      totalMin,
+      averageThreetimes,
+      averageTwotime,
+      averageOnetime,
+      total,
+    );
 
-    if (
-      +startTimeSplit[0] >= +resultstartTimeSplit[0] &&
-      +startTimeSplit[0] <= +resultendTimeSplit[0] &&
-      +endTimeSplit[0] <= +resultendTimeSplit[0]
-    ) {
-      if (total > 4) {
-        averageOnetime = total - 1 + totalMin;
-      } else {
-        averageOnetime = total + totalMin;
-      }
-    } else if (
-      +startTimeSplit[0] >= +resultstartTimeSplit[0] &&
-      +startTimeSplit[0] <= +resultendTimeSplit[0] &&
-      +endTimeSplit[0] >= +resultendTimeSplit[0]
-    ) {
-      if (+endTimeSplit[0] >= 18) {
-        if (total > 4) {
-          averageOnetime = 18 - +startTimeSplit[0] - 1;
-          averageThreetimes = +endTimeSplit[0] - 18 - 1;
-        } else {
-          averageOnetime = 18 - +startTimeSplit[0];
-          averageThreetimes = +endTimeSplit[0] - 18;
-        }
-        //   averageOnetime = 18 - +startTimeSplit[0] - 1;
-        //   averageThreetimes = +endTimeSplit[0] - 18 -1
-        // } else {
-        //   averageOnetime = 18 - +startTimeSplit[0];
-        // }
-      } else {
-      }
-    }
-    console.log(averageOnetime);
-    console.log(averageThreetimes);
+    console.log(cal);
 
-    // return this.overtimeRepo.create({ data: createDepartmentDto });
+    const base = {
+      fullname: createDepartmentDto.fullname,
+      userId: createDepartmentDto.userId,
+      dateStart: createDepartmentDto.dateStart,
+      partTimeType: createDepartmentDto.partTimeType,
+      startTime: createDepartmentDto.startTime,
+      endTime: createDepartmentDto.endTime,
+      breakTime: String(cal.breakTime),
+      workingTime: String(cal.workingTime),
+      totalTime: String(cal.totalTime),
+      detailWork: createDepartmentDto.detailWork,
+      typeDate: result.typeDate === 'dayoff' ? 'day-off' : 'normall',
+      customerName: createDepartmentDto.customerName,
+      checkTravelUpCountry: createDepartmentDto.checkTravelUpCountry,
+      checkOvernight: createDepartmentDto.checkOvernight,
+      checkTravelByCompanyCar: createDepartmentDto.checkTravelByCompanyCar,
+      carName: createDepartmentDto.carName ? createDepartmentDto.carName : null,
+      carId: createDepartmentDto.carId ? createDepartmentDto.carId : null,
+      checkDistance: createDepartmentDto.checkDistance,
+      phoneNumber: createDepartmentDto.phoneNumber,
+      status: 'waitting',
+      calculate:
+        result.typeDate === 'dayoff'
+          ? [
+              {
+                timeRate: cal.averageOnetime,
+                rate: result.intime,
+                typeRate: 'intime',
+                date: 'day-off',
+              },
+              {
+                timeRate: cal.averageThreetimes,
+                rate: result.overtime,
+                typeRate: 'overtime',
+                date: 'day-off',
+              },
+            ]
+          : [
+              {
+                timeRate: cal.averageTwotime,
+                rate: result.intime,
+                date: 'normall',
+                typeRate: 'intime',
+              },
+              {
+                timeRate: cal.averageThreetimes,
+                rate: result.overtime,
+                date: 'normall',
+                typeRate: 'overtime',
+              },
+            ],
+    };
+
+    console.log(base);
+
+    // const data = await this.overtimeRepo.create({ data: base });
+    // return { status: 200, data: data };
     return { status: 200 };
   }
 
