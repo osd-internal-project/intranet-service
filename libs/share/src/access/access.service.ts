@@ -96,12 +96,19 @@ export class AccessService {
       where: { userId: userId },
     });
     if (userdetaill) {
-      return await this.prisma.userPermissionGroup.findFirst({
+      const permission = await this.prisma.userPermissionGroup.findFirst({
         where: {
           userGroupId: userdetaill.ownerGroupId,
           userModule: { code: moduleCode },
         },
       });
+      if (permission && permission.permissionGroupIds) {
+        return await this.prisma.userGroup.findMany({
+          where: { groupId: { in: permission.permissionGroupIds } },
+        });
+      } else {
+        return [];
+      }
     } else {
       return [];
     }
@@ -117,7 +124,7 @@ export class AccessService {
         userModule: { code: moduleCode },
       },
     });
-    if (permissionGroup.permissionGroupIds) {
+    if (permissionGroup && permissionGroup.permissionGroupIds) {
       return await this.prisma.users.findMany({
         where: { ownerGroupId: { in: permissionGroup.permissionGroupIds } },
       });
@@ -127,14 +134,21 @@ export class AccessService {
   }
   //ดึง Group ที่เข้าถึงได้โดย Group Id
   async getAccessedGroupByGroupId(moduleCode: string, groupId: string) {
-    return await this.prisma.userPermissionGroup.findFirst({
+    const permission = await this.prisma.userPermissionGroup.findFirst({
       where: {
         userGroupId: groupId,
         userModule: { code: moduleCode },
       },
     });
+    if (permission && permission.permissionGroupIds) {
+      return await this.prisma.userGroup.findMany({
+        where: { groupId: { in: permission.permissionGroupIds } },
+      });
+    } else {
+      return [];
+    }
   }
-  //ดึง Group ที่เข้าถึงได้โดย Group Id
+  //ดึง Users ที่เข้าถึงได้โดย Group Id
   async getAccessedUsersByGroupId(moduleCode: string, groupId: string) {
     const permissionGroup = await this.prisma.userPermissionGroup.findFirst({
       where: {
@@ -145,6 +159,81 @@ export class AccessService {
     if (permissionGroup.permissionGroupIds) {
       return await this.prisma.users.findMany({
         where: { ownerGroupId: { in: permissionGroup.permissionGroupIds } },
+      });
+    } else {
+      return [];
+    }
+  }
+  //ดึง Group ที่มีสิทธิ์เข้าถึงข้อมูล โดย User Id
+  async getLeadGroupByUserId(moduleCode: string, userId: string) {
+    const userdetaill = await this.prisma.users.findFirst({
+      where: { userId: userId },
+    });
+    const permission = await this.prisma.userPermissionGroup.findMany({
+      where: {
+        permissionGroupIds: { hasSome: [userdetaill.ownerGroupId] },
+        userModule: { code: moduleCode },
+      },
+    });
+    if (permission.length > 0) {
+      const groupIds = permission.map((data) => data.userGroupId);
+      return await this.prisma.userGroup.findMany({
+        where: { groupId: { in: groupIds } },
+      });
+    } else {
+      return [];
+    }
+  }
+  //ดึง Users ที่มีสิทธิ์เข้าถึงข้อมูล โดย User Id
+  async getLeadUsersByUserId(moduleCode: string, userId: string) {
+    const userdetaill = await this.prisma.users.findFirst({
+      where: { userId: userId },
+    });
+    const permission = await this.prisma.userPermissionGroup.findMany({
+      where: {
+        permissionGroupIds: { hasSome: [userdetaill.ownerGroupId] },
+        userModule: { code: moduleCode },
+      },
+    });
+    if (permission.length > 0) {
+      const groupIds = permission.map((data) => data.userGroupId);
+      return await this.prisma.users.findMany({
+        where: { ownerGroupId: { in: groupIds } },
+      });
+    } else {
+      return [];
+    }
+  }
+
+  //ดึง Group ที่มีสิทธิ์เข้าถึงข้อมูล โดย Group Id
+  async getLeadGroupByGroupId(moduleCode: string, groupId: string) {
+    const permission = await this.prisma.userPermissionGroup.findMany({
+      where: {
+        permissionGroupIds: { hasSome: [groupId] },
+        userModule: { code: moduleCode },
+      },
+    });
+    if (permission.length > 0) {
+      const groupIds = permission.map((data) => data.userGroupId);
+      return await this.prisma.userGroup.findMany({
+        where: { groupId: { in: groupIds } },
+      });
+    } else {
+      return [];
+    }
+  }
+  //ดึง Users ที่มีสิทธิ์เข้าถึงข้อมูล โดย Group Id
+  async getLeadUsersByGroupId(moduleCode: string, groupId: string) {
+    const permission = await this.prisma.userPermissionGroup.findMany({
+      where: {
+        permissionGroupIds: { hasSome: [groupId] },
+        userModule: { code: moduleCode },
+      },
+    });
+    if (permission.length > 0) {
+      const groupIds = permission.map((data) => data.userGroupId);
+      return await this.prisma.users.findMany({
+        where: { ownerGroupId: { in: groupIds } },
       });
     } else {
       return [];
