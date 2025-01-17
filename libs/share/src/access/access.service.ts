@@ -90,8 +90,8 @@ export class AccessService {
     }
   }
 
-  //Module service
-  async getPermissionGroupByUserId(moduleCode: string, userId: string) {
+  //ดึง Group ที่เข้าถึงได้โดย User Id
+  async getAccessedGroupByUserId(moduleCode: string, userId: string) {
     const userdetaill = await this.prisma.users.findFirst({
       where: { userId: userId },
     });
@@ -106,7 +106,8 @@ export class AccessService {
       return [];
     }
   }
-  async getPermissionUsersByUserId(moduleCode: string, userId: string) {
+  //ดึง Users ที่เข้าถึงได้โดย User Id
+  async getAccessedUsersByUserId(moduleCode: string, userId: string) {
     const userdetaill = await this.prisma.users.findFirst({
       where: { userId: userId },
     });
@@ -124,7 +125,8 @@ export class AccessService {
       return [];
     }
   }
-  async getPermissionGroupByGroupId(moduleCode: string, groupId: string) {
+  //ดึง Group ที่เข้าถึงได้โดย Group Id
+  async getAccessedGroupByGroupId(moduleCode: string, groupId: string) {
     return await this.prisma.userPermissionGroup.findFirst({
       where: {
         userGroupId: groupId,
@@ -132,7 +134,8 @@ export class AccessService {
       },
     });
   }
-  async getPermissionUsersByGroupId(moduleCode: string, groupId: string) {
+  //ดึง Group ที่เข้าถึงได้โดย Group Id
+  async getAccessedUsersByGroupId(moduleCode: string, groupId: string) {
     const permissionGroup = await this.prisma.userPermissionGroup.findFirst({
       where: {
         userGroupId: groupId,
