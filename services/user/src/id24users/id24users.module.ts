@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { UsersController } from './users.controller';
+import { UsersService } from './id24users.service';
+import { UsersController } from './id24users.controller';
 import { PrismaModule } from '@inventory/share';
 import { Id24Service } from 'src/id24/id24.service';
 

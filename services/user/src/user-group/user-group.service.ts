@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import {
+  AccessService,
   OrganizedRepository,
   UserGroupRepository,
   UserGroupUserRoleMapRepository,
@@ -14,6 +15,7 @@ export class UserGroupService {
     private usersRepo: UsersRepository,
     private organizedRepo: OrganizedRepository,
     private userGroupUserRoleMapRepo: UserGroupUserRoleMapRepository,
+    private accessServices: AccessService,
   ) {}
 
   create(data: any) {
@@ -52,6 +54,16 @@ export class UserGroupService {
       where: { organizedId: organize.organizedId },
       select: { organizeMapGroup: { select: { group: true } } },
     });
+  }
+  async findGroupByModuleidAndGroupid(condition: {
+    groupid: string;
+    modulecode: string;
+  }) {
+    const { groupid, modulecode } = condition;
+    return await this.accessServices.getPermissionGroupByGroupId(
+      modulecode,
+      groupid,
+    );
   }
   findByOrganizeId(organizeId: string) {
     return this.organizedRepo.findOne({

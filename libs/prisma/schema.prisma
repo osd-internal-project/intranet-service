@@ -842,7 +842,7 @@ model users {
     department                departMent?                 @relation(fields: [departmentId], references: [id])
     startWork                 DateTime?                   @map("start_work")
     ldapQuery                 String?                     @map("ldap_query")
-    userGroupMap              userGroupMap[]
+    // userGroupMap              userGroupMap[]
     roleProfileMap            roleProfileMap[]
     userRoleMap               userRoleMap[]
     request                   request[]
@@ -896,7 +896,7 @@ model userGroup {
     parent                    userGroup?                  @relation("ChildGroup", fields: [parentGroupId], references: [groupId])
     parentGroupId             String?                     @map("parent_group_id") @db.VarChar(50)
     userGroup                 userGroup[]                 @relation("ChildGroup")
-    userGroupMap              userGroupMap[]
+    // userGroupMap              userGroupMap[]
     organized                 organized?                  @relation(fields: [organizedGroupId], references: [organizedId], onDelete: Cascade)
     organizedGroupId          String?                     @map("organized_group_id")
     description               String                      @default("") @map("description") @db.Text
@@ -905,44 +905,29 @@ model userGroup {
     userMapOrganizeGroup      userMapOrganizeGroup[]
     userMapOrganizeGroupOwner userMapOrganizeGroupOwner[]
     organizeMapGroup          organizeMapGroup[]
-    userGroupUserRoleMap      userGroupUserRoleMap[]
 
-    saleUserGroupId        String[]                 @map("sale_user_group_id")
-    saleUsersId            String[]                 @map("sale_users_id")
-    engineerUserGroupId    String[]                 @map("engineer_user_group_id")
-    engineerUsersId        String[]                 @map("engineer_users_id")
-    exceptionalSatatus     Boolean?                 @default(false) @map("exceptional_satatus")
-    headId                 String?                  @map("head_id") @db.VarChar(50)
-    userGroupMapPermission userGroupMapPermission[]
-    employeeProfiles       employeeProfiles[]
+    // saleUserGroupId        String[]                 @map("sale_user_group_id")
+    // saleUsersId            String[]                 @map("sale_users_id")
+    // engineerUserGroupId    String[]                 @map("engineer_user_group_id")
+    // engineerUsersId        String[]                 @map("engineer_users_id")
+    // exceptionalSatatus     Boolean?                 @default(false) @map("exceptional_satatus")
+    userGroupUserRoleMap userGroupUserRoleMap[]
+    userPermissionGroup  userPermissionGroup[]
+    employeeProfiles     employeeProfiles[]
 
     @@map("user_group")
 }
 
-model userGroupMap {
-    id               Int        @unique @default(autoincrement()) @map("id")
-    user             users?     @relation(fields: [userId], references: [userId], onDelete: Cascade)
-    userId           String?    @map("user_id")
-    userGroup        userGroup? @relation(fields: [userGroupId], references: [groupId], onDelete: Cascade)
-    userGroupId      String?    @map("user_group_id")
-    organizedGroupId String?    @map("organized_group_id")
+model userPermissionGroup {
+    id                 Int         @unique @default(autoincrement()) @map("id")
+    userGroupId        String      @map("user_group_id")
+    //leave ,expense ,bookingroom ,macar ,ma ,housekeeper
+    userGroup          userGroup?  @relation(fields: [userGroupId], references: [groupId], onDelete: Cascade)
+    permissionGroupIds String[]    @map("permission_group_ids")
+    userModule         userModule? @relation(fields: [userModuleId], references: [id])
+    userModuleId       Int?        @map("user_module_id")
 
-    @@map("user_group_map")
-}
-
-model userGroupMapPermission {
-    id                Int        @unique @default(autoincrement()) @map("id")
-    userGroupId       String     @map("user_group_id")
-    leaveGroupId      String[]   @map("leave_group_Id")
-    leaveUserId       String[]   @map("leave_user_Id")
-    expenseGroupId    String[]   @map("expense_group_Id")
-    expenseUserId     String[]   @map("expense_user_Id")
-    permissionGroupId String[]   @map("permission_group_Id")
-    permissionUserId  String[]   @map("permission_user_Id")
-    type              String?    @map("type") @db.VarChar(20) //leave ,expense ,bookingroom ,macar ,ma ,housekeeper
-    userGroup         userGroup? @relation(fields: [userGroupId], references: [groupId], onDelete: Cascade)
-
-    @@map("user_group_map_permission")
+    @@map("user_permission_group")
 }
 
 model userGroupUserRoleMap {
@@ -955,14 +940,15 @@ model userGroupUserRoleMap {
     @@map("user_group_user_role_map")
 }
 
-model userPermissionType {
-    id          Int     @unique @default(autoincrement()) @map("id")
-    code        String  @unique @map("code") @db.VarChar(20)
-    name        String  @map("name") @db.VarChar(200)
-    status      Boolean @default(true) @map("status") @db.Boolean
-    description String? @map("description") @db.Text
+model userModule {
+    id                  Int                   @unique @default(autoincrement()) @map("id")
+    code                String                @unique @map("code") @db.VarChar(200)
+    name                String                @map("name") @db.VarChar(200)
+    status              Boolean               @default(true) @map("status") @db.Boolean
+    description         String?               @map("description") @db.Text
+    userPermissionGroup userPermissionGroup[]
 
-    @@map("user_permission_type")
+    @@map("user_module")
 }
 
 model userRole {

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import * as https from 'https';
 import config from '../configs';
-import { UserType } from 'src/users/type';
+import { UserType } from 'src/id24users/type';
 const { id24Url, id24LoginUrl, Authorization } = config();
 
 export type IdCheckingData = {

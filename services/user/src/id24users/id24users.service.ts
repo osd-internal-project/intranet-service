@@ -107,14 +107,6 @@ export class UsersService {
           masterPosition: {
             connect: { posId: createUserDto.masterPositionId },
           },
-          userGroupMap: {
-            createMany: {
-              data: createUserDto.groupList.map((item: string) => ({
-                userGroupId: item,
-              })),
-              skipDuplicates: true,
-            },
-          },
           userMapOrganizeChart: {
             createMany: {
               data: {
@@ -301,16 +293,7 @@ export class UsersService {
             groupName: true,
           },
         },
-        userGroupMap: {
-          select: {
-            userGroup: {
-              select: {
-                groupId: true,
-                groupName: true,
-              },
-            },
-          },
-        },
+
         dataModule: true,
       },
       orderBy: { id: 'asc' },

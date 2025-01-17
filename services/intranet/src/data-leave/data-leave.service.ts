@@ -3,7 +3,7 @@ import {
   MasterTypeLeaveRepository,
   UsersRepository,
   AccessService,
-  UserGroupMapPermissionRepository,
+  UserPermissionGroupRepository,
   UserGroupRepository,
   NotificationLogsRepository,
 } from '@inventory/share';
@@ -18,7 +18,7 @@ export class DataLeaveService {
     private readonly mastertypeLeaveRepo: MasterTypeLeaveRepository,
     private readonly usersRepo: UsersRepository,
     private readonly accessService: AccessService,
-    private readonly userGroupMapPermissionRepo: UserGroupMapPermissionRepository,
+    private readonly userPermissionGroupRepo: UserPermissionGroupRepository,
     private userGroupRepo: UserGroupRepository,
     private notificationlogsRepo: NotificationLogsRepository,
     private readonly userRepo: UsersRepository,
@@ -273,7 +273,7 @@ export class DataLeaveService {
     if (accessedUserIds) {
       let currentGroupId = accessedUserIds.groupId;
       while (currentGroupId) {
-        const header = await this.userGroupMapPermissionRepo.findFirst({
+        const header = await this.userPermissionGroupRepo.findFirst({
           where: { userGroupId: currentGroupId },
         });
         if (header && header.leaveUserId.length > 0) {

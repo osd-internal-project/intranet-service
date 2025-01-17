@@ -4,68 +4,68 @@ import { TQueryClient } from '../modules/prisma/types';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
-export class UserGroupMapPermissionRepository {
+export class UserModuleRepository {
   constructor(private prisma: PrismaService) {}
 
   async findAll(option?: { prisma?: TQueryClient }) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.userGroupMapPermission.findMany();
+    return prisma.userModule.findMany();
   }
   async findMany(
-    condition: Prisma.userGroupMapPermissionFindFirstArgsBase,
+    condition: Prisma.userModuleFindFirstArgsBase,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.userGroupMapPermission.findMany(condition);
+    return prisma.userModule.findMany(condition);
   }
   async findFirst(
-    condition: Prisma.userGroupMapPermissionFindFirstArgsBase,
+    condition: Prisma.userModuleFindFirstArgsBase,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.userGroupMapPermission.findFirst(condition);
+    return prisma.userModule.findFirst(condition);
   }
   async create(
-    condition: Prisma.userGroupMapPermissionCreateArgs,
+    condition: Prisma.userModuleCreateArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.userGroupMapPermission.create(condition);
+    return prisma.userModule.create(condition);
   }
   async createMany(
-    data: Prisma.userGroupMapPermissionCreateManyArgs,
+    data: Prisma.userModuleCreateManyArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.userGroupMapPermission.createMany(data);
+    return prisma.userModule.createMany(data);
   }
   async update(
-    data: Prisma.userGroupMapPermissionUpdateArgs,
+    data: Prisma.userModuleUpdateArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.userGroupMapPermission.update(data);
+    return prisma.userModule.update(data);
   }
   async updateMany(
-    data: Prisma.userGroupMapPermissionUpdateManyArgs,
+    data: Prisma.userModuleUpdateManyArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.userGroupMapPermission.updateMany(data);
+    return prisma.userModule.updateMany(data);
   }
   async delete(
-    condition: Prisma.userGroupMapPermissionDeleteArgs,
+    condition: Prisma.userModuleDeleteArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.userGroupMapPermission.delete(condition);
+    return prisma.userModule.delete(condition);
   }
 
   async deleteMany(
-    condition: Prisma.userGroupMapPermissionDeleteManyArgs,
+    condition: Prisma.userModuleDeleteManyArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.userGroupMapPermission.deleteMany(condition);
+    return prisma.userModule.deleteMany(condition);
   }
 }

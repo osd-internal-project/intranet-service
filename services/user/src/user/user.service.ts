@@ -354,6 +354,15 @@ export class UserService {
       },
     });
   }
+  async findUsersInOnwerGroups(userGroupIds: string[]) {
+    return this.usersRepo.findByCondition({
+      where: {
+        userMapOrganizeGroupOwner: {
+          some: { ownerGroupId: { in: userGroupIds } },
+        },
+      },
+    });
+  }
   async findHeaderUserByUserId(userId: string) {
     const headerGroupIds = await this.accessService.getHeaderGroupIdByUserId(
       userId,
