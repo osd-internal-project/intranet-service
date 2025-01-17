@@ -942,7 +942,7 @@ model userGroupUserRoleMap {
 
 model userModule {
     id                  Int                   @unique @default(autoincrement()) @map("id")
-    code                String                @unique @map("code") @db.VarChar(20)
+    code                String                @unique @map("code") @db.VarChar(200)
     name                String                @map("name") @db.VarChar(200)
     status              Boolean               @default(true) @map("status") @db.Boolean
     description         String?               @map("description") @db.Text

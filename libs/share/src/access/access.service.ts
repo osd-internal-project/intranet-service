@@ -89,6 +89,8 @@ export class AccessService {
       return undefined;
     }
   }
+
+  //Module service
   async getPermissionGroupByUserId(moduleCode: string, userId: string) {
     const userdetaill = await this.prisma.users.findFirst({
       where: { userId: userId },

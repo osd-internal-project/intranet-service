@@ -6,7 +6,7 @@ import { Prisma } from '@prisma/client';
 export class UserModuleService {
   constructor(private userModuleRepo: UserModuleRepository) {}
 
-  create(data: Prisma.userGroupMapCreateInput) {
+  create(data: Prisma.userPermissionGroupCreateInput) {
     const condition = { data: data } as Prisma.userModuleCreateArgs;
     Logger.debug('data:', data);
     return this.userModuleRepo.create(condition);
@@ -21,7 +21,7 @@ export class UserModuleService {
       ...condition,
       orderBy: [
         {
-          id: 'asc',
+          code: 'asc',
         },
       ],
     };
