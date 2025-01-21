@@ -9,7 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { OrganizedModule } from './organized/organized.module';
 import { ProfileRuleMapModule } from './profile-rule-map/profile-rule-map.module';
 import { ProfileRuleModule } from './profile-rule/profile-rule.module';
-import { UserGroupMapModule } from './user-group-map/user-group-map.module';
+// import { UserGroupMapModule } from './user-group-map/user-group-map.module';
 import { UserGroupModule } from './user-group/user-group.module';
 import { UserRoleMapModule } from './user-role-map/user-role-map.module';
 import { UserRoleModule } from './user-role/user-role.module';
@@ -33,7 +33,7 @@ import { UserModuleModule } from './user-module/user-module.module';
     UserRoleMapModule,
     UserModule,
     UserGroupModule,
-    UserGroupMapModule,
+    // UserGroupMapModule,
     UserPermissionGroupModule,
     UsersModule,
     UserModuleModule,

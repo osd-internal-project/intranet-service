@@ -7,12 +7,16 @@ import {
   Param,
   Delete,
   UseGuards,
+  UseInterceptors,
   Req,
   Query,
+  Res,
 } from '@nestjs/common';
 import { BookingRoomService } from './booking-room.service';
 import { Prisma } from '@prisma/client';
+import { Response } from 'express';
 import { AuthGuard } from '@inventory/share';
+import { UserInterceptor } from '@inventory/share';
 
 @Controller('booking-room')
 export class BookingRoomController {
@@ -31,11 +35,17 @@ export class BookingRoomController {
   // }
 
   @Get()
-  findAll(@Query('skip') skip?: number, @Query('take') take?: number) {
+  @UseInterceptors(UserInterceptor)
+  findAll(
+    @Req() req,
+    @Query('skip') skip?: number,
+    @Query('take') take?: number,
+  ) {
+    console.log(req.body.sub);
     if (skip !== undefined && take !== undefined) {
-      return this.bookingRoomService.findMany(+skip, +take);
+      return this.bookingRoomService.findMany(+skip, +take, req.body.sub);
     }
-    return this.bookingRoomService.findAll();
+    return this.bookingRoomService.findAll(req.body.sub);
   }
 
   // @Get()

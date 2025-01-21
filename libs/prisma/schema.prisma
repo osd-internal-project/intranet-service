@@ -1221,6 +1221,7 @@ model bookingRoom {
     member           String      @map("member") @db.VarChar(255)
     outSider         String      @map("out_sider") @db.VarChar(255)
     guest            Json?       @map("guest") @db.JsonB
+    officer          Json?       @map("officer") @db.JsonB
     note             String?     @default("") @map("note") @db.VarChar(255)
     createdAt        DateTime    @default(now()) @map("created_at") @db.Timestamptz()
     updatedAt        DateTime    @default(now()) @map("updated_at") @db.Timestamptz()
