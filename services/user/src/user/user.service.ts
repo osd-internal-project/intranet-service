@@ -350,7 +350,7 @@ export class UserService {
   async findUserInOnwerGroupByUserGroupId(userGroupId: string) {
     return this.usersRepo.findByCondition({
       where: {
-        userMapOrganizeGroupOwner: { some: { ownerGroupId: userGroupId } },
+        ownerGroupId: userGroupId,
       },
     });
   }

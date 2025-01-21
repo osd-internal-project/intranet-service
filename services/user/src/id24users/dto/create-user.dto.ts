@@ -15,7 +15,7 @@ export class CreateUserDto {
   dataModule: string;
   organizeId: string;
   groupList: string[];
-  groupOwnerId: string;
+  ownerGroupId: string;
   ldapQuery?: string;
 }
 

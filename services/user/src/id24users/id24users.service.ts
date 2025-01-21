@@ -103,18 +103,18 @@ export class UsersService {
           userType: createUserDto.userType,
           token: response.data.id,
           dataModule: createUserDto.dataModule,
-          ownerGroup: { connect: { groupId: createUserDto.groupOwnerId } },
+          ownerGroup: { connect: { groupId: createUserDto.ownerGroupId } },
           masterPosition: {
             connect: { posId: createUserDto.masterPositionId },
           },
-          userMapOrganizeChart: {
-            createMany: {
-              data: {
-                positionId: createUserDto.departmentId,
-              },
-              skipDuplicates: true,
-            },
-          },
+          // userMapOrganizeChart: {
+          //   createMany: {
+          //     data: {
+          //       positionId: createUserDto.departmentId,
+          //     },
+          //     skipDuplicates: true,
+          //   },
+          // },
         },
       });
       Logger.debug(`User created successfully on service`, response.data.id);
@@ -190,6 +190,8 @@ export class UsersService {
         userMapOrganizeGroupOwner: true,
         dataModule: true,
         positionId: true,
+        ownerGroupId: true,
+        ownerGroup: { select: { groupId: true, groupName: true } },
       },
       skip: +query.skip,
       take: +query.take,
@@ -208,10 +210,6 @@ export class UsersService {
 
   findOne(id: number) {
     return `This action returns a #${id} user`;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
   }
 
   remove(id: number) {
@@ -287,6 +285,7 @@ export class UsersService {
             nameEn: true,
           },
         },
+        ownerGroupId: true,
         ownerGroup: {
           select: {
             groupId: true,
@@ -299,44 +298,90 @@ export class UsersService {
       orderBy: { id: 'asc' },
     });
   }
-  // async validateEmail(email: string) {
-  //   const duplicatedEmail = await this.userRepo.findFirst({
-  //     where: {
-  //       email: { equals: email, mode: 'insensitive' },
-  //     },
-  //   });
-  //   if (duplicatedEmail) {
-  //     return {
-  //       statusCode: 200,
-  //       message: 'This email already exists.',
-  //       error: 'Bad Request',
-  //     };
-  //   }
-  // }
 
-  // async validateLicense(status: string) {
-  //   const checkLicense = await this.userRepo.count({ where: { active: true } });
+  async update(token: string, createUserDto: UpdateUserDto) {
+    // const createId24 = {
+    //   username: createUserDto.username.replace(/\s/g, ''),
+    //   email: createUserDto.email.replace(/\s/g, ''),
+    //   group: [createUserDto.dataModule, masterGroupId24],
+    //   active: true,
+    //   type: createUserDto.userType,
+    //   ldapQuery: createUserDto.ldapQuery,
+    //   phone: '',
+    // } as CreateUserId24Dto;
 
-  //   if (status === 'create') {
-  //     if (checkLicense >= +userLicense) {
-  //       return {
-  //         statusCode: 200,
-  //         message: `Users active max in ${userLicense} license`,
-  //         error: 'Bad Request',
-  //       };
-  //     }
-  //   } else {
-  //     if (checkLicense >= +userLicense) {
-  //       return {
-  //         statusCode: 200,
-  //         message: `Users active max in ${userLicense} license`,
-  //         error: 'Bad Request',
-  //       };
-  //     }
-  //   }
-  // }
+    // const id24Service =
+    //   createUserDto.userType === UserType.LDAP
+    //     ? this.id24Service.createUserLdap(createId24)
+    //     : this.id24Service.createUser(createId24);
+    try {
+      //   const response = await id24Service;
+      //   Logger.debug(`User created successfully on id24`, response.data.id);
+      //   if (createUserDto.userType !== UserType.LDAP) {
+      //     await this.id24Service.resetPassword(
+      //       response.data.id,
+      //       createUserDto.password,
+      //     );
+      //     Logger.debug(
+      //       `User resetPassword successfully on id24`,
+      //       response.data.id,
+      //     );
+      //   } else {
+      //     await this.id24Service.updateGroup(response.data.id, [
+      //       createUserDto.dataModule,
+      //       masterGroupId24,
+      //     ]);
+      //   }
 
-  // async validatePassword(password: string) {
-  //   return this.id24Service.validatePassword(password);
-  // }
+      //   await this.id24Service.updateActive(
+      //     response.data.id,
+      //     createUserDto.activeStatus,
+      //   );
+      const user = await this.usersRepo.findOne({ where: { token: token } });
+      Logger.debug(createUserDto.ownerGroupId);
+      if (user) {
+        return await this.usersRepo.update({
+          where: { userId: user.userId },
+          data: {
+            username: createUserDto.username,
+            firstNameTh: createUserDto.firstNameTh,
+            lastNameTh: createUserDto.lastNameTh,
+            firstNameEn: createUserDto.firstNameEn,
+            lastNameEn: createUserDto.lastNameEn,
+            email: createUserDto.email,
+            phoneNumber: createUserDto.phoneNumber,
+            activeStatus: createUserDto.activeStatus,
+            organizedGroupId: '',
+            userType: createUserDto.userType,
+            dataModule: createUserDto.dataModule,
+            ownerGroup: { connect: { groupId: createUserDto.ownerGroupId } },
+            masterPosition: {
+              connect: { posId: createUserDto.masterPositionId },
+            },
+            // userMapOrganizeChart: {
+            //   createMany: {
+            //     data: {
+            //       positionId: createUserDto.departmentId,
+            //     },
+            //     skipDuplicates: true,
+            //   },
+            // },
+          },
+        });
+      }
+      // Logger.debug(`User created successfully on service`, response.data.id);
+      // return {
+      //   success: true,
+      //   message: 'User created successfully',
+      //   data: user,
+      // };
+    } catch (error) {
+      console.log(error.message);
+      return {
+        success: false,
+        message: 'An error occurred while creating the user',
+        error: error,
+      };
+    }
+  }
 }

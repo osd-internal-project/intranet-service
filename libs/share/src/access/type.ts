@@ -9,4 +9,5 @@ export const ModuleTypes = {
   intranetApproveLeave: 'intranet:approveleave',
   intranetApproveOt: 'intranet:approveot',
   vender: 'vender',
+  user: 'user',
 };
