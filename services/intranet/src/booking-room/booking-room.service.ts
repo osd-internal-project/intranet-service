@@ -1,24 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { AccessService, BookingRoomRepository } from '@inventory/share';
+import { BookingRoomRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
-import dayjs from 'dayjs';
 
 @Injectable()
 export class BookingRoomService {
-  constructor(
-    private bookingRoomRepository: BookingRoomRepository,
-    private readonly accessService: AccessService,
-  ) {}
+  constructor(private bookingRoomRepository: BookingRoomRepository) {}
   create(data: Prisma.bookingRoomCreateInput) {
     const condition = { data: data } as Prisma.bookingRoomCreateArgs;
     return this.bookingRoomRepository.create(condition);
   }
 
-  async findAll() {
+  async findAll(token: string) {
     return this.bookingRoomRepository.findAll();
   }
 
-  async findMany(skip: number, take: number) {
+  async findMany(skip: number, take: number, token: string) {
     const condition = { skip, take } as Prisma.bookingRoomFindFirstArgsBase;
     const count = await this.bookingRoomRepository.count({});
     const result = await this.bookingRoomRepository.findMany(condition);
@@ -36,6 +32,7 @@ export class BookingRoomService {
     return this.bookingRoomRepository.count({
       where: {
         roomId: roomId,
+        bookingStatus: 'Approve',
         OR: [
           { startDate: { gte: new Date(startDate), lte: new Date(endDate) } },
           { endDate: { gte: new Date(startDate), lte: new Date(endDate) } },

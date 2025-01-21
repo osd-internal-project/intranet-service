@@ -1204,6 +1204,7 @@ model masterRoomType {
 model bookingRoom {
     id               Int         @unique @default(autoincrement()) @map("id")
     userId           String?     @map("user_id") @db.VarChar(100)
+    token            String?     @map("token") @db.VarChar(100)
     roomId           String?     @map("room_id") @db.VarChar(255)
     roomName         String      @map("room_name") @db.VarChar(255)
     roomType         String      @map("room_type") @db.VarChar(255)
@@ -1220,6 +1221,7 @@ model bookingRoom {
     member           String      @map("member") @db.VarChar(255)
     outSider         String      @map("out_sider") @db.VarChar(255)
     guest            Json?       @map("guest") @db.JsonB
+    officer          Json?       @map("officer") @db.JsonB
     note             String?     @default("") @map("note") @db.VarChar(255)
     createdAt        DateTime    @default(now()) @map("created_at") @db.Timestamptz()
     updatedAt        DateTime    @default(now()) @map("updated_at") @db.Timestamptz()
