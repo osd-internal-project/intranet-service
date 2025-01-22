@@ -1,10 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { BookingRoomRepository } from '@inventory/share';
+import {
+  AccessService,
+  BookingRoomRepository,
+  UsersRepository,
+} from '@inventory/share';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class BookingRoomService {
-  constructor(private bookingRoomRepository: BookingRoomRepository) {}
+  constructor(
+    private bookingRoomRepository: BookingRoomRepository,
+    private usersRepo: UsersRepository,
+    private accessService: AccessService,
+  ) {}
   create(data: Prisma.bookingRoomCreateInput) {
     const condition = { data: data } as Prisma.bookingRoomCreateArgs;
     return this.bookingRoomRepository.create(condition);
@@ -15,9 +23,31 @@ export class BookingRoomService {
   }
 
   async findMany(skip: number, take: number, token: string) {
-    const condition = { skip, take } as Prisma.bookingRoomFindFirstArgsBase;
-    const count = await this.bookingRoomRepository.count({});
+    const getUser = await this.usersRepo.findOne({ where: { token: token } });
+    const getAccessUser: any[] =
+      await this.accessService.getAccessedUsersByUserId(
+        'intranet:approvebookingroom',
+        getUser.userId,
+      );
+    const condition = {
+      where: {
+        userId: {
+          in: getAccessUser,
+        },
+      },
+      skip,
+      take,
+    } as Prisma.bookingRoomFindFirstArgsBase;
+    const count = await this.bookingRoomRepository.count({
+      where: {
+        userId: {
+          in: getAccessUser,
+        },
+      },
+    });
     const result = await this.bookingRoomRepository.findMany(condition);
+    console.log(result);
+
     return { data: result, count: count };
   }
 
