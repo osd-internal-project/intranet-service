@@ -53,8 +53,12 @@ export class MaCarBookService {
     return { docs: data, total: count };
   }
 
-  async findManyWithTakeSkip(token: string, skip: number, take: number) {
-    const module = ModuleTypes.INTRANET;
+  async findManyWithTakeSkip(
+    token: string,
+    module: string,
+    skip: number,
+    take: number,
+  ) {
     const user = await this.accessServices.findUserByToken(token);
     if (user) {
       const accessUsers = await this.accessServices.getAccessedUsersByUserId(

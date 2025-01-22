@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { MaCarBookService } from './ma-car-book.service';
 import { Prisma } from '@prisma/client';
-import { UserInterceptor } from '@inventory/share';
+import { ModuleTypes, UserInterceptor } from '@inventory/share';
 
 @Controller('ma-car-book')
 export class MaCarBookController {
@@ -32,6 +32,22 @@ export class MaCarBookController {
     const token = req.body.sub;
     return this.maCarBookService.findBytoken(token);
   }
+
+  @Get('approve/:skip/:take')
+  findManyWithTakeSkipBuApprove(
+    @Req() req,
+    @Param('skip') skip: string,
+    @Param('take') take: string,
+  ) {
+    const token = req.body.sub;
+    const module = ModuleTypes.INTRANET_APPROVE_BOOKING_CAR;
+    return this.maCarBookService.findManyWithTakeSkip(
+      token,
+      module,
+      +skip,
+      +take,
+    );
+  }
   @Get('carId/:carId')
   findOne(@Param('carId') carId: string) {
     return this.maCarBookService.findOne(carId);
@@ -44,11 +60,17 @@ export class MaCarBookController {
     @Param('take') take: string,
   ) {
     const token = req.body.sub;
-    return this.maCarBookService.findManyWithTakeSkip(token, +skip, +take);
+    const module = ModuleTypes.INTRANET;
+    return this.maCarBookService.findManyWithTakeSkip(
+      token,
+      module,
+      +skip,
+      +take,
+    );
   }
 
   @Get(':createdById')
-  createdById(@Param('createdById') createdById: string) {
+  findByUserId(@Param('createdById') createdById: string) {
     return this.maCarBookService.createdById(createdById);
   }
 
