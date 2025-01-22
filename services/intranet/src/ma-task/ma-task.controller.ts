@@ -38,7 +38,6 @@ export class MaTaskController {
     return this.maTaskService.remove(+id);
   }
   @Get('data-table')
-  @UseGuards(AuthGuard)
   findDataTable(@Query() query, @Req() req: any) {
     const userId = req.user.userId;
     return this.maTaskService.findDataTable(query, userId);

@@ -299,7 +299,7 @@ export class UsersService {
     });
   }
 
-  async update(token: string, createUserDto: UpdateUserDto) {
+  async update(userId: string, createUserDto: UpdateUserDto) {
     // const createId24 = {
     //   username: createUserDto.username.replace(/\s/g, ''),
     //   email: createUserDto.email.replace(/\s/g, ''),
@@ -337,7 +337,7 @@ export class UsersService {
       //     response.data.id,
       //     createUserDto.activeStatus,
       //   );
-      const user = await this.usersRepo.findOne({ where: { token: token } });
+      const user = await this.usersRepo.findOne({ where: { userId: userId } });
       Logger.debug(createUserDto.ownerGroupId);
       if (user) {
         return await this.usersRepo.update({

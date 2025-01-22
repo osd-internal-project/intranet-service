@@ -81,9 +81,12 @@ export class UsersController {
     return this.usersService.findOne(+id);
   }
 
-  @Patch(':token')
-  update(@Param('token') token: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(token, updateUserDto);
+  @Patch(':userId')
+  update(
+    @Param('userId') userId: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return this.usersService.update(userId, updateUserDto);
   }
 
   @Delete(':id')

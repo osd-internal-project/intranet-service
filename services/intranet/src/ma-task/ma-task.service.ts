@@ -3,6 +3,7 @@ import {
   AccessService,
   MaTaskFilesRepository,
   MaTaskRepository,
+  ModuleTypes,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 @Injectable()
