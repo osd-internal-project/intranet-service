@@ -19,10 +19,8 @@ export class MaTaskController {
   constructor(private readonly maTaskService: MaTaskService) {}
 
   @Post()
-  @UseGuards(AuthGuard)
-  create(@Body() createMaTaskDto: Prisma.maTaskCreateInput, @Req() req: any) {
-    const ownerGroupId = req.user.userMapOwnerGroupId[0].ownerGroupId;
-    return this.maTaskService.create(createMaTaskDto, ownerGroupId);
+  create(@Body() createMaTaskDto: Prisma.maTaskCreateInput) {
+    return this.maTaskService.create(createMaTaskDto);
   }
 
   @Patch(':id')
@@ -39,8 +37,7 @@ export class MaTaskController {
   }
   @Get('data-table')
   findDataTable(@Query() query, @Req() req: any) {
-    const userId = req.user.userId;
-    return this.maTaskService.findDataTable(query, userId);
+    return this.maTaskService.findDataTable(query);
   }
   @Get('range-event')
   findRangeEvent(@Query() query) {

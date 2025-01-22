@@ -22,9 +22,13 @@ export class MaTaskService {
     const dateset = new Date(date).setUTCHours(23, 59, 59, 59);
     return new Date(dateset);
   }
-  create(data: Prisma.maTaskCreateInput, ownerGroupId: string) {
+  async create(data: Prisma.maTaskCreateInput) {
+    console.log(data);
+    const group = await this.accessService.getOwnerGroupByUserId(
+      data.createdById,
+    );
     const condition = {
-      data: { ...data, ownerGroup: ownerGroupId },
+      data: { ...data, ...(group && { ownerGroup: group.groupId }) },
     } as Prisma.maTaskCreateArgs;
     return this.maTaskRepo.create(condition);
   }
@@ -57,9 +61,8 @@ export class MaTaskService {
     });
     return { ...task, fileList: fileList, imageList: imageList };
   }
-  async findDataTable(query: any, userId: string) {
+  async findDataTable(query: any) {
     const { take, skip, typeid, maName, maDate, contact, maStatus } = query;
-    const ownerGroupId = await this.accessService.getOwnerGroupId(userId);
     const data = await this.maTaskRepo.findMany({
       where: {
         ...(typeid && { maTypeId: Number(typeid) }),
@@ -72,7 +75,6 @@ export class MaTaskService {
         }),
         ...(contact && { contact: { contains: contact } }),
         ...(maStatus && { maStatus: maStatus }),
-        ownerGroup: { in: ownerGroupId },
       },
       orderBy: [{ createdAt: 'desc' }],
       take: +take,
@@ -90,7 +92,6 @@ export class MaTaskService {
         }),
         ...(contact && { contact: { contains: contact } }),
         ...(maStatus && { maStatus: maStatus }),
-        ownerGroup: { in: ownerGroupId },
       },
     });
     return { data: data, count: count };
