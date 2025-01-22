@@ -259,4 +259,10 @@ export class AccessService {
 
     return result;
   }
+  //หา User จาก Token
+  async findUserByToken(token: string) {
+    return this.prisma.users.findFirst({
+      where: { token: token },
+    });
+  }
 }

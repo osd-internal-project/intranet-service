@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { MaCarRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 
@@ -12,14 +12,19 @@ export class MaCarService {
   }
 
   findAll() {
-    return this.maCarRepository.findMany({
-      orderBy: {
-        id: 'asc',
-      },
-      include: {
-        maCarBook: true,
-      },
-    });
+    try {
+      return this.maCarRepository.findMany({
+        orderBy: {
+          id: 'asc',
+        },
+        include: {
+          maCarBook: true,
+        },
+      });
+    } catch (error) {
+      Logger.error(error);
+      return [];
+    }
   }
 
   findMany(carId: string) {

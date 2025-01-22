@@ -6,9 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
+  Req,
 } from '@nestjs/common';
 import { MaCarBookService } from './ma-car-book.service';
 import { Prisma } from '@prisma/client';
+import { UserInterceptor } from '@inventory/share';
 
 @Controller('ma-car-book')
 export class MaCarBookController {
@@ -24,14 +27,24 @@ export class MaCarBookController {
     return this.maCarBookService.findAll();
   }
 
+  @Get('findbytoken')
+  findBytoken(@Req() req) {
+    const token = req.body.sub;
+    return this.maCarBookService.findBytoken(token);
+  }
   @Get('carId/:carId')
   findOne(@Param('carId') carId: string) {
     return this.maCarBookService.findOne(carId);
   }
 
   @Get(':skip/:take')
-  findMany(@Param('skip') skip: string, @Param('take') take: string) {
-    return this.maCarBookService.findMany(+skip, +take);
+  findManyWithTakeSkip(
+    @Req() req,
+    @Param('skip') skip: string,
+    @Param('take') take: string,
+  ) {
+    const token = req.body.sub;
+    return this.maCarBookService.findManyWithTakeSkip(token, +skip, +take);
   }
 
   @Get(':createdById')
