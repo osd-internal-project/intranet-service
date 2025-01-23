@@ -123,11 +123,11 @@ export class CustomerProjectTicketService {
       skip,
     } = query;
 
-    const accessedUserIds =
-      await this.accessService.getExpenseAccessedUsersByHeaderUserId(userId);
+    // const accessedUserIds =
+    //   await this.accessService.getExpenseAccessedUsersByHeaderUserId(userId);
     const data = await this.ticketExpenseRepo.findMany({
       where: {
-        updatedById: { in: accessedUserIds },
+        // updatedById: { in: accessedUserIds },
         ...(expenseCode && { expenseCode: expenseCode }),
         ...(processStatus && { processStatus: processStatus }),
         ...(sCreatedDate &&
@@ -144,7 +144,7 @@ export class CustomerProjectTicketService {
     });
     const count = await this.ticketExpenseRepo.count({
       where: {
-        updatedById: { in: accessedUserIds },
+        // updatedById: { in: accessedUserIds },
         ...(expenseCode && { expenseCode: expenseCode }),
         ...(processStatus && { processStatus: processStatus }),
         ...(sCreatedDate &&

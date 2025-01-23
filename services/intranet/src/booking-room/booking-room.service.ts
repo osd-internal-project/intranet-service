@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {
   AccessService,
   BookingRoomRepository,
+  ModuleTypes,
   UsersRepository,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
@@ -26,7 +27,7 @@ export class BookingRoomService {
     const getUser = await this.usersRepo.findOne({ where: { token: token } });
     const getAccessUser: any[] =
       await this.accessService.getAccessedUsersByUserId(
-        'intranet:approvebookingroom',
+        ModuleTypes.INTRANET_APPROVE_BOOKING_ROOM,
         getUser.userId,
       );
     const condition = {

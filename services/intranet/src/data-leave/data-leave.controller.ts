@@ -7,9 +7,12 @@ import {
   Param,
   Delete,
   Query,
+  UseInterceptors,
+  Req,
 } from '@nestjs/common';
 import { DataLeaveService } from './data-leave.service';
 import { Prisma } from '@prisma/client';
+import { UserInterceptor } from '@inventory/share';
 
 @Controller('data-leave')
 export class DataLeaveController {
@@ -28,6 +31,12 @@ export class DataLeaveController {
   @Get('condition')
   findFirstByCondition(@Query() params: any) {
     return this.dataLeaveService.findManyByCondition(params);
+  }
+
+  @Get('leave-header')
+  @UseInterceptors(UserInterceptor)
+  findLeaveByUserId(@Req() req) {
+    return this.dataLeaveService.findHeaderId(req.body.sub);
   }
 
   @Get('findGroup/:userId')
@@ -53,11 +62,6 @@ export class DataLeaveController {
   @Get(`find-user-by-userId/:userId`)
   findUserByUserId(@Param('userId') userId: string) {
     return this.dataLeaveService.findUserByUserId(userId);
-  }
-
-  @Get('leave-header/:userId')
-  findLeaveByUserId(@Param('userId') userId: string) {
-    return this.dataLeaveService.findHeaderId(userId);
   }
 
   @Patch(':id')

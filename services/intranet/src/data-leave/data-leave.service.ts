@@ -6,8 +6,9 @@ import {
   UserPermissionGroupRepository,
   UserGroupRepository,
   NotificationLogsRepository,
+  ModuleTypes,
 } from '@inventory/share';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import * as dayjs from 'dayjs';
 
@@ -25,7 +26,6 @@ export class DataLeaveService {
   ) {}
 
   async create(condition: Prisma.dataLeaveCreateArgs) {
-    console.log(condition);
     // const leaveLetter = await this.dataleaveRepo.create(condition);
     // const userDetail = await this.userRepo.findOne({
     //   where: { userId: leaveLetter.userId },
@@ -43,7 +43,6 @@ export class DataLeaveService {
     //     },
     //   });
     // }
-
     // return leaveLetter;
   }
   findAll() {
@@ -55,15 +54,15 @@ export class DataLeaveService {
   }
 
   async findMany(userId: string) {
-    const UserIdArray =
-      await this.accessService.getLeaveAccessedUsersByHeaderUserId(userId);
+    // const UserIdArray =
+    //   await this.accessService.getLeaveAccessedUsersByHeaderUserId(userId);
 
     return await this.dataleaveRepo.findMany({
-      where: {
-        userId: {
-          in: UserIdArray,
-        },
-      },
+      // where: {
+      //   userId: {
+      //     in: UserIdArray,
+      //   },
+      // },
       orderBy: {
         id: 'desc',
       },
@@ -71,23 +70,14 @@ export class DataLeaveService {
   }
 
   async findGroup(userId: string) {
-    const groupOwner = await this.accessService.getOwnerGroupByUserId(userId);
-    const usersInGroup = await this.userRepo.findMany({
-      where: {
-        userMapOrganizeGroupOwner: {
-          some: { ownerGroupId: groupOwner.groupId },
-        },
-      },
-      select: {
-        userId: true,
-      },
-    });
-
+    const getUser = await this.usersRepo.findOne({ where: { userId: userId } });
+    const AccessedGroup = await this.accessService.getAccessedGroupByGroupId(
+      ModuleTypes.INTRANET_APPROVE_LEAVE,
+      getUser.ownerGroupId,
+    );
     return await this.dataleaveRepo.findMany({
       where: {
-        userId: {
-          in: usersInGroup.map((user) => user.userId),
-        },
+        groupId: { in: AccessedGroup.map((event: any) => event.groupId) },
       },
       orderBy: {
         id: 'desc',
@@ -181,6 +171,7 @@ export class DataLeaveService {
       };
       return mapdata;
     });
+
     return lastResult;
   }
 
@@ -249,20 +240,21 @@ export class DataLeaveService {
     return data;
   }
 
-  async findHeaderId(userId: string) {
-    const res = await this.accessService.getHeaderGroupIdByUserId(
-      userId,
-      'leave',
+  async findHeaderId(token: string) {
+    // console.log(token);
+
+    const getUser = await this.usersRepo.findOne({ where: { token: token } });
+
+    // console.log(getUser);
+
+    const result = await this.accessService.getLeadUsersByUserId(
+      ModuleTypes.INTRANET_APPROVE_LEAVE,
+      getUser.userId,
     );
-    const findUserPermission = await this.userRepo.findMany({
-      where: {
-        userId: '77217f39-2b3b-4911-8592-72bf1a8bbf91',
-      },
-    });
 
-    console.log(findUserPermission);
+    Logger.debug(result);
 
-    return res;
+    return result;
   }
 
   async findLeaveByUserId(userId: string) {
@@ -276,18 +268,18 @@ export class DataLeaveService {
         const header = await this.userPermissionGroupRepo.findFirst({
           where: { userGroupId: currentGroupId },
         });
-        if (header && header.leaveUserId.length > 0) {
-          const users = await this.usersRepo.findMany({
-            where: {
-              userId: {
-                in: header.leaveUserId,
-              },
-            },
-          });
-          if (users && users.length > 0) {
-            return users;
-          }
-        }
+        // if (header && header.leaveUserId.length > 0) {
+        //   const users = await this.usersRepo.findMany({
+        //     where: {
+        //       userId: {
+        //         in: header.leaveUserId,
+        //       },
+        //     },
+        //   });
+        //   if (users && users.length > 0) {
+        //     return users;
+        //   }
+        // }
         const userGroup = await this.userGroupRepo.findOne({
           where: { groupId: currentGroupId },
         });

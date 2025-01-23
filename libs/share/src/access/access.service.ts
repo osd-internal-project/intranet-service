@@ -191,7 +191,9 @@ export class AccessService {
     });
     const permission = await this.prisma.userPermissionGroup.findMany({
       where: {
-        permissionGroupIds: { hasSome: [userdetaill.ownerGroupId] },
+        permissionGroupIds: {
+          hasSome: userdetaill.ownerGroupId ? [userdetaill.ownerGroupId] : [],
+        },
         userModule: { code: moduleCode },
       },
     });

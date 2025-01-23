@@ -145,14 +145,14 @@ export class CustomerDetailService {
         contains: referenceCode;
       }
     }
-    if (!ownerUserGroup.exceptionalSatatus) {
-      whereAnd.push({
-        OR: [
-          { responsibleId: { hasSome: userid } },
-          { responsibleGroup: { hasSome: ownerGroups } },
-        ],
-      });
-    }
+    // if (!ownerUserGroup.exceptionalSatatus) {
+    //   whereAnd.push({
+    //     OR: [
+    //       { responsibleId: { hasSome: userid } },
+    //       { responsibleGroup: { hasSome: ownerGroups } },
+    //     ],
+    //   });
+    // }
 
     const findCondition = {
       where: {
@@ -218,14 +218,14 @@ export class CustomerDetailService {
         ],
       });
     }
-    if (!ownerUserGroup.exceptionalSatatus) {
-      whereAnd.push({
-        OR: [
-          { responsibleId: { hasSome: userid } },
-          { responsibleGroup: { hasSome: ownerGroups } },
-        ],
-      });
-    }
+    // if (!ownerUserGroup.exceptionalSatatus) {
+    //   whereAnd.push({
+    //     OR: [
+    //       { responsibleId: { hasSome: userid } },
+    //       { responsibleGroup: { hasSome: ownerGroups } },
+    //     ],
+    //   });
+    // }
     Logger.debug(whereAnd);
 
     const findCondition = {

@@ -31,11 +31,11 @@ export class CustomerProjectService {
     const ownerUserGroup = await this.accessService.getOwnerGroupByUserId(
       userid,
     );
-    const saleUsers = await this.accessService.getSaleUsersBySalePermission(
-      userid,
-    );
-    const engineerUsers =
-      await this.accessService.getEngineerUsersBySalePermission(userid);
+    // const saleUsers = await this.accessService.getSaleUsersBySalePermission(
+    //   userid,
+    // );
+    // const engineerUsers =
+    //   await this.accessService.getEngineerUsersBySalePermission(userid);
     const whereAnd = [];
     if (fdate && ldate) {
       whereAnd.push({
@@ -51,14 +51,14 @@ export class CustomerProjectService {
         ],
       });
     }
-    if (!ownerUserGroup.exceptionalSatatus) {
-      whereAnd.push({
-        OR: [
-          { saleId: { in: [...saleUsers, userid] } },
-          { projectManagerId: { in: [...engineerUsers, userid] } },
-        ],
-      });
-    }
+    // if (!ownerUserGroup.exceptionalSatatus) {
+    //   whereAnd.push({
+    //     OR: [
+    //       { saleId: { in: [...saleUsers, userid] } },
+    //       { projectManagerId: { in: [...engineerUsers, userid] } },
+    //     ],
+    //   });
+    // }
 
     const data = await this.customerProjectRepo.findMany({
       where: {

@@ -41,7 +41,6 @@ export class BookingRoomController {
     @Query('skip') skip?: number,
     @Query('take') take?: number,
   ) {
-    console.log(req.body.sub);
     if (skip !== undefined && take !== undefined) {
       return this.bookingRoomService.findMany(+skip, +take, req.body.sub);
     }

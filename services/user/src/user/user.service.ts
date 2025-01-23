@@ -39,13 +39,13 @@ export class UserService {
     return this.userRoleMapRepo.createMany(condition);
   }
 
-  async createUserGroupMapByUserId(data: Prisma.userGroupMapCreateManyInput[]) {
-    const condition = { data: data } as Prisma.userGroupMapCreateManyArgs;
-    return this.userGroupMapRepo.createMany(condition);
-  }
+  // async createUserGroupMapByUserId(data: Prisma.userGroupMapCreateManyInput[]) {
+  //   const condition = { data: data } as Prisma.userGroupMapCreateManyArgs;
+  //   return this.userGroupMapRepo.createMany(condition);
+  // }
 
   findAll() {
-    return this.usersRepo.findAll();
+    return this.usersRepo.findMany({ orderBy: { id: 'desc' } });
   }
 
   async findByCondition(condition: Prisma.usersFindManyArgs, userId: string) {
@@ -148,27 +148,27 @@ export class UserService {
       where: { userMapOrganizeGroupOwner: { some: { usersId: userId } } },
     });
     Logger.debug(permissionGroup);
-    let userList = [];
-    if (permissionGroup.saleUsersId.length > 0) {
-      userList = permissionGroup.saleUsersId;
-    } else if (permissionGroup.saleUserGroupId.length > 0) {
-      const allGroup = await this.findAllRelatedGroupRows(
-        permissionGroup.saleUserGroupId,
-      );
-      console.log('allGroup');
-      console.log(allGroup);
-      const groups = await this.userMapOrganizeGroupOwnerRepo.findMany({
-        where: { ownerGroupId: { in: allGroup } },
-      });
-      userList = groups.map((group) => group.usersId);
-    }
+    // let userList = [];
+    // if (permissionGroup.saleUsersId.length > 0) {
+    //   userList = permissionGroup.saleUsersId;
+    // } else if (permissionGroup.saleUserGroupId.length > 0) {
+    //   const allGroup = await this.findAllRelatedGroupRows(
+    //     permissionGroup.saleUserGroupId,
+    //   );
+    //   console.log('allGroup');
+    //   console.log(allGroup);
+    //   const groups = await this.userMapOrganizeGroupOwnerRepo.findMany({
+    //     where: { ownerGroupId: { in: allGroup } },
+    //   });
+    //   userList = groups.map((group) => group.usersId);
+    // }
 
-    return this.usersRepo.findByCondition({
-      where: {
-        userId: { in: userList },
-      },
-      select: { userId: true, firstNameTh: true, lastNameTh: true },
-    });
+    // return this.usersRepo.findByCondition({
+    //   where: {
+    //     userId: { in: userList },
+    //   },
+    //   select: { userId: true, firstNameTh: true, lastNameTh: true },
+    // });
   }
 
   async update(userId: string, data: Prisma.usersUpdateInput) {
@@ -202,12 +202,12 @@ export class UserService {
     return await this.userRoleMapRepo.deleteMany(condition);
   }
 
-  async removeUserGroupMapByUserId(userId: string, organizedGroupId: string) {
-    const condition = {
-      where: { userId: userId, organizedGroupId: organizedGroupId },
-    } as Prisma.userGroupMapDeleteManyArgs;
-    return await this.userGroupMapRepo.deleteMany(condition);
-  }
+  // async removeUserGroupMapByUserId(userId: string, organizedGroupId: string) {
+  //   const condition = {
+  //     where: { userId: userId, organizedGroupId: organizedGroupId },
+  //   } as Prisma.userGroupMapDeleteManyArgs;
+  //   return await this.userGroupMapRepo.deleteMany(condition);
+  // }
 
   async setDef() {
     const saltOrRounds = 10;
@@ -363,19 +363,7 @@ export class UserService {
       },
     });
   }
-  async findHeaderUserByUserId(userId: string) {
-    const headerGroupIds = await this.accessService.getHeaderGroupIdByUserId(
-      userId,
-      'overtime',
-    );
-    const headers = await this.userGroupRepo.findByCondition({
-      where: { headId: { in: headerGroupIds } },
-    });
-    const headerIds = headers.map((header) => header.headId);
-    return await this.usersRepo.findByCondition({
-      where: { userId: { in: headerIds } },
-    });
-  }
+  // async findHeaderUreturn await this.userService.findHeaderUserByUserId(userId);
   async getPermissionByUserId(userId: string) {
     const resViewOrganizeIdGroupId =
       await this.userMapOrganizeGroupRepo.findMany({

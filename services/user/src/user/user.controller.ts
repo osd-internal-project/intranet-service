@@ -142,33 +142,33 @@ export class UserController {
     }
   }
 
-  @Post('set-user-group-map')
-  async setUserGroupMap(
-    @Body('userId') userId: string,
-    @Body('organizedGroupId') organizedGroupId: string,
-    @Body('ownerGroupId') ownerGroupId: string,
-    @Body('group') group: string[],
-  ) {
-    if (userId && group) {
-      await this.userService.removeUserGroupMapByUserId(
-        userId,
-        organizedGroupId,
-      );
-      const ownerCondition = {
-        ownerGroupId: ownerGroupId,
-      } as Prisma.usersUpdateInput;
-      await this.userService.update(userId, ownerCondition);
+  // @Post('set-user-group-map')
+  // async setUserGroupMap(
+  //   @Body('userId') userId: string,
+  //   @Body('organizedGroupId') organizedGroupId: string,
+  //   @Body('ownerGroupId') ownerGroupId: string,
+  //   @Body('group') group: string[],
+  // ) {
+  //   if (userId && group) {
+  //     await this.userService.removeUserGroupMapByUserId(
+  //       userId,
+  //       organizedGroupId,
+  //     );
+  //     const ownerCondition = {
+  //       ownerGroupId: ownerGroupId,
+  //     } as Prisma.usersUpdateInput;
+  //     await this.userService.update(userId, ownerCondition);
 
-      const mapGroup = group.map((item) => ({
-        userId: userId,
-        userGroupId: item,
-        organizedGroupId: organizedGroupId,
-      }));
-      return await this.userService.createUserGroupMapByUserId(mapGroup);
-    } else {
-      throw new HttpException('ผิดพลาด', HttpStatus.BAD_REQUEST);
-    }
-  }
+  //     const mapGroup = group.map((item) => ({
+  //       userId: userId,
+  //       userGroupId: item,
+  //       organizedGroupId: organizedGroupId,
+  //     }));
+  //     return await this.userService.createUserGroupMapByUserId(mapGroup);
+  //   } else {
+  //     throw new HttpException('ผิดพลาด', HttpStatus.BAD_REQUEST);
+  //   }
+  // }
 
   @Post('/find-duplicate-username')
   findDuplicateUserame(
@@ -272,10 +272,10 @@ export class UserController {
   findOrganizeuserByUserid(@Param('userId') userId: string) {
     return this.userService.findOrganizeuserByUserid(userId);
   }
-  @Get('find-sale-user-by-sale-permission/:userid')
-  findSaleUserBySalePermission(@Param('userid') userId: string) {
-    return this.userService.findSaleUserBySalePermission(userId);
-  }
+  // @Get('find-sale-user-by-sale-permission/:userid')
+  // findSaleUserBySalePermission(@Param('userid') userId: string) {
+  //   return this.userService.findSaleUserBySalePermission(userId);
+  // }
   @Get('find-same-and-lower-users-by-ownergroup')
   findUsersSameAndLowersByOwnergroup(
     @Query() group: { [key: string]: string },
@@ -287,11 +287,11 @@ export class UserController {
     return this.userService.findUserInOnwerGroupByUserGroupId(userGroupId);
   }
 
-  @Get('header-user-by-userid/:userid')
-  // @UseInterceptors(UserInterceptor)
-  async findHeaderUserByUserId(@Param('userid') userId: string) {
-    return await this.userService.findHeaderUserByUserId(userId);
-  }
+  // @Get('header-user-by-userid/:userid')
+  // // @UseInterceptors(UserInterceptor)
+  // async findHeaderUserByUserId(@Param('userid') userId: string) {
+  //   return await this.userService.findHeaderUserByUserId(userId);
+  // }
 
   @Patch()
   update(
