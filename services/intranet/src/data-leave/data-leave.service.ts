@@ -26,7 +26,7 @@ export class DataLeaveService {
   ) {}
 
   async create(condition: Prisma.dataLeaveCreateArgs) {
-    // const leaveLetter = await this.dataleaveRepo.create(condition);
+    const leaveLetter = await this.dataleaveRepo.create(condition);
     // const userDetail = await this.userRepo.findOne({
     //   where: { userId: leaveLetter.userId },
     // });
@@ -43,26 +43,59 @@ export class DataLeaveService {
     //     },
     //   });
     // }
-    // return leaveLetter;
+    return leaveLetter;
   }
   findAll() {
     return this.dataleaveRepo.findAll();
   }
 
-  findOne(id: number) {
-    return this.dataleaveRepo.findOne({ where: { id: id } });
+  findOne(userId: string) {
+    return this.dataleaveRepo.findOne({ where: { userId: userId } });
   }
 
-  async findMany(userId: string) {
-    // const UserIdArray =
-    //   await this.accessService.getLeaveAccessedUsersByHeaderUserId(userId);
-
+  async findMany(params: any) {
+    let whereConditions = [];
+    if (params.userId) {
+      whereConditions = [...whereConditions, { userId: params.userId }];
+    }
+    if (params.TypeId) {
+      whereConditions = [...whereConditions, { typeId: +params.TypeId }];
+    }
+    if (params.startDate) {
+      whereConditions = [
+        ...whereConditions,
+        {
+          startDate: {
+            gte: dayjs(params.startDate).startOf('day').toDate(),
+            lte: dayjs(params.startDate).endOf('day').toDate(),
+          },
+        },
+      ];
+    }
+    if (params.endDate) {
+      whereConditions = [
+        ...whereConditions,
+        {
+          endDate: {
+            gte: dayjs(params.startDate).startOf('day').toDate(),
+            lte: dayjs(params.startDate).endOf('day').toDate(),
+          },
+        },
+      ];
+    }
+    if (params.startTime) {
+      whereConditions = [...whereConditions, { startTime: params.startTime }];
+    }
+    if (params.endTime) {
+      whereConditions = [...whereConditions, { endTime: params.endTime }];
+    }
+    if (params.startDate) {
+      whereConditions = [...whereConditions, { status: { not: 'cancel' } }];
+    }
     return await this.dataleaveRepo.findMany({
-      // where: {
-      //   userId: {
-      //     in: UserIdArray,
-      //   },
-      // },
+      where: {
+        AND: whereConditions,
+      },
       orderBy: {
         id: 'desc',
       },
@@ -72,7 +105,7 @@ export class DataLeaveService {
   async findGroup(userId: string) {
     const getUser = await this.usersRepo.findOne({ where: { userId: userId } });
     const AccessedGroup = await this.accessService.getAccessedGroupByGroupId(
-      ModuleTypes.INTRANET_APPROVE_LEAVE,
+      ModuleTypes.INTRANET,
       getUser.ownerGroupId,
     );
     return await this.dataleaveRepo.findMany({

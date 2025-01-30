@@ -40,5 +40,8 @@
       "libs/*",
       "infra"
     ]
-  }
+  },
+  "main": "index.js",
+  "repository": "https://github.com/osd-internal-project/intranet-service.git",
+  "author": "lRVASl <osddev2023@gmail.com>"
 }

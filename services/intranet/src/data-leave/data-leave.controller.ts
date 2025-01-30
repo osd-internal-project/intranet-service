@@ -33,6 +33,11 @@ export class DataLeaveController {
     return this.dataLeaveService.findManyByCondition(params);
   }
 
+  @Get('check-data-range')
+  findMany(@Query() params: any) {
+    return this.dataLeaveService.findMany(params);
+  }
+
   @Get('leave-header')
   @UseInterceptors(UserInterceptor)
   findLeaveByUserId(@Req() req) {
@@ -44,14 +49,9 @@ export class DataLeaveController {
     return this.dataLeaveService.findGroup(userId);
   }
 
-  @Get(':userId')
-  findMany(@Param('userId') userId: string) {
-    return this.dataLeaveService.findMany(userId);
-  }
-
-  @Get('/:id')
-  findOne(@Param('id') id: string) {
-    return this.dataLeaveService.findOne(+id);
+  @Get('/:userId')
+  findOne(@Param('userId') userId: string) {
+    return this.dataLeaveService.findOne(userId);
   }
 
   @Get(`find-detail-type-leave-by-userId/:userId`)

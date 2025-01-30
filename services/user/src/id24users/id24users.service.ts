@@ -292,7 +292,7 @@ export class UsersService {
             groupName: true,
           },
         },
-
+        startWork: true,
         dataModule: true,
       },
       orderBy: { id: 'asc' },
