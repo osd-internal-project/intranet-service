@@ -133,4 +133,4 @@ export * from './venderType.repository';
 export * from './overtime.repository';
 export * from './masterConfigTimeOt.repository';
 
-export * from './masterrefreshment.repository';
+export * from './masterRefreshment.repository';
