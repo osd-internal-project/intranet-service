@@ -40,9 +40,10 @@ export class BookingRoomController {
     @Req() req,
     @Query('skip') skip?: number,
     @Query('take') take?: number,
+    @Query('role') role?: string,
   ) {
     if (skip !== undefined && take !== undefined) {
-      return this.bookingRoomService.findMany(+skip, +take, req.body.sub);
+      return this.bookingRoomService.findMany(+skip, +take, req.body.sub ,role);
     }
     return this.bookingRoomService.findAll(req.body.sub);
   }
