@@ -14,8 +14,8 @@ export class SlideImageService {
     });
   }
 
-  findorder() {
-    return this.slideImageRepository.findMany({
+  async findorder() {
+    return await this.slideImageRepository.findMany({
       orderBy: {
         order: 'asc',
       },

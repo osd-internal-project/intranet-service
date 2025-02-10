@@ -192,6 +192,7 @@ export class UsersService {
         positionId: true,
         ownerGroupId: true,
         ownerGroup: { select: { groupId: true, groupName: true } },
+        startWork: true,
       },
       skip: +query.skip,
       take: +query.take,
@@ -358,6 +359,7 @@ export class UsersService {
             masterPosition: {
               connect: { posId: createUserDto.masterPositionId },
             },
+            startWork: createUserDto.startWork,
             // userMapOrganizeChart: {
             //   createMany: {
             //     data: {
