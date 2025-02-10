@@ -17,6 +17,7 @@ export class CreateUserDto {
   groupList: string[];
   ownerGroupId: string;
   ldapQuery?: string;
+  startWork?: Date;
 }
 
 export class CreateUserId24Dto {

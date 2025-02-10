@@ -49,7 +49,6 @@ export class handbookFileController {
       throw new Error('File is undefined');
     }
 
-    console.log(file.path);
     const data = {
       fileName: body.fileName,
       filetype: body.filetype,
@@ -100,8 +99,11 @@ export class handbookFileController {
         where: { handbookid: +handbookid },
       });
       const filesPath = join(`${file.fileLocation}`);
-      res.sendFile(`${filesPath}`, { root: './' });
+      console.log(filesPath);
+      return res.sendFile(`${filesPath}`, { root: './' });
     } catch (error) {
+      console.log(error);
+
       res
         .status(404)
         .sendFile('path/to/default/files.jpg', { root: './public' });
