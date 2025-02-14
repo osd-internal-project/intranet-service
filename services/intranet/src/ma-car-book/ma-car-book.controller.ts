@@ -34,6 +34,7 @@ export class MaCarBookController {
   }
 
   @Get('approve/:skip/:take')
+  @UseInterceptors(UserInterceptor)
   findManyWithTakeSkipBuApprove(
     @Req() req,
     @Param('skip') skip: string,
@@ -54,6 +55,7 @@ export class MaCarBookController {
   }
 
   @Get(':skip/:take')
+  @UseInterceptors(UserInterceptor)
   findManyWithTakeSkip(
     @Req() req,
     @Param('skip') skip: string,

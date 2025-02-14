@@ -76,7 +76,6 @@ export class MaCarBookService {
         skip: skip,
         take: take,
       });
-
       const count = await this.maCarBookRepository.count({});
       return { docs: data, total: count };
     } else {
