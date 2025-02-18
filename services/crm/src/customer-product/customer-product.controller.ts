@@ -63,12 +63,15 @@ export class CustomerProductController {
   ) {
     return this.customerProductService.findByCustomer(+customerId, search);
   }
-  @Get('/find-by-branch/:branchId')
-  findByBranch(
-    @Param('branchId') branchId: string,
+  @Get('/find-by-customer-sub/:id')
+  findByCustomerDetailSub(
+    @Param('customerDetailSubId') customerDetailSubId: string,
     @Query('search') search: any,
   ) {
-    return this.customerProductService.findByBranch(+branchId, search);
+    return this.customerProductService.findByCustomerDetailSub(
+      +customerDetailSubId,
+      search,
+    );
   }
   @Get(':id')
   findOneById(@Param('id') id: string) {

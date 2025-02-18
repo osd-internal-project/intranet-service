@@ -1245,7 +1245,7 @@ CREATE TABLE "customer_project" (
     "sale_manager_name" VARCHAR(150),
     "sale_id" VARCHAR(50),
     "sale_name" VARCHAR(150),
-    "customerBranchId" INTEGER,
+    "customerDetailSubId" INTEGER,
     "related_group_id" TEXT[],
     "related_users_id" TEXT[],
     "description" TEXT,
@@ -2053,7 +2053,7 @@ ALTER TABLE "customer_detail_sub" ADD CONSTRAINT "customer_detail_sub_customer_d
 ALTER TABLE "customers_files" ADD CONSTRAINT "customers_files_customer_project_ticket_id_fkey" FOREIGN KEY ("customer_project_ticket_id") REFERENCES "customer_project_ticket"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "customer_project" ADD CONSTRAINT "customer_project_customerBranchId_fkey" FOREIGN KEY ("customerBranchId") REFERENCES "customer_branch"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "customer_project" ADD CONSTRAINT "customer_project_customerDetailSubId_fkey" FOREIGN KEY ("customerDetailSubId") REFERENCES "customer_branch"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "customer_project" ADD CONSTRAINT "customer_project_contract_company_id_fkey" FOREIGN KEY ("contract_company_id") REFERENCES "contract_company"("id") ON DELETE SET NULL ON UPDATE CASCADE;

@@ -31,7 +31,16 @@ export class CustomerGroupService {
       ...(take && skip && { take: +take, skip: +skip }),
       orderBy: { createdAt: 'asc' },
     });
-    const count = await this.customerGroupRepo.count({});
+    const count = await this.customerGroupRepo.count({
+      where: {
+        ...(customerGroupCode && {
+          customerGroupCode: { contains: customerGroupCode },
+        }),
+        ...(customerGroupName && {
+          customerGroupName: { contains: customerGroupName },
+        }),
+      },
+    });
     return { data: data, count: count };
   }
 

@@ -8,10 +8,13 @@ import {
   Delete,
   Logger,
   Query,
+  UseInterceptors,
+  Req,
 } from '@nestjs/common';
 import { CustomerDetailService } from './customer-detail.service';
 import { Prisma } from '@prisma/client';
 import { sentMail } from '../utils/sent-mail';
+import { UserInterceptor } from '@inventory/share';
 @Controller('customer-detail')
 export class CustomerDetailController {
   constructor(private readonly customerDetailService: CustomerDetailService) {}
@@ -22,6 +25,7 @@ export class CustomerDetailController {
   }
   @Post()
   create(@Body() createCustomerDetailDto: Prisma.customerDetailCreateInput) {
+    Logger.debug(createCustomerDetailDto);
     return this.customerDetailService.create(createCustomerDetailDto);
   }
   @Get('many')
@@ -33,8 +37,13 @@ export class CustomerDetailController {
     return this.customerDetailService.findDatatable(search);
   }
   @Get(`list-by-customer-group/:id`)
-  findListByCustomerGroup(@Param('id') id: string) {
-    return this.customerDetailService.findListByCustomerGroup(+id);
+  @UseInterceptors(UserInterceptor)
+  findListByCustomerGroup(@Param('id') id: string, @Req() req) {
+    console.log(req.body.sub);
+    return this.customerDetailService.findListByCustomerGroup(
+      +id,
+      req.body.sub,
+    );
   }
 
   // @Get('range-event')

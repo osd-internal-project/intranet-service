@@ -31,21 +31,39 @@ export class CustomerDetailSubController {
   findMany(@Query() query: object) {
     return this.customerDetailSubService.findMany({});
   }
-  @Get('/find-by-customer-id/:id')
-  findByCustomerId(@Param('id') id: string) {
-    return this.customerDetailSubService.findByCustomerId(+id);
+
+  @Get('/detail/:id')
+  findDetailById(@Param('id') id: string) {
+    return this.customerDetailSubService.findDetailById(+id);
   }
   @Get('/detail-list-by-customer/:customerId')
-  findDetailListByCustomerId(@Param('customerId') customerId: string) {
+  findDetailListByCustomerId(
+    @Param('customerId') customerId: string,
+    @Query('search') search: Prisma.customerDetailSubWhereInput,
+  ) {
     return this.customerDetailSubService.findDetailListByCustomerId(
       +customerId,
+      search,
     );
+  }
+  @Get('/detail-list-by-customer-sub/:customerSubId')
+  findDetailListByCustomerSubId(
+    @Param('customerSubId') customerSubId: string,
+    @Query() query: Prisma.customerDetailSubWhereInput,
+  ) {
+    return this.customerDetailSubService.findDetailListByCustomerSubId(
+      +customerSubId,
+      query,
+    );
+  }
+  @Get('customer-project/:id')
+  findCustomerProjectBycustomerDetailSubId(@Param('id') id: string) {
+    return this.customerDetailSubService.findCustomerProjectBycustomerId(+id);
   }
   @Get(':id')
   findOneById(@Param('id') id: string) {
     return this.customerDetailSubService.findOneById(+id);
   }
-
   @Patch(':id')
   update(
     @Param('id') id: string,

@@ -10,6 +10,7 @@ import {
   UserMapOrganizeChartRepository,
   OrganizedChartRepository,
   UserGroupRepository,
+  ModuleTypes,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
@@ -128,47 +129,20 @@ export class UserService {
       where: { userId: resUserMapOrganizeChartRepo.userId },
     });
   }
-  async findOrganizeuserByUserid(userId: string) {
-    const organize = await this.userMapOrganizeGroupOwnerRepo.findOne({
-      where: { usersId: userId },
-    });
 
-    return this.usersRepo.findByCondition({
-      where: {
-        userMapOrganizeGroupOwner: {
-          some: { organizedId: organize.organizedId },
-        },
-      },
-      select: { userId: true, firstNameTh: true, lastNameTh: true },
-    });
+  async findEngineerUsersByEngineerPermission(token: string) {
+    const user = await this.usersRepo.findOne({ where: { token: token } });
+    return await this.accessService.getAccessedUsersByUserId(
+      ModuleTypes.CRM_ENGINEER_PROJECT,
+      user.userId,
+    );
   }
-  async findSaleUserBySalePermission(userId: string) {
-    Logger.debug(userId);
-    const permissionGroup = await this.userGroupRepo.findOne({
-      where: { userMapOrganizeGroupOwner: { some: { usersId: userId } } },
-    });
-    Logger.debug(permissionGroup);
-    // let userList = [];
-    // if (permissionGroup.saleUsersId.length > 0) {
-    //   userList = permissionGroup.saleUsersId;
-    // } else if (permissionGroup.saleUserGroupId.length > 0) {
-    //   const allGroup = await this.findAllRelatedGroupRows(
-    //     permissionGroup.saleUserGroupId,
-    //   );
-    //   console.log('allGroup');
-    //   console.log(allGroup);
-    //   const groups = await this.userMapOrganizeGroupOwnerRepo.findMany({
-    //     where: { ownerGroupId: { in: allGroup } },
-    //   });
-    //   userList = groups.map((group) => group.usersId);
-    // }
-
-    // return this.usersRepo.findByCondition({
-    //   where: {
-    //     userId: { in: userList },
-    //   },
-    //   select: { userId: true, firstNameTh: true, lastNameTh: true },
-    // });
+  async findSaleUserBySalePermission(token: string) {
+    const user = await this.usersRepo.findOne({ where: { token: token } });
+    return await this.accessService.getAccessedUsersByUserId(
+      ModuleTypes.CRM_SALE_PROJECT,
+      user.userId,
+    );
   }
 
   async update(userId: string, data: Prisma.usersUpdateInput) {

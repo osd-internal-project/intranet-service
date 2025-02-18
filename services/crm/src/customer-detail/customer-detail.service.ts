@@ -15,6 +15,8 @@ import {
   ExpenseTypeRepository,
   ContractCompanyRepository,
   CustomerProjectRepository,
+  ModuleTypes,
+  UsersRepository,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 @Injectable()
@@ -34,30 +36,35 @@ export class CustomerDetailService {
     private readonly expenseTypeRepo: ExpenseTypeRepository,
     private readonly customerProjectRepo: CustomerProjectRepository,
     //User
-    private readonly userMapOrganizeGroupOwnerRepo: UserMapOrganizeGroupOwnerRepository,
+    private readonly usersRepo: UsersRepository,
     private readonly accessService: AccessService,
   ) {}
 
   async create(data: Prisma.customerDetailCreateInput) {
-    const responsible = data.responsible as any;
-    let responsibleGroup = [];
-    if (responsible) {
-      const userids = responsible.map(
-        (data: { uid: string; name: string }) => data.uid,
-      );
-      if (userids && userids.length > 0) {
-        const group = await this.userMapOrganizeGroupOwnerRepo.findMany({
-          where: { usersId: { in: userids } },
-        });
+    try {
+      const responsible = data.responsible as any;
+      let responsibleGroup = [];
+      if (responsible) {
+        const userids = responsible.map(
+          (data: { uid: string; name: string }) => data.uid,
+        );
+        if (userids && userids.length > 0) {
+          const responsibleUsers = await this.usersRepo.findMany({
+            where: { userId: { in: userids } },
+          });
 
-        responsibleGroup = group.map((data) => data.ownerGroupId);
+          responsibleGroup = responsibleUsers.map((data) => data.ownerGroupId);
+        }
       }
-    }
-    const condition = {
-      data: { ...data, responsibleGroup: responsibleGroup },
-    } as Prisma.customerDetailCreateArgs;
+      const condition = {
+        data: { ...data, responsibleGroup: responsibleGroup },
+      } as Prisma.customerDetailCreateArgs;
 
-    return this.customerDetailRepo.create(condition);
+      return this.customerDetailRepo.create(condition);
+    } catch (error) {
+      Logger.error(error);
+      return error;
+    }
   }
 
   findAll() {
@@ -95,83 +102,101 @@ export class CustomerDetailService {
   }
 
   async findDatatable(search: any) {
-    const { customerName, referenceCode, branchName, productName, userid } =
-      search || {};
-    // const { take, skip, userid } = query;
-    Logger.debug(search);
-    const ownerGroups = await this.accessService.getOwnerGroupId(userid);
-    const ownerUserGroup = await this.accessService.getOwnerGroupByUserId(
-      userid,
-    );
-    const whereAnd = [];
-    if (customerName) {
-      whereAnd.push({
-        OR: [
-          {
-            customerNameTh: { contains: customerName },
+    try {
+      const {
+        customerName,
+        referenceCode,
+        customerSubName,
+        productName,
+        userid,
+        customerGroupId,
+      } = search || {};
+      // const { take, skip, userid } = query;
+      Logger.debug(search);
+      const accessGroups = await this.accessService.getAccessedGroupByUserId(
+        ModuleTypes.CRM_SALE_PROJECT,
+        userid,
+      );
+      const accessGroupIds = accessGroups.map((group) => group.groupId);
+      const whereAnd = [];
+      console.log(customerGroupId);
+      if (customerGroupId) {
+        whereAnd.push({
+          customerGroupId: +customerGroupId,
+        });
+      }
+      if (customerName) {
+        whereAnd.push({
+          OR: [
+            {
+              customerNameTh: { contains: customerName },
+            },
+            {
+              customerNameEn: { contains: customerName },
+            },
+          ],
+        });
+      }
+      if (customerSubName) {
+        whereAnd.push({
+          customerDetailSub: {
+            some: { name: { contains: customerSubName } },
           },
-          {
-            customerNameEn: { contains: customerName },
-          },
-        ],
-      });
-    }
-    if (branchName) {
-      whereAnd.push({
-        customerBranch: {
-          some: { branchName: { contains: branchName } },
-        },
-      });
-    }
-    if (productName) {
-      whereAnd.push({
-        customerBranch: {
-          some: {
-            customerProject: {
-              some: {
-                customerProjectProductMap: {
-                  some: {
-                    customerProduct: { name: { contains: productName } },
+        });
+      }
+      if (productName) {
+        whereAnd.push({
+          customerDetailSub: {
+            some: {
+              customerProject: {
+                some: {
+                  customerProjectProductMap: {
+                    some: {
+                      customerProduct: { name: { contains: productName } },
+                    },
                   },
                 },
               },
             },
           },
-        },
-      });
-    }
-    if (referenceCode) {
-      referenceCode: {
-        contains: referenceCode;
+        });
       }
+      if (referenceCode) {
+        whereAnd.push({
+          referenceCode: {
+            contains: referenceCode,
+          },
+        });
+      }
+      const findCondition = {
+        where: {
+          ...(whereAnd.length > 0 && { AND: whereAnd }),
+          OR: [
+            { responsibleGroup: { hasSome: accessGroupIds } },
+            { responsibleId: { hasSome: userid } },
+          ],
+          deleteStatus: false,
+        },
+      } as Prisma.customerDetailFindManyArgs;
+
+      const countCondition = {
+        where: {
+          ...(whereAnd.length > 0 && { AND: whereAnd }),
+          OR: [
+            { responsibleGroup: { hasSome: accessGroupIds } },
+            { responsibleId: { hasSome: userid } },
+          ],
+          deleteStatus: false,
+        },
+      } as Prisma.customerDetailCountArgs;
+      const data = await this.customerDetailRepo.findMany(findCondition);
+      const count = await this.customerDetailRepo.count(countCondition);
+
+      return { data: data, count: count };
+    } catch (error) {
+      Logger.error(error);
+      return error;
     }
-    // if (!ownerUserGroup.exceptionalSatatus) {
-    //   whereAnd.push({
-    //     OR: [
-    //       { responsibleId: { hasSome: userid } },
-    //       { responsibleGroup: { hasSome: ownerGroups } },
-    //     ],
-    //   });
-    // }
-
-    const findCondition = {
-      where: {
-        ...(whereAnd.length > 0 && { AND: whereAnd }),
-
-        deleteStatus: false,
-      },
-    } as Prisma.customerDetailFindManyArgs;
-
-    const countCondition = {
-      where: {
-        ...(whereAnd.length > 0 && { AND: whereAnd }),
-        deleteStatus: false,
-      },
-    } as Prisma.customerDetailCountArgs;
-    const data = await this.customerDetailRepo.findMany(findCondition);
-    const count = await this.customerDetailRepo.count(countCondition);
-
-    return { data: data, count: count };
   }
   findActiveForProject() {
     return this.customerDetailRepo.findMany({
@@ -179,81 +204,7 @@ export class CustomerDetailService {
       orderBy: { createdAt: 'asc' },
     });
   }
-  async findDatatableBak(query: any) {
-    const {
-      refcode,
-      customerGroupId,
-      customername,
-      activestatus,
-      take,
-      skip,
-      userid,
-    } = query;
 
-    const ownerGroups = await this.accessService.getOwnerGroupId(userid);
-    const ownerUserGroup = await this.accessService.getOwnerGroupByUserId(
-      userid,
-    );
-    const whereAnd = [];
-    if (customername) {
-      whereAnd.push({
-        OR: [
-          { details: { path: ['details'], string_contains: customername } },
-          { details: { path: ['firstNameTh'], string_contains: customername } },
-          { details: { path: ['lastNameTh'], string_contains: customername } },
-          {
-            details: {
-              path: ['customerNameTh'],
-              string_contains: customername,
-            },
-          },
-          { details: { path: ['firstNameEn'], string_contains: customername } },
-          { details: { path: ['firstNameEn'], string_contains: customername } },
-          {
-            details: {
-              path: ['customerNameEn'],
-              string_contains: customername,
-            },
-          },
-        ],
-      });
-    }
-    // if (!ownerUserGroup.exceptionalSatatus) {
-    //   whereAnd.push({
-    //     OR: [
-    //       { responsibleId: { hasSome: userid } },
-    //       { responsibleGroup: { hasSome: ownerGroups } },
-    //     ],
-    //   });
-    // }
-    Logger.debug(whereAnd);
-
-    const findCondition = {
-      where: {
-        // ...(customerGroupId && { customerGroupId: customerGroupId }),
-        deleteStatus: false,
-        ...(refcode && { referenceCode: { contains: refcode } }),
-        ...(activestatus && { activeStatus: JSON.parse(activestatus) }),
-        ...(whereAnd.length > 0 && { AND: whereAnd }),
-      },
-      ...(take && { take: Number(take) }),
-      ...(skip && { skip: Number(skip) }),
-    } as Prisma.customerDetailFindManyArgs;
-
-    const countCondition = {
-      where: {
-        // ...(customerGroupId && { customerGroupId: customerGroupId }),
-        deleteStatus: false,
-        ...(refcode && { referenceCode: { contains: refcode } }),
-        ...(activestatus && { activeStatus: JSON.parse(activestatus) }),
-        ...(whereAnd.length > 0 && { AND: whereAnd }),
-      },
-    } as Prisma.customerDetailCountArgs;
-    const data = await this.customerDetailRepo.findMany(findCondition);
-    const count = await this.customerDetailRepo.count(countCondition);
-
-    return { data: data, count: count };
-  }
   findContractCompany() {
     return this.contractCompanyRepo.findMany({});
   }
@@ -275,8 +226,21 @@ export class CustomerDetailService {
       where: { activeStatus: true },
     });
   }
-  async findListByCustomerGroup(id: number) {
-    return this.customerDetailRepo.findMany({ where: { customerGroupId: id } });
+  async findListByCustomerGroup(id: number, token: string) {
+    console.log(id);
+    const user = await this.usersRepo.findOne({ where: { token: token } });
+    const accessUsers = await this.accessService.getAccessedGroupByUserId(
+      ModuleTypes.CRM_SALE_PROJECT,
+      user.userId,
+    );
+    console.log(accessUsers);
+    if (accessUsers.length > 0) {
+      return this.customerDetailRepo.findMany({
+        where: { customerGroup: { id: id } },
+      });
+    } else {
+      return [];
+    }
   }
   async findConfigForTicket() {
     const channelTypeList = await this.customerChannelTypeRepo.findMany({
@@ -311,17 +275,18 @@ export class CustomerDetailService {
 
   async update(id: number, data: Prisma.customerDetailUpdateInput) {
     const responsible = data.responsible as any;
+    Logger.debug({ id: id, data: data });
     let responsibleGroup = [];
     if (responsible) {
       const userids = responsible.map(
         (data: { uid: string; name: string }) => data.uid,
       );
       if (userids && userids.length > 0) {
-        const group = await this.userMapOrganizeGroupOwnerRepo.findMany({
-          where: { usersId: { in: userids } },
+        const responsibleUsers = await this.usersRepo.findMany({
+          where: { userId: { in: userids } },
         });
 
-        responsibleGroup = group.map((data) => data.ownerGroupId);
+        responsibleGroup = responsibleUsers.map((data) => data.ownerGroupId);
       }
     }
 
@@ -338,7 +303,7 @@ export class CustomerDetailService {
   async remove(id: number) {
     const project = await this.customerProjectRepo.findMany({
       where: {
-        customerBranch: { customerDetailSub: { customerDetailId: id } },
+        customerDetailSub: { customerDetailId: id },
       },
     });
     if (project) {

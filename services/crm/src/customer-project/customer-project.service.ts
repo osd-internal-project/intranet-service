@@ -69,13 +69,10 @@ export class CustomerProjectService {
       },
 
       include: {
-        customerBranch: {
+        customerDetailSub: {
           select: {
-            branchCode: true,
-            branchName: true,
-            customerDetailSub: {
-              select: { code: true, name: true },
-            },
+            code: true,
+            name: true,
             customerDetail: true,
           },
         },
@@ -102,13 +99,10 @@ export class CustomerProjectService {
       where: { id: id },
       include: {
         contractCompany: true,
-        customerBranch: {
+        customerDetailSub: {
           select: {
-            branchCode: true,
-            branchName: true,
-            customerDetailSub: {
-              select: { code: true, name: true },
-            },
+            code: true,
+            name: true,
             customerDetail: true,
           },
         },
@@ -124,7 +118,7 @@ export class CustomerProjectService {
       return this.customerProjectRepo.findMany({
         where: {
           customerProjectProductMap: { some: { customerProductId: productid } },
-          customerBranch: { customerDetail: { customerGroupId: parentid } },
+          customerDetailSub: { customerDetail: { customerGroupId: parentid } },
         },
         select: {
           id: true,
@@ -133,10 +127,9 @@ export class CustomerProjectService {
           createdAt: true,
           startDate: true,
           endDate: true,
-          customerBranch: {
+          customerDetailSub: {
             select: {
-              branchName: true,
-
+              name: true,
               customerDetail: {
                 select: {
                   customerNameTh: true,
@@ -152,7 +145,7 @@ export class CustomerProjectService {
       return this.customerProjectRepo.findMany({
         where: {
           customerProjectProductMap: { some: { customerProductId: productid } },
-          customerBranch: { customerDetailId: parentid },
+          customerDetailSub: { customerDetailId: parentid },
         },
         select: {
           id: true,
@@ -161,9 +154,9 @@ export class CustomerProjectService {
           createdAt: true,
           startDate: true,
           endDate: true,
-          customerBranch: {
+          customerDetailSub: {
             select: {
-              branchName: true,
+              name: true,
               customerDetail: {
                 select: {
                   customerNameTh: true,
@@ -175,11 +168,11 @@ export class CustomerProjectService {
           },
         },
       });
-    } else if (type === 'branch') {
+    } else if (type === 'customer-sub') {
       return this.customerProjectRepo.findMany({
         where: {
           customerProjectProductMap: { some: { customerProductId: productid } },
-          customerBranchId: parentid,
+          customerDetailSubId: parentid,
         },
         select: {
           id: true,
@@ -188,9 +181,9 @@ export class CustomerProjectService {
           createdAt: true,
           startDate: true,
           endDate: true,
-          customerBranch: {
+          customerDetailSub: {
             select: {
-              branchName: true,
+              name: true,
               customerDetail: {
                 select: {
                   details: true,

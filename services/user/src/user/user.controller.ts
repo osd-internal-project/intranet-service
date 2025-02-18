@@ -17,7 +17,7 @@ import {
   Req,
   Query,
 } from '@nestjs/common';
-import { AuthGuard } from '@inventory/share';
+import { AuthGuard, UserInterceptor } from '@inventory/share';
 import { UserService } from './user.service';
 import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
@@ -250,12 +250,12 @@ export class UserController {
 
   @Get('/upload-image/:userId')
   async getimage(@Param('userId') userId: any, @Res() res: Response) {
-    const { imageId } = await this.userService.findByUserId(userId);
+    const user = await this.userService.findByUserId(userId);
     let imagePath;
-    if (imageId === null) {
+    if (!user?.imageId) {
       imagePath = join(`${pathMountDirUpload}/default`, `emp-avatar.png`);
     } else {
-      imagePath = join(`${pathMountDirUpload}/users-image`, `${imageId}`);
+      imagePath = join(`${pathMountDirUpload}/users-image`, `${user?.imageId}`);
     }
     if (!fs.existsSync(imagePath)) {
       imagePath = join(`${pathMountDirUpload}/default`, `emp-avatar.png`);
@@ -267,15 +267,16 @@ export class UserController {
   dOwnerUserByPositionId(@Param('positionId') positionId: string) {
     return this.userService.findOwnerUserByPositionId(positionId);
   }
-
-  @Get('find-organize-user-by-userid/:userid')
-  findOrganizeuserByUserid(@Param('userId') userId: string) {
-    return this.userService.findOrganizeuserByUserid(userId);
+  @UseInterceptors(UserInterceptor)
+  @Get('find-users-form-engineerproject-module')
+  findEngineerUsersByEngineerPermission(@Req() req) {
+    return this.userService.findEngineerUsersByEngineerPermission(req.body.sub);
   }
-  // @Get('find-sale-user-by-sale-permission/:userid')
-  // findSaleUserBySalePermission(@Param('userid') userId: string) {
-  //   return this.userService.findSaleUserBySalePermission(userId);
-  // }
+  @UseInterceptors(UserInterceptor)
+  @Get('find-users-form-saleproject-module')
+  findSaleUserBySalePermission(@Req() req) {
+    return this.userService.findSaleUserBySalePermission(req.body.sub);
+  }
   @Get('find-same-and-lower-users-by-ownergroup')
   findUsersSameAndLowersByOwnergroup(
     @Query() group: { [key: string]: string },

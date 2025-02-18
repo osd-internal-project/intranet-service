@@ -9,6 +9,7 @@ export class CustomerProductService {
     private readonly accessService: AccessService,
   ) {}
   create(data: Prisma.customerProductCreateInput) {
+    Logger.debug(data);
     return this.customerProductRepo.create({ data: data });
   }
   findAll() {
@@ -42,7 +43,7 @@ export class CustomerProductService {
     });
   }
   findByCustomerGroup(customerGroupId: number, search: any) {
-    const { productName, customerName, referenceCode, branchName } =
+    const { productName, customerName, referenceCode, customerSubName } =
       search || {};
     return this.customerProductRepo.findMany({
       where: {
@@ -50,8 +51,10 @@ export class CustomerProductService {
         customerProjectProductMap: {
           some: {
             customerProject: {
-              customerBranch: {
-                ...(branchName && { branchName: { contains: branchName } }),
+              customerDetailSub: {
+                ...(customerSubName && {
+                  name: { contains: customerSubName },
+                }),
                 customerDetail: {
                   ...(customerName && {
                     OR: [
@@ -70,7 +73,7 @@ export class CustomerProductService {
     });
   }
   findByCustomer(customerId: number, search: any) {
-    const { productName, customerName, referenceCode, branchName } =
+    const { productName, customerName, referenceCode, customerSubName } =
       search || {};
     return this.customerProductRepo.findMany({
       where: {
@@ -78,9 +81,9 @@ export class CustomerProductService {
         customerProjectProductMap: {
           some: {
             customerProject: {
-              customerBranch: {
+              customerDetailSub: {
                 customerDetailId: customerId,
-                ...(branchName && { branchName: { contains: branchName } }),
+                ...(customerSubName && { name: { contains: customerSubName } }),
                 customerDetail: {
                   ...(customerName && {
                     OR: [
@@ -97,8 +100,8 @@ export class CustomerProductService {
       },
     });
   }
-  findByBranch(branchId: number, search: any) {
-    const { productName, customerName, referenceCode, branchName } =
+  findByCustomerDetailSub(customerDetailSubId: number, search: any) {
+    const { productName, customerName, referenceCode, customerSubName } =
       search || {};
 
     return this.customerProductRepo.findMany({
@@ -107,9 +110,9 @@ export class CustomerProductService {
         customerProjectProductMap: {
           some: {
             customerProject: {
-              customerBranchId: branchId,
-              customerBranch: {
-                ...(branchName && { branchName: { contains: branchName } }),
+              customerDetailSubId: customerDetailSubId,
+              customerDetailSub: {
+                ...(customerSubName && { name: { contains: customerSubName } }),
                 customerDetail: {
                   ...(customerName && {
                     OR: [

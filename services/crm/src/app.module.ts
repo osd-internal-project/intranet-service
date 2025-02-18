@@ -7,7 +7,6 @@ import { RequestLoggerMiddleware } from './middleware/request-logger.middleware'
 import { CustomerDetailModule } from './customer-detail/customer-detail.module';
 import { CustomerTypeGroupModule } from './customer-type-group/customer-type-group.module';
 import { CustomerFilesModule } from './customer-files/customer-files.module';
-import { CustomerBranchModule } from './customer-branch/customer-branch.module';
 import { CustomerAddressModule } from './customer-address/customer-address.module';
 import { CustomerContactModule } from './customer-contact/customer-contact.module';
 import { CustomerProjectTaskModule } from './customer-project-task/customer-project-task.module';
@@ -17,16 +16,17 @@ import { TicketHistoryLogsModule } from './ticket-history-logs/ticket-history-lo
 import { CustomerDetailSubModule } from './customer-detail-sub/customer-detail-sub.module';
 import { CustomerProductModule } from './customer-product/customer-product.module';
 import { CustomerGroupModule } from './customer-group/customer-group.module';
+import { CustomerTypeModule } from './customer-type/customer-type.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
     CustomerAddressModule,
-    CustomerBranchModule,
     CustomerContactModule,
     CustomerGroupModule,
     CustomerDetailModule,
     CustomerDetailSubModule,
+    CustomerTypeModule,
     CustomerTypeGroupModule,
     CustomerFilesModule,
     CustomerProductModule,
