@@ -7,6 +7,7 @@ import { Id24Service, IdCheckingData } from 'src/id24/id24.service';
 import config from '../configs';
 import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { promises as fs } from 'fs';
 const { masterGroupId24 } = config();
 
 @Injectable()
@@ -193,6 +194,7 @@ export class UsersService {
         ownerGroupId: true,
         ownerGroup: { select: { groupId: true, groupName: true } },
         startWork: true,
+        imageId: true,
       },
       skip: +query.skip,
       take: +query.take,
@@ -295,9 +297,32 @@ export class UsersService {
         },
         startWork: true,
         dataModule: true,
+        imageId: true,
       },
       orderBy: { id: 'asc' },
     });
+  }
+
+  async updateImage(userId: string, imageId: string) {
+    const user = await this.usersRepo.findOne({ where: { userId: userId } });
+    if (user.imageId && imageId) {
+      console.log(imageId);
+      console.log(user.imageId);
+
+      console.log('Deleting old image:', user.imageId);
+      await fs.unlink(
+        `${process.env.PATH_MOUNTDIR_UPLOAD}/users-image/${user.imageId}`,
+      );
+      console.log('Old image deleted successfully');
+    }
+    if (user) {
+      return await this.usersRepo.update({
+        where: { userId: user.userId },
+        data: {
+          imageId: imageId ? imageId : null,
+        },
+      });
+    }
   }
 
   async update(userId: string, createUserDto: UpdateUserDto) {
@@ -339,7 +364,8 @@ export class UsersService {
       //     createUserDto.activeStatus,
       //   );
       const user = await this.usersRepo.findOne({ where: { userId: userId } });
-      Logger.debug(createUserDto.ownerGroupId);
+      console.log(user);
+
       if (user) {
         return await this.usersRepo.update({
           where: { userId: user.userId },
@@ -360,14 +386,6 @@ export class UsersService {
               connect: { posId: createUserDto.masterPositionId },
             },
             startWork: createUserDto.startWork,
-            // userMapOrganizeChart: {
-            //   createMany: {
-            //     data: {
-            //       positionId: createUserDto.departmentId,
-            //     },
-            //     skipDuplicates: true,
-            //   },
-            // },
           },
         });
       }
