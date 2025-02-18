@@ -34,6 +34,7 @@ import { query, Response } from 'express';
 import * as fs from 'fs';
 
 const pathMountDirUpload = config().pathMountDirUpload;
+
 @Controller('user')
 export class UserController {
   constructor(
@@ -250,12 +251,12 @@ export class UserController {
 
   @Get('/upload-image/:userId')
   async getimage(@Param('userId') userId: any, @Res() res: Response) {
-    const { imageId } = await this.userService.findByUserId(userId);
+    const user = await this.userService.findByUserId(userId);
     let imagePath;
-    if (imageId === null) {
+    if (!user?.imageId) {
       imagePath = join(`${pathMountDirUpload}/default`, `emp-avatar.png`);
     } else {
-      imagePath = join(`${pathMountDirUpload}/users-image`, `${imageId}`);
+      imagePath = join(`${pathMountDirUpload}/users-image`, `${user?.imageId}`);
     }
     if (!fs.existsSync(imagePath)) {
       imagePath = join(`${pathMountDirUpload}/default`, `emp-avatar.png`);

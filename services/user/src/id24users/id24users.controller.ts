@@ -99,23 +99,24 @@ export class UsersController {
   @Get('getImages')
   @UseInterceptors(UserInterceptor)
   async getimages(@Res() res: Response, @Req() req: any) {
-    const token = req.body.sub;
-    const user = await this.usersService.findByToken(token);
-    let imagePath = '';
-    if (!user.imageId) {
-      return res.status(404).json({ message: 'Image not found' });
-    }
-    imagePath = join(
-      `${config.pathMountDirUpload}/users-image`,
-      `${user.imageId}`,
-    );
-    if (!fs.existsSync(imagePath)) {
+    try {
+      const token = req.body.sub;
+      const user = await this.usersService.findByToken(token);
+      let imagePath = '';
       imagePath = join(
-        `${config.pathMountDirUpload}/default`,
-        `emp-avatar.png`,
+        `${config.pathMountDirUpload}/users-image`,
+        `${user.imageId}`,
       );
+      if (!fs.existsSync(imagePath)) {
+        imagePath = join(
+          `${config.pathMountDirUpload}/default`,
+          `emp-avatar.png`,
+        );
+      }
+      return res.sendFile(imagePath);
+    } catch (err) {
+      console.log(err);
     }
-    return await res.sendFile(imagePath, { root: './' });
   }
 
   @Get('findByToken')
