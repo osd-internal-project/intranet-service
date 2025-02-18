@@ -34,6 +34,7 @@ import { query, Response } from 'express';
 import * as fs from 'fs';
 
 const pathMountDirUpload = config().pathMountDirUpload;
+
 @Controller('user')
 export class UserController {
   constructor(
