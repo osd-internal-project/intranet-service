@@ -1,5 +1,9 @@
-import { AccessService, CustomerProjectRepository } from '@inventory/share';
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  AccessService,
+  CustomerProjectRepository,
+  ModuleTypes,
+} from '@inventory/share';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
@@ -8,8 +12,16 @@ export class CustomerProjectService {
     private readonly customerProjectRepo: CustomerProjectRepository,
     private readonly accessService: AccessService,
   ) {}
-  create(data: Prisma.customerProjectCreateInput) {
-    return this.customerProjectRepo.create({ data: data });
+  create(
+    data: Prisma.customerProjectCreateInput,
+    productDetails: Prisma.customerProjectProductMapCreateManyCustomerProjectInput[],
+  ) {
+    return this.customerProjectRepo.create({
+      data: {
+        ...data,
+        customerProjectProductMap: { createMany: { data: productDetails } },
+      },
+    });
   }
   findAll() {
     return this.customerProjectRepo.findAll();
@@ -17,25 +29,23 @@ export class CustomerProjectService {
   findMany(condition: Prisma.customerProjectFindManyArgs) {
     return this.customerProjectRepo.findMany(condition);
   }
-  async findDatatable(query: any) {
-    const {
-      projectname,
-      productname,
-      projectcode,
-      fdate,
-      ldate,
-      take,
-      skip,
-      userid,
-    } = query;
-    const ownerUserGroup = await this.accessService.getOwnerGroupByUserId(
-      userid,
+  async findDatatable(query: any, token) {
+    const { projectname, productname, projectcode, fdate, ldate, take, skip } =
+      query;
+    const { userId } = await this.accessService.findUserByToken(token);
+    if (!userId) {
+      throw new HttpException('BAD REQUEST', HttpStatus.BAD_REQUEST);
+    }
+    const pmUsers = await this.accessService.getAccessedUsersByUserId(
+      ModuleTypes.CRM_ENGINEER_PROJECT,
+      userId,
     );
-    // const saleUsers = await this.accessService.getSaleUsersBySalePermission(
-    //   userid,
-    // );
-    // const engineerUsers =
-    //   await this.accessService.getEngineerUsersBySalePermission(userid);
+    const pmUserIds = pmUsers.map((user) => user.userId) || [];
+    const saleUsers = await this.accessService.getAccessedUsersByUserId(
+      ModuleTypes.CRM_ENGINEER_PROJECT,
+      userId,
+    );
+    const saleUserIds = saleUsers.map((user) => user.userId) || [];
     const whereAnd = [];
     if (fdate && ldate) {
       whereAnd.push({
@@ -51,15 +61,6 @@ export class CustomerProjectService {
         ],
       });
     }
-    // if (!ownerUserGroup.exceptionalSatatus) {
-    //   whereAnd.push({
-    //     OR: [
-    //       { saleId: { in: [...saleUsers, userid] } },
-    //       { projectManagerId: { in: [...engineerUsers, userid] } },
-    //     ],
-    //   });
-    // }
-
     const data = await this.customerProjectRepo.findMany({
       where: {
         ...(projectcode && { projectCode: { contains: projectcode } }),
@@ -76,12 +77,18 @@ export class CustomerProjectService {
             customerDetail: true,
           },
         },
+        customerProjectProductMap: {
+          select: { customerProduct: { select: { name: true } } },
+        },
       },
       ...(take && { take: Number(take) }),
       ...(skip && { skip: Number(skip) }),
     });
     const count = await this.customerProjectRepo.count({
       where: {
+        OR: [
+          { projectManagerId: { in: pmUserIds }, saleId: { in: saleUserIds } },
+        ],
         ...(projectcode && { projectCode: { contains: projectcode } }),
         ...(projectname && { projectName: { contains: projectname } }),
         ...(productname && { productName: { contains: productname } }),
@@ -105,6 +112,9 @@ export class CustomerProjectService {
             name: true,
             customerDetail: true,
           },
+        },
+        customerProjectProductMap: {
+          select: { customerProduct: { select: { name: true } } },
         },
       },
     });

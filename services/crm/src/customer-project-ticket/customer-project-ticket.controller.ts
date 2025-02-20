@@ -8,11 +8,13 @@ import {
   Delete,
   Query,
   Logger,
+  UseInterceptors,
+  Req,
 } from '@nestjs/common';
 import { CustomerProjectTicketService } from './customer-project-ticket.service';
 import { Prisma } from '@prisma/client';
 import { query } from 'express';
-import { AccessService } from '@inventory/share';
+import { AccessService, UserInterceptor } from '@inventory/share';
 
 @Controller('customer-project-ticket')
 export class CustomerProjectTicketController {
@@ -48,15 +50,31 @@ export class CustomerProjectTicketController {
   findDetailById(@Param('id') id: string) {
     return this.customerProjectTicketService.findDetailById(+id);
   }
-  @Get('/data-table/:userid')
+  @Get('/onwer-data-table/')
+  @UseInterceptors(UserInterceptor)
+  findOnwerListByUserId(
+    @Req() req,
+    @Query('query') query,
+    @Query('skip') skip,
+    @Query('take') take,
+  ) {
+    return this.customerProjectTicketService.findOwnerDatatableUserId(
+      req.body.sub,
+      query,
+      +skip,
+      +take,
+    );
+  }
+  @Get('/data-table/')
+  @UseInterceptors(UserInterceptor)
   findListByUserId(
-    @Param('userid') userid: string,
+    @Req() req,
     @Query('query') query,
     @Query('skip') skip,
     @Query('take') take,
   ) {
     return this.customerProjectTicketService.findDatatableUserId(
-      userid,
+      req.body.sub,
       query,
       +skip,
       +take,

@@ -2,10 +2,11 @@ import {
   AccessService,
   CustomerFilesRepository,
   CustomerProjectTicketRepository,
+  ModuleTypes,
   TicketExpenseRepository,
   TicketHistoryLogsRepository,
 } from '@inventory/share';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import * as dayjs from 'dayjs';
 import { endOfDate, startOfDate } from 'src/utils';
@@ -74,22 +75,25 @@ export class CustomerProjectTicketService {
     });
     return { ...detail, createFiles: createFiles, updateFiles: updateFiles };
   }
-  async findDatatableUserId(
-    userId: string,
+  async findOwnerDatatableUserId(
+    token: string,
     query: object,
     skip: number,
     take: number,
   ) {
-    const groups = await this.accessService.getOwnerGroupId(userId);
+    const user = await this.accessService.findUserByToken(token);
+    if (!user) {
+      throw new HttpException('BAD REQUEST', HttpStatus.BAD_REQUEST);
+    }
 
     const data = await this.customerProjectTicketRepo.findMany({
       where: {
         OR: [
-          { createdById: userId },
-          { assignId: userId },
-          { createdGroupId: { in: groups } },
-          { assignGroupId: { in: groups } },
+          { assignId: user.userId },
+          // { customerProject: { saleId: user.userId } },
+          // { customerProject: { saleId: { in: saleUserIds } } },
         ],
+
         ...query,
       },
 
@@ -98,7 +102,59 @@ export class CustomerProjectTicketService {
       orderBy: [{ createdAt: 'desc' }],
     });
     const total = await this.customerProjectTicketRepo.count({
-      where: { OR: [{ createdById: userId }, { assignId: userId }] },
+      where: {
+        OR: [{ assignId: user.userId }],
+      },
+    });
+    return { data: data, total: total };
+  }
+  async findDatatableUserId(
+    token: string,
+    query: object,
+    skip: number,
+    take: number,
+  ) {
+    const user = await this.accessService.findUserByToken(token);
+    if (!user) {
+      throw new HttpException('BAD REQUEST', HttpStatus.BAD_REQUEST);
+    }
+    const pmUsers = await this.accessService.getAccessedUsersByUserId(
+      ModuleTypes.CRM_ENGINEER_PROJECT,
+      user.userId,
+    );
+    const pmUserIds = pmUsers.map((user) => user.userId) || [];
+    const saleUsers = await this.accessService.getAccessedUsersByUserId(
+      ModuleTypes.CRM_ENGINEER_PROJECT,
+      user.userId,
+    );
+    const saleUserIds = saleUsers.map((user) => user.userId) || [];
+
+    const data = await this.customerProjectTicketRepo.findMany({
+      where: {
+        OR: [
+          { createdById: user.userId },
+          { createdById: { in: saleUserIds } },
+          { assignId: { in: pmUserIds } },
+          // { customerProject: { saleId: user.userId } },
+          // { customerProject: { saleId: { in: saleUserIds } } },
+        ],
+
+        ...query,
+      },
+
+      skip: skip,
+      take: take,
+      orderBy: [{ createdAt: 'desc' }],
+    });
+    const total = await this.customerProjectTicketRepo.count({
+      where: {
+        OR: [
+          { createdById: user.userId },
+          { createdById: { in: saleUserIds } },
+          { assignId: user.userId },
+          { assignId: { in: pmUserIds } },
+        ],
+      },
     });
     return { data: data, total: total };
   }

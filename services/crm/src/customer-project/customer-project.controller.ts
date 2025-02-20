@@ -7,9 +7,12 @@ import {
   Param,
   Delete,
   Query,
+  UseInterceptors,
+  Req,
 } from '@nestjs/common';
 import { CustomerProjectService } from './customer-project.service';
 import { Prisma } from '@prisma/client';
+import { UserInterceptor } from '@inventory/share';
 
 @Controller('customer-project')
 export class CustomerProjectController {
@@ -18,8 +21,12 @@ export class CustomerProjectController {
   ) {}
 
   @Post()
-  create(@Body() data: Prisma.customerProjectCreateInput) {
-    return this.customerProjectService.create(data);
+  create(
+    @Body('data') data: Prisma.customerProjectCreateInput,
+    @Body('productDetails')
+    productDetails: Prisma.customerProjectProductMapCreateManyCustomerProjectInput[],
+  ) {
+    return this.customerProjectService.create(data, productDetails);
   }
 
   @Get()
@@ -31,8 +38,9 @@ export class CustomerProjectController {
     return this.customerProjectService.findMany({});
   }
   @Get('data-table')
-  findDatatable(@Query() query: any) {
-    return this.customerProjectService.findDatatable(query);
+  @UseInterceptors(UserInterceptor)
+  findDatatable(@Query() query: any, @Req() req) {
+    return this.customerProjectService.findDatatable(query, req.body.sub);
   }
   @Get('/detail/:id')
   findDetailById(@Param('id') id: string) {
