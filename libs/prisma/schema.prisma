@@ -1909,3 +1909,78 @@ model masterDataConfigTimeOT {
 
     @@map("masterdata_config_time_ot")
 }
+
+//Cashflow 
+model cashflowSale {
+    id                          Int                  @unique @default(autoincrement()) @map("id")
+    uniqueId                    String               @unique @default(uuid()) @map("name") @db.VarChar(200)
+    startDate                   DateTime             @map("start_date") @db.Timestamptz()
+    endDate                     DateTime             @map("end_date") @db.Timestamptz()
+    monthPeriod                 Int                  @map("month_period") @db.Integer
+    pricePerMonth               Float                @map("price_per_month") @db.DoublePrecision
+    vat                         Float                @map("vat") @db.DoublePrecision
+    netPrice                    Float                @map("net_price") @db.DoublePrecision
+    totalNetPrice               Float                @map("total_net_price") @db.DoublePrecision
+    totalPrice                  Float                @map("total_price") @db.DoublePrecision
+    schedulePaymentDay          String               @map("schedule_payment_date") @db.Char(3)
+    scheduleReceiveDay          String               @map("schedule_receive_date") @db.Char(3)
+    originalContractCompanyId   Int?                 @map("original_contract_company_id") @db.Integer
+    originalContractCompanyName String?              @map("original_contract_company_name") @db.VarChar(200)
+    newContractCompanyId        Int?                 @map("new_contract_company_id") @db.Integer
+    newContractCompanyName      String?              @map("new_contract_company_name") @db.VarChar(200)
+    receiveCompanyId            Int?                 @map("receive_company_id") @db.Integer
+    receiveCompanyName          String?              @map("receive_company_name") @db.VarChar(200)
+    cashflowType                cashflowType?        @relation(fields: [cashflowTypeId], references: [id])
+    cashflowTypeId              Int?                 @map("cashflow_type_id")
+    cashflowSaleCycles          cashflowSaleCycles[]
+    status                      String               @map("status") @db.Char(10)
+}
+
+model cashflowSaleCycles {
+    id             Int           @unique @default(autoincrement()) @map("id")
+    cyclesId       String        @unique @map("name") @db.VarChar(55)
+    round          Int           @map("round") @db.Integer
+    paymentDate    DateTime      @map("payment_date") @db.Timestamptz()
+    netPrice       Float         @map("net_price") @db.DoublePrecision
+    actualPrice    Float         @map("actual_price") @db.DoublePrecision
+    cashflowSale   cashflowSale? @relation(fields: [cashflowSaleId], references: [id])
+    cashflowSaleId Int?          @map("cashflow_sale_id")
+    status         String        @map("status") @db.Char(10)
+}
+
+model cashflowExpense {
+    id                     Int                     @unique @default(autoincrement()) @map("id")
+    uniqueId               String                  @unique @default(uuid()) @map("name") @db.VarChar(200)
+    cashflowExpenseCycles  cashflowExpenseCycles[]
+    cashflowActivityType   cashflowActivityType?   @relation(fields: [cashflowActivityTypeId], references: [id])
+    cashflowActivityTypeId Int?
+}
+
+model cashflowExpenseCycles {
+    id          Int      @unique @default(autoincrement()) @map("id")
+    cyclesId    String   @unique @map("name") @db.VarChar(55)
+    round       Int      @map("round") @db.Integer
+    paymentDate DateTime @map("payment_date") @db.Timestamptz()
+    netPrice    Float    @map("net_price") @db.DoublePrecision
+    actualPrice Float    @map("actual_price") @db.DoublePrecision
+
+    status            String           @map("status") @db.Char(10)
+    cashflowExpense   cashflowExpense? @relation(fields: [cashflowExpenseId], references: [id])
+    cashflowExpenseId Int?             @map("cashflow_expense_id")
+}
+
+model cashflowActivityType {
+    id              Int               @unique @default(autoincrement()) @map("id")
+    name            String            @map("name") @db.VarChar(200)
+    type            String            @map("type") @db.VarChar(20)
+    order           Float             @map("order") @db.DoublePrecision
+    cashflowExpense cashflowExpense[]
+}
+
+model cashflowType {
+    id           Int            @unique @default(autoincrement()) @map("id")
+    name         String         @map("name") @db.VarChar(200)
+    type         String         @map("type") @db.VarChar(20)
+    order        Float          @map("order") @db.DoublePrecision
+    cashflowSale cashflowSale[]
+}

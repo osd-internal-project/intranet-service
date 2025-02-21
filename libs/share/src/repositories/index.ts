@@ -99,7 +99,13 @@ export * from './customerPriority.repository';
 export * from './customerRequestType.repository';
 export * from './customerWorkType.repository';
 export * from './ticketHistoryLogs.repository';
-
+//Cashflow
+export * from './cashflowActivityType.repository';
+export * from './cashflowExpense.repository';
+export * from './cashflowExpenseCycles.repository';
+export * from './cashflowSale.repository';
+export * from './cashflowSaleCycles.repository';
+export * from './cashflowType.repository';
 // information and handbook
 export * from './Information.repository';
 export * from './newsType.repository';

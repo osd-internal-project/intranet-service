@@ -122,6 +122,12 @@ import {
   OverTimeRepository,
   MasterConfigTimeOtRepository,
   UserModuleRepository,
+  CashflowActivityTypeRepository,
+  CashflowExpenseCyclesRepository,
+  CashflowExpenseRepository,
+  CashflowSaleCyclesRepository,
+  CashflowSaleRepository,
+  CashflowTypeRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -208,7 +214,6 @@ const services = [
   ContractCompanyRepository,
   CustomerAddressRepository,
   CustomerContactRepository,
-
   CustomerDetailRepository,
   CustomerDetailSubRepository,
   CustomerGroupRepository,
@@ -231,6 +236,13 @@ const services = [
   CustomerRequestTypeRepository,
   TicketHistoryLogsRepository,
   NotificationLogsRepository,
+  //Cashflow
+  CashflowActivityTypeRepository,
+  CashflowExpenseRepository,
+  CashflowExpenseCyclesRepository,
+  CashflowSaleRepository,
+  CashflowSaleCyclesRepository,
+  CashflowTypeRepository,
   //access
   AccessService,
   InformationRepository,
