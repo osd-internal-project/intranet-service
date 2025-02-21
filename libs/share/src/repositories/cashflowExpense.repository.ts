@@ -58,11 +58,11 @@ export class CashflowExpenseRepository {
     return prisma.cashflowExpense.delete(condition);
   }
   async deleteMany(
-    condition: Prisma.contactDeleteManyArgs,
+    condition: Prisma.cashflowExpenseDeleteManyArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.contact.deleteMany(condition);
+    return prisma.cashflowExpense.deleteMany(condition);
   }
 
   async count(

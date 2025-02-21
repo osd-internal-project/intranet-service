@@ -1936,6 +1936,9 @@ model cashflowSale {
     cashflowTypeId              Int?                 @map("cashflow_type_id")
     cashflowSaleCycles          cashflowSaleCycles[]
     status                      String               @map("status") @db.Char(10)
+    customerProjectId           Int?                 @map("customer_project_id") @db.Integer
+    createdAt                   DateTime             @default(now()) @map("created_at")
+    updatedAt                   DateTime             @default(now()) @updatedAt @map("updated_at")
 
     @@map("cashflow_sale")
 }
@@ -1946,10 +1949,12 @@ model cashflowSaleCycles {
     round          Int           @map("round") @db.Integer
     paymentDate    DateTime      @map("payment_date") @db.Timestamptz()
     netPrice       Float         @map("net_price") @db.DoublePrecision
-    actualPrice    Float         @map("actual_price") @db.DoublePrecision
+    actualPrice    Float?        @map("actual_price") @db.DoublePrecision
+    status         String        @map("status") @db.Char(10)
     cashflowSale   cashflowSale? @relation(fields: [cashflowSaleId], references: [id])
     cashflowSaleId Int?          @map("cashflow_sale_id")
-    status         String        @map("status") @db.Char(10)
+    createdAt      DateTime      @default(now()) @map("created_at")
+    updatedAt      DateTime      @default(now()) @updatedAt @map("updated_at")
 
     @@map("cashflow_sale_cycles")
 }
@@ -1960,6 +1965,9 @@ model cashflowExpense {
     cashflowExpenseCycles  cashflowExpenseCycles[]
     cashflowActivityType   cashflowActivityType?   @relation(fields: [cashflowActivityTypeId], references: [id])
     cashflowActivityTypeId Int?
+    customerProjectId      Int?                    @map("customer_project_id") @db.Integer
+    createdAt              DateTime                @default(now()) @map("created_at")
+    updatedAt              DateTime                @default(now()) @updatedAt @map("updated_at")
 
     @@map("cashflow_expense")
 }
@@ -1975,6 +1983,8 @@ model cashflowExpenseCycles {
     status            String           @map("status") @db.Char(10)
     cashflowExpense   cashflowExpense? @relation(fields: [cashflowExpenseId], references: [id])
     cashflowExpenseId Int?             @map("cashflow_expense_id")
+    createdAt         DateTime         @default(now()) @map("created_at")
+    updatedAt         DateTime         @default(now()) @updatedAt @map("updated_at")
 
     @@map("cashflow_expense_cycles")
 }
@@ -1985,6 +1995,8 @@ model cashflowActivityType {
     type            String?           @map("type") @db.VarChar(20)
     order           Float?            @map("order") @db.DoublePrecision
     cashflowExpense cashflowExpense[]
+    createdAt       DateTime          @default(now()) @map("created_at")
+    updatedAt       DateTime          @default(now()) @updatedAt @map("updated_at")
 
     @@map("cashflow_activity_type")
 }
@@ -1995,6 +2007,8 @@ model cashflowType {
     type         String?        @map("type") @db.VarChar(20)
     order        Float?         @map("order") @db.DoublePrecision
     cashflowSale cashflowSale[]
+    createdAt    DateTime       @default(now()) @map("created_at")
+    updatedAt    DateTime       @default(now()) @updatedAt @map("updated_at")
 
     @@map("cashflow_type")
 }
