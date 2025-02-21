@@ -1919,9 +1919,11 @@ model cashflowSale {
     monthPeriod                 Int                  @map("month_period") @db.Integer
     pricePerMonth               Float                @map("price_per_month") @db.DoublePrecision
     vat                         Float                @map("vat") @db.DoublePrecision
-    netPrice                    Float                @map("net_price") @db.DoublePrecision
+    summaryPrice                Float                @map("summary_price") @db.DoublePrecision
+    fee                         Float                @map("fee") @db.DoublePrecision
+    tax                         Float                @map("tax") @db.DoublePrecision
+    netPrice                    Float                @map("net_price") @db.DoublePrecision 
     totalNetPrice               Float                @map("total_net_price") @db.DoublePrecision
-    totalPrice                  Float                @map("total_price") @db.DoublePrecision
     schedulePaymentDay          String               @map("schedule_payment_date") @db.Char(3)
     scheduleReceiveDay          String               @map("schedule_receive_date") @db.Char(3)
     originalContractCompanyId   Int?                 @map("original_contract_company_id") @db.Integer
