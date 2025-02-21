@@ -17,6 +17,12 @@ import { CustomerDetailSubModule } from './customer-detail-sub/customer-detail-s
 import { CustomerProductModule } from './customer-product/customer-product.module';
 import { CustomerGroupModule } from './customer-group/customer-group.module';
 import { CustomerTypeModule } from './customer-type/customer-type.module';
+import { CashflowActivityTypeModule } from './cashflow-activity-type/cashflow-activity-type.module';
+import { CashflowExpenseCyclesModule } from './cashflow-expense-cycles/cashflow-expense-cycles.module';
+import { CashflowExpenseModule } from './cashflow-expense/cashflow-expense.module';
+import { CashflowSaleModule } from './cashflow-sale/cashflow-sale.module';
+import { CashflowSaleCyclesModule } from './cashflow-sale-cycles/cashflow-sale-cycles.module';
+import { CashflowTypeModule } from './cashflow-type/cashflow-type.module';
 
 @Module({
   imports: [
@@ -34,6 +40,12 @@ import { CustomerTypeModule } from './customer-type/customer-type.module';
     CustomerProjectTaskModule,
     CustomerProjectTicketModule,
     TicketHistoryLogsModule,
+    CashflowActivityTypeModule,
+    CashflowExpenseModule,
+    CashflowExpenseCyclesModule,
+    CashflowSaleModule,
+    CashflowSaleCyclesModule,
+    CashflowTypeModule,
   ],
   controllers: [IntranetController],
   providers: [IntranetService],

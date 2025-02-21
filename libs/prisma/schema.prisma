@@ -1913,7 +1913,7 @@ model masterDataConfigTimeOT {
 //Cashflow 
 model cashflowSale {
     id                          Int                  @unique @default(autoincrement()) @map("id")
-    uniqueId                    String               @unique @default(uuid()) @map("name") @db.VarChar(200)
+    contractId                  String               @unique @default(uuid()) @map("contract_id") @db.VarChar(200)
     startDate                   DateTime             @map("start_date") @db.Timestamptz()
     endDate                     DateTime             @map("end_date") @db.Timestamptz()
     monthPeriod                 Int                  @map("month_period") @db.Integer
@@ -1922,7 +1922,7 @@ model cashflowSale {
     summaryPrice                Float                @map("summary_price") @db.DoublePrecision
     fee                         Float                @map("fee") @db.DoublePrecision
     tax                         Float                @map("tax") @db.DoublePrecision
-    netPrice                    Float                @map("net_price") @db.DoublePrecision 
+    netPrice                    Float                @map("net_price") @db.DoublePrecision
     totalNetPrice               Float                @map("total_net_price") @db.DoublePrecision
     schedulePaymentDay          String               @map("schedule_payment_date") @db.Char(3)
     scheduleReceiveDay          String               @map("schedule_receive_date") @db.Char(3)
@@ -1936,6 +1936,8 @@ model cashflowSale {
     cashflowTypeId              Int?                 @map("cashflow_type_id")
     cashflowSaleCycles          cashflowSaleCycles[]
     status                      String               @map("status") @db.Char(10)
+
+    @@map("cashflow_sale")
 }
 
 model cashflowSaleCycles {
@@ -1948,14 +1950,18 @@ model cashflowSaleCycles {
     cashflowSale   cashflowSale? @relation(fields: [cashflowSaleId], references: [id])
     cashflowSaleId Int?          @map("cashflow_sale_id")
     status         String        @map("status") @db.Char(10)
+
+    @@map("cashflow_sale_cycles")
 }
 
 model cashflowExpense {
     id                     Int                     @unique @default(autoincrement()) @map("id")
-    uniqueId               String                  @unique @default(uuid()) @map("name") @db.VarChar(200)
+    contractId             String                  @unique @default(uuid()) @map("contract_id") @db.VarChar(200)
     cashflowExpenseCycles  cashflowExpenseCycles[]
     cashflowActivityType   cashflowActivityType?   @relation(fields: [cashflowActivityTypeId], references: [id])
     cashflowActivityTypeId Int?
+
+    @@map("cashflow_expense")
 }
 
 model cashflowExpenseCycles {
@@ -1969,20 +1975,26 @@ model cashflowExpenseCycles {
     status            String           @map("status") @db.Char(10)
     cashflowExpense   cashflowExpense? @relation(fields: [cashflowExpenseId], references: [id])
     cashflowExpenseId Int?             @map("cashflow_expense_id")
+
+    @@map("cashflow_expense_cycles")
 }
 
 model cashflowActivityType {
     id              Int               @unique @default(autoincrement()) @map("id")
     name            String            @map("name") @db.VarChar(200)
-    type            String            @map("type") @db.VarChar(20)
-    order           Float             @map("order") @db.DoublePrecision
+    type            String?           @map("type") @db.VarChar(20)
+    order           Float?            @map("order") @db.DoublePrecision
     cashflowExpense cashflowExpense[]
+
+    @@map("cashflow_activity_type")
 }
 
 model cashflowType {
     id           Int            @unique @default(autoincrement()) @map("id")
     name         String         @map("name") @db.VarChar(200)
-    type         String         @map("type") @db.VarChar(20)
-    order        Float          @map("order") @db.DoublePrecision
+    type         String?        @map("type") @db.VarChar(20)
+    order        Float?         @map("order") @db.DoublePrecision
     cashflowSale cashflowSale[]
+
+    @@map("cashflow_type")
 }
