@@ -6,16 +6,12 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
   UseInterceptors,
   Req,
   Query,
-  Res,
 } from '@nestjs/common';
 import { BookingRoomService } from './booking-room.service';
 import { Prisma } from '@prisma/client';
-import { Response } from 'express';
-import { AuthGuard } from '@inventory/share';
 import { UserInterceptor } from '@inventory/share';
 
 @Controller('booking-room')
@@ -43,7 +39,7 @@ export class BookingRoomController {
     @Query('role') role?: string,
   ) {
     if (skip !== undefined && take !== undefined) {
-      return this.bookingRoomService.findMany(+skip, +take, req.body.sub ,role);
+      return this.bookingRoomService.findMany(+skip, +take, req.body.sub, role);
     }
     return this.bookingRoomService.findAll(req.body.sub);
   }
