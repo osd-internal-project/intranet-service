@@ -34,7 +34,7 @@ export class BookingRoomService {
       where: {
         ...(role !== 'admin'
           ? { userId: getUser.userId }
-          : { userId: { in: getAccessUser } }),
+          : { userId: { in: getAccessUser.map((user) => user.userId) } }),
       },
       skip,
       take,
@@ -42,11 +42,12 @@ export class BookingRoomService {
 
     const count = await this.bookingRoomRepository.count({
       where: {
-        userId: {
-          in: getAccessUser,
-        },
+        ...(role !== 'admin'
+          ? { userId: getUser.userId }
+          : { userId: { in: getAccessUser.map((user) => user.userId) } }),
       },
     });
+
     const result = await this.bookingRoomRepository.findMany(condition);
 
     return { data: result, count: count };
