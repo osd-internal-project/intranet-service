@@ -404,4 +404,39 @@ export class UsersService {
       };
     }
   }
+
+  async processAfterLoginAuth(token: string) {
+    try {
+      const user = await this.usersRepo.findOne({ where: { token: token } });
+      // console.log(user);
+      if (!user) {
+        const id24Users = (await this.id24Service.getId24UsersAll(
+          token,
+        )) as any[];
+        const id24 = await id24Users.find((id24User) => id24User.id === token);
+        if (id24) {
+          console.log(id24);
+          const saltOrRounds = 10;
+          const hashedPassword = await bcrypt.hash(
+            'osd_P@ssw0rd',
+            saltOrRounds,
+          );
+          const newUser = await this.usersRepo.create({
+            data: {
+              token: id24.id,
+              username: id24.username,
+              email: id24.email,
+              password: hashedPassword,
+            },
+          });
+          return newUser;
+        }
+      } else {
+        return user;
+      }
+    } catch (err) {
+      Logger.error(err);
+      return;
+    }
+  }
 }

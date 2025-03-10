@@ -207,7 +207,25 @@ export class Id24Service {
         return ['Something wrong'];
       });
   }
-
+  async getId24UsersAll(token: string) {
+    const config = {
+      method: 'get',
+      url: `${id24Url}/backend/api/v1/users`,
+      httpsAgent: this.Agent,
+      headers: {
+        Authorization: Authorization,
+        'Content-Type': 'application/json',
+      },
+    };
+    return axios(config)
+      .then((res) => {
+        return res.data;
+      })
+      .catch((error) => {
+        console.log(error);
+        return 500;
+      });
+  }
   async getUsers(username: string) {
     const config = {
       method: 'get',

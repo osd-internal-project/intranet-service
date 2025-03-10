@@ -119,13 +119,20 @@ export class UsersController {
     }
   }
 
-  @Get('findByToken')
+  @Get('findbytoken')
   @UseInterceptors(UserInterceptor)
   findByToken(@Req() req: any) {
     const token = req.body.sub;
     return this.usersService.findByToken(token);
   }
+  @Get('process-after-login-auth')
+  @UseInterceptors(UserInterceptor)
+  async processAfterLoginAuth(@Req() req: any) {
+    const token = req.body.sub;
 
+    const data = await this.usersService.processAfterLoginAuth(token);
+    return data;
+  }
   @Get('groups')
   // @UseInterceptors(UserInterceptor)
   getGroups() {
