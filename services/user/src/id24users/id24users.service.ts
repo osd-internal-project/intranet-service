@@ -421,15 +421,29 @@ export class UsersService {
             'osd_P@ssw0rd',
             saltOrRounds,
           );
-          const newUser = await this.usersRepo.create({
-            data: {
-              token: id24.id,
-              username: id24.username,
-              email: id24.email,
-              password: hashedPassword,
-            },
+          const user = await this.usersRepo.findOne({
+            where: { username: id24.username },
           });
-          return newUser;
+          if (!user) {
+            const newUser = await this.usersRepo.create({
+              data: {
+                token: id24.id,
+                username: id24.username,
+                email: id24.email,
+                password: hashedPassword,
+              },
+            });
+            return newUser;
+          } else {
+            const newUser = await this.usersRepo.update({
+              where: { userId: user.userId },
+              data: {
+                token: id24.id,
+                password: hashedPassword,
+              },
+            });
+            return newUser;
+          }
         }
       } else {
         return user;
