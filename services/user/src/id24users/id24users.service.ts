@@ -407,47 +407,46 @@ export class UsersService {
 
   async processAfterLoginAuth(token: string) {
     try {
-      const user = await this.usersRepo.findOne({ where: { token: token } });
+      // const user = await this.usersRepo.findOne({ where: { token: token } });
       // console.log(user);
-      if (!user) {
-        const id24Users = (await this.id24Service.getId24UsersAll(
-          token,
-        )) as any[];
-        const id24 = await id24Users.find((id24User) => id24User.id === token);
-        if (id24) {
-          console.log(id24);
-          const saltOrRounds = 10;
-          const hashedPassword = await bcrypt.hash(
-            'osd_P@ssw0rd',
-            saltOrRounds,
-          );
-          const user = await this.usersRepo.findOne({
-            where: { username: id24.username },
+      // if (!user) {
+      const id24Users = (await this.id24Service.getId24UsersAll(
+        token,
+      )) as any[];
+      const id24 = await id24Users.find((id24User) => id24User.id === token);
+      if (id24) {
+        console.log(id24);
+        const saltOrRounds = 10;
+        const hashedPassword = await bcrypt.hash('osd_P@ssw0rd', saltOrRounds);
+        const user = await this.usersRepo.findOne({
+          where: { username: id24.username },
+        });
+        if (!user) {
+          console.log('No users');
+          const newUser = await this.usersRepo.create({
+            data: {
+              token: id24.id,
+              username: id24.username,
+              email: id24.email,
+              password: hashedPassword,
+            },
           });
-          if (!user) {
-            const newUser = await this.usersRepo.create({
-              data: {
-                token: id24.id,
-                username: id24.username,
-                email: id24.email,
-                password: hashedPassword,
-              },
-            });
-            return newUser;
-          } else {
-            const newUser = await this.usersRepo.update({
-              where: { userId: user.userId },
-              data: {
-                token: id24.id,
-                password: hashedPassword,
-              },
-            });
-            return newUser;
-          }
+          return newUser;
+        } else {
+          console.log('Have users');
+          const newUser = await this.usersRepo.update({
+            where: { userId: user.userId },
+            data: {
+              token: id24.id,
+              password: hashedPassword,
+            },
+          });
+          return newUser;
         }
-      } else {
-        return user;
       }
+      // } else {
+      //   return user;
+      // }
     } catch (err) {
       Logger.error(err);
       return;
