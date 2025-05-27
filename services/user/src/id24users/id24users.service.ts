@@ -196,6 +196,7 @@ export class UsersService {
         startWork: true,
         imageId: true,
       },
+      include: { ownerGroup: true, masterPosition: true },
       skip: +query.skip,
       take: +query.take,
     });
@@ -407,7 +408,7 @@ export class UsersService {
 
   async processAfterLoginAuth(token: string) {
     try {
-      // const user = await this.usersRepo.findOne({ where: { token: token } });
+      const user = await this.usersRepo.findOne({ where: { token: token } });
       // console.log(user);
       // if (!user) {
       const id24Users = (await this.id24Service.getId24UsersAll(
@@ -420,6 +421,7 @@ export class UsersService {
         const hashedPassword = await bcrypt.hash('osd_P@ssw0rd', saltOrRounds);
         const user = await this.usersRepo.findOne({
           where: { username: id24.username },
+          include: { ownerGroup: true, masterPosition: true },
         });
         if (!user) {
           console.log('No users');
@@ -443,10 +445,9 @@ export class UsersService {
           });
           return newUser;
         }
+      } else {
+        return user;
       }
-      // } else {
-      //   return user;
-      // }
     } catch (err) {
       Logger.error(err);
       return;

@@ -129,7 +129,6 @@ export class UsersController {
   @UseInterceptors(UserInterceptor)
   async processAfterLoginAuth(@Req() req: any) {
     const token = req.body.sub;
-
     const data = await this.usersService.processAfterLoginAuth(token);
     return data;
   }
