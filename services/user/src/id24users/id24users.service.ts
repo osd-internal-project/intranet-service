@@ -307,9 +307,6 @@ export class UsersService {
   async updateImage(userId: string, imageId: string) {
     const user = await this.usersRepo.findOne({ where: { userId: userId } });
     if (user.imageId && imageId) {
-      console.log(imageId);
-      console.log(user.imageId);
-
       console.log('Deleting old image:', user.imageId);
       await fs.unlink(
         `${process.env.PATH_MOUNTDIR_UPLOAD}/users-image/${user.imageId}`,
@@ -365,8 +362,6 @@ export class UsersService {
       //     createUserDto.activeStatus,
       //   );
       const user = await this.usersRepo.findOne({ where: { userId: userId } });
-      console.log(user);
-
       if (user) {
         return await this.usersRepo.update({
           where: { userId: user.userId },
@@ -408,20 +403,20 @@ export class UsersService {
 
   async processAfterLoginAuth(token: string) {
     try {
-      const user = await this.usersRepo.findOne({ where: { token: token } });
-      // console.log(user);
-      // if (!user) {
+      const user = await this.usersRepo.findOne({
+        where: { token: token },
+        include: { masterPosition: true, ownerGroup: true },
+      });
+      console.log(user);
       const id24Users = (await this.id24Service.getId24UsersAll(
         token,
       )) as any[];
       const id24 = await id24Users.find((id24User) => id24User.id === token);
       if (id24) {
-        console.log(id24);
         const saltOrRounds = 10;
         const hashedPassword = await bcrypt.hash('osd_P@ssw0rd', saltOrRounds);
         const user = await this.usersRepo.findOne({
           where: { username: id24.username },
-          include: { ownerGroup: true, masterPosition: true },
         });
         if (!user) {
           console.log('No users');
@@ -435,15 +430,18 @@ export class UsersService {
           });
           return newUser;
         } else {
-          console.log('Have users');
-          const newUser = await this.usersRepo.update({
+          const user = await this.usersRepo.findOne({
+            where: { username: id24.username },
+            include: { ownerGroup: true, masterPosition: true },
+          });
+          await this.usersRepo.update({
             where: { userId: user.userId },
             data: {
               token: id24.id,
               password: hashedPassword,
             },
           });
-          return newUser;
+          return user;
         }
       } else {
         return user;
