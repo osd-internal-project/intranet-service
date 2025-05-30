@@ -407,7 +407,6 @@ export class UsersService {
         where: { token: token },
         include: { masterPosition: true, ownerGroup: true },
       });
-      console.log(user);
       const id24Users = (await this.id24Service.getId24UsersAll(
         token,
       )) as any[];
