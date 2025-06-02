@@ -135,7 +135,7 @@ export class UsersService {
   }
 
   async findAll(query: any) {
-    let search;
+    let search = {};
     if (query.userId) {
       search = { ...search, userId: { contains: query.userId } };
     }
@@ -154,9 +154,6 @@ export class UsersService {
     if (query.lastNameTh) {
       search = { ...search, lastNameTh: { contains: query.lastNameTh } };
     }
-    if (query.activeStatus !== null || query.activeStatus !== undefined) {
-      search = { ...search, activeStatus: query.activeStatus };
-    }
     if (query.positionId) {
       search = { ...search, masterPositionId: query.positionId };
     }
@@ -169,6 +166,13 @@ export class UsersService {
         },
       };
     }
+    if (query.activeStatus) {
+      search = {
+        ...search,
+        activeStatus: query.activeStatus,
+      };
+    }
+
     const total = await this.usersRepo.count({ where: search });
     const data = await this.usersRepo.findMany({
       where: search,
@@ -195,8 +199,8 @@ export class UsersService {
         ownerGroup: { select: { groupId: true, groupName: true } },
         startWork: true,
         imageId: true,
+        createdAt: true,
       },
-      include: { ownerGroup: true, masterPosition: true },
       skip: +query.skip,
       take: +query.take,
     });
@@ -324,43 +328,7 @@ export class UsersService {
   }
 
   async update(userId: string, createUserDto: UpdateUserDto) {
-    // const createId24 = {
-    //   username: createUserDto.username.replace(/\s/g, ''),
-    //   email: createUserDto.email.replace(/\s/g, ''),
-    //   group: [createUserDto.dataModule, masterGroupId24],
-    //   active: true,
-    //   type: createUserDto.userType,
-    //   ldapQuery: createUserDto.ldapQuery,
-    //   phone: '',
-    // } as CreateUserId24Dto;
-
-    // const id24Service =
-    //   createUserDto.userType === UserType.LDAP
-    //     ? this.id24Service.createUserLdap(createId24)
-    //     : this.id24Service.createUser(createId24);
     try {
-      //   const response = await id24Service;
-      //   Logger.debug(`User created successfully on id24`, response.data.id);
-      //   if (createUserDto.userType !== UserType.LDAP) {
-      //     await this.id24Service.resetPassword(
-      //       response.data.id,
-      //       createUserDto.password,
-      //     );
-      //     Logger.debug(
-      //       `User resetPassword successfully on id24`,
-      //       response.data.id,
-      //     );
-      //   } else {
-      //     await this.id24Service.updateGroup(response.data.id, [
-      //       createUserDto.dataModule,
-      //       masterGroupId24,
-      //     ]);
-      //   }
-
-      //   await this.id24Service.updateActive(
-      //     response.data.id,
-      //     createUserDto.activeStatus,
-      //   );
       const user = await this.usersRepo.findOne({ where: { userId: userId } });
       if (user) {
         return await this.usersRepo.update({
@@ -377,20 +345,12 @@ export class UsersService {
             organizedGroupId: '',
             userType: createUserDto.userType,
             dataModule: createUserDto.dataModule,
-            ownerGroup: { connect: { groupId: createUserDto.ownerGroupId } },
-            masterPosition: {
-              connect: { posId: createUserDto.masterPositionId },
-            },
+            ownerGroupId: createUserDto.ownerGroupId,
+            positionId: createUserDto.masterPositionId,
             startWork: createUserDto.startWork,
           },
         });
       }
-      // Logger.debug(`User created successfully on service`, response.data.id);
-      // return {
-      //   success: true,
-      //   message: 'User created successfully',
-      //   data: user,
-      // };
     } catch (error) {
       console.log(error.message);
       return {
