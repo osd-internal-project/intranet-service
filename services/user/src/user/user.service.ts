@@ -46,7 +46,12 @@ export class UserService {
   // }
 
   findAll() {
-    return this.usersRepo.findMany({ orderBy: { id: 'desc' } });
+    return this.usersRepo.findMany({
+      where: {
+        activeStatus: true,
+      },
+      orderBy: { id: 'desc' },
+    });
   }
 
   async findByCondition(condition: Prisma.usersFindManyArgs, userId: string) {

@@ -7,13 +7,10 @@ import {
   Param,
   Delete,
   Query,
-  Logger,
   Req,
-  UseGuards,
 } from '@nestjs/common';
 import { MaTaskService } from './ma-task.service';
 import { Prisma } from '@prisma/client';
-import { AuthGuard } from '@inventory/share';
 @Controller('ma-task')
 export class MaTaskController {
   constructor(private readonly maTaskService: MaTaskService) {}

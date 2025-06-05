@@ -23,7 +23,6 @@ export class MaTaskService {
     return new Date(dateset);
   }
   async create(data: Prisma.maTaskCreateInput) {
-    console.log(data);
     const group = await this.accessService.getOwnerGroupByUserId(
       data.createdById,
     );
