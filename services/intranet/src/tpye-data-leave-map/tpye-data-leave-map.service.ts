@@ -23,7 +23,8 @@ export class TpyeDataLeaveMapService {
         masterTypeleaveId: +params.masterTypeleaveId,
       },
     };
-    return await this.masterTypeLeaveMapRepo.findMany(base);
+    const data = await this.masterTypeLeaveMapRepo.findMany(base);
+    return data;
   }
 
   findOne(id: number) {

@@ -92,14 +92,13 @@ export class DataLeaveService {
     if (params.startDate) {
       whereConditions = [...whereConditions, { status: { not: 'cancel' } }];
     }
-    return await this.dataleaveRepo.findMany({
+
+    const count = await this.dataleaveRepo.count({
       where: {
         AND: whereConditions,
       },
-      orderBy: {
-        id: 'desc',
-      },
     });
+    return { count: count, status: count > 0 ? 200 : 404 };
   }
 
   async findGroup(userId: string) {
@@ -134,6 +133,8 @@ export class DataLeaveService {
   }
 
   async findDetailTypeLeaveByUserId(userId: string) {
+    const startOfYear = dayjs(new Date()).startOf('year').toDate();
+    const endOfYear = dayjs(new Date()).endOf('year').toDate();
     const condition = {
       where: {
         userId: userId,
@@ -143,57 +144,58 @@ export class DataLeaveService {
         createdAt: 'asc',
       },
     } as Prisma.usersFindFirstArgs;
-
     const resUser = await this.usersRepo.findOne(condition);
-    const startWork = dayjs(resUser.startWork);
-    const DateNow = dayjs();
-
-    const numberWorkStart = DateNow.diff(startWork, 'year');
-    const dataTypeLeave = await this.mastertypeLeaveRepo.findAll();
+    const dateNow = dayjs(new Date());
+    const startwork = dayjs(resUser?.startWork);
+    const yearOfWork = dateNow.diff(startwork, 'years');
     const dataLeaveWrapup = await this.dataleaveRepo.findMany({
       where: {
         userId: userId,
         status: {
           in: ['approved', 'waitting'],
         },
+        createdAt: {
+          gte: startOfYear,
+          lte: endOfYear,
+        },
       },
       orderBy: {
         createdAt: 'asc',
       },
     } as Prisma.dataLeaveFindFirstArgs);
-    const leaveCountMap = this.countLeavesByTypeIdMap(dataLeaveWrapup);
+    const CountLeaveByTypeMap = this.countLeavesByTypeIdMap(dataLeaveWrapup);
+    const dataTypeLeave = await this.mastertypeLeaveRepo.findAll();
     const lastResult = dataTypeLeave.map((event) => {
-      const leaveCount = leaveCountMap[event.typeId] || 0;
-      const leaveCountlimitMap =
-        this.countlimitLeavesByTypeIdMap(dataLeaveWrapup);
-      const leaveCountlimit = leaveCountlimitMap[event.typeId] || 0;
-      const limitLeaveLastResult =
-        numberWorkStart <= 1
-          ? Number(event.limitLeaveFour) - leaveCountlimit
-          : numberWorkStart >= 1
-          ? Number(event.limitLeaveOne) - leaveCountlimit
-          : numberWorkStart >= 3
-          ? Number(event.limitLeaveTwo) - leaveCountlimit
-          : numberWorkStart >= 5
-          ? Number(event.limitLeaveThree) - leaveCountlimit
-          : null;
-
+      const leaveCount = CountLeaveByTypeMap[event.typeId] || 0;
+      let limitLeaveLastResult = 0;
+      let limitLeave = 0;
+      const trimmed = leaveCount.value
+        ? Math.floor(leaveCount.value * 10) / 10
+        : 0;
+      if (yearOfWork <= 1) {
+        limitLeaveLastResult = parseFloat(event.limitLeaveFour) - trimmed;
+        limitLeave = Number(event.limitLeaveFour);
+      } else if (yearOfWork < 3) {
+        limitLeaveLastResult = parseFloat(event.limitLeaveOne) - trimmed;
+        limitLeave = Number(event.limitLeaveOne);
+      } else if (yearOfWork < 5) {
+        limitLeaveLastResult = parseFloat(event.limitLeaveTwo) - trimmed;
+        limitLeave = Number(event.limitLeaveTwo);
+      } else {
+        limitLeaveLastResult = parseFloat(event.limitLeaveThree) - trimmed;
+        limitLeave = Number(event.limitLeaveThree);
+      }
+      if (limitLeaveLastResult < 0) {
+        limitLeaveLastResult = 0;
+      }
       const mapdata = {
         id: event.id,
         typeId: event.typeId,
         typeName: event.typeName,
         forwardLeave: event.forwardLeave,
-        haveLeft: leaveCount,
-        limitLeave:
-          numberWorkStart <= 1
-            ? event.limitLeaveFour
-            : numberWorkStart >= 1
-            ? event.limitLeaveOne
-            : numberWorkStart >= 3
-            ? event.limitLeaveTwo
-            : numberWorkStart >= 5
-            ? event.limitLeaveThree
-            : null,
+        haveLeave: leaveCount.value,
+        typeLeaveHour: leaveCount.type,
+        limitLeave: limitLeave,
         limitLeaveLastResult: limitLeaveLastResult,
         descriptionLeave: event.descriptionLeave,
         typeEveryDay: event.typeEveryDay,
@@ -204,7 +206,6 @@ export class DataLeaveService {
       };
       return mapdata;
     });
-
     return lastResult;
   }
 
@@ -223,26 +224,52 @@ export class DataLeaveService {
   }
 
   countLeavesByTypeIdMap(leaveRecords) {
-    const test = leaveRecords.reduce((acc, record) => {
-      const hours = record.leaveHour;
-      if (!acc[record.typeId]) {
-        acc[record.typeId] = 0;
+    const leaveDaysByType = {};
+    const leaveSummaryByType = leaveRecords.reduce((acc, item) => {
+      const typeId = item.typeId;
+      const hours = item.leaveHour || 0;
+      if (!acc[typeId]) {
+        acc[typeId] = hours;
+      } else {
+        acc[typeId] += hours;
       }
-      let calLeave = hours / 8;
-      if (hours % 8 !== 0) {
-        calLeave = Math.floor(calLeave) + (hours % 8) / 10;
-      }
-      acc[record.typeId] += calLeave;
-      let leaveCount = acc[record.typeId];
-      const calHours = parseFloat((leaveCount % 1).toFixed(1));
-      if (calHours >= 0.8 && calHours <= 1) {
-        leaveCount += 0.2;
-      }
-      acc[record.typeId] = leaveCount;
-      acc[record.typeId] = parseFloat(leaveCount.toFixed(2));
       return acc;
     }, {});
-    return test;
+    for (const typeId in leaveSummaryByType) {
+      const totalHours = leaveSummaryByType[typeId];
+      if (totalHours >= 8) {
+        leaveDaysByType[typeId] = {
+          value: totalHours ? totalHours / 8 : 0,
+          type: 'Days',
+        };
+      } else {
+        leaveDaysByType[typeId] = {
+          value: totalHours ? totalHours : 0,
+          type: 'Hours',
+        };
+      }
+    }
+    // const result = leaveRecords.reduce((acc, record) => {
+    //   const hours = record.leaveHour;
+    //   console.log(hours);
+    //   let CalculateLeaveHour = hours / 8;
+    //   if (!acc[record.typeId]) {
+    //     acc[record.typeId] = 0;
+    //   }
+    //   if (hours % 8 !== 0) {
+    //     CalculateLeaveHour = Math.floor(CalculateLeaveHour) + (hours % 8) / 10;
+    //   }
+    //   acc[record.typeId] += CalculateLeaveHour;
+    //   let leaveCount = acc[record.typeId];
+    //   const calHours = parseFloat((leaveCount % 1).toFixed(1));
+    //   if (calHours >= 0.8 && calHours <= 1) {
+    //     leaveCount += 0.2;
+    //   }
+    //   acc[record.typeId] = leaveCount;
+    //   acc[record.typeId] = parseFloat(leaveCount.toFixed(2));
+    //   return acc;
+    // }, {});
+    return leaveDaysByType;
   }
 
   countlimitLeavesByTypeIdMap(leaveRecords) {
