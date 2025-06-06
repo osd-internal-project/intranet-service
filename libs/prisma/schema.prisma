@@ -664,27 +664,30 @@ model maCarWrapupImage {
 }
 
 model maTask {
-    id            Int           @unique @default(autoincrement()) @map("id")
-    maName        String        @map("ma_name") @db.VarChar(255)
-    maTypeId      Int           @map("ma_type_id") @db.Integer
-    maTypeName    String        @map("ma_type_name") @db.VarChar(255)
-    maDate        DateTime      @map("ma_date") @db.Timestamptz()
-    maStatus      String        @map("ma_status") @db.VarChar(10)
-    detail        String?       @map("detail") @db.Text()
-    contact       String?       @map("contact") @db.Text()
-    actionDate    DateTime?     @map("action_date") @db.Timestamptz()
-    solution      String?       @map("solution") @db.Text()
-    createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz()
-    createdById   String?       @map("created_by_id") @db.VarChar(50)
-    createdByName String?       @map("created_by_name") @db.VarChar(255)
-    updatedAt     DateTime?     @map("updated_at") @db.Timestamptz()
-    updatedById   String?       @map("updated_by_id") @db.VarChar(50)
-    updatedByName String?       @map("updated_by_name") @db.VarChar(255)
-    ownerGroup    String?       @map("owner_group") @db.VarChar(50)
-    refTaskId     Int?          @unique
-    refTask       maTask?       @relation("TaskRelation", fields: [refTaskId], references: [id])
-    nextTask      maTask?       @relation("TaskRelation")
-    maTaskFiles   maTaskFiles[]
+    id             Int           @unique @default(autoincrement()) @map("id")
+    maName         String        @map("ma_name") @db.VarChar(255)
+    maCategory     String?       @map("ma_category") @db.VarChar(50)
+    maTypeId       Int           @map("ma_type_id") @db.Integer
+    maTypeName     String        @map("ma_type_name") @db.VarChar(255)
+    maDate         DateTime      @map("ma_date") @db.Timestamptz()
+    maStatus       String        @map("ma_status") @db.VarChar(10)
+    detail         String?       @map("detail") @db.Text()
+    contact        String?       @map("contact") @db.Text()
+    actionDate     DateTime?     @map("action_date") @db.Timestamptz()
+    solution       String?       @map("solution") @db.Text()
+    createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz()
+    createdById    String?       @map("created_by_id") @db.VarChar(50)
+    createdByName  String?       @map("created_by_name") @db.VarChar(255)
+    updatedAt      DateTime?     @map("updated_at") @db.Timestamptz()
+    updatedById    String?       @map("updated_by_id") @db.VarChar(50)
+    updatedByName  String?       @map("updated_by_name") @db.VarChar(255)
+    ownerGroup     String?       @map("owner_group") @db.VarChar(50)
+    assignUserId   String?       @map("assign_user_id") @db.VarChar(255)
+    assignUsername String?       @map("assign_username") @db.VarChar(255)
+    refTaskId      Int?          @unique
+    refTask        maTask?       @relation("TaskRelation", fields: [refTaskId], references: [id])
+    nextTask       maTask?       @relation("TaskRelation")
+    maTaskFiles    maTaskFiles[]
 
     @@map("ma_task")
 }

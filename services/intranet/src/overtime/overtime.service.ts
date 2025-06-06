@@ -46,12 +46,12 @@ export class OverTimeService {
     const minEndTime = endTimeSplit[1] === '30' ? 0.5 : 0;
     const totalMin = minEndTime - minStart;
 
-    let averageOnetime = 0;
-    let averageTwotime = 0;
-    let averageThreetimes = 0;
-    let totalTime = 0;
-    let breakTime = 0;
-    let workingTime = 0;
+    const averageOnetime = 0;
+    const averageTwotime = 0;
+    const averageThreetimes = 0;
+    const totalTime = 0;
+    const breakTime = 0;
+    const workingTime = 0;
 
     const cal = await calculate(
       filterHolidays,
@@ -125,12 +125,8 @@ export class OverTimeService {
               },
             ],
     };
-
-    console.log(base);
-
-    // const data = await this.overtimeRepo.create({ data: base });
-    // return { status: 200, data: data };
-    return { status: 200 };
+    const data = await this.overtimeRepo.create({ data: base });
+    return { status: 200, data: data };
   }
 
   async findAll() {

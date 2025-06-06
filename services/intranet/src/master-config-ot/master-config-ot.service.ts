@@ -58,7 +58,6 @@ export class MasterConfigOvertimeService {
     const resCheckDate = Object.values(checkDate[0].partTimeCondition).find(
       (item) => item.index === dayjs(date).day(),
     );
-
     return resCheckDate.typeDate === 'dayoff' || filterHolidays !== undefined
       ? 1
       : 0;
