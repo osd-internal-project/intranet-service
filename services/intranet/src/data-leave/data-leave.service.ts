@@ -112,7 +112,7 @@ export class DataLeaveService {
         groupId: { in: AccessedGroup.map((event: any) => event.groupId) },
       },
       orderBy: {
-        id: 'desc',
+        startDate: 'desc',
       },
     });
   }
