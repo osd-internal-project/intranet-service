@@ -28,13 +28,13 @@ export class NotiLogsService {
         toGroupIds: { has: ownergroup.groupId },
         notiStatus: 'no-action',
         type: 'leave',
-        action: 'waitting',
+        action: 'waiting',
       },
     });
     if (leaves > 0) {
       data.push({
         type: 'leaves',
-        action: 'waitting',
+        action: 'waiting',
         title: 'วันลารอ Approve',
         count: leaves,
         path: '/page/leave-control-management/leave-history-admin',
@@ -45,13 +45,13 @@ export class NotiLogsService {
         toGroupIds: { has: ownergroup.groupId },
         notiStatus: 'no-action',
         type: 'expense',
-        action: 'waitting',
+        action: 'waiting',
       },
     });
     if (expenses > 0) {
       data.push({
         type: 'expense',
-        action: 'waitting',
+        action: 'waiting',
         title: 'การเบิก Approve',
         count: expenses,
         path: '/page/expense',

@@ -93,7 +93,7 @@ export class OverTimeService {
       carId: createDepartmentDto.carId ? createDepartmentDto.carId : null,
       checkDistance: createDepartmentDto.checkDistance,
       phoneNumber: createDepartmentDto.phoneNumber,
-      status: 'waitting',
+      status: 'waiting',
       calculate:
         result.typeDate === 'dayoff'
           ? [

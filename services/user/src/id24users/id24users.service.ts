@@ -378,29 +378,27 @@ export class UsersService {
           where: { username: id24.username },
         });
         if (!user) {
-          console.log('No users');
           const newUser = await this.usersRepo.create({
             data: {
               token: id24.id,
               username: id24.username,
               email: id24.email,
               password: hashedPassword,
+              userType: 'ldap',
             },
           });
           return newUser;
         } else {
-          const user = await this.usersRepo.findOne({
-            where: { username: id24.username },
-            include: { ownerGroup: true, masterPosition: true },
-          });
-          await this.usersRepo.update({
+          const updateUser = await this.usersRepo.update({
             where: { userId: user.userId },
+            include: { ownerGroup: true, masterPosition: true },
             data: {
               token: id24.id,
               password: hashedPassword,
+              userType: 'ldap',
             },
           });
-          return user;
+          return updateUser;
         }
       } else {
         return user;

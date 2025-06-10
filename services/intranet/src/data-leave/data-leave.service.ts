@@ -152,7 +152,7 @@ export class DataLeaveService {
       where: {
         userId: userId,
         status: {
-          in: ['approved', 'waitting'],
+          in: ['approved', 'waiting'],
         },
         createdAt: {
           gte: startOfYear,
