@@ -71,8 +71,6 @@ export class OverTimeService {
       total,
     );
 
-    console.log(cal);
-
     const base = {
       fullname: createDepartmentDto.fullname,
       userId: createDepartmentDto.userId,

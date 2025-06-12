@@ -69,8 +69,9 @@ export class NewsImageService {
   }
 
   findImage(fileName: string) {
-    const condition = { where: { fileName: fileName } } as Prisma.slideImageArgs;
+    const condition = {
+      where: { fileName: fileName },
+    } as Prisma.slideImageArgs;
     return this.newsImageNewsRepo.findOne(condition);
   }
-
 }

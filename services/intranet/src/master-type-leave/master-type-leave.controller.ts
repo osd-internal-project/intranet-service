@@ -28,8 +28,6 @@ export class MasterTypeLeaveController {
 
   @Get('condition')
   async findByCondition(@Query() params: Prisma.masterTypeleaveCreateInput) {
-    console.log(params);
-
     return await this.mastertypeleaveService.findByCondition(params);
   }
 

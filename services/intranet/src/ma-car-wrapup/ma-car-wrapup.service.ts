@@ -38,10 +38,7 @@ export class MaCarWrapupService {
       },
       data: { ...condition },
     } as Prisma.maCarWrapupUpdateArgs;
-    console.log(base);
-
     const updatemacar = await this.macarwrapupRepo.update(base);
-    console.log(`หลังจาก${updatemacar.id}`);
 
     return updatemacar;
   }

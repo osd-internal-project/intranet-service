@@ -60,7 +60,6 @@ export class UserGroupService {
     modulecode: string;
   }) {
     const { groupid, modulecode } = condition;
-    console.log(condition);
     return await this.accessServices.getAccessedGroupByGroupId(
       modulecode,
       groupid,

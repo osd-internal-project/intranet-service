@@ -114,8 +114,6 @@ export class EmployeeProfileService {
       );
     }
 
-    console.log(data);
-
     return { status: data ? 200 : 500, data: data ? data : null };
   }
 

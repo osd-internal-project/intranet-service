@@ -67,13 +67,10 @@ export class MasterConfigOvertimeService {
     id: number,
     condition: Prisma.masterDataConfigTimeOTUpdateInput,
   ) {
-    console.log(id);
-    console.log(condition);
-
-    // return await this.masterconfigtimeotRepo.update({
-    //   where: { id: id },
-    //   data: condition,
-    // });
+    return await this.masterconfigtimeotRepo.update({
+      where: { id: id },
+      data: condition,
+    });
   }
 
   async remove(id: number) {

@@ -60,7 +60,6 @@ export class PublicController {
     @Param('maName') maName: string,
     @Res() res: Response,
   ): void {
-    console.log(maName);
     const file = createReadStream(
       join(`${PORT.pathMountDirUpload}/maCarImage`, maName),
     );

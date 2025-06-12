@@ -100,7 +100,6 @@ export class handbookFileController {
       });
       if (file) {
         const filesPath = join(`${file.fileLocation}`);
-        console.log(filesPath);
         res.setHeader('Content-Type', '*');
         return res.sendFile(`${filesPath}`, { root: './' });
       }
