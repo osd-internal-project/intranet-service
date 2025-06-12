@@ -11,6 +11,11 @@ import {
 import { Injectable, Logger } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import * as dayjs from 'dayjs';
+import * as nodemailer from 'nodemailer';
+import {
+  templateDataLeave,
+  templateDataLeaveApproved,
+} from '../utils/template';
 
 @Injectable()
 export class DataLeaveService {
@@ -26,23 +31,32 @@ export class DataLeaveService {
   ) {}
 
   async create(condition: Prisma.dataLeaveCreateArgs) {
+    const result = await this.accessService.getLeadUsersByUserId(
+      ModuleTypes.INTRANET_APPROVE_LEAVE,
+      condition.data.userId,
+    );
     const leaveLetter = await this.dataleaveRepo.create(condition);
-    // const userDetail = await this.userRepo.findOne({
-    //   where: { userId: leaveLetter.userId },
-    // });
-    // if (leaveLetter) {
-    //   await this.notificationlogsRepo.create({
-    //     data: {
-    //       sendUserId: leaveLetter.userId,
-    //       sendUserName: `${leaveLetter.firstName} ${leaveLetter.lastName}`,
-    //       toGroupIds: userDetail.ownerGroupId,
-    //       refId: leaveLetter.id,
-    //       type: 'leave',
-    //       action: 'waitting',
-    //       notiStatus: 'no-action',
-    //     },
-    //   });
-    // }
+    const html = await templateDataLeave(condition.data);
+    if (leaveLetter) {
+      const transporter = nodemailer.createTransport({
+        host: 'smtp.office365.com', // ใช้ SMTP ของ Outlook (Microsoft 365)
+        port: 587, // พอร์ตสำหรับ TLS (STARTTLS)
+        secure: false, // ใช้ STARTTLS (ไม่ใช่ SSL ทันที)
+        auth: {
+          user: 'internalsupport@osd.co.th', // อีเมลผู้ส่ง
+          pass: 'Internal-support@osd1234.', // รหัสผ่าน (หรือ App Password ถ้าเปิด 2FA)
+        },
+      });
+      result.map(async (event: any) => {
+        return await transporter.sendMail({
+          from: '"admin Intranet" <internalsupport@osd.co.th>',
+          to: `${event.email}`,
+          subject: 'OSD Intranet ใบลาออนไลน์',
+          text: '',
+          html,
+        });
+      });
+    }
     return leaveLetter;
   }
   findAll() {
@@ -354,7 +368,36 @@ export class DataLeaveService {
   }
 
   async update(condition: Prisma.dataLeaveUpdateArgs) {
-    return await this.dataleaveRepo.update(condition);
+    const findDataLeave = await this.dataleaveRepo.findOne({
+      where: { id: condition.where.id },
+    });
+    const findDetailUser = await this.usersRepo.findOne({
+      where: { userId: findDataLeave.userId },
+    });
+    const updateData = await this.dataleaveRepo.update(condition);
+    if (updateData && condition.data.status) {
+      const html = await templateDataLeaveApproved(
+        findDataLeave,
+        condition.data.status as string,
+      );
+      const transporter = nodemailer.createTransport({
+        host: 'smtp.office365.com', // ใช้ SMTP ของ Outlook (Microsoft 365)
+        port: 587, // พอร์ตสำหรับ TLS (STARTTLS)
+        secure: false, // ใช้ STARTTLS (ไม่ใช่ SSL ทันที)
+        auth: {
+          user: 'internalsupport@osd.co.th', // อีเมลผู้ส่ง
+          pass: 'Internal-support@osd1234.', // รหัสผ่าน (หรือ App Password ถ้าเปิด 2FA)
+        },
+      });
+      return await transporter.sendMail({
+        from: '"admin Intranet" <internalsupport@osd.co.th>',
+        to: `${findDetailUser.email}`,
+        subject: 'OSD Intranet ใบลาออนไลน์',
+        text: '',
+        html,
+      });
+    }
+    return updateData;
   }
 
   remove(id: number) {

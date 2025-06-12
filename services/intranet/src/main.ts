@@ -12,7 +12,6 @@ async function bootstrap() {
   (BigInt.prototype as any).toJSON = function () {
     return this.toString();
   };
-
   const app = await NestFactory.create(IntranetMainModule);
   app.setGlobalPrefix('api');
   app.enableCors();
@@ -20,14 +19,13 @@ async function bootstrap() {
   app.use(helmet());
   const prismaService = app.get(PrismaService);
   prismaService.enableShutdownHooks(app as any);
-  app.enableCors();
   app.useGlobalPipes(new ValidationPipe());
 
   const options = new DocumentBuilder()
-    .setTitle('inventory API')
-    .setDescription('The inventory API description')
+    .setTitle('Intranet API')
+    .setDescription('The Intranet API description')
     .setVersion('1.0')
-    .addTag('inventory')
+    .addTag('Intranet')
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
