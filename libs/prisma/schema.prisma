@@ -1,988 +1,975 @@
 generator client {
-    provider        = "prisma-client-js"
-    previewFeatures = ["interactiveTransactions"]
-    binaryTargets   = ["native"]
+  provider        = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
+  binaryTargets   = ["native"]
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model dataLeaveFiles {
-    id          Int        @unique @default(autoincrement())
-    fileCode    String?    @map("file_code") @db.VarChar(200)
-    path        String?    @db.VarChar(200)
-    fileName    String?    @map("file_name") @db.VarChar(200)
-    fileType    String?    @map("file_type") @db.VarChar(200)
-    type        String?    @db.VarChar(10)
-    createdAt   DateTime   @default(now())
-    updatedAt   DateTime?  @db.Timestamp()
-    dataLeave   dataLeave? @relation(fields: [dataLeaveId], references: [id])
-    dataLeaveId Int?       @map("data_leave_id")
+  id          Int        @unique @default(autoincrement())
+  fileCode    String?    @map("file_code") @db.VarChar(200)
+  path        String?    @db.VarChar(200)
+  fileName    String?    @map("file_name") @db.VarChar(200)
+  fileType    String?    @map("file_type") @db.VarChar(200)
+  type        String?    @db.VarChar(10)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime?  @db.Timestamp(6)
+  dataLeaveId Int?       @map("data_leave_id")
+  dataLeave   dataLeave? @relation(fields: [dataLeaveId], references: [id])
 
-    @@map("data_leave_file")
+  @@map("data_leave_file")
 }
 
 model dataLeave {
-    id             Int              @unique @default(autoincrement()) @map("id")
-    userId         String?          @map("user_id") @db.VarChar(100)
-    firstName      String?          @default("") @map("first_name") @db.VarChar(100)
-    lastName       String?          @default("") @map("last_name") @db.VarChar(100)
-    positionId     Int?             @map("position_id") @db.Integer
-    position       String?          @default("") @map("position") @db.VarChar(100)
-    typeId         Int?             @map("type_id") @db.Integer
-    typeName       String?          @default("") @map("type_name") @db.VarChar(100)
-    startDate      DateTime?        @default(now()) @map("start_date") @db.Timestamp()
-    startTime      String?          @map("start_time") @db.VarChar(10)
-    endDate        DateTime?        @default(now()) @map("end_date") @db.Timestamp()
-    endTime        String?          @map("end_time") @db.VarChar(10)
-    leaveHour      Float?           @default(0.00) @map("leave_hour")
-    detail         String?          @default("") @map("detail") @db.Text
-    phoneNumber    String           @default("") @map("phone_number") @db.VarChar(50)
-    status         String?          @default("") @map("status") @db.VarChar(50)
-    approvedDate   DateTime?        @map("approved_date") @db.Timestamp()
-    userApproved   String?          @map("user_approved") @db.VarChar(100)
-    attrachFile    String?          @map("attrach_file") @db.VarChar(250)
-    createdAt      DateTime?        @default(now()) @map("created_at") @db.Timestamp()
-    updatedAt      DateTime?        @default(now()) @map("updated_at") @db.Timestamp()
-    ownerId        String?          @default("") @map("owner_id") @db.VarChar(100)
-    ownerName      String?          @default("") @map("owner_name") @db.VarChar(150)
-    groupId        String?          @default("") @map("group_id") @db.VarChar(100)
-    dataLeaveFiles dataLeaveFiles[]
+  id             Int              @unique @default(autoincrement())
+  userId         String?          @map("user_id") @db.VarChar(100)
+  firstName      String?          @default("") @map("first_name") @db.VarChar(100)
+  lastName       String?          @default("") @map("last_name") @db.VarChar(100)
+  positionId     Int?             @map("position_id")
+  position       String?          @default("") @db.VarChar(100)
+  typeId         Int?             @map("type_id")
+  typeName       String?          @default("") @map("type_name") @db.VarChar(100)
+  startDate      DateTime?        @default(now()) @map("start_date") @db.Timestamp(6)
+  startTime      String?          @map("start_time") @db.VarChar(10)
+  endDate        DateTime?        @default(now()) @map("end_date") @db.Timestamp(6)
+  endTime        String?          @map("end_time") @db.VarChar(10)
+  leaveHour      Float?           @default(0.00) @map("leave_hour")
+  detail         String?          @default("")
+  phoneNumber    String           @default("") @map("phone_number") @db.VarChar(50)
+  status         String?          @default("") @db.VarChar(50)
+  approvedDate   DateTime?        @map("approved_date") @db.Timestamp(6)
+  userApproved   String?          @map("user_approved") @db.VarChar(100)
+  attrachFile    String?          @map("attrach_file") @db.VarChar(250)
+  createdAt      DateTime?        @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt      DateTime?        @default(now()) @map("updated_at") @db.Timestamp(6)
+  ownerId        String?          @default("") @map("owner_id") @db.VarChar(100)
+  ownerName      String?          @default("") @map("owner_name") @db.VarChar(150)
+  groupId        String?          @default("") @map("group_id") @db.VarChar(100)
+  dataLeaveFiles dataLeaveFiles[]
 
-    @@map("data_leave")
+  @@map("data_leave")
 }
 
 model informationNews {
-    newsId      Int         @unique @default(autoincrement()) @map("news_id")
-    newsName    String?     @default("") @map("news_name")
-    content     String?     @default("") @map("content")
-    newsType    String?     @default("") @map("new_Type")
-    author      String?     @default("") @map("author") @db.VarChar(100)
-    phblishedAt DateTime?   @default(now()) @map("phblished_at")
-    updatedAt   DateTime?   @map("updated_at")
-    status      Boolean?    @default(true) @map("status") @db.Boolean
-    newsImage   newsImage[]
+  newsId      Int         @unique @default(autoincrement()) @map("news_id")
+  newsName    String?     @default("") @map("news_name")
+  content     String?     @default("")
+  newsType    String?     @default("") @map("new_Type")
+  author      String?     @default("") @db.VarChar(100)
+  phblishedAt DateTime?   @default(now()) @map("phblished_at")
+  updatedAt   DateTime?   @map("updated_at")
+  status      Boolean?    @default(true)
+  newsImage   newsImage[]
 
-    @@map("information_news")
+  @@map("information_news")
 }
 
 model newsType {
-    idType    Int       @unique @default(autoincrement()) @map("idType")
-    nameType  String?   @default("") @map("nameType")
-    deteil    String?   @default("") @map("dedeil")
-    createAt  DateTime? @default(now()) @map("createAt")
-    updatedAt DateTime? @default(now()) @map("updated_At")
-    status    Boolean?  @default(true) @map("status") @db.Boolean
+  idType    Int       @unique @default(autoincrement())
+  nameType  String?   @default("")
+  deteil    String?   @default("") @map("dedeil")
+  createAt  DateTime? @default(now())
+  updatedAt DateTime? @default(now()) @map("updated_At")
+  status    Boolean?  @default(true)
 
-    @@map("news_type")
+  @@map("news_type")
 }
 
 model newsImage {
-    imageId         Int              @unique @default(autoincrement()) @map("image_id")
-    createdAt       DateTime?        @default(now()) @map("createdat")
-    updatedAt       DateTime?        @default(now()) @map("updatedat")
-    fileimageName   String?          @default("") @map("file_image_name") @db.VarChar(100)
-    fileimagePath   String?          @default("") @map("file_image_path") @db.VarChar(100)
-    fileName        String?          @default("") @map("file_name") @db.VarChar(100)
-    informationNews informationNews? @relation(fields: [newsId], references: [newsId])
-    newsId          Int?             @map("news_id")
+  imageId         Int              @unique @default(autoincrement()) @map("image_id")
+  createdAt       DateTime?        @default(now()) @map("createdat")
+  updatedAt       DateTime?        @default(now()) @map("updatedat")
+  fileimageName   String?          @default("") @map("file_image_name") @db.VarChar(100)
+  fileimagePath   String?          @default("") @map("file_image_path") @db.VarChar(100)
+  fileName        String?          @default("") @map("file_name") @db.VarChar(100)
+  newsId          Int?             @map("news_id")
+  informationNews informationNews? @relation(fields: [newsId], references: [newsId])
 
-    @@map("news_image")
+  @@map("news_image")
 }
 
 model handbooktype {
-    idhandtype Int       @unique @default(autoincrement()) @map("id_handtype")
-    nameType   String?   @default("") @map("name_Type")
-    createAt   DateTime? @default(now()) @map("create_At")
-    updatedAt  DateTime? @default(now()) @map("updated_At")
-    author     String?   @default("") @map("author") @db.VarChar(100)
-    status     Boolean?  @default(true) @map("status") @db.Boolean
+  idhandtype Int       @unique @default(autoincrement()) @map("id_handtype")
+  nameType   String?   @default("") @map("name_Type")
+  createAt   DateTime? @default(now()) @map("create_At")
+  updatedAt  DateTime? @default(now()) @map("updated_At")
+  author     String?   @default("") @db.VarChar(100)
+  status     Boolean?  @default(true)
 
-    @@map("handbook_type")
+  @@map("handbook_type")
 }
 
 model handbookFile {
-    handbookid       Int       @unique @default(autoincrement()) @map("handbook_id")
-    fileId           String    @default(uuid()) @map("file_id") @db.VarChar(50)
-    fileName         String?   @default("") @map("file_name") @db.VarChar(200)
-    filetype         String?   @default("") @map("file_type") @db.VarChar(200)
-    fileoriginalName String?   @default("") @map("file_origina_name") @db.VarChar(200)
-    fileLocation     String?   @default("") @map("file_location") @db.VarChar(100)
-    author           String?   @default("") @map("author") @db.VarChar(100)
-    createdAt        DateTime? @default(now()) @map("created_At")
-    updatedAt        DateTime? @default(now()) @map("updated_At")
-    status           Boolean?  @default(true) @map("status") @db.Boolean
-    // handbook         handbook? @relation(fields: [idbook], references: [idbook])
-    // idbook           Int? Z     @map("id_book")
+  handbookid       Int       @unique @default(autoincrement()) @map("handbook_id")
+  fileId           String    @default(uuid()) @map("file_id") @db.VarChar(50)
+  fileName         String?   @default("") @map("file_name") @db.VarChar(200)
+  filetype         String?   @default("") @map("file_type") @db.VarChar(200)
+  fileoriginalName String?   @default("") @map("file_origina_name") @db.VarChar(200)
+  fileLocation     String?   @default("") @map("file_location") @db.VarChar(100)
+  author           String?   @default("") @db.VarChar(100)
+  createdAt        DateTime? @default(now()) @map("created_At")
+  updatedAt        DateTime? @default(now()) @map("updated_At")
+  status           Boolean?  @default(true)
 
-    @@map("handbook_file")
+  @@map("handbook_file")
 }
 
 model emailTemplate {
-    id                Int                @unique @default(autoincrement()) @map("id")
-    templateId        String             @unique @default(uuid()) @map("template_id")
-    name              String             @default("") @map("name") @db.VarChar(100)
-    type              Int                @map("type") @db.Integer
-    status            String             @default("Inactive") @map("status") @db.VarChar(10)
-    htmlTemplate      String             @default("") @map("html_template") @db.Text
-    used              Boolean            @default(false) @map("used") @db.Boolean
-    createAt          DateTime?          @default(now()) @map("created_at") @db.Timestamptz()
-    updateAt          DateTime?          @default(now()) @map("updated_at") @db.Timestamptz()
-    emailTemplateType emailTemplateType? @relation(fields: [type], references: [id], onDelete: Cascade)
+  id                Int               @unique @default(autoincrement())
+  templateId        String            @unique @default(uuid()) @map("template_id")
+  name              String            @default("") @db.VarChar(100)
+  type              Int
+  status            String            @default("Inactive") @db.VarChar(10)
+  htmlTemplate      String            @default("") @map("html_template")
+  used              Boolean           @default(false)
+  createAt          DateTime?         @default(now()) @map("created_at") @db.Timestamptz(6)
+  updateAt          DateTime?         @default(now()) @map("updated_at") @db.Timestamptz(6)
+  emailTemplateType emailTemplateType @relation(fields: [type], references: [id], onDelete: Cascade)
 
-    @@map("email_template")
+  @@map("email_template")
 }
 
 model emailTemplateType {
-    id                  Int                   @unique @default(autoincrement()) @map("id")
-    name                String                @map("name") @db.VarChar(100)
-    createAt            DateTime              @default(now()) @map("created_At") @db.Timestamptz()
-    updateAt            DateTime              @default(now()) @map("updated_At") @db.Timestamptz()
-    templateUsedId      String?               @map("template_used_id") @db.VarChar(100)
-    emailTemplateFields emailTemplateFields[]
-    emailTemplate       emailTemplate[]
+  id                  Int                   @unique @default(autoincrement())
+  name                String                @db.VarChar(100)
+  createAt            DateTime              @default(now()) @map("created_At") @db.Timestamptz(6)
+  updateAt            DateTime              @default(now()) @map("updated_At") @db.Timestamptz(6)
+  templateUsedId      String?               @map("template_used_id") @db.VarChar(100)
+  emailTemplate       emailTemplate[]
+  emailTemplateFields emailTemplateFields[]
 
-    @@map("email_template_type")
+  @@map("email_template_type")
 }
 
 model emailTemplateFields {
-    id                Int                @unique @default(autoincrement()) @map("id")
-    name              String             @map("name") @db.VarChar(100)
-    description       String?            @map("description") @db.VarChar(250)
-    createAt          DateTime           @default(now()) @map("created_At")
-    updateAt          DateTime           @default(now()) @map("updated_At")
-    emailTemplateType emailTemplateType? @relation(fields: [idTemplateType], references: [id], onDelete: Cascade)
-    idTemplateType    Int?               @map("id_template_type")
+  id                Int                @unique @default(autoincrement())
+  name              String             @db.VarChar(100)
+  description       String?            @db.VarChar(250)
+  createAt          DateTime           @default(now()) @map("created_At")
+  updateAt          DateTime           @default(now()) @map("updated_At")
+  idTemplateType    Int?               @map("id_template_type")
+  emailTemplateType emailTemplateType? @relation(fields: [idTemplateType], references: [id], onDelete: Cascade)
 
-    @@map("email_template_fields")
+  @@map("email_template_fields")
 }
 
 model slideImage {
-    id            Int       @unique @default(autoincrement()) @map("id")
-    fileId        String    @unique @default(uuid()) @map("file_id") @db.VarChar(50)
-    filePath      String?   @map("file_path") @db.VarChar(255)
-    fileName      String?   @default("") @map("file_name") @db.VarChar(255)
-    fileType      String?   @map("file_type") @db.VarChar(50)
-    status        Boolean   @default(true) @map("status") @db.Boolean
-    createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz()
-    createdById   String?   @map("created_by_id") @db.VarChar(50)
-    createdByName String?   @map("created_by_name") @db.VarChar(255)
-    updatedAt     DateTime? @map("updated_at") @db.Timestamptz()
-    updatedById   String?   @map("updated_by_id") @db.VarChar(50)
-    updatedByName String?   @map("updated_by_name") @db.VarChar(255)
-    order         Int?      @map("order")
+  id            Int       @unique @default(autoincrement())
+  fileId        String    @unique @default(uuid()) @map("file_id") @db.VarChar(50)
+  filePath      String?   @map("file_path") @db.VarChar(255)
+  fileName      String?   @default("") @map("file_name") @db.VarChar(255)
+  fileType      String?   @map("file_type") @db.VarChar(50)
+  status        Boolean   @default(true)
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  createdById   String?   @map("created_by_id") @db.VarChar(50)
+  createdByName String?   @map("created_by_name") @db.VarChar(255)
+  updatedAt     DateTime? @map("updated_at") @db.Timestamptz(6)
+  updatedById   String?   @map("updated_by_id") @db.VarChar(50)
+  updatedByName String?   @map("updated_by_name") @db.VarChar(255)
+  order         Int?
 
-    @@map("slide_image")
+  @@map("slide_image")
 }
 
 model masterActionStatus {
-    id     Int    @unique @default(autoincrement()) @map("id")
-    nameEn String @map("name_th") @db.VarChar(100)
-    nameTh String @map("name_en") @db.VarChar(100)
+  id     Int    @unique @default(autoincrement())
+  nameEn String @map("name_th") @db.VarChar(100)
+  nameTh String @map("name_en") @db.VarChar(100)
 
-    @@map("master_action_status")
+  @@map("master_action_status")
 }
 
 model masterObjective {
-    id          Int      @unique @default(autoincrement()) @map("id")
-    name        String   @map("name") @db.VarChar(50)
-    status      Boolean  @default(true) @map("status") @db.Boolean
-    description String   @default("") @map("description") @db.Text
-    createdAt   DateTime @default(now()) @map("created_at")
-    updatedAt   DateTime @default(now()) @map("updated_at")
+  id          Int      @unique @default(autoincrement())
+  name        String   @db.VarChar(50)
+  status      Boolean  @default(true)
+  description String   @default("")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @map("updated_at")
 
-    @@map("master_objective")
+  @@map("master_objective")
 }
 
 model masterPosition {
-    id               Int                @unique @default(autoincrement()) @map("id")
-    posId            Int                @unique @default(autoincrement()) @map("pos_id")
-    nameTh           String?            @default("") @map("name_th") @db.VarChar(100)
-    nameEn           String?            @default("") @map("name_en") @db.VarChar(100)
-    createdAt        DateTime?          @default(now()) @map("created_at")
-    updatedAt        DateTime?          @default(now()) @map("updated_at")
-    user             users[]
-    employeeProfiles employeeProfiles[]
+  id               Int                @unique @default(autoincrement())
+  posId            Int                @unique @default(autoincrement()) @map("pos_id")
+  nameTh           String?            @default("") @map("name_th") @db.VarChar(100)
+  nameEn           String?            @default("") @map("name_en") @db.VarChar(100)
+  createdAt        DateTime?          @default(now()) @map("created_at")
+  updatedAt        DateTime?          @default(now()) @map("updated_at")
+  employeeProfiles employeeProfiles[]
+  user             users[]
 
-    @@map("master_position")
+  @@map("master_position")
 }
 
 model masterTypeleave {
-    id                   Int                    @unique @default(autoincrement()) @map("id")
-    typeId               Int?                   @default(autoincrement()) @map("type_id") @db.Integer
-    typeName             String?                @map("type_name") @db.VarChar(250)
-    forwardLeave         String?                @map("forward_leave") @db.VarChar(250)
-    limitLeaveOne        String?                @map("limit_leave1") @db.VarChar(250)
-    limitLeaveTwo        String?                @map("limit_leave2") @db.VarChar(250)
-    limitLeaveThree      String?                @map("limit_leave3") @db.VarChar(250)
-    limitLeaveFour       String?                @map("limit_leave4") @db.VarChar(250)
-    descriptionLeave     String?                @map("description_leave") @db.Text
-    typeEveryDay         Boolean?               @default(false) @map("type_everyday") @db.Boolean
-    typeNameEn           String?                @map("type_name_en") @db.VarChar(250)
-    typeNameTh           String?                @map("type_name_th") @db.VarChar(250)
-    createdAt            DateTime?              @default(now()) @map("created_at")
-    updatedAt            DateTime?              @default(now()) @map("updated_at")
-    typeLeaveDisabledMap typeLeaveDisabledMap[]
+  id                   Int                    @unique @default(autoincrement())
+  typeId               Int?                   @default(autoincrement()) @map("type_id")
+  typeName             String?                @map("type_name") @db.VarChar(250)
+  forwardLeave         String?                @map("forward_leave") @db.VarChar(250)
+  limitLeaveOne        String?                @map("limit_leave1") @db.VarChar(250)
+  limitLeaveTwo        String?                @map("limit_leave2") @db.VarChar(250)
+  limitLeaveThree      String?                @map("limit_leave3") @db.VarChar(250)
+  limitLeaveFour       String?                @map("limit_leave4") @db.VarChar(250)
+  descriptionLeave     String?                @map("description_leave")
+  typeEveryDay         Boolean?               @default(false) @map("type_everyday")
+  typeNameEn           String?                @map("type_name_en") @db.VarChar(250)
+  typeNameTh           String?                @map("type_name_th") @db.VarChar(250)
+  createdAt            DateTime?              @default(now()) @map("created_at")
+  updatedAt            DateTime?              @default(now()) @map("updated_at")
+  typeLeaveDisabledMap typeLeaveDisabledMap[]
 
-    @@map("master_typeleave")
+  @@map("master_typeleave")
 }
 
 model masterHolidaysYear {
-    id             Int              @unique @default(autoincrement()) @map("id")
-    holidaysYear   String           @map("holidays_year")
-    createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt      DateTime         @updatedAt @map("updated_at") @db.Timestamptz()
-    masterHolidays masterHolidays[]
+  id             Int              @unique @default(autoincrement())
+  holidaysYear   String           @map("holidays_year")
+  createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime         @updatedAt @map("updated_at") @db.Timestamptz(6)
+  masterHolidays masterHolidays[]
 
-    @@map("master_holidays_year")
+  @@map("master_holidays_year")
 }
 
 model masterHolidays {
-    id                   Int                @unique @default(autoincrement()) @map("id")
-    holidaysName         String             @map("holidays_name") @db.VarChar(250)
-    masterHolidaysYearId Int                @map("master_holidays_year_id")
-    holidaysDate         DateTime           @map("holidays_date") @db.Timestamptz()
-    createdAt            DateTime           @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt            DateTime           @updatedAt @map("updated_at") @db.Timestamptz()
-    masterHolidaysYear   masterHolidaysYear @relation(fields: [masterHolidaysYearId], references: [id])
+  id                   Int                @unique @default(autoincrement())
+  holidaysName         String             @map("holidays_name") @db.VarChar(250)
+  masterHolidaysYearId Int                @map("master_holidays_year_id")
+  holidaysDate         DateTime           @map("holidays_date") @db.Timestamptz(6)
+  createdAt            DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt            DateTime           @updatedAt @map("updated_at") @db.Timestamptz(6)
+  masterHolidaysYear   masterHolidaysYear @relation(fields: [masterHolidaysYearId], references: [id])
 
-    @@map("master_holidays")
+  @@map("master_holidays")
 }
 
 model masterRole {
-    id       Int    @unique @default(autoincrement()) @map("id")
-    roleCode String @map("role_code") @db.VarChar(20)
-    roleName String @map("role_name") @db.VarChar(50)
+  id       Int    @unique @default(autoincrement())
+  roleCode String @map("role_code") @db.VarChar(20)
+  roleName String @map("role_name") @db.VarChar(50)
 
-    @@map("master_role")
+  @@map("master_role")
 }
 
 model masterRule {
-    id             Int              @unique @default(autoincrement()) @map("id")
-    ruleCode       String           @unique @default(uuid()) @map("rule_code") @db.VarChar(50)
-    ruleName       String           @map("rule_name") @db.VarChar(50)
-    createdAt      DateTime         @default(now()) @map("created_at")
-    updatedAt      DateTime         @default(now()) @map("updated_at")
-    description    String           @default("") @map("description") @db.Text
-    profileRuleMap profileRuleMap[]
+  id             Int              @unique @default(autoincrement())
+  ruleCode       String           @unique @default(uuid()) @map("rule_code") @db.VarChar(50)
+  ruleName       String           @map("rule_name") @db.VarChar(50)
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @default(now()) @map("updated_at")
+  description    String           @default("")
+  profileRuleMap profileRuleMap[]
 
-    @@map("master_rule")
+  @@map("master_rule")
 }
 
 model notiActionLogs {
-    id           Int      @unique @default(autoincrement()) @map("id")
-    sendUserId   String?  @map("send_user_id") @db.VarChar(50)
-    sendUserName String?  @map("send_user_name") @db.VarChar(255)
-    toGroupIds   String[] @map("to_group_ids")
-    createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz()
-    refId        Int      @map("ref_id")
-    type         String?  @map("type") @db.VarChar(20) //leave ,expense ,bookingroom ,macar ,ma ,housekeeper
-    action       String?  @map("action") @db.VarChar(20)
-    notiStatus   String?  @map("noti_status") @db.VarChar(20)
+  id           Int      @unique @default(autoincrement())
+  sendUserId   String?  @map("send_user_id") @db.VarChar(50)
+  sendUserName String?  @map("send_user_name") @db.VarChar(255)
+  toGroupIds   String[] @map("to_group_ids")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  refId        Int      @map("ref_id")
+  type         String?  @db.VarChar(20)
+  action       String?  @db.VarChar(20)
+  notiStatus   String?  @map("noti_status") @db.VarChar(20)
 
-    @@map("noti_action_logs")
+  @@map("noti_action_logs")
 }
 
 model organized {
-    id                        Int                         @unique @default(autoincrement()) @map("id")
-    organizedId               String                      @unique @default(uuid()) @map("organized_id") @db.VarChar(50)
-    organizedName             String                      @map("organized_name") @db.VarChar(50)
-    description               String                      @default("") @map("description") @db.Text
-    createdAt                 DateTime                    @default(now()) @map("created_at")
-    updatedAt                 DateTime                    @default(now()) @map("updated_at")
-    userGroup                 userGroup[]
-    userRole                  userRole[]
-    userMapOrganizeGroup      userMapOrganizeGroup[]
-    userMapOrganizeGroupOwner userMapOrganizeGroupOwner[]
-    organizeMapGroup          organizeMapGroup[]
+  id                        Int                         @unique @default(autoincrement())
+  organizedId               String                      @unique @default(uuid()) @map("organized_id") @db.VarChar(50)
+  organizedName             String                      @map("organized_name") @db.VarChar(50)
+  description               String                      @default("")
+  createdAt                 DateTime                    @default(now()) @map("created_at")
+  updatedAt                 DateTime                    @default(now()) @map("updated_at")
+  organizeMapGroup          organizeMapGroup[]
+  userMapOrganizeGroupOwner userMapOrganizeGroupOwner[]
+  userGroup                 userGroup[]
+  userMapOrganizeGroup      userMapOrganizeGroup[]
+  userRole                  userRole[]
 }
 
 model profileRule {
-    id               Int              @unique @default(autoincrement()) @map("id")
-    profileId        String           @unique @default(uuid()) @map("profile_id") @db.VarChar(50)
-    profileName      String           @map("profile_name") @db.VarChar(50)
-    createdAt        DateTime         @default(now()) @map("created_at")
-    updatedAt        DateTime         @default(now()) @map("updated_at")
-    description      String           @default("") @map("description") @db.Text
-    roleProfileMap   roleProfileMap[]
-    profileRuleMap   profileRuleMap[]
-    organizedGroupId String?          @map("organized_group_id")
+  id               Int              @unique @default(autoincrement())
+  profileId        String           @unique @default(uuid()) @map("profile_id") @db.VarChar(50)
+  profileName      String           @map("profile_name") @db.VarChar(50)
+  createdAt        DateTime         @default(now()) @map("created_at")
+  updatedAt        DateTime         @default(now()) @map("updated_at")
+  description      String           @default("")
+  organizedGroupId String?          @map("organized_group_id")
+  profileRuleMap   profileRuleMap[]
+  roleProfileMap   roleProfileMap[]
 
-    @@map("profile_rule")
+  @@map("profile_rule")
 }
 
 model profileRuleMap {
-    id            Int          @unique @default(autoincrement()) @map("id")
-    masterRule    masterRule?  @relation(fields: [masterRuleId], references: [ruleCode], onDelete: Cascade)
-    masterRuleId  String?      @map("master_rule_id")
-    profileRule   profileRule? @relation(fields: [profileRuleId], references: [profileId], onDelete: Cascade)
-    profileRuleId String?      @map("profile_rule_id")
+  id            Int          @unique @default(autoincrement())
+  masterRuleId  String?      @map("master_rule_id")
+  profileRuleId String?      @map("profile_rule_id")
+  masterRule    masterRule?  @relation(fields: [masterRuleId], references: [ruleCode], onDelete: Cascade)
+  profileRule   profileRule? @relation(fields: [profileRuleId], references: [profileId], onDelete: Cascade)
 
-    @@map("profile_rule_map")
+  @@map("profile_rule_map")
 }
 
-//
 model publicizeSlideImages {
-    id           Int       @unique @default(autoincrement())
-    fileCode     String?   @map("file_code") @db.VarChar(200)
-    path         String?   @db.VarChar(200)
-    fileName     String?   @map("file_name") @db.VarChar(200)
-    fileType     String?   @map("file_type") @db.VarChar(200)
-    name         String?   @map("name") @db.VarChar(200)
-    activeStatus Boolean   @default(false) @map("active_status") @db.Boolean
-    type         String?   @db.VarChar(10)
-    createdAt    DateTime  @default(now())
-    updatedAt    DateTime? @db.Timestamp()
+  id           Int       @unique @default(autoincrement())
+  fileCode     String?   @map("file_code") @db.VarChar(200)
+  path         String?   @db.VarChar(200)
+  fileName     String?   @map("file_name") @db.VarChar(200)
+  fileType     String?   @map("file_type") @db.VarChar(200)
+  name         String?   @db.VarChar(200)
+  activeStatus Boolean   @default(false) @map("active_status")
+  type         String?   @db.VarChar(10)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime? @db.Timestamp(6)
 
-    @@map("publicize_slide_images")
+  @@map("publicize_slide_images")
 }
 
 model roleProfileMap {
-    id            Int          @unique @default(autoincrement()) @map("id")
-    userRole      userRole?    @relation(fields: [userRoleId], references: [roleId], onDelete: Cascade)
-    userRoleId    String?      @map("user_role_id")
-    profileRule   profileRule? @relation(fields: [profileRuleId], references: [profileId], onDelete: Cascade)
-    profileRuleId String?      @map("profile_rule_id")
-    user          users?       @relation(fields: [userId], references: [id])
-    userId        Int?         @map("user_id")
+  id            Int          @unique @default(autoincrement())
+  userRoleId    String?      @map("user_role_id")
+  profileRuleId String?      @map("profile_rule_id")
+  userId        Int?         @map("user_id")
+  profileRule   profileRule? @relation(fields: [profileRuleId], references: [profileId], onDelete: Cascade)
+  user          users?       @relation(fields: [userId], references: [id])
+  userRole      userRole?    @relation(fields: [userRoleId], references: [roleId], onDelete: Cascade)
 
-    @@map("role_profile_map")
+  @@map("role_profile_map")
 }
 
 model typeLeaveDisabledMap {
-    id                Int              @unique @default(autoincrement()) @map("id")
-    user              users?           @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId            Int?             @map("user_id")
-    masterTypeleave   masterTypeleave? @relation(fields: [masterTypeleaveId], references: [id], onDelete: Cascade)
-    masterTypeleaveId Int?             @map("master_type_leave_id")
+  id                Int              @unique @default(autoincrement())
+  userId            Int?             @map("user_id")
+  masterTypeleaveId Int?             @map("master_type_leave_id")
+  masterTypeleave   masterTypeleave? @relation(fields: [masterTypeleaveId], references: [id], onDelete: Cascade)
+  user              users?           @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@map("type_leave_disabled_map")
+  @@map("type_leave_disabled_map")
 }
 
 model users {
-    id                        Int                         @unique @default(autoincrement()) @map("id")
-    userId                    String                      @unique @default(uuid()) @map("user_id") @db.VarChar(50)
-    username                  String                      @map("username") @db.VarChar(100)
-    password                  String                      @map("password") @db.Text
-    firstNameTh               String?                     @map("first_name_th") @db.VarChar(100)
-    lastNameTh                String?                     @map("last_name_th") @db.VarChar(100)
-    firstNameEn               String?                     @map("first_name_en") @db.VarChar(100)
-    lastNameEn                String?                     @map("last_name_en") @db.VarChar(100)
-    email                     String?                     @map("email") @db.VarChar(100)
-    phoneNumber               String?                     @map("phone_number") @db.VarChar(50)
-    activeStatus              Boolean                     @default(true) @map("active_status") @db.Boolean
-    clientId                  String?                     @map("client_id") @db.VarChar(50)
-    createdAt                 DateTime                    @default(now()) @map("created_at")
-    updatedAt                 DateTime                    @default(now()) @map("updated_at")
-    organizedGroupId          String?                     @map("organized_group_id") @db.VarChar(50)
-    refreshToken              String?                     @map("refresh_token")
-    departmentId              Int?                        @map("department_id")
-    ownerGroupId              String?                     @map("owner_group_id") @db.VarChar(50)
-    imageId                   String?                     @map("image_id") @db.VarChar(255)
-    userType                  String?                     @map("user_type") @db.VarChar(50)
-    token                     String?                     @map("token") @db.VarChar(50)
-    dataModule                String?                     @map("data_module") @db.VarChar(50)
-    ownerGroup                userGroup?                  @relation(fields: [ownerGroupId], references: [groupId])
-    masterPosition            masterPosition?             @relation(fields: [positionId], references: [posId])
-    department                departMent?                 @relation(fields: [departmentId], references: [id])
-    startWork                 DateTime?                   @map("start_work")
-    ldapQuery                 String?                     @map("ldap_query")
-    // userGroupMap              userGroupMap[]
-    roleProfileMap            roleProfileMap[]
-    userRoleMap               userRoleMap[]
-    positionId                Int?
-    userMapOrganizeChart      userMapOrganizeChart[]
-    typeLeaveDisabledMap      typeLeaveDisabledMap[]
-    userMapOrganizeGroup      userMapOrganizeGroup[]
-    userMapOrganizeGroupOwner userMapOrganizeGroupOwner[]
+  id                        Int                         @unique @default(autoincrement())
+  userId                    String                      @unique @default(uuid()) @map("user_id") @db.VarChar(50)
+  username                  String                      @db.VarChar(100)
+  password                  String
+  firstNameTh               String?                     @map("first_name_th") @db.VarChar(100)
+  lastNameTh                String?                     @map("last_name_th") @db.VarChar(100)
+  firstNameEn               String?                     @map("first_name_en") @db.VarChar(100)
+  lastNameEn                String?                     @map("last_name_en") @db.VarChar(100)
+  email                     String?                     @db.VarChar(100)
+  phoneNumber               String?                     @map("phone_number") @db.VarChar(50)
+  activeStatus              Boolean                     @default(true) @map("active_status")
+  clientId                  String?                     @map("client_id") @db.VarChar(50)
+  createdAt                 DateTime                    @default(now()) @map("created_at")
+  updatedAt                 DateTime                    @default(now()) @map("updated_at")
+  organizedGroupId          String?                     @map("organized_group_id") @db.VarChar(50)
+  refreshToken              String?                     @map("refresh_token")
+  departmentId              Int?                        @map("department_id")
+  ownerGroupId              String?                     @map("owner_group_id") @db.VarChar(50)
+  imageId                   String?                     @map("image_id") @db.VarChar(255)
+  userType                  String?                     @map("user_type") @db.VarChar(50)
+  token                     String?                     @db.VarChar(50)
+  dataModule                String?                     @map("data_module") @db.VarChar(50)
+  startWork                 DateTime?                   @map("start_work")
+  ldapQuery                 String?                     @map("ldap_query")
+  positionId                Int?
+  empId                     String?                     @map("emp_id") @db.VarChar(20)
+  department                departMent?                 @relation(fields: [departmentId], references: [id])
+  ownerGroup                userGroup?                  @relation(fields: [ownerGroupId], references: [groupId])
+  masterPosition            masterPosition?             @relation(fields: [positionId], references: [posId])
+  userMapOrganizeGroupOwner userMapOrganizeGroupOwner[]
+  roleProfileMap            roleProfileMap[]
+  typeLeaveDisabledMap      typeLeaveDisabledMap[]
+  userMapOrganizeGroup      userMapOrganizeGroup[]
+  userMapOrganizeChart      userMapOrganizeChart[]
+  userRoleMap               userRoleMap[]
 }
 
 model userMapOrganizeGroup {
-    id          Int        @unique @default(autoincrement()) @map("id")
-    users       users?     @relation(fields: [usersId], references: [userId])
-    usersId     String?    @map("user_id")
-    organized   organized? @relation(fields: [organizedId], references: [organizedId], onDelete: Cascade)
-    organizedId String?    @map("organized_id")
-    group       userGroup? @relation(fields: [groupId], references: [groupId], onDelete: Cascade)
-    groupId     String?
+  id          Int        @unique @default(autoincrement())
+  usersId     String?    @map("user_id")
+  organizedId String?    @map("organized_id")
+  groupId     String?
+  group       userGroup? @relation(fields: [groupId], references: [groupId], onDelete: Cascade)
+  organized   organized? @relation(fields: [organizedId], references: [organizedId], onDelete: Cascade)
+  users       users?     @relation(fields: [usersId], references: [userId])
 
-    @@map("user_map_organize")
+  @@map("user_map_organize")
 }
 
 model userMapOrganizeGroupOwner {
-    id           Int        @unique @default(autoincrement()) @map("id")
-    users        users?     @relation(fields: [usersId], references: [userId], onDelete: Cascade)
-    usersId      String?    @map("user_id")
-    organized    organized? @relation(fields: [organizedId], references: [organizedId])
-    organizedId  String?    @map("organized_id")
-    group        userGroup? @relation(fields: [ownerGroupId], references: [groupId], onDelete: Cascade)
-    ownerGroupId String?    @map("owner_group_id")
+  id           Int        @unique @default(autoincrement())
+  usersId      String?    @map("user_id")
+  organizedId  String?    @map("organized_id")
+  ownerGroupId String?    @map("owner_group_id")
+  organized    organized? @relation(fields: [organizedId], references: [organizedId])
+  group        userGroup? @relation(fields: [ownerGroupId], references: [groupId], onDelete: Cascade)
+  users        users?     @relation(fields: [usersId], references: [userId], onDelete: Cascade)
 
-    @@map("organize_map_groupowner")
+  @@map("organize_map_groupowner")
 }
 
 model organizeMapGroup {
-    id          Int        @unique @default(autoincrement()) @map("id")
-    organized   organized? @relation(fields: [organizedId], references: [organizedId])
-    organizedId String?    @map("organize_id")
-    group       userGroup? @relation(fields: [groupId], references: [groupId], onDelete: Cascade)
-    groupId     String?    @map("group_id")
+  id          Int        @unique @default(autoincrement())
+  organizedId String?    @map("organize_id")
+  groupId     String?    @map("group_id")
+  group       userGroup? @relation(fields: [groupId], references: [groupId], onDelete: Cascade)
+  organized   organized? @relation(fields: [organizedId], references: [organizedId])
 
-    @@map("organize_map_group")
+  @@map("organize_map_group")
 }
 
 model userGroup {
-    id                        Int                         @unique @default(autoincrement()) @map("id")
-    groupId                   String                      @unique @default(uuid()) @map("group_id") @db.VarChar(50)
-    groupName                 String                      @map("group_name") @db.VarChar(200) //Text waiting update
-    createdAt                 DateTime                    @default(now()) @map("created_at")
-    updatedAt                 DateTime                    @default(now()) @map("updated_at")
-    parent                    userGroup?                  @relation("ChildGroup", fields: [parentGroupId], references: [groupId])
-    parentGroupId             String?                     @map("parent_group_id") @db.VarChar(50)
-    userGroup                 userGroup[]                 @relation("ChildGroup")
-    // userGroupMap              userGroupMap[]
-    organized                 organized?                  @relation(fields: [organizedGroupId], references: [organizedId], onDelete: Cascade)
-    organizedGroupId          String?                     @map("organized_group_id")
-    description               String                      @default("") @map("description") @db.Text
-    user                      users[]
-    userMapOrganizeGroup      userMapOrganizeGroup[]
-    userMapOrganizeGroupOwner userMapOrganizeGroupOwner[]
-    organizeMapGroup          organizeMapGroup[]
+  id                        Int                         @unique @default(autoincrement())
+  groupId                   String                      @unique @default(uuid()) @map("group_id") @db.VarChar(50)
+  groupName                 String                      @map("group_name") @db.VarChar(200)
+  createdAt                 DateTime                    @default(now()) @map("created_at")
+  updatedAt                 DateTime                    @default(now()) @map("updated_at")
+  parentGroupId             String?                     @map("parent_group_id") @db.VarChar(50)
+  organizedGroupId          String?                     @map("organized_group_id")
+  description               String                      @default("")
+  organized                 organized?                  @relation(fields: [organizedGroupId], references: [organizedId], onDelete: Cascade)
+  parent                    userGroup?                  @relation("ChildGroup", fields: [parentGroupId], references: [groupId])
+  employeeProfiles          employeeProfiles[]
+  organizeMapGroup          organizeMapGroup[]
+  userMapOrganizeGroupOwner userMapOrganizeGroupOwner[]
+  userGroup                 userGroup[]                 @relation("ChildGroup")
+  userGroupUserRoleMap      userGroupUserRoleMap[]
+  userMapOrganizeGroup      userMapOrganizeGroup[]
+  userPermissionGroup       userPermissionGroup[]
+  user                      users[]
 
-    // saleUserGroupId        String[]                 @map("sale_user_group_id")
-    // saleUsersId            String[]                 @map("sale_users_id")
-    // engineerUserGroupId    String[]                 @map("engineer_user_group_id")
-    // engineerUsersId        String[]                 @map("engineer_users_id")
-    // exceptionalSatatus     Boolean?                 @default(false) @map("exceptional_satatus")
-    userGroupUserRoleMap userGroupUserRoleMap[]
-    userPermissionGroup  userPermissionGroup[]
-    employeeProfiles     employeeProfiles[]
-
-    @@map("user_group")
+  @@map("user_group")
 }
 
 model userPermissionGroup {
-    id                 Int         @unique @default(autoincrement()) @map("id")
-    userGroupId        String      @map("user_group_id")
-    //leave ,expense ,bookingroom ,macar ,ma ,housekeeper
-    userGroup          userGroup?  @relation(fields: [userGroupId], references: [groupId], onDelete: Cascade)
-    permissionGroupIds String[]    @map("permission_group_ids")
-    userModule         userModule? @relation(fields: [userModuleId], references: [id])
-    userModuleId       Int?        @map("user_module_id")
+  id                 Int         @unique @default(autoincrement())
+  userGroupId        String      @map("user_group_id")
+  permissionGroupIds String[]    @map("permission_group_ids")
+  userModuleId       Int?        @map("user_module_id")
+  userGroup          userGroup   @relation(fields: [userGroupId], references: [groupId], onDelete: Cascade)
+  userModule         userModule? @relation(fields: [userModuleId], references: [id])
 
-    @@map("user_permission_group")
+  @@map("user_permission_group")
 }
 
 model userGroupUserRoleMap {
-    id          Int       @unique @default(autoincrement()) @map("id")
-    userGroup   userGroup @relation(fields: [userGroupId], references: [groupId], onDelete: Cascade)
-    userRole    userRole  @relation(fields: [roleId], references: [roleId], onDelete: Cascade)
-    userGroupId String    @map("user_group_id")
-    roleId      String    @map("role_id")
+  id          Int       @unique @default(autoincrement())
+  userGroupId String    @map("user_group_id")
+  roleId      String    @map("role_id")
+  userRole    userRole  @relation(fields: [roleId], references: [roleId], onDelete: Cascade)
+  userGroup   userGroup @relation(fields: [userGroupId], references: [groupId], onDelete: Cascade)
 
-    @@map("user_group_user_role_map")
+  @@map("user_group_user_role_map")
 }
 
 model userModule {
-    id                  Int                   @unique @default(autoincrement()) @map("id")
-    code                String                @unique @map("code") @db.VarChar(200)
-    name                String                @map("name") @db.VarChar(200)
-    status              Boolean               @default(true) @map("status") @db.Boolean
-    description         String?               @map("description") @db.Text
-    userPermissionGroup userPermissionGroup[]
+  id                  Int                   @unique @default(autoincrement())
+  code                String                @unique @db.VarChar(200)
+  name                String                @db.VarChar(200)
+  status              Boolean               @default(true)
+  description         String?
+  userPermissionGroup userPermissionGroup[]
 
-    @@map("user_module")
+  @@map("user_module")
 }
 
 model userRole {
-    id               Int           @unique @default(autoincrement()) @map("id")
-    roleId           String        @unique @default(uuid()) @map("role_id") @db.VarChar(50)
-    roleName         String        @map("role_name") @db.VarChar(50)
-    createdAt        DateTime      @default(now()) @map("created_at")
-    updatedAt        DateTime      @default(now()) @map("updated_at")
-    description      String        @default("") @map("description") @db.Text
-    userRoleMap      userRoleMap[]
-    organized        organized?    @relation(fields: [organizedGroupId], references: [organizedId])
-    organizedGroupId String?       @map("organized_group_id")
+  id                   Int                    @unique @default(autoincrement())
+  roleId               String                 @unique @default(uuid()) @map("role_id") @db.VarChar(50)
+  roleName             String                 @map("role_name") @db.VarChar(50)
+  createdAt            DateTime               @default(now()) @map("created_at")
+  updatedAt            DateTime               @default(now()) @map("updated_at")
+  description          String                 @default("")
+  organizedGroupId     String?                @map("organized_group_id")
+  organized            organized?             @relation(fields: [organizedGroupId], references: [organizedId])
+  roleProfileMap       roleProfileMap[]
+  userGroupUserRoleMap userGroupUserRoleMap[]
+  userRoleMap          userRoleMap[]
 
-    roleProfileMap       roleProfileMap[]
-    userGroupUserRoleMap userGroupUserRoleMap[]
-
-    @@map("user_role")
+  @@map("user_role")
 }
 
 model userRoleMap {
-    id         Int       @unique @default(autoincrement()) @map("id")
-    userRole   userRole? @relation(fields: [userRoleId], references: [roleId], onDelete: Cascade)
-    userRoleId String?   @map("user_role_id")
-    user       users?    @relation(fields: [userId], references: [userId], onDelete: Cascade)
-    userId     String?   @map("user_id")
+  id         Int       @unique @default(autoincrement())
+  userRoleId String?   @map("user_role_id")
+  userId     String?   @map("user_id")
+  user       users?    @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userRole   userRole? @relation(fields: [userRoleId], references: [roleId], onDelete: Cascade)
 
-    @@map("user_role_map")
+  @@map("user_role_map")
 }
 
 model floor {
-    id                Int                 @unique @default(autoincrement()) @map("id")
-    floorId           Int                 @unique @map("floor_id") @db.Integer()
-    floorName         String              @map("floor_name") @db.VarChar(20)
-    createdAt         DateTime            @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt         DateTime            @updatedAt @map("updated_at") @db.Timestamptz()
-    resultCleanliness resultCleanliness[]
+  id                Int                 @unique @default(autoincrement())
+  floorId           Int                 @unique @map("floor_id")
+  floorName         String              @map("floor_name") @db.VarChar(20)
+  createdAt         DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime            @updatedAt @map("updated_at") @db.Timestamptz(6)
+  resultCleanliness resultCleanliness[]
 }
 
 model houseKeeper {
-    id                Int                 @unique @default(autoincrement()) @map("id")
-    houseKeeperId     Int                 @unique @default(autoincrement()) @map("housekeeper_id") @db.Integer()
-    houseKeepName     String              @map("housekeeper_name") @db.VarChar(20)
-    quitYourJob       Boolean             @default(false) @map("quit_your_job") @db.Boolean()
-    createdAt         DateTime            @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt         DateTime            @updatedAt @map("updated_at") @db.Timestamptz()
-    resultCleanliness resultCleanliness[]
+  id                Int                 @unique @default(autoincrement())
+  houseKeeperId     Int                 @unique @default(autoincrement()) @map("housekeeper_id")
+  houseKeepName     String              @map("housekeeper_name") @db.VarChar(20)
+  quitYourJob       Boolean             @default(false) @map("quit_your_job")
+  createdAt         DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime            @updatedAt @map("updated_at") @db.Timestamptz(6)
+  resultCleanliness resultCleanliness[]
 
-    @@map("house_keeper")
+  @@map("house_keeper")
 }
 
 model resultCleanliness {
-    id            Int         @unique @default(autoincrement()) @map("id")
-    floorId       Int         @map("floor_id") @db.Integer
-    houseKeeperId Int         @map("housekeeper_id") @db.Integer
-    duration      String      @map("duration") @db.VarChar(20)
-    result        Int         @map("result") @db.Integer
-    remark        String?     @map("remark") @db.Text
-    wrapupDate    DateTime    @map("wrapup_date") @db.Timestamptz()
-    floors        floor       @relation(fields: [floorId], references: [floorId])
-    houseKeepers  houseKeeper @relation(fields: [houseKeeperId], references: [houseKeeperId])
+  id            Int         @unique @default(autoincrement())
+  floorId       Int         @map("floor_id")
+  houseKeeperId Int         @map("housekeeper_id")
+  duration      String      @db.VarChar(20)
+  result        Int
+  remark        String?
+  wrapupDate    DateTime    @map("wrapup_date") @db.Timestamptz(6)
+  floors        floor       @relation(fields: [floorId], references: [floorId])
+  houseKeepers  houseKeeper @relation(fields: [houseKeeperId], references: [houseKeeperId])
 
-    @@map("result_cleanliness")
+  @@map("result_cleanliness")
 }
 
 model maCar {
-    id            Int           @default(autoincrement()) @map("id")
-    carId         String        @unique @default(uuid()) @map("car_id") @db.VarChar(50)
-    carName       String        @map("car_name") @db.VarChar(150)
-    carPetrol     String        @map("car_petrol") @db.VarChar(150)
-    carMile       Int?          @map("car_mile")
-    detail        String        @map("detail") @db.VarChar(150)
-    status        Boolean       @default(true) @map("status") @db.Boolean
-    createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz()
-    createdById   String?       @map("created_by_id") @db.VarChar(50)
-    createdByName String?       @map("created_by_name") @db.VarChar(255)
-    updatedAt     DateTime?     @map("updated_at") @db.Timestamptz()
-    updatedById   String?       @map("updated_by_id") @db.VarChar(50)
-    updatedByName String?       @map("updated_by_name") @db.VarChar(255)
-    maCarWrapup   maCarWrapup[]
-    maCarBook     maCarBook[]   @relation("CarBooks")
+  id            Int           @default(autoincrement())
+  carId         String        @unique @default(uuid()) @map("car_id") @db.VarChar(50)
+  carName       String        @map("car_name") @db.VarChar(150)
+  carPetrol     String        @map("car_petrol") @db.VarChar(150)
+  carMile       Int?          @map("car_mile")
+  detail        String        @db.VarChar(150)
+  status        Boolean       @default(true)
+  createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  createdById   String?       @map("created_by_id") @db.VarChar(50)
+  createdByName String?       @map("created_by_name") @db.VarChar(255)
+  updatedAt     DateTime?     @map("updated_at") @db.Timestamptz(6)
+  updatedById   String?       @map("updated_by_id") @db.VarChar(50)
+  updatedByName String?       @map("updated_by_name") @db.VarChar(255)
+  maCarBook     maCarBook[]   @relation("CarBooks")
+  maCarWrapup   maCarWrapup[]
 
-    @@map("ma_car")
+  @@map("ma_car")
 }
 
 model maCarType {
-    id            Int      @unique @default(autoincrement()) @map("id")
-    typeName      String   @map("type_name") @db.VarChar(150)
-    detail        String   @map("detail") @db.VarChar(150)
-    status        Boolean  @default(true) @map("stauts") @db.Boolean
-    createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz()
-    createdById   String?  @map("created_by_id") @db.VarChar(50)
-    createdByName String?  @map("created_by_name") @db.VarChar(255)
+  id            Int      @unique @default(autoincrement())
+  typeName      String   @map("type_name") @db.VarChar(150)
+  detail        String   @db.VarChar(150)
+  status        Boolean  @default(true) @map("stauts")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  createdById   String?  @map("created_by_id") @db.VarChar(50)
+  createdByName String?  @map("created_by_name") @db.VarChar(255)
 
-    @@map("ma_car_type")
+  @@map("ma_car_type")
 }
 
 model maCarBook {
-    id                    Int       @unique @default(autoincrement()) @map("id")
-    carId                 String    @map("car_id") @db.VarChar(50)
-    carName               String?   @map("car_name") @db.VarChar(150)
-    carBookTitle          String?   @map("car_book_title") @db.VarChar(50)
-    carBookProvince       String?   @map("car_book_province") @db.VarChar(250)
-    carBookPlace          String?   @map("car_book_place") @db.VarChar(250)
-    carBookUsers          Int?      @map("car_book_users") @db.Integer
-    carBookStartDate      DateTime? @map("car_book_start_date") @db.Timestamptz()
-    carBookEndDate        DateTime? @map("car_book_end_date") @db.Timestamptz()
-    carBookApprovedDate   DateTime? @map("car_book_approved_date") @db.Timestamptz()
-    carBookApprovedById   String?   @map("car_book_approved_by_id") @db.VarChar(50)
-    carBookApprovedByName String?   @map("car_book_approved__by_name") @db.VarChar(255)
-    carBookApprovedStatus String?   @map("car_book_approved_status") @db.VarChar(20)
-    detail                String?   @map("detail") @db.VarChar(225)
-    remark                String?   @map("remark") @db.VarChar(225)
-    status                Boolean?  @default(true) @map("stauts") @db.Boolean
-    createdAt             DateTime  @default(now()) @map("created_at") @db.Timestamptz()
-    createdById           String?   @map("created_by_id") @db.VarChar(50)
-    createdByName         String?   @map("created_by_name") @db.VarChar(255)
-    updatedAt             DateTime? @map("updated_at") @db.Timestamptz()
-    updatedById           String?   @map("updated_by_id") @db.VarChar(50)
-    updatedByName         String?   @map("updated_by_name") @db.VarChar(255)
-    recipientId           String?   @map("recipient_id") @db.VarChar(50)
-    recipientName         String?   @map("recipient_name") @db.VarChar(255)
-    returnNotifAt         DateTime? @map("return_notif_at") @db.Timestamptz()
-    returnAt              DateTime? @map("return_at") @db.Timestamptz()
-    remarkApproved        String?   @map("remark_approved") @db.VarChar(225)
-    remarkCancel          String?   @map("remark_cancel") @db.VarChar(225)
+  id                    Int       @unique @default(autoincrement())
+  carId                 String    @map("car_id") @db.VarChar(50)
+  carName               String?   @map("car_name") @db.VarChar(150)
+  carBookTitle          String?   @map("car_book_title") @db.VarChar(50)
+  carBookProvince       String?   @map("car_book_province") @db.VarChar(250)
+  carBookPlace          String?   @map("car_book_place") @db.VarChar(250)
+  carBookUsers          Int?      @map("car_book_users")
+  carBookStartDate      DateTime? @map("car_book_start_date") @db.Timestamptz(6)
+  carBookEndDate        DateTime? @map("car_book_end_date") @db.Timestamptz(6)
+  carBookApprovedDate   DateTime? @map("car_book_approved_date") @db.Timestamptz(6)
+  carBookApprovedById   String?   @map("car_book_approved_by_id") @db.VarChar(50)
+  carBookApprovedByName String?   @map("car_book_approved__by_name") @db.VarChar(255)
+  carBookApprovedStatus String?   @map("car_book_approved_status") @db.VarChar(20)
+  detail                String?   @db.VarChar(225)
+  remark                String?   @db.VarChar(225)
+  status                Boolean?  @default(true) @map("stauts")
+  createdAt             DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  createdById           String?   @map("created_by_id") @db.VarChar(50)
+  createdByName         String?   @map("created_by_name") @db.VarChar(255)
+  updatedAt             DateTime? @map("updated_at") @db.Timestamptz(6)
+  updatedById           String?   @map("updated_by_id") @db.VarChar(50)
+  updatedByName         String?   @map("updated_by_name") @db.VarChar(255)
+  recipientId           String?   @map("recipient_id") @db.VarChar(50)
+  recipientName         String?   @map("recipient_name") @db.VarChar(255)
+  returnNotifAt         DateTime? @map("return_notif_at") @db.Timestamptz(6)
+  returnAt              DateTime? @map("return_at") @db.Timestamptz(6)
+  remarkApproved        String?   @map("remark_approved") @db.VarChar(225)
+  remarkCancel          String?   @map("remark_cancel") @db.VarChar(225)
+  maCar                 maCar     @relation("CarBooks", fields: [carId], references: [carId])
 
-    maCar maCar @relation("CarBooks", fields: [carId], references: [carId])
-
-    @@map("ma_car_book")
+  @@map("ma_car_book")
 }
 
 model maCarWrapup {
-    id               Int                @unique @default(autoincrement()) @map("id")
-    carWrapupId      String             @unique @default(uuid()) @map("car_wrapup_id") @db.VarChar(50)
-    carId            String?            @map("car_id") @db.VarChar(50)
-    carName          String?            @map("car_name") @db.VarChar(100)
-    typeId           Int?               @map("type_id")
-    typeName         String?            @map("type_name") @db.VarChar(150)
-    vender           String             @map("vender") @db.VarChar(100)
-    cost             Decimal?           @map("cost") @db.Money
-    detail           String?            @map("detail") @db.Text
-    wrapupMiles      String?            @map("wrapup_miles") @db.VarChar(150)
-    dateStart        DateTime?          @map("date_start") @db.Timestamptz()
-    dateEnd          DateTime?          @map("date_end") @db.Timestamptz()
-    remark           String?            @map("remark") @db.Text
-    createdAt        DateTime           @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt        DateTime?          @default(now()) @map("updated_at") @db.Timestamptz()
-    status           Boolean?           @default(true) @map("stauts") @db.Boolean
-    createbyName     String?            @map("create_name") @db.VarChar(70)
-    maCar            maCar?             @relation(fields: [carId], references: [carId])
-    maCarWrapupImage maCarWrapupImage[]
+  id               Int                @unique @default(autoincrement())
+  carWrapupId      String             @unique @default(uuid()) @map("car_wrapup_id") @db.VarChar(50)
+  carId            String?            @map("car_id") @db.VarChar(50)
+  carName          String?            @map("car_name") @db.VarChar(100)
+  typeId           Int?               @map("type_id")
+  typeName         String?            @map("type_name") @db.VarChar(150)
+  vender           String             @db.VarChar(100)
+  cost             Decimal?           @db.Money
+  detail           String?
+  wrapupMiles      String?            @map("wrapup_miles") @db.VarChar(150)
+  dateStart        DateTime?          @map("date_start") @db.Timestamptz(6)
+  dateEnd          DateTime?          @map("date_end") @db.Timestamptz(6)
+  remark           String?
+  createdAt        DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime?          @default(now()) @map("updated_at") @db.Timestamptz(6)
+  status           Boolean?           @default(true) @map("stauts")
+  createbyName     String?            @map("create_name") @db.VarChar(70)
+  maCar            maCar?             @relation(fields: [carId], references: [carId])
+  maCarWrapupImage maCarWrapupImage[]
 
-    @@map("ma_car_wrapup")
+  @@map("ma_car_wrapup")
 }
 
 model maCarWrapupImage {
-    idwarpupImage Int          @unique @default(autoincrement()) @map("idwarpup_image")
-    fileName      String?      @map("file_name") @db.VarChar(150)
-    filePath      String?      @map("file_path") @db.VarChar(150)
-    fileType      String?      @map("file_type") @db.VarChar(150)
-    createdAt     DateTime?    @default(now()) @map("created_at")
-    updatedAt     DateTime?    @default(now()) @map("updated_at")
-    maCarWrapup   maCarWrapup? @relation(fields: [carWrapupId], references: [carWrapupId])
-    carWrapupId   String?      @map("car_wrapup_id")
+  idwarpupImage Int          @unique @default(autoincrement()) @map("idwarpup_image")
+  fileName      String?      @map("file_name") @db.VarChar(150)
+  filePath      String?      @map("file_path") @db.VarChar(150)
+  fileType      String?      @map("file_type") @db.VarChar(150)
+  createdAt     DateTime?    @default(now()) @map("created_at")
+  updatedAt     DateTime?    @default(now()) @map("updated_at")
+  carWrapupId   String?      @map("car_wrapup_id")
+  maCarWrapup   maCarWrapup? @relation(fields: [carWrapupId], references: [carWrapupId])
 
-    @@map("ma_car_wrapup_image")
+  @@map("ma_car_wrapup_image")
 }
 
 model maTask {
-    id             Int           @unique @default(autoincrement()) @map("id")
-    maName         String        @map("ma_name") @db.VarChar(255)
-    maCategory     String?       @map("ma_category") @db.VarChar(50)
-    maTypeId       Int           @map("ma_type_id") @db.Integer
-    maTypeName     String        @map("ma_type_name") @db.VarChar(255)
-    maDate         DateTime      @map("ma_date") @db.Timestamptz()
-    maStatus       String        @map("ma_status") @db.VarChar(10)
-    detail         String?       @map("detail") @db.Text()
-    contact        String?       @map("contact") @db.Text()
-    actionDate     DateTime?     @map("action_date") @db.Timestamptz()
-    solution       String?       @map("solution") @db.Text()
-    createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz()
-    createdById    String?       @map("created_by_id") @db.VarChar(50)
-    createdByName  String?       @map("created_by_name") @db.VarChar(255)
-    updatedAt      DateTime?     @map("updated_at") @db.Timestamptz()
-    updatedById    String?       @map("updated_by_id") @db.VarChar(50)
-    updatedByName  String?       @map("updated_by_name") @db.VarChar(255)
-    ownerGroup     String?       @map("owner_group") @db.VarChar(50)
-    assignUserId   String?       @map("assign_user_id") @db.VarChar(255)
-    assignUsername String?       @map("assign_username") @db.VarChar(255)
-    refTaskId      Int?          @unique
-    refTask        maTask?       @relation("TaskRelation", fields: [refTaskId], references: [id])
-    nextTask       maTask?       @relation("TaskRelation")
-    maTaskFiles    maTaskFiles[]
+  id             Int           @unique @default(autoincrement())
+  maName         String        @map("ma_name") @db.VarChar(255)
+  maTypeId       Int           @map("ma_type_id")
+  maTypeName     String        @map("ma_type_name") @db.VarChar(255)
+  maDate         DateTime      @map("ma_date") @db.Timestamptz(6)
+  maStatus       String        @map("ma_status") @db.VarChar(10)
+  detail         String?
+  contact        String?
+  actionDate     DateTime?     @map("action_date") @db.Timestamptz(6)
+  solution       String?
+  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  createdById    String?       @map("created_by_id") @db.VarChar(50)
+  createdByName  String?       @map("created_by_name") @db.VarChar(255)
+  updatedAt      DateTime?     @map("updated_at") @db.Timestamptz(6)
+  updatedById    String?       @map("updated_by_id") @db.VarChar(50)
+  updatedByName  String?       @map("updated_by_name") @db.VarChar(255)
+  ownerGroup     String?       @map("owner_group") @db.VarChar(50)
+  refTaskId      Int?          @unique
+  assignUserId   String?       @map("assign_user_id") @db.VarChar(255)
+  assignUsername String?       @map("assign_username") @db.VarChar(255)
+  maCategory     String?       @map("ma_category") @db.VarChar(50)
+  refTask        maTask?       @relation("TaskRelation", fields: [refTaskId], references: [id])
+  nextTask       maTask?       @relation("TaskRelation")
+  maTaskFiles    maTaskFiles[]
 
-    @@map("ma_task")
+  @@map("ma_task")
 }
 
 model maTaskFiles {
-    id        Int       @unique @default(autoincrement())
-    fileCode  String?   @map("file_code") @db.VarChar(200)
-    path      String?   @db.VarChar(200)
-    fileName  String?   @map("file_name") @db.VarChar(200)
-    fileType  String?   @map("file_type") @db.VarChar(200)
-    type      String?   @db.VarChar(10)
-    createdAt DateTime  @default(now()) @map("created_at")
-    updatedAt DateTime? @map("updated_at") @db.Timestamp()
-    maTask    maTask?   @relation(fields: [maTaskId], references: [id])
-    maTaskId  Int?      @map("ma_task_id")
+  id        Int       @unique @default(autoincrement())
+  fileCode  String?   @map("file_code") @db.VarChar(200)
+  path      String?   @db.VarChar(200)
+  fileName  String?   @map("file_name") @db.VarChar(200)
+  fileType  String?   @map("file_type") @db.VarChar(200)
+  type      String?   @db.VarChar(10)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @map("updated_at") @db.Timestamp(6)
+  maTaskId  Int?      @map("ma_task_id")
+  maTask    maTask?   @relation(fields: [maTaskId], references: [id])
 
-    @@map("ma_task_files")
+  @@map("ma_task_files")
 }
 
 model maType {
-    id           Int      @unique @default(autoincrement()) @map("id")
-    name         String   @map("name") @db.VarChar(255)
-    activeStatus Boolean  @map("active_status") @db.Boolean
-    createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt    DateTime @default(now()) @map("updated_at") @db.Timestamptz()
+  id           Int      @unique @default(autoincrement())
+  name         String   @db.VarChar(255)
+  activeStatus Boolean  @map("active_status")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
 
-    @@map("ma_type")
+  @@map("ma_type")
 }
 
 model masterRoom {
-    id               Int             @id @default(autoincrement()) @map("id")
-    roomId           String          @unique @default(uuid()) @map("room_id") @db.VarChar(50)
-    roomName         String          @map("room_name") @db.VarChar(255)
-    roomsStatus      Boolean         @default(true) @map("status") @db.Boolean
-    roomDescription  String          @map("room_description") @db.VarChar(255)
-    masterRoomType   masterRoomType? @relation(fields: [masterRoomTypeId], references: [id])
-    masterRoomTypeId Int?
-    bookingRoom      bookingRoom[]
+  id               Int             @id @default(autoincrement())
+  roomId           String          @unique @default(uuid()) @map("room_id") @db.VarChar(50)
+  roomName         String          @map("room_name") @db.VarChar(255)
+  roomsStatus      Boolean         @default(true) @map("status")
+  roomDescription  String          @map("room_description") @db.VarChar(255)
+  masterRoomTypeId Int?
+  masterRoomType   masterRoomType? @relation(fields: [masterRoomTypeId], references: [id])
+  bookingRoom      bookingRoom[]
 
-    @@map("master_room")
+  @@map("master_room")
 }
 
 model masterRefreshment {
-    id                     Int     @id @default(autoincrement()) @map("id")
-    refreshmentId          String  @unique @default(uuid()) @map("refreshment_id") @db.VarChar(50)
-    refreshmentName        String  @map("refreshment_name") @db.VarChar(255)
-    refreshmentStatus      Boolean @default(true) @map("refreshment_status") @db.Boolean
-    refreshmentDescription String  @map("refreshment_description") @db.VarChar(255)
+  id                     Int     @id @default(autoincrement())
+  refreshmentId          String  @unique @default(uuid()) @map("refreshment_id") @db.VarChar(50)
+  refreshmentName        String  @map("refreshment_name") @db.VarChar(255)
+  refreshmentStatus      Boolean @default(true) @map("refreshment_status")
+  refreshmentDescription String  @map("refreshment_description") @db.VarChar(255)
 
-    @@map("master_refreshment")
+  @@map("master_refreshment")
 }
 
 model masterRoomType {
-    id         Int          @unique @default(autoincrement()) @map("id")
-    name       String       @map("name") @db.VarChar(255)
-    createdAt  DateTime     @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt  DateTime     @default(now()) @map("updated_at") @db.Timestamptz()
-    masterRoom masterRoom[]
+  id         Int          @unique @default(autoincrement())
+  name       String       @db.VarChar(255)
+  createdAt  DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt  DateTime     @default(now()) @map("updated_at") @db.Timestamptz(6)
+  masterRoom masterRoom[]
 
-    @@map("master_room_type")
+  @@map("master_room_type")
 }
 
 model bookingRoom {
-    id               Int         @unique @default(autoincrement()) @map("id")
-    userId           String?     @map("user_id") @db.VarChar(100)
-    token            String?     @map("token") @db.VarChar(100)
-    roomId           String?     @map("room_id") @db.VarChar(255)
-    roomName         String      @map("room_name") @db.VarChar(255)
-    roomType         String      @map("room_type") @db.VarChar(255)
-    bookerName       String      @map("booker_name") @db.VarChar(255)
-    bookerPhone      String      @map("booker_phone") @db.VarChar(255)
-    bookerDepartment String      @map("booker_department") @db.VarChar(255)
-    title            String      @map("title") @db.VarChar(255)
-    startDate        DateTime    @default(now()) @map("start_date") @db.Timestamptz()
-    endDate          DateTime    @default(now()) @map("end_date") @db.Timestamptz()
-    bookingStatus    String      @map("booking_status") @db.VarChar(255)
-    approverId       String?     @map("approver_id") @db.VarChar(255)
-    approver         String?     @map("approver") @db.VarChar(255)
-    approveDate      DateTime?   @map("approve_date") @db.Timestamptz()
-    member           String      @map("member") @db.VarChar(255)
-    outSider         String      @map("out_sider") @db.VarChar(255)
-    guest            Json?       @map("guest") @db.JsonB
-    officer          Json?       @map("officer") @db.JsonB
-    note             String?     @default("") @map("note") @db.VarChar(255)
-    createdAt        DateTime    @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt        DateTime    @default(now()) @map("updated_at") @db.Timestamptz()
-    masterRoom       masterRoom? @relation(fields: [roomId], references: [roomId])
+  id               Int         @unique @default(autoincrement())
+  userId           String?     @map("user_id") @db.VarChar(100)
+  roomId           String?     @map("room_id") @db.VarChar(255)
+  roomName         String      @map("room_name") @db.VarChar(255)
+  roomType         String      @map("room_type") @db.VarChar(255)
+  bookerName       String      @map("booker_name") @db.VarChar(255)
+  bookerPhone      String      @map("booker_phone") @db.VarChar(255)
+  bookerDepartment String      @map("booker_department") @db.VarChar(255)
+  title            String      @db.VarChar(255)
+  startDate        DateTime    @default(now()) @map("start_date") @db.Timestamptz(6)
+  endDate          DateTime    @default(now()) @map("end_date") @db.Timestamptz(6)
+  bookingStatus    String      @map("booking_status") @db.VarChar(255)
+  approverId       String?     @map("approver_id") @db.VarChar(255)
+  approver         String?     @db.VarChar(255)
+  approveDate      DateTime?   @map("approve_date") @db.Timestamptz(6)
+  member           String      @db.VarChar(255)
+  outSider         String      @map("out_sider") @db.VarChar(255)
+  note             String?     @default("") @db.VarChar(255)
+  createdAt        DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime    @default(now()) @map("updated_at") @db.Timestamptz(6)
+  guest            Json?
+  token            String?     @db.VarChar(100)
+  officer          Json?
+  masterRoom       masterRoom? @relation(fields: [roomId], references: [roomId])
 
-    @@map("booking_room")
+  @@map("booking_room")
 }
 
 model departMent {
-    id               Int                @unique @default(autoincrement()) @map("id")
-    departId         Int                @unique @map("depart_id") @db.Integer
-    departName       String             @unique @map("depart_name") @db.VarChar(100)
-    createdAt        DateTime           @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt        DateTime           @default(now()) @map("updated_at") @db.Timestamptz()
-    users            users[]
-    employeeProfiles employeeProfiles[]
+  id               Int                @unique @default(autoincrement())
+  departId         Int                @unique @map("depart_id")
+  departName       String             @unique @map("depart_name") @db.VarChar(100)
+  createdAt        DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime           @default(now()) @map("updated_at") @db.Timestamptz(6)
+  employeeProfiles employeeProfiles[]
+  users            users[]
 
-    @@map("department")
+  @@map("department")
 }
 
 model organizedChart {
-    id                   Int                    @unique @default(autoincrement()) @map("id")
-    positionId           String                 @unique @default(uuid()) @map("position_id") @db.VarChar(50)
-    description          String?                @map("description") @db.Text
-    positionName         String                 @map("position_name") @db.VarChar(100)
-    type                 String?                @map("type") @db.VarChar(20)
-    parentPositions      organizedChart?        @relation("ChildGroup", fields: [parentPositionId], references: [positionId])
-    organizedChart       organizedChart[]       @relation("ChildGroup")
-    parentPositionId     String?                @map("parent_position_id") @db.VarChar(50)
-    createdAt            DateTime               @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt            DateTime               @updatedAt @map("updated_at") @db.Timestamptz()
-    userMapOrganizeChart userMapOrganizeChart[]
+  id                   Int                    @unique @default(autoincrement())
+  positionId           String                 @unique @default(uuid()) @map("position_id") @db.VarChar(50)
+  description          String?
+  positionName         String                 @map("position_name") @db.VarChar(100)
+  type                 String?                @db.VarChar(20)
+  parentPositionId     String?                @map("parent_position_id") @db.VarChar(50)
+  createdAt            DateTime               @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt            DateTime               @updatedAt @map("updated_at") @db.Timestamptz(6)
+  parentPositions      organizedChart?        @relation("ChildGroup", fields: [parentPositionId], references: [positionId])
+  organizedChart       organizedChart[]       @relation("ChildGroup")
+  userMapOrganizeChart userMapOrganizeChart[]
 
-    @@map("organize_chart")
+  @@map("organize_chart")
 }
 
 model userMapOrganizeChart {
-    id         Int            @unique @default(autoincrement()) @map("id")
-    positions  organizedChart @relation(fields: [positionId], references: [positionId])
-    users      users?         @relation(fields: [userId], references: [userId])
-    positionId String
-    userId     String?
+  id         Int            @unique @default(autoincrement())
+  positionId String
+  userId     String?
+  positions  organizedChart @relation(fields: [positionId], references: [positionId])
+  users      users?         @relation(fields: [userId], references: [userId])
 
-    @@map("user_map_organize_chart")
+  @@map("user_map_organize_chart")
 }
 
 model employeeProfiles {
-    id                     Int                      @unique @default(autoincrement()) @map("id")
-    userId                 String                   @unique @default(uuid()) @map("user_id") @db.VarChar(50)
-    empId                  String?                  @map("emp_id") @db.VarChar(50)
-    idCard                 String?                  @map("id_card") @db.VarChar(50)
-    username               String                   @map("username") @db.VarChar(100)
-    firstNameTH            String                   @map("firstname_th") @db.VarChar(250)
-    lastNameTH             String                   @map("lastname_th") @db.VarChar(250)
-    firstNameEN            String                   @map("firstname_en") @db.VarChar(250)
-    lastNameEN             String                   @map("lastname_en") @db.VarChar(250)
-    birthDate              DateTime                 @map("birth_date") @db.Timestamptz()
-    gender                 String                   @map("gender") @db.VarChar(50)
-    address                String                   @map("address") @db.VarChar(500)
-    email                  String                   @map("email") @db.VarChar(250)
-    phoneNumber            String                   @map("phone_number") @db.VarChar(10)
-    extensionNumber        String                   @map("extension_number") @db.VarChar(10)
-    startWork              DateTime                 @map("start_work") @db.Timestamptz()
-    promotionStatus        String                   @default("trial") @map("promotion_status") @db.VarChar(50)
-    status                 Boolean                  @default(true) @map("status") @db.Boolean
-    positionId             Int?                     @map("position_id") @db.Integer
-    departmentId           Int?                     @map("department_id") @db.Integer
-    personalId             String?                  @map("personal_id") @db.VarChar(50)
-    companyId              Int?                     @map("company_id") @db.Integer
-    ownerGroupId           String?                  @map("owner_group_id") @db.VarChar(50)
-    imageId                String?                  @map("image_id") @db.VarChar(255)
-    createdAt              DateTime                 @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt              DateTime                 @default(now()) @map("updated_at") @db.Timestamptz()
-    ownerGroup             userGroup?               @relation(fields: [ownerGroupId], references: [groupId])
-    masterPosition         masterPosition?          @relation(fields: [positionId], references: [posId])
-    department             departMent?              @relation(fields: [departmentId], references: [id])
-    masterDataCompany      masterDataCompany?       @relation(fields: [companyId], references: [id])
-    personalInformations   personalInformations[]
-    emergencyContact       emergencyContact[]
-    familyInformations     familyInformations[]
-    educationInformations  educationInformations[]
-    experienceInformations experienceInformations[]
+  id                     Int                      @unique @default(autoincrement())
+  userId                 String                   @unique @default(uuid()) @map("user_id") @db.VarChar(50)
+  empId                  String?                  @map("emp_id") @db.VarChar(50)
+  idCard                 String?                  @map("id_card") @db.VarChar(50)
+  username               String                   @db.VarChar(100)
+  firstNameTH            String                   @map("firstname_th") @db.VarChar(250)
+  lastNameTH             String                   @map("lastname_th") @db.VarChar(250)
+  firstNameEN            String                   @map("firstname_en") @db.VarChar(250)
+  lastNameEN             String                   @map("lastname_en") @db.VarChar(250)
+  birthDate              DateTime                 @map("birth_date") @db.Timestamptz(6)
+  gender                 String                   @db.VarChar(50)
+  address                String                   @db.VarChar(500)
+  email                  String                   @db.VarChar(250)
+  phoneNumber            String                   @map("phone_number") @db.VarChar(10)
+  extensionNumber        String                   @map("extension_number") @db.VarChar(10)
+  startWork              DateTime                 @map("start_work") @db.Timestamptz(6)
+  promotionStatus        String                   @default("trial") @map("promotion_status") @db.VarChar(50)
+  status                 Boolean                  @default(true)
+  positionId             Int?                     @map("position_id")
+  departmentId           Int?                     @map("department_id")
+  personalId             String?                  @map("personal_id") @db.VarChar(50)
+  companyId              Int?                     @map("company_id")
+  ownerGroupId           String?                  @map("owner_group_id") @db.VarChar(50)
+  imageId                String?                  @map("image_id") @db.VarChar(255)
+  createdAt              DateTime                 @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt              DateTime                 @default(now()) @map("updated_at") @db.Timestamptz(6)
+  masterDataCompany      masterDataCompany?       @relation(fields: [companyId], references: [id])
+  department             departMent?              @relation(fields: [departmentId], references: [id])
+  ownerGroup             userGroup?               @relation(fields: [ownerGroupId], references: [groupId])
+  masterPosition         masterPosition?          @relation(fields: [positionId], references: [posId])
+  educationInformations  educationInformations[]
+  emergencyContact       emergencyContact[]
+  experienceInformations experienceInformations[]
+  familyInformations     familyInformations[]
+  personalInformations   personalInformations[]
 
-    @@map("employee_profiles")
+  @@map("employee_profiles")
 }
 
 model personalInformations {
-    id                 Int               @unique @default(autoincrement()) @map("id")
-    personalId         String            @unique @default(uuid()) @map("personal_id") @db.VarChar(50)
-    passportNumber     String            @map("passpoer_number") @db.VarChar(250)
-    passportExpired    DateTime          @map("passport_expired") @db.Timestamptz()
-    phoneNumber        String?           @map("phone_number") @db.VarChar(10)
-    nationality        String            @map("nationality") @db.VarChar(50)
-    religion           String            @map("religion") @db.VarChar(50)
-    maritalStatus      String            @map("marital_status") @db.VarChar(50)
-    employmentOfSpouse Boolean           @default(false) @map("employment_of_spouse") @db.Boolean
-    children           String?           @default("0") @map("children") @db.VarChar(50)
-    createdAt          DateTime          @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt          DateTime          @default(now()) @map("updated_at") @db.Timestamptz()
-    userId             String?           @map("user_id") @db.VarChar(50)
-    employeeProfiles   employeeProfiles? @relation(fields: [userId], references: [userId])
+  id                 Int               @unique @default(autoincrement())
+  personalId         String            @unique @default(uuid()) @map("personal_id") @db.VarChar(50)
+  passportNumber     String            @map("passpoer_number") @db.VarChar(250)
+  passportExpired    DateTime          @map("passport_expired") @db.Timestamptz(6)
+  phoneNumber        String?           @map("phone_number") @db.VarChar(10)
+  nationality        String            @db.VarChar(50)
+  religion           String            @db.VarChar(50)
+  maritalStatus      String            @map("marital_status") @db.VarChar(50)
+  employmentOfSpouse Boolean           @default(false) @map("employment_of_spouse")
+  children           String?           @default("0") @db.VarChar(50)
+  createdAt          DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt          DateTime          @default(now()) @map("updated_at") @db.Timestamptz(6)
+  userId             String?           @map("user_id") @db.VarChar(50)
+  employeeProfiles   employeeProfiles? @relation(fields: [userId], references: [userId])
 
-    @@map("personal_informations")
+  @@map("personal_informations")
 }
 
 model emergencyContact {
-    id               Int               @unique @default(autoincrement()) @map("id")
-    emgergencyId     String            @unique @default(uuid()) @map("emergency_id") @db.VarChar(50)
-    fullname         String            @map("fullname") @db.VarChar(250)
-    relationship     String            @map("relationship") @db.VarChar(50)
-    phoneNumber      String            @map("phone_number") @db.VarChar(10)
-    createdAt        DateTime          @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt        DateTime          @default(now()) @map("updated_at") @db.Timestamptz()
-    userId           String?           @map("user_id") @db.VarChar(50)
-    employeeProfiles employeeProfiles? @relation(fields: [userId], references: [userId])
+  id               Int               @unique @default(autoincrement())
+  emgergencyId     String            @unique @default(uuid()) @map("emergency_id") @db.VarChar(50)
+  fullname         String            @db.VarChar(250)
+  relationship     String            @db.VarChar(50)
+  phoneNumber      String            @map("phone_number") @db.VarChar(10)
+  createdAt        DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime          @default(now()) @map("updated_at") @db.Timestamptz(6)
+  userId           String?           @map("user_id") @db.VarChar(50)
+  employeeProfiles employeeProfiles? @relation(fields: [userId], references: [userId])
 
-    @@map("emergency_contact")
+  @@map("emergency_contact")
 }
 
 model masterDataCompany {
-    id               Int                @unique @default(autoincrement()) @map("id")
-    companyId        String             @unique @default(uuid()) @map("emergency_id") @db.VarChar(50)
-    companyName      String             @map("fullname") @db.VarChar(250)
-    createdAt        DateTime           @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt        DateTime           @default(now()) @map("updated_at") @db.Timestamptz()
-    employeeProfiles employeeProfiles[]
+  id               Int                @unique @default(autoincrement())
+  companyId        String             @unique @default(uuid()) @map("emergency_id") @db.VarChar(50)
+  companyName      String             @map("fullname") @db.VarChar(250)
+  createdAt        DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime           @default(now()) @map("updated_at") @db.Timestamptz(6)
+  employeeProfiles employeeProfiles[]
 
-    @@map("masterdata_company")
+  @@map("masterdata_company")
 }
 
 model familyInformations {
-    id                   Int               @unique @default(autoincrement()) @map("id")
-    familyInformationsId String            @unique @default(uuid()) @map("family_information_id") @db.VarChar(50)
-    fullname             String            @map("fullname") @db.VarChar(250)
-    relationship         String            @map("relationship") @db.VarChar(50)
-    birthDate            DateTime          @map("birth_date") @db.Timestamptz()
-    phoneNumber          String            @map("phone_number") @db.VarChar(10)
-    createdAt            DateTime          @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt            DateTime          @default(now()) @map("updated_at") @db.Timestamptz()
-    userId               String?           @map("user_id") @db.VarChar(50)
-    employeeProfiles     employeeProfiles? @relation(fields: [userId], references: [userId])
+  id                   Int               @unique @default(autoincrement())
+  familyInformationsId String            @unique @default(uuid()) @map("family_information_id") @db.VarChar(50)
+  fullname             String            @db.VarChar(250)
+  relationship         String            @db.VarChar(50)
+  birthDate            DateTime          @map("birth_date") @db.Timestamptz(6)
+  phoneNumber          String            @map("phone_number") @db.VarChar(10)
+  createdAt            DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt            DateTime          @default(now()) @map("updated_at") @db.Timestamptz(6)
+  userId               String?           @map("user_id") @db.VarChar(50)
+  employeeProfiles     employeeProfiles? @relation(fields: [userId], references: [userId])
 
-    @@map("family_informations")
+  @@map("family_informations")
 }
 
 model educationInformations {
-    id                    Int               @unique @default(autoincrement()) @map("id")
-    educationformationsId String            @unique @default(uuid()) @map("education_information_id") @db.VarChar(50)
-    institution           String            @map("institution") @db.VarChar(250)
-    subject               String            @map("subject") @db.VarChar(250)
-    startDate             DateTime          @map("start_date") @db.Timestamptz()
-    completeDate          DateTime          @map("complete_date") @db.Timestamptz()
-    degree                String            @map("degree") @db.VarChar(250)
-    grade                 String            @map("grade") @db.VarChar(10)
-    createdAt             DateTime          @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt             DateTime          @default(now()) @map("updated_at") @db.Timestamptz()
-    userId                String?           @map("user_id") @db.VarChar(50)
-    employeeProfiles      employeeProfiles? @relation(fields: [userId], references: [userId])
+  id                    Int               @unique @default(autoincrement())
+  educationformationsId String            @unique @default(uuid()) @map("education_information_id") @db.VarChar(50)
+  institution           String            @db.VarChar(250)
+  subject               String            @db.VarChar(250)
+  startDate             DateTime          @map("start_date") @db.Timestamptz(6)
+  completeDate          DateTime          @map("complete_date") @db.Timestamptz(6)
+  degree                String            @db.VarChar(250)
+  grade                 String            @db.VarChar(10)
+  createdAt             DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt             DateTime          @default(now()) @map("updated_at") @db.Timestamptz(6)
+  userId                String?           @map("user_id") @db.VarChar(50)
+  employeeProfiles      employeeProfiles? @relation(fields: [userId], references: [userId])
 
-    @@map("education_informations")
+  @@map("education_informations")
 }
 
 model experienceInformations {
-    id                     Int               @unique @default(autoincrement()) @map("id")
-    experienceformationsId String            @unique @default(uuid()) @map("education_information_id") @db.VarChar(50)
-    companyName            String            @map("company_name") @db.VarChar(250)
-    location               String            @map("location") @db.VarChar(250)
-    jobPosition            String            @map("job_position") @db.VarChar(250)
-    periodFrom             DateTime          @default(now()) @map("period_from") @db.Timestamptz()
-    periodTo               DateTime          @default(now()) @map("period_to") @db.Timestamptz()
-    createdAt              DateTime          @default(now()) @map("created_at") @db.Timestamptz()
-    updatedAt              DateTime          @default(now()) @map("updated_at") @db.Timestamptz()
-    userId                 String?           @map("user_id") @db.VarChar(50)
-    employeeProfiles       employeeProfiles? @relation(fields: [userId], references: [userId])
+  id                     Int               @unique @default(autoincrement())
+  experienceformationsId String            @unique @default(uuid()) @map("education_information_id") @db.VarChar(50)
+  companyName            String            @map("company_name") @db.VarChar(250)
+  location               String            @db.VarChar(250)
+  jobPosition            String            @map("job_position") @db.VarChar(250)
+  periodFrom             DateTime          @default(now()) @map("period_from") @db.Timestamptz(6)
+  periodTo               DateTime          @default(now()) @map("period_to") @db.Timestamptz(6)
+  createdAt              DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt              DateTime          @default(now()) @map("updated_at") @db.Timestamptz(6)
+  userId                 String?           @map("user_id") @db.VarChar(50)
+  employeeProfiles       employeeProfiles? @relation(fields: [userId], references: [userId])
 
-    @@map("experience_informations")
+  @@map("experience_informations")
 }
 
 model overtime {
-    id                      Int       @unique @default(autoincrement()) @map("id")
-    overTimeID              String    @unique @default(uuid()) @map("overtime_id")
-    fullname                String    @map("fullname") @db.VarChar(250)
-    userId                  String    @map("user_id") @db.VarChar(50)
-    dateStart               DateTime  @default(now()) @map("date_start") @db.Timestamp()
-    partTimeType            String?   @map("part_time_type") @db.VarChar(50)
-    startTime               String?   @map("start_time") @db.VarChar(50)
-    endTime                 String?   @map("end_time") @db.VarChar(50)
-    breakTime               String?   @map("break_time") @db.VarChar(50)
-    workingTime             String?   @map("working_time") @db.VarChar(50)
-    totalTime               String?   @map("total_time") @db.VarChar(50)
-    detailWork              String?   @map("detail_work") @db.VarChar(250)
-    typeDate                String?   @map("type_date") @db.VarChar(50)
-    customerName            String?   @map("customer_name") @db.VarChar(250)
-    checkTravelUpCountry    Boolean?  @default(false) @map("check_travel_upcountry") @db.Boolean
-    checkOvernight          Boolean?  @default(false) @map("check_overnight") @db.Boolean
-    checkTravelByCompanyCar Boolean?  @default(false) @map("check_travel_by_company_car") @db.Boolean
-    carName                 String?   @map("car_name") @db.VarChar(250)
-    carId                   String?   @map("car_id") @db.VarChar(250)
-    checkDistance           Boolean?  @default(false) @map("check_distance") @db.Boolean
-    other                   String?   @map("other") @db.VarChar(250)
-    phoneNumber             String?   @map("phone_number") @db.VarChar(10)
-    status                  String?   @map("status") @db.VarChar(20)
-    approvedDate            DateTime? @map("approved_at") @db.Timestamp()
-    approvedUser            String?   @map("approved_user") @db.VarChar(100)
-    approvedDetail          String?   @map("approved_detail") @db.VarChar(250)
-    calculate               Json?     @map("calculate") @db.JsonB
+  id                      Int       @unique @default(autoincrement())
+  overTimeID              String    @unique @default(uuid()) @map("overtime_id")
+  fullname                String    @db.VarChar(250)
+  userId                  String    @map("user_id") @db.VarChar(50)
+  dateStart               DateTime  @default(now()) @map("date_start") @db.Timestamp(6)
+  partTimeType            String?   @map("part_time_type") @db.VarChar(50)
+  startTime               String?   @map("start_time") @db.VarChar(50)
+  endTime                 String?   @map("end_time") @db.VarChar(50)
+  breakTime               String?   @map("break_time") @db.VarChar(50)
+  workingTime             String?   @map("working_time") @db.VarChar(50)
+  totalTime               String?   @map("total_time") @db.VarChar(50)
+  detailWork              String?   @map("detail_work") @db.VarChar(250)
+  typeDate                String?   @map("type_date") @db.VarChar(50)
+  customerName            String?   @map("customer_name") @db.VarChar(250)
+  checkTravelUpCountry    Boolean?  @default(false) @map("check_travel_upcountry")
+  checkOvernight          Boolean?  @default(false) @map("check_overnight")
+  checkTravelByCompanyCar Boolean?  @default(false) @map("check_travel_by_company_car")
+  carName                 String?   @map("car_name") @db.VarChar(250)
+  carId                   String?   @map("car_id") @db.VarChar(250)
+  checkDistance           Boolean?  @default(false) @map("check_distance")
+  other                   String?   @db.VarChar(250)
+  phoneNumber             String?   @map("phone_number") @db.VarChar(10)
+  status                  String?   @db.VarChar(20)
+  approvedDate            DateTime? @map("approved_at") @db.Timestamp(6)
+  approvedUser            String?   @map("approved_user") @db.VarChar(100)
+  approvedDetail          String?   @map("approved_detail") @db.VarChar(250)
+  calculate               Json?
 }
 
 model masterDataConfigTimeOT {
-    id                Int   @unique @default(autoincrement()) @map("id")
-    partTimeCondition Json? @map("part_time_condition") @db.JsonB
-    workTime          Json? @map("work_time") @db.JsonB
+  id                Int   @unique @default(autoincrement())
+  partTimeCondition Json? @map("part_time_condition")
+  workTime          Json? @map("work_time")
 
-    @@map("masterdata_config_time_ot")
+  @@map("masterdata_config_time_ot")
 }
