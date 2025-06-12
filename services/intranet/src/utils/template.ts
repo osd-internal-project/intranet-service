@@ -95,12 +95,16 @@ export const templateDataLeaveApproved = async (
           <p><strong>ขอแจ้งลางานเนื่องจาก</strong> ${data.detail}</p>
           <p><strong>ตั้งแต่วันที่ </strong> ${dayjs(data.startDate).format(
             'DD-MM-YYYY',
-          )} เวลา  ${data.startTime}<strong>ถึงวันที่</strong> ${dayjs(
-    data.endDate,
-  ).format('DD-MM-YYYY')} เวลา  ${data.endTime}</p>
+          )}   ${
+    data.startTime ? `เวลา ${data.startTime}` : ''
+  }<strong>ถึงวันที่</strong> ${dayjs(data.endDate).format('DD-MM-YYYY')} ${
+    data.endTime ? `เวลา  ${data.endTime}` : ''
+  }</p>
           <p><strong>สามารถติดต่อได้ที่เบอร์ </strong> ${data.phoneNumber}</p>
           </div>
-          <div style="margin: 30px 0; text-align: center; color: #3498db; font-weight: bold;">
+          <div style="margin: 30px 0; text-align: center; ${
+            type === 'approved' ? 'color: #3498db;' : 'color: red;'
+          } font-weight: bold;">
 ${type === 'approved' ? '' : 'ไม่'}อนุมัติ ${data.typeName}
           </div>
 
