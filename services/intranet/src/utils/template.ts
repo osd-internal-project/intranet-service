@@ -88,9 +88,7 @@ export const templateDataLeaveApproved = async (
           <div><strong>เรียน</strong> ${data.ownerName}</div>
 
           <div style="margin-top: 20px; color: #333;">
-            <p><strong>นาย / นางสาว </strong>${data.firstName} ${
-    data.lastName
-  }</p>
+            <p><strong>คุณ </strong>${data.firstName} ${data.lastName}</p>
           <p> <strong>จึงขอ</strong>${data.typeName}</p>  
           <p><strong>ขอแจ้งลางานเนื่องจาก</strong> ${data.detail}</p>
           <p><strong>ตั้งแต่วันที่ </strong> ${dayjs(data.startDate).format(
