@@ -200,6 +200,7 @@ export class UsersService {
         startWork: true,
         imageId: true,
         createdAt: true,
+        empId: true,
       },
       skip: +query.skip,
       take: +query.take,
