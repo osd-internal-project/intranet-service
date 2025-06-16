@@ -3,9 +3,10 @@ import { CreateUserDto, CreateUserId24Dto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersRepository } from '@inventory/share';
 import { UserType } from './type';
+
+import { EmailTemplateService } from '../../../intranet/src/email-template/email-template.service';
 import { Id24Service, IdCheckingData } from 'src/id24/id24.service';
 import config from '../configs';
-import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { promises as fs } from 'fs';
 const { masterGroupId24 } = config();
@@ -15,6 +16,7 @@ export class UsersService {
   constructor(
     private usersRepo: UsersRepository,
     private id24Service: Id24Service,
+    private readonly emailTemplateService: EmailTemplateService,
   ) {}
 
   dateToStartofDay(data: Date) {
@@ -378,6 +380,7 @@ export class UsersService {
         const user = await this.usersRepo.findOne({
           where: { username: id24.username },
         });
+        await this.emailTemplateService.sendmailForCreateRolesInId24(user);
         if (!user) {
           const newUser = await this.usersRepo.create({
             data: {
@@ -402,6 +405,7 @@ export class UsersService {
           return updateUser;
         }
       } else {
+        await this.emailTemplateService.sendmailForCreateRolesInId24(user);
         return user;
       }
     } catch (err) {
