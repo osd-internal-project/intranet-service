@@ -25,7 +25,11 @@ export class UserGroupService {
         description: data.description,
         parentGroupId: data.parentGroupId,
         organizedGroupId: data.organizeId,
-        organizeMapGroup: { create: { organizedId: data.organizeId } },
+        organizeMapGroup: {
+          create: {
+            organizedId: data.organizeId,
+          },
+        },
       },
     } as Prisma.userGroupCreateArgs;
     return this.userGroupRepo.create(condition);

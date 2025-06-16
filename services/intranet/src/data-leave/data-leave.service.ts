@@ -318,15 +318,10 @@ export class DataLeaveService {
     // console.log(token);
 
     const getUser = await this.usersRepo.findOne({ where: { token: token } });
-
-    // console.log(getUser);
-
     const result = await this.accessService.getLeadUsersByUserId(
       ModuleTypes.INTRANET_APPROVE_LEAVE,
       getUser.userId,
     );
-
-    Logger.debug(result);
 
     return result;
   }
