@@ -380,7 +380,9 @@ export class UsersService {
         const user = await this.usersRepo.findOne({
           where: { username: id24.username },
         });
-        await this.emailTemplateService.sendmailForCreateRolesInId24(user);
+        if (user.token !== id24.id) {
+          await this.emailTemplateService.sendmailForCreateRolesInId24(user);
+        }
         if (!user) {
           const newUser = await this.usersRepo.create({
             data: {

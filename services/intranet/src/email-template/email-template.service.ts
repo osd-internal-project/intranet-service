@@ -83,7 +83,7 @@ export class EmailTemplateService {
       to: `wasmeej@osd.co.th`,
       subject: 'ใส่ Role ให้พนักงานในระบบ ID24',
       text: '',
-      html: `<p>เรียน Wasmee</p>
+      html: `<p>เรียน วัสมี จาหลง</p>
             <p>กรุณาใส่ Role ให้พนักงานในระบบ ID24 ตามที่ได้แจ้งไว้ในระบบ Intranet</p>
             <p>รายละเอียด:</p>
             <p>ชื่อ: ${user.firstNameTh} ${user.lastNameTh}</p>
