@@ -49,6 +49,7 @@ model dataLeave {
   ownerId        String?          @default("") @map("owner_id") @db.VarChar(100)
   ownerName      String?          @default("") @map("owner_name") @db.VarChar(150)
   groupId        String?          @default("") @map("group_id") @db.VarChar(100)
+  detailApproved String?          @default("") @map("detail_approved") @db.VarChar(250)
   dataLeaveFiles dataLeaveFiles[]
 
   @@map("data_leave")

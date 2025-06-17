@@ -4,7 +4,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersRepository } from '@inventory/share';
 import { UserType } from './type';
 
-import { EmailTemplateService } from '../../../intranet/src/email-template/email-template.service';
 import { Id24Service, IdCheckingData } from 'src/id24/id24.service';
 import config from '../configs';
 import * as bcrypt from 'bcrypt';
@@ -18,7 +17,6 @@ export class UsersService {
   constructor(
     private usersRepo: UsersRepository,
     private id24Service: Id24Service,
-    private readonly emailTemplateService: EmailTemplateService,
   ) {}
 
   dateToStartofDay(data: Date) {
