@@ -33,7 +33,6 @@ export class MaCarBookService {
       Logger.debug('Not Found User');
       return [];
     }
-    // return this.maCarBookRepository.findMany({where :});
   }
   findAll() {
     return this.maCarBookRepository.findAll();
@@ -61,14 +60,13 @@ export class MaCarBookService {
   ) {
     const user = await this.accessServices.findUserByToken(token);
     if (user) {
-      const accessUsers = await this.accessServices.getAccessedUsersByUserId(
-        module,
-        user.userId,
-      );
-      const userIds = accessUsers.map((user) => user.userId);
-      console.log(`user length : ${userIds.length}`);
+      // const accessUsers = await this.accessServices.getAccessedUsersByUserId(
+      //   module,
+      //   user.userId,
+      // );
+      // const userIds = accessUsers.map((user) => user.userId);
+      // console.log(`user length : ${userIds.length}`);
       const data = await this.maCarBookRepository.findMany({
-        where: { createdById: { in: userIds } },
         include: {
           maCar: true,
         },

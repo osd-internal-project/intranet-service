@@ -115,20 +115,30 @@ export class AccessService {
   }
   //ดึง Users ที่เข้าถึงได้โดย User Id
   async getAccessedUsersByUserId(moduleCode: string, userId: string) {
-    const userdetaill = await this.prisma.users.findFirst({
-      where: { userId: userId },
-    });
-    const permissionGroup = await this.prisma.userPermissionGroup.findFirst({
-      where: {
-        userGroupId: userdetaill.ownerGroupId,
-        userModule: { code: moduleCode },
-      },
-    });
-    if (permissionGroup && permissionGroup.permissionGroupIds) {
-      return await this.prisma.users.findMany({
-        where: { ownerGroupId: { in: permissionGroup.permissionGroupIds } },
+    try {
+      const userdetaill = await this.prisma.users.findFirst({
+        where: { userId: userId },
       });
-    } else {
+
+      if (userdetaill.ownerGroupId !== null) {
+        const permissionGroup = await this.prisma.userPermissionGroup.findFirst(
+          {
+            where: {
+              userGroupId: userdetaill.ownerGroupId,
+              userModule: { code: moduleCode },
+            },
+          },
+        );
+        if (permissionGroup && permissionGroup.permissionGroupIds) {
+          return await this.prisma.users.findMany({
+            where: { ownerGroupId: { in: permissionGroup.permissionGroupIds } },
+          });
+        } else {
+          return [];
+        }
+      }
+    } catch (error) {
+      console.error('Error in getAccessedUsersByUserId:', error);
       return [];
     }
   }

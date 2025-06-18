@@ -28,6 +28,7 @@ export class MaCarBookController {
   }
 
   @Get('findbytoken')
+  @UseInterceptors(UserInterceptor)
   findBytoken(@Req() req) {
     const token = req.body.sub;
     return this.maCarBookService.findBytoken(token);
