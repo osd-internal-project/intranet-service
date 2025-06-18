@@ -161,7 +161,7 @@ export class DataLeaveService {
     const resUser = await this.usersRepo.findOne(condition);
     const dateNow = dayjs(new Date());
     const startwork = dayjs(resUser?.startWork);
-    const yearOfWork = dateNow.diff(startwork, 'years');
+    const yearOfWork = dateNow.diff(startwork, 'years', true);
     const dataLeaveWrapup = await this.dataleaveRepo.findMany({
       where: {
         userId: userId,
@@ -178,7 +178,9 @@ export class DataLeaveService {
       },
     } as Prisma.dataLeaveFindFirstArgs);
     const CountLeaveByTypeMap = this.countLeavesByTypeIdMap(dataLeaveWrapup);
-    const dataTypeLeave = await this.mastertypeLeaveRepo.findAll();
+    const dataTypeLeave = await this.mastertypeLeaveRepo.findMany({
+      orderBy: { id: 'asc' },
+    });
     const lastResult = dataTypeLeave.map((event) => {
       const leaveCount = CountLeaveByTypeMap[event.typeId] || 0;
       let limitLeaveLastResult = 0;

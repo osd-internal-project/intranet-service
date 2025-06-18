@@ -15,6 +15,10 @@ export class MasterTypeLeaveService {
     return this.mastertypeleaveRepo.findAll();
   }
 
+  findMany() {
+    return this.mastertypeleaveRepo.findMany({ orderBy: { id: 'asc' } });
+  }
+
   findByTypeId(id: number) {
     const base: Prisma.masterTypeleaveFindFirstArgs = {
       where: {
