@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import {
+  AccessService,
   MasterConfigTimeOtRepository,
   MasterHolidaysRepository,
+  ModuleTypes,
   OverTimeRepository,
   UsersRepository,
 } from '@inventory/share';
@@ -16,6 +18,7 @@ export class OverTimeService {
     private readonly masterconfigtimeotRepo: MasterConfigTimeOtRepository,
     private readonly masterholidayRepo: MasterHolidaysRepository,
     private readonly userRepo: UsersRepository,
+    private readonly accessService: AccessService,
   ) {}
   async create(createDepartmentDto: Prisma.overtimeCreateInput) {
     const findConfigTimeOt = await this.masterconfigtimeotRepo.findAll();
@@ -144,16 +147,53 @@ export class OverTimeService {
     });
   }
   async findMany(
-    condition: Prisma.overtimeFindManyArgs,
-    take: number,
+    condition: Prisma.overtimeCreateInput,
     skip: number,
+    take: number,
+    token: string,
   ) {
-    condition = {
-      ...condition,
+    let filter = {};
+
+    if (condition && condition.fullname) {
+      filter = { ...filter, fullname: { contains: condition.fullname } };
+    }
+    if (condition && condition.typeDate) {
+      filter = { ...filter, typeDate: { contains: condition.typeDate } };
+    }
+    if (condition && condition.dateStart) {
+      filter = {
+        ...filter,
+        dateStart: {
+          gte: dayjs(condition.dateStart[0]).startOf('day').toISOString(),
+          lte: dayjs(condition.dateStart[1]).endOf('day').toISOString(),
+        },
+      };
+    }
+
+    const getUser = await this.userRepo.findOne({ where: { token: token } });
+    const AccessedGroup = await this.accessService.getAccessedUsersByUserId(
+      ModuleTypes.INTRANET_APPROVE_OT,
+      getUser.userId,
+    );
+
+    const userIds = AccessedGroup.map((event: any) => event.userId);
+    const base = {
+      where: {
+        ...filter,
+        userId: { in: userIds },
+      },
       take: take,
       skip: skip,
-    };
-    return await this.overtimeRepo.findMany(condition);
+    } as Prisma.overtimeFindManyArgs;
+    const result = await this.overtimeRepo.findMany(base);
+    const count = await this.overtimeRepo.count({
+      where: {
+        ...filter,
+        userId: { in: userIds },
+      },
+    });
+
+    return { data: result, total: count };
   }
 
   async findOne(id: string) {
@@ -167,7 +207,9 @@ export class OverTimeService {
     });
   }
 
-  async remove(id: number) {
-    return await `This action removes a #${id} department`;
+  async remove(overTimeID: string) {
+    return await this.overtimeRepo.deleteMany({
+      where: { overTimeID: overTimeID },
+    });
   }
 }

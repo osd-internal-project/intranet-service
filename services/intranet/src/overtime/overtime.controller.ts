@@ -27,6 +27,17 @@ export class OvetimeController {
   findAll() {
     return this.overtimeService.findAll();
   }
+  @Get('find-many')
+  @UseInterceptors(UserInterceptor)
+  async findByConditionTypeId(
+    @Req() req,
+    @Query('params') condition: Prisma.overtimeCreateManyInput,
+    @Query('skip') skip?: number,
+    @Query('take') take?: number,
+  ) {
+    const token = req.body.sub;
+    return await this.overtimeService.findMany(condition, +skip, +take, token);
+  }
   @Get('/by-id')
   @UseInterceptors(UserInterceptor)
   findById(
@@ -43,14 +54,7 @@ export class OvetimeController {
     return this.overtimeService.findOne(overtimeId);
   }
 
-  @Get('find-many')
-  async findByConditionTypeId(
-    @Query('params') condition: Prisma.overtimeFindManyArgs,
-  ) {
-    return await this.overtimeService.findMany(condition, 10, 0);
-  }
-
-  @Patch(':id')
+  @Patch(':overTimeID')
   update(
     @Param('overTimeID') overTimeID: string,
     @Body() updateDepartmentDto: Prisma.overtimeUpdateInput,
@@ -58,8 +62,8 @@ export class OvetimeController {
     return this.overtimeService.update(overTimeID, updateDepartmentDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.overtimeService.remove(+id);
+  @Delete(':overTimeID')
+  remove(@Param('overTimeID') overTimeID: string) {
+    return this.overtimeService.remove(overTimeID);
   }
 }

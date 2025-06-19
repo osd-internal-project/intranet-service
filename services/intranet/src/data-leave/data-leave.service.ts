@@ -26,8 +26,6 @@ export class DataLeaveService {
     private readonly accessService: AccessService,
     private readonly userPermissionGroupRepo: UserPermissionGroupRepository,
     private userGroupRepo: UserGroupRepository,
-    private notificationlogsRepo: NotificationLogsRepository,
-    private readonly userRepo: UsersRepository,
   ) {}
 
   async create(condition: Prisma.dataLeaveCreateArgs) {

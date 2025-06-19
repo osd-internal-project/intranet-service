@@ -28,6 +28,14 @@ export class OverTimeRepository {
     return prisma.overtime.findFirst(condition);
   }
 
+  async count(
+    condition: Prisma.overtimeCountArgs,
+    option?: { prisma?: TQueryClient },
+  ) {
+    const prisma = option?.prisma ?? this.prisma;
+    return prisma.overtime.count(condition);
+  }
+
   async create(
     condition: Prisma.overtimeCreateManyArgs,
     option?: { prisma?: TQueryClient },
