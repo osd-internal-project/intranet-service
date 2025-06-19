@@ -4,6 +4,7 @@ import {
   MasterConfigTimeOtRepository,
   MasterHolidaysRepository,
   OverTimeRepository,
+  UsersRepository,
 } from '@inventory/share';
 import * as dayjs from 'dayjs';
 import { calculate } from './manage-cal';
@@ -14,6 +15,7 @@ export class OverTimeService {
     private readonly overtimeRepo: OverTimeRepository,
     private readonly masterconfigtimeotRepo: MasterConfigTimeOtRepository,
     private readonly masterholidayRepo: MasterHolidaysRepository,
+    private readonly userRepo: UsersRepository,
   ) {}
   async create(createDepartmentDto: Prisma.overtimeCreateInput) {
     const findConfigTimeOt = await this.masterconfigtimeotRepo.findAll();
@@ -130,7 +132,17 @@ export class OverTimeService {
   async findAll() {
     return await this.overtimeRepo.findMany({ orderBy: { id: 'asc' } });
   }
-
+  async findById(userId: string, skip: number, take: number) {
+    const findUser = await this.userRepo.findOne({
+      where: { token: userId },
+    });
+    return await this.overtimeRepo.findMany({
+      where: { userId: findUser.userId },
+      orderBy: { id: 'asc' },
+      take,
+      skip,
+    });
+  }
   async findMany(
     condition: Prisma.overtimeFindManyArgs,
     take: number,

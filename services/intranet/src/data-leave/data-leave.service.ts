@@ -125,9 +125,7 @@ export class DataLeaveService {
       where: {
         groupId: { in: AccessedGroup.map((event: any) => event.groupId) },
       },
-      orderBy: {
-        startDate: 'desc',
-      },
+      orderBy: { createdAt: 'desc' },
     });
   }
 
@@ -140,8 +138,8 @@ export class DataLeaveService {
       include: {
         dataLeaveFiles: true,
       },
-      orderBy: { id: 'asc' },
-    } as any;
+      orderBy: { createdAt: 'desc' },
+    } as Prisma.dataLeaveFindManyArgs;
 
     return this.dataleaveRepo.findMany(base);
   }
@@ -154,9 +152,7 @@ export class DataLeaveService {
         userId: userId,
       },
       include: { typeLeaveDisabledMap: true },
-      orderBy: {
-        createdAt: 'asc',
-      },
+      orderBy: { createdAt: 'desc' },
     } as Prisma.usersFindFirstArgs;
     const resUser = await this.usersRepo.findOne(condition);
     const dateNow = dayjs(new Date());

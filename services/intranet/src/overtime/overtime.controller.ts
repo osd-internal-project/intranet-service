@@ -7,9 +7,12 @@ import {
   Param,
   Delete,
   Query,
+  UseInterceptors,
+  Req,
 } from '@nestjs/common';
 import { OverTimeService } from './overtime.service';
 import { Prisma } from '@prisma/client';
+import { UserInterceptor } from '@inventory/share';
 
 @Controller('overtime')
 export class OvetimeController {
@@ -23,6 +26,16 @@ export class OvetimeController {
   @Get()
   findAll() {
     return this.overtimeService.findAll();
+  }
+  @Get('/by-id')
+  @UseInterceptors(UserInterceptor)
+  findById(
+    @Req() req,
+    @Query('skip') skip?: number,
+    @Query('take') take?: number,
+  ) {
+    const userId = req.body.sub;
+    return this.overtimeService.findById(userId, +skip, +take);
   }
 
   @Get(':overtimeId')
