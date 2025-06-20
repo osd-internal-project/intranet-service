@@ -29,7 +29,18 @@ export class OvetimeController {
   }
   @Get('find-many')
   @UseInterceptors(UserInterceptor)
-  async findByConditionTypeId(
+  async findMany(
+    @Req() req,
+    @Query('params') condition: Prisma.overtimeCreateManyInput,
+    @Query('skip') skip?: number,
+    @Query('take') take?: number,
+  ) {
+    const token = req.body.sub;
+    return await this.overtimeService.findMany(condition, +skip, +take, token);
+  }
+  @Get('find-many-hr')
+  @UseInterceptors(UserInterceptor)
+  async findManyByHr(
     @Req() req,
     @Query('params') condition: Prisma.overtimeCreateManyInput,
     @Query('skip') skip?: number,

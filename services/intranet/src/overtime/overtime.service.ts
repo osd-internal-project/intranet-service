@@ -196,6 +196,56 @@ export class OverTimeService {
     return { data: result, total: count };
   }
 
+  async findManyByHr(
+    condition: Prisma.overtimeCreateInput,
+    skip: number,
+    take: number,
+    token: string,
+  ) {
+    let filter = {};
+
+    if (condition && condition.fullname) {
+      filter = { ...filter, fullname: { contains: condition.fullname } };
+    }
+    if (condition && condition.typeDate) {
+      filter = { ...filter, typeDate: { contains: condition.typeDate } };
+    }
+    if (condition && condition.dateStart) {
+      filter = {
+        ...filter,
+        dateStart: {
+          gte: dayjs(condition.dateStart[0]).startOf('day').toISOString(),
+          lte: dayjs(condition.dateStart[1]).endOf('day').toISOString(),
+        },
+      };
+    }
+
+    const getUser = await this.userRepo.findOne({ where: { token: token } });
+    const AccessedGroup = await this.accessService.getAccessedUsersByUserId(
+      ModuleTypes.INTRANET_APPROVE_OT,
+      getUser.userId,
+    );
+
+    const userIds = AccessedGroup.map((event: any) => event.userId);
+    const base = {
+      where: {
+        ...filter,
+        // userId: { in: userIds },
+      },
+      take: take,
+      skip: skip,
+    } as Prisma.overtimeFindManyArgs;
+    const result = await this.overtimeRepo.findMany(base);
+    const count = await this.overtimeRepo.count({
+      where: {
+        ...filter,
+        userId: { in: userIds },
+      },
+    });
+
+    return { data: result, total: count };
+  }
+
   async findOne(id: string) {
     return await this.overtimeRepo.findFirst({ where: { overTimeID: id } });
   }
