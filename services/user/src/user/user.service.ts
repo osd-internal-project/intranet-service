@@ -32,7 +32,7 @@ export class UserService {
 
   create(data: Prisma.usersCreateInput) {
     const condition = { data: data } as Prisma.usersCreateArgs;
-    // return this.usersRepo.create(condition);
+    return this.usersRepo.create(condition);
   }
   async createUserRoleMapByUserId(data: Prisma.userRoleMapCreateManyInput[]) {
     const condition = { data: data } as Prisma.userRoleMapCreateManyArgs;
