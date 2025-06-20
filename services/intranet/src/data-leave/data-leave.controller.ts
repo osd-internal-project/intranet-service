@@ -48,6 +48,10 @@ export class DataLeaveController {
   findGroup(@Param('userId') userId: string) {
     return this.dataLeaveService.findGroup(userId);
   }
+  @Get('findGroup-hr/:userId')
+  findGroupHr(@Param('userId') userId: string) {
+    return this.dataLeaveService.findGroupHr(userId);
+  }
 
   @Get('/:userId')
   findOne(@Param('userId') userId: string) {

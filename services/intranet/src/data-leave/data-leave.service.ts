@@ -126,20 +126,29 @@ export class DataLeaveService {
       orderBy: { createdAt: 'desc' },
     });
   }
+  async findGroupHr(userId: string) {
+    // const getUser = await this.usersRepo.findOne({ where: { userId: userId } });
+    // const AccessedGroup = await this.accessService.getAccessedGroupByGroupId(
+    //   ModuleTypes.INTRANET,
+    //   getUser.ownerGroupId,
+    // );
+    return await this.dataleaveRepo.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
+  }
 
   async findManyByCondition(params: any) {
     const base = {
       where: {
         ...params,
         ...(params.typeId && { typeId: +params.typeId }),
-      },
-      include: {
-        dataLeaveFiles: true,
+        status: {
+          in: ['approved', 'waiting'],
+        },
       },
       orderBy: { createdAt: 'desc' },
     } as Prisma.dataLeaveFindManyArgs;
-
-    return this.dataleaveRepo.findMany(base);
+    return await this.dataleaveRepo.findMany(base);
   }
 
   async findDetailTypeLeaveByUserId(userId: string) {
@@ -311,14 +320,11 @@ export class DataLeaveService {
   }
 
   async findHeaderId(token: string) {
-    // console.log(token);
-
     const getUser = await this.usersRepo.findOne({ where: { token: token } });
     const result = await this.accessService.getLeadUsersByUserId(
       ModuleTypes.INTRANET_APPROVE_LEAVE,
       getUser.userId,
     );
-
     return result;
   }
 
