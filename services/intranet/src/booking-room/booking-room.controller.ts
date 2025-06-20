@@ -38,10 +38,10 @@ export class BookingRoomController {
     @Query('take') take?: number,
     @Query('role') role?: string,
   ) {
-    if (skip !== undefined && take !== undefined) {
-      return this.bookingRoomService.findMany(+skip, +take, req.body.sub, role);
+    if (role === 'admin' || skip === undefined || take === undefined) {
+      return this.bookingRoomService.findAll(req.body.sub);
     }
-    return this.bookingRoomService.findAll(req.body.sub);
+    return this.bookingRoomService.findMany(+skip, +take, req.body.sub, role);
   }
 
   // @Get()

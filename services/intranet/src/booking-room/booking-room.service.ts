@@ -20,7 +20,11 @@ export class BookingRoomService {
   }
 
   async findAll(token: string) {
-    return this.bookingRoomRepository.findAll();
+    const result = await this.bookingRoomRepository.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
+    const count = result.length;
+    return { data: result, count: count };
   }
 
   async findMany(skip: number, take: number, token: string, role: string) {
@@ -31,11 +35,6 @@ export class BookingRoomService {
         getUser.userId,
       );
     const condition = {
-      where: {
-        ...(role !== 'admin'
-          ? { userId: getUser.userId }
-          : { userId: { in: getAccessUser.map((user) => user.userId) } }),
-      },
       skip,
       take,
     } as Prisma.bookingRoomFindFirstArgsBase;
