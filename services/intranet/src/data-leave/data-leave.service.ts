@@ -123,16 +123,14 @@ export class DataLeaveService {
     return await this.dataleaveRepo.findMany({
       where: {
         groupId: { in: AccessedGroup.map((event: any) => event.groupId) },
+        status: {
+          in: ['approved', 'waiting'],
+        },
       },
       orderBy: { createdAt: 'desc' },
     });
   }
   async findGroupHr(userId: string) {
-    // const getUser = await this.usersRepo.findOne({ where: { userId: userId } });
-    // const AccessedGroup = await this.accessService.getAccessedGroupByGroupId(
-    //   ModuleTypes.INTRANET,
-    //   getUser.ownerGroupId,
-    // );
     return await this.dataleaveRepo.findMany({
       orderBy: { createdAt: 'desc' },
     });
