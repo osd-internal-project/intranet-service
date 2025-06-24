@@ -26,18 +26,17 @@ export const templateDataLeave = async (data: any): Promise<string> => {
             data.startDate,
           ).format('DD-MM-YYYY')}</div>
           <div><strong>เรียน</strong> ${data.ownerName}</div>
-
           <div style="margin-top: 20px; color: #333;">
-            <p><strong>นาย / นางสาว </strong>${data.firstName} ${
-    data.lastName
-  }</p>
+          <p><strong>คุณ </strong>${data.firstName} ${data.lastName}</p>
           <p> <strong>จึงขอ</strong>${data.typeName}</p>  
           <p><strong>ขอแจ้งลางานเนื่องจาก</strong> ${data.detail}</p>
           <p><strong>ตั้งแต่วันที่ </strong> ${dayjs(data.startDate).format(
             'DD-MM-YYYY',
-          )} เวลา  ${data.startTime}<strong>ถึงวันที่</strong> ${dayjs(
-    data.endDate,
-  ).format('DD-MM-YYYY')} เวลา  ${data.endTime}</p>
+          )} เวลา  ${
+    data.startTime ? data.startTime : ''
+  }<strong>ถึงวันที่</strong> ${dayjs(data.endDate).format(
+    'DD-MM-YYYY',
+  )} เวลา  ${data.endTime ? data.endTime : ''}</p>
           <p><strong>สามารถติดต่อได้ที่เบอร์ </strong> ${data.phoneNumber}</p>
           </div>
           <div style="margin: 30px 0; text-align: center; color: #3498db; font-weight: bold;">
