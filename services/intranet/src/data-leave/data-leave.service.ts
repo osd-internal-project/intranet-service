@@ -33,30 +33,30 @@ export class DataLeaveService {
       ModuleTypes.INTRANET_APPROVE_LEAVE,
       condition.data.userId,
     );
-    // const leaveLetter = await this.dataleaveRepo.create(condition);
+    const leaveLetter = await this.dataleaveRepo.create(condition);
     const html = await templateDataLeave(condition.data);
 
-    // if (leaveLetter) {
-    //   const transporter = nodemailer.createTransport({
-    //     host: 'smtp.office365.com', // ใช้ SMTP ของ Outlook (Microsoft 365)
-    //     port: 587, // พอร์ตสำหรับ TLS (STARTTLS)
-    //     secure: false, // ใช้ STARTTLS (ไม่ใช่ SSL ทันที)
-    //     auth: {
-    //       user: 'internalsupport@osd.co.th', // อีเมลผู้ส่ง
-    //       pass: 'Internal-support@osd1234.', // รหัสผ่าน (หรือ App Password ถ้าเปิด 2FA)
-    //     },
-    //   });
-    //   result.map(async (event: any) => {
-    //     return await transporter.sendMail({
-    //       from: '"admin Intranet" <internalsupport@osd.co.th>',
-    //       to: `${event.email}`,
-    //       subject: 'OSD Intranet ใบลาออนไลน์',
-    //       text: '',
-    //       html,
-    //     });
-    //   });
-    // }
-    // return leaveLetter;
+    if (leaveLetter) {
+      const transporter = nodemailer.createTransport({
+        host: 'smtp.office365.com', // ใช้ SMTP ของ Outlook (Microsoft 365)
+        port: 587, // พอร์ตสำหรับ TLS (STARTTLS)
+        secure: false, // ใช้ STARTTLS (ไม่ใช่ SSL ทันที)
+        auth: {
+          user: 'internalsupport@osd.co.th', // อีเมลผู้ส่ง
+          pass: 'Internal-support@osd1234.', // รหัสผ่าน (หรือ App Password ถ้าเปิด 2FA)
+        },
+      });
+      result.map(async (event: any) => {
+        return await transporter.sendMail({
+          from: '"admin Intranet" <internalsupport@osd.co.th>',
+          to: `${event.email}`,
+          subject: 'OSD Intranet ใบลาออนไลน์',
+          text: '',
+          html,
+        });
+      });
+    }
+    return leaveLetter;
   }
   findAll() {
     return this.dataleaveRepo.findAll();
