@@ -114,7 +114,36 @@ export class DataLeaveService {
     return { count: count, status: count > 0 ? 200 : 404 };
   }
 
-  async findGroup(userId: string) {
+  async findGroup(userId: string, query: any) {
+    let filter = {};
+    if (query.type === 'fullname' && query.value) {
+      const names = query.value.trim().split(' ').filter(Boolean);
+      const orConditions = names.flatMap((word) => [
+        {
+          firstName: {
+            contains: word,
+            mode: 'insensitive',
+          },
+        },
+        {
+          lastName: {
+            contains: word,
+            mode: 'insensitive',
+          },
+        },
+      ]);
+      filter = { ...filter, OR: orConditions };
+    } else if (query.type === 'status') {
+      filter = { ...filter, status: query.value };
+    } else if (query.type === 'type_name') {
+      filter = {
+        ...filter,
+        typeName: {
+          contains: query.value,
+          mode: 'insensitive',
+        },
+      };
+    }
     const getUser = await this.usersRepo.findOne({ where: { userId: userId } });
     const AccessedGroup = await this.accessService.getAccessedGroupByGroupId(
       ModuleTypes.INTRANET,
@@ -122,16 +151,46 @@ export class DataLeaveService {
     );
     return await this.dataleaveRepo.findMany({
       where: {
+        ...filter, // ✅ สลาย filter เข้าไปใน where
         groupId: { in: AccessedGroup.map((event: any) => event.groupId) },
-        status: {
-          in: ['approved', 'waiting'],
-        },
+        status: { in: ['approved', 'waiting'] },
       },
       orderBy: { createdAt: 'desc' },
     });
   }
-  async findGroupHr(userId: string) {
+  async findGroupHr(userId: string, query: any) {
+    let filter = {};
+    if (query.type === 'fullname' && query.value) {
+      const names = query.value.trim().split(' ').filter(Boolean); // แยกคำ เช่น ["วาสิษฐี", "มหาวรรณศรี"]
+
+      const orConditions = names.flatMap((word) => [
+        {
+          firstName: {
+            contains: word,
+            mode: 'insensitive',
+          },
+        },
+        {
+          lastName: {
+            contains: word,
+            mode: 'insensitive',
+          },
+        },
+      ]);
+      filter = { ...filter, OR: orConditions };
+    } else if (query.type === 'status') {
+      filter = { ...filter, status: query.value };
+    } else if (query.type === 'type_name') {
+      filter = {
+        ...filter,
+        typeName: {
+          contains: query.value,
+          mode: 'insensitive',
+        },
+      };
+    }
     return await this.dataleaveRepo.findMany({
+      where: { ...filter },
       orderBy: { createdAt: 'desc' },
     });
   }
@@ -187,20 +246,20 @@ export class DataLeaveService {
       const leaveCount = CountLeaveByTypeMap[event.typeId] || 0;
       let limitLeaveLastResult = 0;
       let limitLeave = 0;
-      const trimmed = leaveCount.value
-        ? Math.floor(leaveCount.value * 10) / 10
+      const trimmed = leaveCount.total
+        ? Math.floor(leaveCount.total * 10) / 10
         : 0;
       if (yearOfWork <= 1) {
-        limitLeaveLastResult = parseFloat(event.limitLeaveFour) - trimmed;
+        limitLeaveLastResult = parseFloat(event.limitLeaveFour) * 8 - trimmed;
         limitLeave = Number(event.limitLeaveFour);
       } else if (yearOfWork < 3) {
-        limitLeaveLastResult = parseFloat(event.limitLeaveOne) - trimmed;
+        limitLeaveLastResult = parseFloat(event.limitLeaveOne) * 8 - trimmed;
         limitLeave = Number(event.limitLeaveOne);
       } else if (yearOfWork < 5) {
-        limitLeaveLastResult = parseFloat(event.limitLeaveTwo) - trimmed;
+        limitLeaveLastResult = parseFloat(event.limitLeaveTwo) * 8 - trimmed;
         limitLeave = Number(event.limitLeaveTwo);
       } else {
-        limitLeaveLastResult = parseFloat(event.limitLeaveThree) - trimmed;
+        limitLeaveLastResult = parseFloat(event.limitLeaveThree) * 8 - trimmed;
         limitLeave = Number(event.limitLeaveThree);
       }
       if (limitLeaveLastResult < 0) {
@@ -211,8 +270,8 @@ export class DataLeaveService {
         typeId: event.typeId,
         typeName: event.typeName,
         forwardLeave: event.forwardLeave,
-        haveLeave: leaveCount.value,
-        typeLeaveHour: leaveCount.type,
+        haveLeaveDays: leaveCount.valueHours,
+        haveLeaveHours: leaveCount.valueMinute,
         limitLeave: limitLeave,
         limitLeaveLastResult: limitLeaveLastResult,
         descriptionLeave: event.descriptionLeave,
@@ -256,37 +315,23 @@ export class DataLeaveService {
     for (const typeId in leaveSummaryByType) {
       const totalHours = leaveSummaryByType[typeId];
       if (totalHours >= 8) {
+        const fullDays = Math.floor(totalHours / 8);
+        const remaining = totalHours % 8;
+        const hourRemain = Math.floor(remaining);
+        const minuteRemain = Math.round((remaining % 1) * 60) === 30 ? 0.5 : 0;
         leaveDaysByType[typeId] = {
-          value: totalHours ? totalHours / 8 : 0,
-          type: 'Days',
+          total: totalHours,
+          valueHours: fullDays, // จำนวนวัน
+          valueMinute: hourRemain + minuteRemain, // นาทีที่เหลือ
         };
       } else {
         leaveDaysByType[typeId] = {
-          value: totalHours ? totalHours : 0,
-          type: 'Hours',
+          total: totalHours,
+          valueHours: 0,
+          valueMinute: totalHours,
         };
       }
     }
-    // const result = leaveRecords.reduce((acc, record) => {
-    //   const hours = record.leaveHour;
-    //   console.log(hours);
-    //   let CalculateLeaveHour = hours / 8;
-    //   if (!acc[record.typeId]) {
-    //     acc[record.typeId] = 0;
-    //   }
-    //   if (hours % 8 !== 0) {
-    //     CalculateLeaveHour = Math.floor(CalculateLeaveHour) + (hours % 8) / 10;
-    //   }
-    //   acc[record.typeId] += CalculateLeaveHour;
-    //   let leaveCount = acc[record.typeId];
-    //   const calHours = parseFloat((leaveCount % 1).toFixed(1));
-    //   if (calHours >= 0.8 && calHours <= 1) {
-    //     leaveCount += 0.2;
-    //   }
-    //   acc[record.typeId] = leaveCount;
-    //   acc[record.typeId] = parseFloat(leaveCount.toFixed(2));
-    //   return acc;
-    // }, {});
     return leaveDaysByType;
   }
 

@@ -378,7 +378,7 @@ export class UsersService {
         const saltOrRounds = 10;
         const hashedPassword = await bcrypt.hash('osd_P@ssw0rd', saltOrRounds);
         const user = await this.usersRepo.findOne({
-          where: { username: id24.username },
+          where: { username: id24.username.toLowerCase() },
         });
         if (user.token !== id24.id) {
           await this.sendmailForCreateRolesInId24(user);
@@ -387,7 +387,7 @@ export class UsersService {
           const newUser = await this.usersRepo.create({
             data: {
               token: id24.id,
-              username: id24.username,
+              username: id24.username.toLowerCase(),
               email: id24.email,
               password: hashedPassword,
               userType: 'ldap',
