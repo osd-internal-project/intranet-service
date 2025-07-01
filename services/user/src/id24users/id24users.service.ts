@@ -54,7 +54,7 @@ export class UsersService {
       saltOrRounds,
     );
     const createId24 = {
-      username: createUserDto.username.replace(/\s/g, ''),
+      username: createUserDto.username.replace(/\s/g, '').toLowerCase(),
       email: createUserDto.email.replace(/\s/g, ''),
       group: [createUserDto.dataModule, masterGroupId24],
       active: true,
@@ -106,6 +106,7 @@ export class UsersService {
           userType: createUserDto.userType,
           token: response.data.id,
           dataModule: createUserDto.dataModule,
+          empId: createUserDto.empId,
           ownerGroup: { connect: { groupId: createUserDto.ownerGroupId } },
           masterPosition: {
             connect: { posId: createUserDto.masterPositionId },
