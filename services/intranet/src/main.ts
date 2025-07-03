@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import config from './configs';
 import { IntranetMainModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as express from 'express';
 import * as cors from 'cors';
 const PORT = config().port;
 
@@ -14,6 +15,12 @@ async function bootstrap() {
   };
   const app = await NestFactory.create(IntranetMainModule);
   app.setGlobalPrefix('api');
+  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json({ type: 'application/json' }));
+  app.use((req, res, next) => {
+    req.setEncoding('utf8');
+    next();
+  });
   app.enableCors();
   app.use(cors());
   app.use(helmet());

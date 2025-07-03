@@ -31,9 +31,15 @@ export class MaTaskFilesController {
       storage: diskStorage({
         destination: `${process.env.PATH_MOUNTDIR_UPLOAD}/ma-task-files`,
         filename: (req, file, callback) => {
-          const fileCode = `${uuidv4()}`;
-          const fileType = extname(file.originalname);
-          callback(null, `${fileCode}${fileType}`);
+          const fileExt = extname(file.originalname);
+          const originalName = file.originalname.replace(fileExt, '');
+          const fixedName = Buffer.from(originalName, 'latin1').toString(
+            'utf8',
+          );
+          const timestamp = Date.now();
+          console.log(fixedName);
+
+          callback(null, `${fixedName}-${timestamp}${fileExt}`);
         },
       }),
     }),
@@ -43,6 +49,7 @@ export class MaTaskFilesController {
     @UploadedFiles() files: Express.Multer.File[],
     @Body('type') type,
   ) {
+    console.log(files[0]);
     if (id && type && files.length > 0) {
       const data = {
         maTaskId: +id,
@@ -50,12 +57,10 @@ export class MaTaskFilesController {
         type: type,
         fileCode: files[0].filename,
         fileType: files[0].mimetype,
-        fileName: files[0].originalname,
+        fileName: files[0].filename,
       } as Prisma.maTaskFilesCreateInput;
       return this.maTaskFilesService.create(data);
     }
-    // const Id = Number(id);
-    // return this.maTaskFilesService.create({ maTaskId });
   }
 
   @Get('many')
