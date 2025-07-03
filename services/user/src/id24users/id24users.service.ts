@@ -62,11 +62,12 @@ export class UsersService {
       ldapQuery: createUserDto.ldapQuery,
       phone: '',
     } as CreateUserId24Dto;
-
+    console.log('before create in id 24');
     const id24Service =
       createUserDto.userType === UserType.LDAP
         ? this.id24Service.createUserLdap(createId24)
         : this.id24Service.createUser(createId24);
+    console.log('create in id 24');
     try {
       const response = await id24Service;
       Logger.debug(`User created successfully on id24`, response.data.id);
