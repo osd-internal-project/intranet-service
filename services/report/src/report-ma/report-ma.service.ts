@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateReportMaDto } from './dto/create-report-ma.dto';
 import { UpdateReportMaDto } from './dto/update-report-ma.dto';
-import { TemplateExcel } from 'utils/generate-excel';
+import { TemplateExcel } from 'src/utils/generate-excel';
 import { MaTaskRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 
