@@ -8,6 +8,7 @@ import {
   Delete,
   UseInterceptors,
   Req,
+  Query,
 } from '@nestjs/common';
 import { MaCarBookService } from './ma-car-book.service';
 import { Prisma } from '@prisma/client';
@@ -51,8 +52,16 @@ export class MaCarBookController {
     );
   }
   @Get('carId/:carId')
-  findOne(@Param('carId') carId: string) {
-    return this.maCarBookService.findOne(carId);
+  findOne(
+    @Param('carId') carId: string,
+    @Query() query: Prisma.maCarBookWhereInput,
+  ) {
+    return this.maCarBookService.findOne(carId, query);
+  }
+
+  @Get('car-booking/:userId')
+  findByUserId(@Param('userId') userId: string) {
+    return this.maCarBookService.createdById(userId);
   }
 
   @Get(':skip/:take')
@@ -70,11 +79,6 @@ export class MaCarBookController {
       +skip,
       +take,
     );
-  }
-
-  @Get(':createdById')
-  findByUserId(@Param('createdById') createdById: string) {
-    return this.maCarBookService.createdById(createdById);
   }
 
   @Get(':id/:skip/:take')

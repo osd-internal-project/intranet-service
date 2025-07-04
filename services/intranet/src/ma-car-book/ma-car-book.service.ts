@@ -5,6 +5,7 @@ import {
   ModuleTypes,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
+import * as dayjs from 'dayjs';
 
 @Injectable()
 export class MaCarBookService {
@@ -115,11 +116,35 @@ export class MaCarBookService {
     return data;
   }
 
-  async findOne(carId: string) {
+  async findOne(carId: string, query: Prisma.maCarBookWhereInput) {
+    const whereClause: Prisma.maCarBookWhereInput = {
+      carId: carId,
+    };
+    if (query.carBookStartDate && query.carBookEndDate) {
+      const start = dayjs(
+        query.carBookStartDate as string | Date,
+      ).toISOString();
+      const end = dayjs(query.carBookEndDate as string | Date).toISOString();
+      whereClause.OR = [
+        {
+          carBookStartDate: {
+            gte: start,
+            lte: end,
+          },
+        },
+        {
+          carBookEndDate: {
+            gte: start,
+            lte: end,
+          },
+        },
+      ];
+    }
+
     const data = await this.maCarBookRepository.findOne({
-      where: { carId: carId },
+      where: whereClause,
     });
-    return data;
+    return data ? data : {};
   }
 
   createdById(createdById: string) {
