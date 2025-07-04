@@ -23,58 +23,15 @@ export class OverTimeService {
   async create(createDepartmentDto: Prisma.overtimeCreateInput) {
     const findConfigTimeOt = await this.masterconfigtimeotRepo.findAll();
     const workTimeValues = Object.values(findConfigTimeOt[0].partTimeCondition);
-
-    const holiday = await this.masterholidayRepo.findMany({
-      where: {
-        masterHolidaysYear: {
-          is: { holidaysYear: { equals: dayjs(new Date()).format('YYYY') } },
-        },
-      },
-    });
-
-    const filterHolidays = holiday.find(
-      (event: any) =>
-        dayjs(event.holidaysDate).locale('th').format('YYYY-MM-DD') ===
-        dayjs(createDepartmentDto.dateStart).locale('th').format('YYYY-MM-DD'),
-    );
-
     const result = workTimeValues.find(
       (entry) => entry.index === dayjs(createDepartmentDto.dateStart).day(),
     );
-    const startTimeSplit = createDepartmentDto.startTime.split(':');
-    const endTimeSplit = createDepartmentDto.endTime.split(':');
-    const resultstartTimeSplit = result.startTime.split(':');
-    const resultendTimeSplit = result.endTime.split(':');
-    const OvertimeTime = result.startOt.split(':');
-    const total = +resultendTimeSplit[0] - +startTimeSplit[0];
-    const minStart = startTimeSplit[1] === '30' ? 0.5 : 0;
-    const minEndTime = endTimeSplit[1] === '30' ? 0.5 : 0;
-    const totalMin = minEndTime - minStart;
+    const startTimeOt = createDepartmentDto.startTime;
+    const endTimeOt = createDepartmentDto.endTime;
+    const OvertimeTime = result.startOt;
 
-    const averageOnetime = 0;
-    const averageTwotime = 0;
-    const averageThreetimes = 0;
-    const totalTime = 0;
-    const breakTime = 0;
-    const workingTime = 0;
-
-    const cal = await calculate(
-      filterHolidays,
-      result,
-      endTimeSplit,
-      startTimeSplit,
-      totalTime,
-      breakTime,
-      workingTime,
-      resultstartTimeSplit,
-      resultendTimeSplit,
-      OvertimeTime,
-      totalMin,
-      averageThreetimes,
-      averageTwotime,
-      averageOnetime,
-      total,
-    );
+    const { totalTime, breakTime, workTime, inTime, overtime } =
+      await calculate(startTimeOt, endTimeOt, OvertimeTime);
 
     const base = {
       fullname: createDepartmentDto.fullname,
@@ -83,9 +40,9 @@ export class OverTimeService {
       partTimeType: createDepartmentDto.partTimeType,
       startTime: createDepartmentDto.startTime,
       endTime: createDepartmentDto.endTime,
-      breakTime: String(cal.breakTime),
-      workingTime: String(cal.workingTime),
-      totalTime: String(cal.totalTime),
+      breakTime: String(breakTime),
+      workingTime: String(workTime),
+      totalTime: String(totalTime),
       detailWork: createDepartmentDto.detailWork,
       typeDate: result.typeDate === 'dayoff' ? 'day-off' : 'normall',
       customerName: createDepartmentDto.customerName,
@@ -101,13 +58,13 @@ export class OverTimeService {
         result.typeDate === 'dayoff'
           ? [
               {
-                timeRate: cal.averageOnetime,
+                timeRate: inTime,
                 rate: result.intime,
                 typeRate: 'intime',
                 date: 'day-off',
               },
               {
-                timeRate: cal.averageThreetimes,
+                timeRate: overtime,
                 rate: result.overtime,
                 typeRate: 'overtime',
                 date: 'day-off',
@@ -115,19 +72,20 @@ export class OverTimeService {
             ]
           : [
               {
-                timeRate: cal.averageTwotime,
+                timeRate: inTime,
                 rate: result.intime,
                 date: 'normall',
                 typeRate: 'intime',
               },
               {
-                timeRate: cal.averageThreetimes,
+                timeRate: overtime,
                 rate: result.overtime,
                 date: 'normall',
                 typeRate: 'overtime',
               },
             ],
     };
+    console.log(base);
     const data = await this.overtimeRepo.create({ data: base });
     return { status: 200, data: data };
   }
@@ -153,7 +111,6 @@ export class OverTimeService {
     token: string,
   ) {
     let filter = {};
-
     if (condition && condition.fullname) {
       filter = { ...filter, fullname: { contains: condition.fullname } };
     }
@@ -180,7 +137,7 @@ export class OverTimeService {
     const base = {
       where: {
         ...filter,
-        userId: { in: userIds },
+        // userId: { in: userIds },
       },
       take: take,
       skip: skip,
