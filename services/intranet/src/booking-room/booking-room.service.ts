@@ -11,7 +11,7 @@ import * as nodemailer from 'nodemailer';
 import {
   templateBookingRoom,
   templateBookingRoomApproved,
-} from 'src/utils/template';
+} from 'src/utils/template-booking-room';
 
 @Injectable()
 export class BookingRoomService {

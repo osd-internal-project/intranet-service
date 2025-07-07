@@ -3,131 +3,12 @@ import { join } from 'path';
 const logo = join(__dirname, '../../assets/osd_logo.png');
 const footer = join(__dirname, '../../assets/footer.jpg');
 import * as dayjs from 'dayjs';
+import { Prisma } from '@prisma/client';
 
-export const templateDataLeave = async (data: any): Promise<string> => {
-  const logoBase64 = readFileSync(logo).toString('base64');
-  const logoSrc = `data:image/png;base64,${logoBase64}`;
-  const footerBase64 = readFileSync(footer).toString('base64');
-  const footerSrc = `data:image/png;base64,${footerBase64}`;
-  return `
-    <!DOCTYPE html>
-    <html lang="th">
-      <head>
-        <meta charset="UTF-8" />
-        <title>ใบลาออนไลน์</title>
-      </head>
-      <body style="font-family: sans-serif; background-color: #f4f4f4; padding: 20px;">
-        <div style="max-width: 600px; margin: auto; background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-          <div style="text-align: center; margin-bottom: 20px;">
-            <img src="${logoSrc}" alt="Logo" style="height: 100px;" />
-            <h2 style="color: #2c3e50;">ใบลาออนไลน์</h2>
-          </div>
-          <div style="text-align: right; color: #555;">วันที่ ${dayjs(
-            data.startDate,
-          )
-            .add(7, 'hour')
-            .format('DD-MM-YYYY')}</div>
-          <div><strong>เรียน</strong> ${data.ownerName}</div>
-          <div style="margin-top: 20px; color: #333;">
-          <p><strong>คุณ </strong>${data.firstName} ${data.lastName}</p>
-          <p> <strong>จึงขอ</strong>${data.typeName}</p>  
-          <p><strong>ขอแจ้งลางานเนื่องจาก</strong> ${data.detail}</p>
-          <p><strong>ตั้งแต่วันที่ </strong> ${dayjs(data.startDate)
-            .add(7, 'hour')
-            .format('DD-MM-YYYY')} เวลา  ${
-    data.startTime ? data.startTime : ''
-  }<strong>ถึงวันที่</strong> ${dayjs(data.endDate).format(
-    'DD-MM-YYYY',
-  )} เวลา  ${data.endTime ? data.endTime : ''}</p>
-          <p><strong>สามารถติดต่อได้ที่เบอร์ </strong> ${data.phoneNumber}</p>
-          </div>
-          <div style="margin: 30px 0; text-align: center; color: #3498db; font-weight: bold;">
-           จึงเรียนมาเพื่อขออนุมัติครับ
-          </div>
-
-          <div style="text-align: center; color: #555;">
-              ขอบคุณครับ<br />
-            ณ วันที่ <strong>${dayjs(new Date())
-              .add(7, 'hour')
-              .format('DD-MM-YYYY')}</strong> เวลา <strong>${dayjs(new Date())
-    .add(7, 'hour')
-    .format('HH:mm')}</strong>
-          </div>
-         <div style="margin-top: 30px; text-align: center;">
-  <img src="${footerSrc}" alt="Footer" style="width: 100%; max-width: 600px; display: block; margin: 0 auto;" />
-</div>
-        </div>
-      </body>
-    </html>
-  `;
-};
-
-export const templateDataLeaveApproved = async (
-  data: any,
-  type: string | null,
-): Promise<string> => {
-  const logoBase64 = readFileSync(logo).toString('base64');
-  const logoSrc = `data:image/png;base64,${logoBase64}`;
-  const footerBase64 = readFileSync(footer).toString('base64');
-  const footerSrc = `data:image/png;base64,${footerBase64}`;
-  return `
-    <!DOCTYPE html>
-    <html lang="th">
-      <head>
-        <meta charset="UTF-8" />
-        <title>ใบลาออนไลน์</title>
-      </head>
-      <body style="font-family: sans-serif; background-color: #f4f4f4; padding: 20px;">
-        <div style="max-width: 600px; margin: auto; background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-          <div style="text-align: center; margin-bottom: 20px;">
-            <img src="${logoSrc}" alt="Logo" style="height: 100px;" />
-            <h2 style="color: #2c3e50;">ใบลาออนไลน์</h2>
-          </div>
-          <div style="text-align: right; color: #555;">วันที่ ${dayjs(
-            data.startDate,
-          )
-            .add(7, 'hour')
-            .format('DD-MM-YYYY')}</div>
-          <div><strong>เรียน</strong> ${data.ownerName}</div>
-
-          <div style="margin-top: 20px; color: #333;">
-            <p><strong>คุณ </strong>${data.firstName} ${data.lastName}</p>
-          <p> <strong>จึงขอ</strong>${data.typeName}</p>  
-          <p><strong>ขอแจ้งลางานเนื่องจาก</strong> ${data.detail}</p>
-          <p><strong>ตั้งแต่วันที่ </strong> ${dayjs(data.startDate)
-            .add(7, 'hour')
-            .format('DD-MM-YYYY')}   ${
-    data.startTime ? `เวลา ${data.startTime}` : ''
-  }<strong>ถึงวันที่</strong> ${dayjs(data.endDate)
-    .add(7, 'hour')
-    .format('DD-MM-YYYY')} ${data.endTime ? `เวลา  ${data.endTime}` : ''}</p>
-          <p><strong>สามารถติดต่อได้ที่เบอร์ </strong> ${data.phoneNumber}</p>
-          </div>
-          <div style="margin: 30px 0; text-align: center; ${
-            type === 'approved' ? 'color: #3498db;' : 'color: red;'
-          } font-weight: bold;">
-${type === 'approved' ? '' : 'ไม่'}อนุมัติ ${data.typeName}
-          </div>
-
-          <div style="text-align: center; color: #555;">
-            ณ วันที่ <strong>${dayjs(new Date())
-              .add(7, 'hour')
-              .format('DD-MM-YYYY')}</strong> เวลา <strong>${dayjs(new Date())
-    .add(7, 'hour')
-    .format('HH:mm')}</strong>
-          </div>
-         <div style="margin-top: 30px; text-align: center;">
-  <img src="${footerSrc}" alt="Footer" style="width: 100%; max-width: 600px; display: block; margin: 0 auto;" />
-</div>
-        </div>
-      </body>
-    </html>
-  `;
-};
-
-export const templateBookingRoom = async (
+export const templateCarBooikng = async (
   data: any,
   recipients: any[],
+  findUsers: Prisma.usersWhereInput,
 ): Promise<string> => {
   const logoBase64 = readFileSync(logo).toString('base64');
   const logoSrc = `data:image/png;base64,${logoBase64}`;
@@ -138,16 +19,16 @@ export const templateBookingRoom = async (
     <html lang="th">
       <head>
         <meta charset="UTF-8" />
-        <title>ใบลาออนไลน์</title>
+        <title>จองรถออนไลน์</title>
       </head>
       <body style="font-family: sans-serif; background-color: #f4f4f4; padding: 20px;">
         <div style="max-width: 600px; margin: auto; background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
           <div style="text-align: center; margin-bottom: 20px;">
             <img src="${logoSrc}" alt="Logo" style="height: 100px;" />
-            <h2 style="color: #2c3e50;">จองห้องประชุมออนไลน์</h2>
+            <h2 style="color: #2c3e50;">จองรถออนไลน์</h2>
           </div>
           <div style="text-align: right; color: #555;">วันที่ ${dayjs(
-            data.startDate,
+            data.createdAt,
           )
             .add(7, 'hour')
             .format('DD-MM-YYYY')}</div>
@@ -155,17 +36,22 @@ export const templateBookingRoom = async (
             .map((user: any) => `คุณ ${user.firstNameTh} ${user.lastNameTh}`)
             .join(' , ')}</div>
           <div style="margin-top: 20px; color: #333;">
-          <p><strong>คุณ </strong>${data.bookerName}</p>
-          <p> <strong>ขอจองห้องประชุม</strong>${data.roomName}</p>  
-          <p><strong>เนื่องจากประชุมเรื่อง</strong> ${data.title}</p>
-          <p><strong>วันที่ </strong> ${dayjs(data.startDate)
+          <p><strong>คุณ </strong>${findUsers.firstNameTh} ${
+    findUsers.lastNameTh
+  }</p>
+          <p> <strong>จองรถ</strong>${data.carName}</p>  
+          <p><strong>เนื่องจาก</strong> ${data.detail}</p>
+          <p><strong>สถานที่จอด</strong> ${data.carBookPlace}</p>
+          <p><strong>วันที่ </strong> ${dayjs(data.carBookStartDate)
             .add(7, 'hour')
             .format('DD-MM-YYYY HH:mm')}<strong>ถึงวันที่</strong> ${dayjs(
-    data.endDate,
+    data.carBookEndDate,
   )
     .add(7, 'hour')
     .format('DD-MM-YYYY HH:mm')} </p>
-          <p><strong>สามารถติดต่อได้ที่เบอร์ </strong> ${data.bookerPhone}</p>
+          <p><strong>สามารถติดต่อได้ที่เบอร์ </strong> ${
+            findUsers.phoneNumber
+          }</p>
           </div>
           <div style="margin: 30px 0; text-align: center; color: #3498db; font-weight: bold;">
            จึงเรียนมาเพื่อขออนุมัติครับ
@@ -188,9 +74,10 @@ export const templateBookingRoom = async (
   `;
 };
 
-export const templateBookingRoomApproved = async (
+export const templateCarBooikngReturn = async (
+  data: any,
   recipients: any[],
-  dataUsers: any,
+  findUsers: Prisma.usersWhereInput,
   status: string,
 ): Promise<string> => {
   const logoBase64 = readFileSync(logo).toString('base64');
@@ -202,16 +89,16 @@ export const templateBookingRoomApproved = async (
     <html lang="th">
       <head>
         <meta charset="UTF-8" />
-        <title>ใบลาออนไลน์</title>
+        <title>จองรถออนไลน์</title>
       </head>
       <body style="font-family: sans-serif; background-color: #f4f4f4; padding: 20px;">
         <div style="max-width: 600px; margin: auto; background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
           <div style="text-align: center; margin-bottom: 20px;">
             <img src="${logoSrc}" alt="Logo" style="height: 100px;" />
-            <h2 style="color: #2c3e50;">จองห้องประชุมออนไลน์</h2>
+            <h2 style="color: #2c3e50;">จองรถออนไลน์</h2>
           </div>
           <div style="text-align: right; color: #555;">วันที่ ${dayjs(
-            dataUsers.startDate,
+            data.createdAt,
           )
             .add(7, 'hour')
             .format('DD-MM-YYYY')}</div>
@@ -219,24 +106,95 @@ export const templateBookingRoomApproved = async (
             .map((user: any) => `คุณ ${user.firstNameTh} ${user.lastNameTh}`)
             .join(' , ')}</div>
           <div style="margin-top: 20px; color: #333;">
-          <p><strong>คุณ </strong>${dataUsers.bookerName}</p>
-          <p> <strong>ขอจองห้องประชุม</strong>${dataUsers.roomName}</p>  
-          <p><strong>เนื่องจากประชุมเรื่อง</strong> ${dataUsers.title}</p>
-          <p><strong>วันที่ </strong> ${dayjs(dataUsers.startDate)
+          <p><strong>คุณ </strong>${findUsers.firstNameTh} ${
+    findUsers.lastNameTh
+  }</p>
+          <p> <strong>จองรถ</strong>${data.carName}</p>  
+          <p><strong>เนื่องจาก</strong> ${data.detail}</p>
+          <p><strong>สถานที่จอด</strong> ${data.carBookPlace}</p>
+          <p><strong>วันที่ </strong> ${dayjs(data.carBookStartDate)
             .add(7, 'hour')
             .format('DD-MM-YYYY HH:mm')}<strong>ถึงวันที่</strong> ${dayjs(
-    dataUsers.endDate,
+    data.carBookEndDate,
   )
     .add(7, 'hour')
     .format('DD-MM-YYYY HH:mm')} </p>
           <p><strong>สามารถติดต่อได้ที่เบอร์ </strong> ${
-            dataUsers.bookerPhone
+            findUsers.phoneNumber
           }</p>
           </div>
-           <div style="margin: 30px 0; text-align: center; ${
-             status === 'approved' ? 'color: #3498db;' : 'color: red;'
-           } font-weight: bold;">
-${status === 'Approve' ? '' : 'ไม่'}อนุมัติ 
+          <div style="margin: 30px 0; text-align: center; color: #3498db; font-weight: bold;">
+           จึงเรียนมาเพื่อขอคืนรถครับ
+          </div>
+
+          <div style="text-align: center; color: #555;">
+              ด้วยความเคารพ<br />
+            ณ วันที่ <strong>${dayjs(new Date())
+              .add(7, 'hour')
+              .format('DD-MM-YYYY')}</strong> เวลา <strong>${dayjs(new Date())
+    .add(7, 'hour')
+    .format('HH:mm')}</strong>
+          </div>
+         <div style="margin-top: 30px; text-align: center;">
+  <img src="${footerSrc}" alt="Footer" style="width: 100%; max-width: 600px; display: block; margin: 0 auto;" />
+</div>
+        </div>
+      </body>
+    </html>
+  `;
+};
+
+export const templateCarBooikngApproved = async (
+  data: any,
+  recipients: any[],
+  findUsers: Prisma.usersWhereInput,
+  status: string,
+): Promise<string> => {
+  const logoBase64 = readFileSync(logo).toString('base64');
+  const logoSrc = `data:image/png;base64,${logoBase64}`;
+  const footerBase64 = readFileSync(footer).toString('base64');
+  const footerSrc = `data:image/png;base64,${footerBase64}`;
+  return `
+    <!DOCTYPE html>
+    <html lang="th">
+      <head>
+        <meta charset="UTF-8" />
+        <title>จองรถออนไลน์</title>
+      </head>
+      <body style="font-family: sans-serif; background-color: #f4f4f4; padding: 20px;">
+        <div style="max-width: 600px; margin: auto; background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <img src="${logoSrc}" alt="Logo" style="height: 100px;" />
+            <h2 style="color: #2c3e50;">จองรถออนไลน์</h2>
+          </div>
+          <div style="text-align: right; color: #555;">วันที่ ${dayjs(
+            data.createdAt,
+          )
+            .add(7, 'hour')
+            .format('DD-MM-YYYY')}</div>
+          <div><strong>เรียน</strong> ${recipients
+            .map((user: any) => `คุณ ${user.firstNameTh} ${user.lastNameTh}`)
+            .join(' , ')}</div>
+          <div style="margin-top: 20px; color: #333;">
+          <p><strong>คุณ </strong>${findUsers.firstNameTh} ${
+    findUsers.lastNameTh
+  }</p>
+          <p> <strong>จองรถ</strong>${data.carName}</p>  
+          <p><strong>เนื่องจาก</strong> ${data.detail}</p>
+          <p><strong>สถานที่จอด</strong> ${data.carBookPlace}</p>
+          <p><strong>วันที่ </strong> ${dayjs(data.carBookStartDate)
+            .add(7, 'hour')
+            .format('DD-MM-YYYY HH:mm')}<strong>ถึงวันที่</strong> ${dayjs(
+    data.carBookEndDate,
+  )
+    .add(7, 'hour')
+    .format('DD-MM-YYYY HH:mm')} </p>
+          <p><strong>สามารถติดต่อได้ที่เบอร์ </strong> ${
+            findUsers.phoneNumber
+          }</p>
+          </div>
+          <div style="margin: 30px 0; text-align: center; color: #3498db; font-weight: bold;">
+           ${status} การจองรถยนต์
           </div>
 
           <div style="text-align: center; color: #555;">

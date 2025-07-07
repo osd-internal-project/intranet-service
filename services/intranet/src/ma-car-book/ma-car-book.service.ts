@@ -3,20 +3,42 @@ import {
   AccessService,
   MaCarBookRepository,
   ModuleTypes,
+  UsersRepository,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 import * as dayjs from 'dayjs';
 import * as nodemailer from 'nodemailer';
+import {
+  templateCarBooikng,
+  templateCarBooikngApproved,
+  templateCarBooikngReturn,
+} from 'src/utils/template-booking-car';
 
 @Injectable()
 export class MaCarBookService {
   constructor(
     private readonly maCarBookRepository: MaCarBookRepository,
     private readonly accessServices: AccessService,
+    private usersRepo: UsersRepository,
   ) {}
 
   async create(data: Prisma.maCarBookCreateInput) {
-    return await this.maCarBookRepository.create({ data: data });
+    const result = await this.accessServices.getLeadUsersByUserId(
+      ModuleTypes.INTRANET_APPROVE_BOOKING_ROOM,
+      data.createdById,
+    );
+    const findUsers = await this.usersRepo.findOne({
+      where: {
+        userId: data.createdById,
+      },
+    });
+    const response = await await this.maCarBookRepository.create({
+      data: data,
+    });
+    if (response) {
+      this.sendLeaveEmails(result, response, findUsers);
+    }
+    return response;
   }
   async findBytoken(token: string) {
     const module = ModuleTypes.INTRANET;
@@ -160,12 +182,43 @@ export class MaCarBookService {
     });
   }
 
-  update(id: number, data: Prisma.maCarBookUpdateInput) {
+  async update(id: number, data: Prisma.maCarBookUpdateInput) {
     const condition = {
       where: { id: id },
       data: data,
     } as Prisma.maCarBookUpdateArgs;
-    return this.maCarBookRepository.update(condition);
+    const update = await this.maCarBookRepository.update(condition);
+    if (data.createdById) {
+      const result = await this.accessServices.getLeadUsersByUserId(
+        ModuleTypes.INTRANET_APPROVE_BOOKING_ROOM,
+        String(data.createdById),
+      );
+      const findUsers = await this.usersRepo.findOne({
+        where: {
+          userId: String(data.createdById),
+        },
+      });
+      if (update && data.carBookApprovedStatus === 'Return') {
+        this.sendLeaveReturnEmails(
+          result,
+          update,
+          findUsers,
+          String(data.carBookApprovedStatus),
+        );
+      } else if (
+        update &&
+        data.carBookApprovedStatus &&
+        data.carBookApprovedStatus !== 'Return'
+      ) {
+        this.sendLeaveAprovedEmails(
+          result,
+          update,
+          findUsers,
+          String(data.carBookApprovedStatus),
+        );
+      }
+    }
+    return update;
   }
 
   remove(id: number) {
@@ -173,8 +226,12 @@ export class MaCarBookService {
     return this.maCarBookRepository.delete(condition);
   }
 
-  private async sendLeaveEmails(recipients: any[], data: any) {
-    // const html = await templateDataLeave(data);
+  private async sendLeaveEmails(
+    recipients: any[],
+    data: any,
+    findUsers: Prisma.usersWhereInput,
+  ) {
+    const html = await templateCarBooikng(data, recipients, findUsers);
     const transporter = nodemailer.createTransport({
       host: 'smtp.office365.com',
       port: 587,
@@ -190,20 +247,63 @@ export class MaCarBookService {
         .sendMail({
           from: '"admin Intranet" <internalsupport@osd.co.th>',
           to: `${event.email}`,
-          subject: 'OSD Intranet ใบลาออนไลน์',
+          subject: 'OSD Intranet จองรถออนไลน์',
           text: '',
-          // html,
+          html,
         })
         .catch((err) => {
           console.error(`Failed to send mail to ${event.email}:`, err);
         });
     }
   }
-  private async sendLeaveAprovedEmails(
-    dataUsers: Prisma.usersWhereInput,
-    status: any,
+  private async sendLeaveReturnEmails(
+    recipients: any[],
+    data: any,
+    findUsers: Prisma.usersWhereInput,
+    status: string,
   ) {
-    // const html = await templateDataLeaveApproved(dataUsers, status);
+    const html = await templateCarBooikngReturn(
+      data,
+      recipients,
+      findUsers,
+      status,
+    );
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.office365.com',
+      port: 587,
+      secure: false,
+      auth: {
+        user: 'internalsupport@osd.co.th',
+        pass: 'Internal-support@osd1234.',
+      },
+    });
+    for (const event of recipients) {
+      transporter
+        .sendMail({
+          from: '"admin Intranet" <internalsupport@osd.co.th>',
+          to: `${event.email}`,
+          subject: 'OSD Intranet จองรถออนไลน์',
+          text: '',
+          html,
+        })
+        .catch((err) => {
+          console.error(`Failed to send mail to ${event.email}:`, err);
+        });
+    }
+  }
+
+  private async sendLeaveAprovedEmails(
+    recipients: any[],
+    data: any,
+    findUsers: Prisma.usersWhereInput,
+    status: string,
+  ) {
+    const html = await templateCarBooikngApproved(
+      data,
+      recipients,
+      findUsers,
+      status,
+    );
     const transporter = nodemailer.createTransport({
       host: 'smtp.office365.com',
       port: 587,
@@ -216,13 +316,13 @@ export class MaCarBookService {
     transporter
       .sendMail({
         from: '"admin Intranet" <internalsupport@osd.co.th>',
-        to: `${dataUsers.email}`,
-        subject: 'OSD Intranet ใบลาออนไลน์',
+        to: `${findUsers.email}`,
+        subject: 'OSD Intranet จองห้องประชุมออนไลน์',
         text: '',
-        // html,
+        html,
       })
       .catch((err) => {
-        console.error(`Failed to send mail to ${dataUsers.email}:`, err);
+        console.error(`Failed to send mail to ${findUsers.email}:`, err);
       });
   }
 }

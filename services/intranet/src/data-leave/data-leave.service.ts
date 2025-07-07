@@ -15,7 +15,7 @@ import * as nodemailer from 'nodemailer';
 import {
   templateDataLeave,
   templateDataLeaveApproved,
-} from '../utils/template';
+} from '../utils/template-booking-leave';
 
 @Injectable()
 export class DataLeaveService {
