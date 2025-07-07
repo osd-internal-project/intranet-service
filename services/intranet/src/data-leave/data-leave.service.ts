@@ -34,27 +34,8 @@ export class DataLeaveService {
       condition.data.userId,
     );
     const leaveLetter = await this.dataleaveRepo.create(condition);
-    const html = await templateDataLeave(condition.data);
-
     if (leaveLetter) {
-      const transporter = nodemailer.createTransport({
-        host: 'smtp.office365.com', // ใช้ SMTP ของ Outlook (Microsoft 365)
-        port: 587, // พอร์ตสำหรับ TLS (STARTTLS)
-        secure: false, // ใช้ STARTTLS (ไม่ใช่ SSL ทันที)
-        auth: {
-          user: 'internalsupport@osd.co.th', // อีเมลผู้ส่ง
-          pass: 'Internal-support@osd1234.', // รหัสผ่าน (หรือ App Password ถ้าเปิด 2FA)
-        },
-      });
-      result.map(async (event: any) => {
-        return await transporter.sendMail({
-          from: '"admin Intranet" <internalsupport@osd.co.th>',
-          to: `${event.email}`,
-          subject: 'OSD Intranet ใบลาออนไลน์',
-          text: '',
-          html,
-        });
-      });
+      this.sendLeaveEmails(result, condition.data);
     }
     return leaveLetter;
   }
@@ -417,26 +398,7 @@ export class DataLeaveService {
     });
     const updateData = await this.dataleaveRepo.update(condition);
     if (updateData && condition.data.status) {
-      const html = await templateDataLeaveApproved(
-        findDataLeave,
-        condition.data.status as string,
-      );
-      const transporter = nodemailer.createTransport({
-        host: 'smtp.office365.com', // ใช้ SMTP ของ Outlook (Microsoft 365)
-        port: 587, // พอร์ตสำหรับ TLS (STARTTLS)
-        secure: false, // ใช้ STARTTLS (ไม่ใช่ SSL ทันที)
-        auth: {
-          user: 'internalsupport@osd.co.th', // อีเมลผู้ส่ง
-          pass: 'Internal-support@osd1234.', // รหัสผ่าน (หรือ App Password ถ้าเปิด 2FA)
-        },
-      });
-      return await transporter.sendMail({
-        from: '"admin Intranet" <internalsupport@osd.co.th>',
-        to: `${findDetailUser.email}`,
-        subject: 'OSD Intranet ใบลาออนไลน์',
-        text: '',
-        html,
-      });
+      this.sendLeaveAprovedEmails(findDetailUser, condition.data.status);
     }
     return updateData;
   }
@@ -444,5 +406,58 @@ export class DataLeaveService {
   remove(id: number) {
     const dataLeaveid = { where: { id: id } } as Prisma.dataLeaveDeleteArgs;
     return this.dataleaveRepo.delete(dataLeaveid);
+  }
+
+  private async sendLeaveEmails(recipients: any[], data: any) {
+    const html = await templateDataLeave(data);
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.office365.com',
+      port: 587,
+      secure: false,
+      auth: {
+        user: 'internalsupport@osd.co.th',
+        pass: 'Internal-support@osd1234.',
+      },
+    });
+
+    for (const event of recipients) {
+      transporter
+        .sendMail({
+          from: '"admin Intranet" <internalsupport@osd.co.th>',
+          to: `${event.email}`,
+          subject: 'OSD Intranet ใบลาออนไลน์',
+          text: '',
+          html,
+        })
+        .catch((err) => {
+          console.error(`Failed to send mail to ${event.email}:`, err);
+        });
+    }
+  }
+  private async sendLeaveAprovedEmails(
+    dataUsers: Prisma.usersWhereInput,
+    status: any,
+  ) {
+    const html = await templateDataLeaveApproved(dataUsers, status);
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.office365.com',
+      port: 587,
+      secure: false,
+      auth: {
+        user: 'internalsupport@osd.co.th',
+        pass: 'Internal-support@osd1234.',
+      },
+    });
+    transporter
+      .sendMail({
+        from: '"admin Intranet" <internalsupport@osd.co.th>',
+        to: `${dataUsers.email}`,
+        subject: 'OSD Intranet ใบลาออนไลน์',
+        text: '',
+        html,
+      })
+      .catch((err) => {
+        console.error(`Failed to send mail to ${dataUsers.email}:`, err);
+      });
   }
 }

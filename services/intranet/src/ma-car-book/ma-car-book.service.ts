@@ -6,6 +6,7 @@ import {
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 import * as dayjs from 'dayjs';
+import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class MaCarBookService {
@@ -61,12 +62,6 @@ export class MaCarBookService {
   ) {
     const user = await this.accessServices.findUserByToken(token);
     if (user) {
-      // const accessUsers = await this.accessServices.getAccessedUsersByUserId(
-      //   module,
-      //   user.userId,
-      // );
-      // const userIds = accessUsers.map((user) => user.userId);
-      // console.log(`user length : ${userIds.length}`);
       const data = await this.maCarBookRepository.findMany({
         include: {
           maCar: true,
@@ -176,5 +171,58 @@ export class MaCarBookService {
   remove(id: number) {
     const condition = { where: { id: id } } as Prisma.maCarBookDeleteArgs;
     return this.maCarBookRepository.delete(condition);
+  }
+
+  private async sendLeaveEmails(recipients: any[], data: any) {
+    // const html = await templateDataLeave(data);
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.office365.com',
+      port: 587,
+      secure: false,
+      auth: {
+        user: 'internalsupport@osd.co.th',
+        pass: 'Internal-support@osd1234.',
+      },
+    });
+
+    for (const event of recipients) {
+      transporter
+        .sendMail({
+          from: '"admin Intranet" <internalsupport@osd.co.th>',
+          to: `${event.email}`,
+          subject: 'OSD Intranet ใบลาออนไลน์',
+          text: '',
+          // html,
+        })
+        .catch((err) => {
+          console.error(`Failed to send mail to ${event.email}:`, err);
+        });
+    }
+  }
+  private async sendLeaveAprovedEmails(
+    dataUsers: Prisma.usersWhereInput,
+    status: any,
+  ) {
+    // const html = await templateDataLeaveApproved(dataUsers, status);
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.office365.com',
+      port: 587,
+      secure: false,
+      auth: {
+        user: 'internalsupport@osd.co.th',
+        pass: 'Internal-support@osd1234.',
+      },
+    });
+    transporter
+      .sendMail({
+        from: '"admin Intranet" <internalsupport@osd.co.th>',
+        to: `${dataUsers.email}`,
+        subject: 'OSD Intranet ใบลาออนไลน์',
+        text: '',
+        // html,
+      })
+      .catch((err) => {
+        console.error(`Failed to send mail to ${dataUsers.email}:`, err);
+      });
   }
 }

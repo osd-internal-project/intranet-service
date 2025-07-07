@@ -129,7 +129,7 @@ export class OverTimeService {
 
     const getUser = await this.userRepo.findOne({ where: { token: token } });
     const AccessedGroup = await this.accessService.getAccessedUsersByUserId(
-      ModuleTypes.INTRANET_APPROVE_OT,
+      ModuleTypes.INTRANET,
       getUser.userId,
     );
 
@@ -137,7 +137,7 @@ export class OverTimeService {
     const base = {
       where: {
         ...filter,
-        // userId: { in: userIds },
+        userId: { in: userIds },
       },
       take: take,
       skip: skip,
