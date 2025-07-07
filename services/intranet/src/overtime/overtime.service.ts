@@ -10,6 +10,11 @@ import {
 } from '@inventory/share';
 import * as dayjs from 'dayjs';
 import { calculate } from './manage-cal';
+import * as nodemailer from 'nodemailer';
+import {
+  templateOverTime,
+  templateOverTimeApproved,
+} from 'src/utils/template-booking-overtime';
 
 @Injectable()
 export class OverTimeService {
@@ -85,8 +90,20 @@ export class OverTimeService {
               },
             ],
     };
-    console.log(base);
+
     const data = await this.overtimeRepo.create({ data: base });
+    if (data) {
+      const header = await this.accessService.getLeadUsersByUserId(
+        ModuleTypes.INTRANET,
+        createDepartmentDto.userId,
+      );
+      const findUsers = await this.userRepo.findOne({
+        where: {
+          userId: createDepartmentDto.userId,
+        },
+      });
+      this.sendOvertimeEmails(header, base, findUsers);
+    }
     return { status: 200, data: data };
   }
 
@@ -208,15 +225,100 @@ export class OverTimeService {
   }
 
   async update(id: string, condition: Prisma.overtimeUpdateInput) {
-    return await this.overtimeRepo.update({
+    const res = await this.overtimeRepo.update({
       where: { overTimeID: id },
       data: condition,
     });
+    if (res) {
+      const overtimeFind = await this.overtimeRepo.findFirst({
+        where: { overTimeID: id },
+      });
+      const header = await this.accessService.getLeadUsersByUserId(
+        ModuleTypes.INTRANET,
+        overtimeFind.userId,
+      );
+      const findUsers = await this.userRepo.findOne({
+        where: {
+          userId: overtimeFind.userId,
+        },
+      });
+      this.sendLeaveAprovedEmails(
+        header,
+        overtimeFind,
+        findUsers,
+        String(condition.status),
+      );
+    }
+    return res;
   }
 
   async remove(overTimeID: string) {
     return await this.overtimeRepo.deleteMany({
       where: { overTimeID: overTimeID },
     });
+  }
+
+  private async sendOvertimeEmails(
+    recipients: any[],
+    data: Prisma.overtimeCreateInput,
+    findUsers: Prisma.usersWhereInput,
+  ) {
+    const html = await templateOverTime(data, recipients, findUsers, '');
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.office365.com',
+      port: 587,
+      secure: false,
+      auth: {
+        user: 'internalsupport@osd.co.th',
+        pass: 'Internal-support@osd1234.',
+      },
+    });
+
+    for (const event of recipients) {
+      transporter
+        .sendMail({
+          from: '"admin Intranet" <internalsupport@osd.co.th>',
+          to: `${event.email}`,
+          subject: 'OSD Intranet เบิกทำงานล่วงเวลา',
+          text: '',
+          html,
+        })
+        .catch((err) => {
+          console.error(`Failed to send mail to ${event.email}:`, err);
+        });
+    }
+  }
+  private async sendLeaveAprovedEmails(
+    recipients: Prisma.usersWhereInput[],
+    data: Prisma.overtimeCreateInput,
+    findUsers: Prisma.usersWhereInput,
+    status: string,
+  ) {
+    const html = await templateOverTimeApproved(
+      data,
+      recipients,
+      findUsers,
+      status,
+    );
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.office365.com',
+      port: 587,
+      secure: false,
+      auth: {
+        user: 'internalsupport@osd.co.th',
+        pass: 'Internal-support@osd1234.',
+      },
+    });
+    transporter
+      .sendMail({
+        from: '"admin Intranet" <internalsupport@osd.co.th>',
+        to: `${findUsers.email}`,
+        subject: 'OSD Intranet เบิกทำงานล่วงเวลา',
+        text: '',
+        html,
+      })
+      .catch((err) => {
+        console.error(`Failed to send mail to ${findUsers.email}:`, err);
+      });
   }
 }

@@ -3,16 +3,14 @@ import { join } from 'path';
 const logo = join(__dirname, '../../assets/osd_logo.png');
 const footer = join(__dirname, '../../assets/footer.jpg');
 import * as dayjs from 'dayjs';
-import { Prisma } from '@prisma/client';
-
+const logoBase64 = readFileSync(logo).toString('base64');
+const logoSrc = `data:image/png;base64,${logoBase64}`;
+const footerBase64 = readFileSync(footer).toString('base64');
+const footerSrc = `data:image/png;base64,${footerBase64}`;
 export const templateBookingRoom = async (
   data: any,
   recipients: any[],
 ): Promise<string> => {
-  const logoBase64 = readFileSync(logo).toString('base64');
-  const logoSrc = `data:image/png;base64,${logoBase64}`;
-  const footerBase64 = readFileSync(footer).toString('base64');
-  const footerSrc = `data:image/png;base64,${footerBase64}`;
   return `
     <!DOCTYPE html>
     <html lang="th">
@@ -73,10 +71,6 @@ export const templateBookingRoomApproved = async (
   dataUsers: any,
   status: string,
 ): Promise<string> => {
-  const logoBase64 = readFileSync(logo).toString('base64');
-  const logoSrc = `data:image/png;base64,${logoBase64}`;
-  const footerBase64 = readFileSync(footer).toString('base64');
-  const footerSrc = `data:image/png;base64,${footerBase64}`;
   return `
     <!DOCTYPE html>
     <html lang="th">
