@@ -353,6 +353,7 @@ export class UsersService {
             ownerGroupId: createUserDto.ownerGroupId,
             positionId: createUserDto.masterPositionId,
             startWork: createUserDto.startWork,
+            empId: createUserDto.empId,
           },
         });
       }
