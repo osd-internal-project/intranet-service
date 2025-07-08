@@ -89,9 +89,12 @@ export class BookingRoomService {
     });
   }
   async update(id: number, data: Prisma.bookingRoomUpdateInput) {
+    const findBooking = await this.bookingRoomRepository.findOne({
+      where: { id: id },
+    });
     const result = await this.accessService.getLeadUsersByUserId(
       ModuleTypes.INTRANET_APPROVE_BOOKING_ROOM,
-      String(data.userId),
+      findBooking.userId,
     );
     const condition = {
       where: { id: id },

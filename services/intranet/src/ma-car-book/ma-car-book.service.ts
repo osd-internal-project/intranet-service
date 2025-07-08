@@ -48,10 +48,8 @@ export class MaCarBookService {
         module,
         user.userId,
       );
-      const userIds = accessUsers.map((user) => user.userId);
-      console.log(`user length : ${userIds.length}`);
       return await this.maCarBookRepository.findMany({
-        where: { createdById: { in: userIds } },
+        orderBy: { createdAt: 'asc' },
       });
     } else {
       Logger.debug('Not Found User');
@@ -187,22 +185,20 @@ export class MaCarBookService {
       where: { id: id },
       data: data,
     } as Prisma.maCarBookUpdateArgs;
+    const findUser = await this.maCarBookRepository.findOne({
+      where: { id: id },
+    });
     const update = await this.maCarBookRepository.update(condition);
     if (data.createdById) {
       const result = await this.accessServices.getLeadUsersByUserId(
         ModuleTypes.INTRANET_APPROVE_BOOKING_ROOM,
-        String(data.createdById),
+        findUser.createdById,
       );
-      const findUsers = await this.usersRepo.findOne({
-        where: {
-          userId: String(data.createdById),
-        },
-      });
       if (update && data.carBookApprovedStatus === 'Return') {
         this.sendLeaveReturnEmails(
           result,
           update,
-          findUsers,
+          findUser,
           String(data.carBookApprovedStatus),
         );
       } else if (
@@ -213,7 +209,7 @@ export class MaCarBookService {
         this.sendLeaveAprovedEmails(
           result,
           update,
-          findUsers,
+          findUser,
           String(data.carBookApprovedStatus),
         );
       }
