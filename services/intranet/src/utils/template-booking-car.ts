@@ -26,11 +26,9 @@ export const templateCarBooikng = async (
             <img src="${logoSrc}" alt="Logo" style="height: 100px;" />
             <h2 style="color: #2c3e50;">จองรถออนไลน์</h2>
           </div>
-          <div style="text-align: right; color: #555;">วันที่ ${dayjs(
-            data.createdAt,
-          )
-            .add(7, 'hour')
-            .format('DD-MM-YYYY')}</div>
+          <div style="text-align: right; color: #555;">วันที่ ${dayjs().format(
+            'DD-MM-YYYY',
+          )}</div>
           <div><strong>เรียน</strong> ${recipients
             .map((user: any) => `คุณ ${user.firstNameTh} ${user.lastNameTh}`)
             .join(' , ')}</div>
@@ -41,28 +39,23 @@ export const templateCarBooikng = async (
           <p> <strong>จองรถ</strong>${data.carName}</p>  
           <p><strong>เนื่องจาก</strong> ${data.detail}</p>
           <p><strong>สถานที่จอด</strong> ${data.carBookPlace}</p>
-          <p><strong>วันที่ </strong> ${dayjs(data.carBookStartDate)
-            .add(7, 'hour')
-            .format('DD-MM-YYYY HH:mm')}<strong>ถึงวันที่</strong> ${dayjs(
-    data.carBookEndDate,
-  )
-    .add(7, 'hour')
-    .format('DD-MM-YYYY HH:mm')} </p>
+          <p><strong>วันที่ </strong> ${dayjs(data.carBookStartDate).format(
+            'DD-MM-YYYY HH:mm',
+          )}<strong>ถึงวันที่</strong> ${dayjs(data.carBookEndDate).format(
+    'DD-MM-YYYY HH:mm',
+  )} </p>
           <p><strong>สามารถติดต่อได้ที่เบอร์ </strong> ${
             findUsers.phoneNumber
           }</p>
           </div>
           <div style="margin: 30px 0; text-align: center; color: #3498db; font-weight: bold;">
-           จึงเรียนมาเพื่อขออนุมัติครับ
+           จึงขออนุมัติ
           </div>
-
           <div style="text-align: center; color: #555;">
               ด้วยความเคารพ<br />
-            ณ วันที่ <strong>${dayjs(new Date())
-              .add(7, 'hour')
-              .format('DD-MM-YYYY')}</strong> เวลา <strong>${dayjs(new Date())
-    .add(7, 'hour')
-    .format('HH:mm')}</strong>
+            ณ วันที่ <strong>${dayjs().format(
+              'DD-MM-YYYY',
+            )}</strong> เวลา <strong>${dayjs().format('HH:mm')}</strong>
           </div>
          <div style="margin-top: 30px; text-align: center;">
   <img src="${footerSrc}" alt="Footer" style="width: 100%; max-width: 600px; display: block; margin: 0 auto;" />
@@ -92,11 +85,9 @@ export const templateCarBooikngReturn = async (
             <img src="${logoSrc}" alt="Logo" style="height: 100px;" />
             <h2 style="color: #2c3e50;">จองรถออนไลน์</h2>
           </div>
-          <div style="text-align: right; color: #555;">วันที่ ${dayjs(
-            data.createdAt,
-          )
-            .add(7, 'hour')
-            .format('DD-MM-YYYY')}</div>
+          <div style="text-align: right; color: #555;">วันที่ ${dayjs().format(
+            'DD-MM-YYYY',
+          )}</div>
           <div><strong>เรียน</strong> ${recipients
             .map((user: any) => `คุณ ${user.firstNameTh} ${user.lastNameTh}`)
             .join(' , ')}</div>
@@ -107,28 +98,24 @@ export const templateCarBooikngReturn = async (
           <p> <strong>จองรถ</strong>${data.carName}</p>  
           <p><strong>เนื่องจาก</strong> ${data.detail}</p>
           <p><strong>สถานที่จอด</strong> ${data.carBookPlace}</p>
-          <p><strong>วันที่ </strong> ${dayjs(data.carBookStartDate)
-            .add(7, 'hour')
-            .format('DD-MM-YYYY HH:mm')}<strong>ถึงวันที่</strong> ${dayjs(
-    data.carBookEndDate,
-  )
-    .add(7, 'hour')
-    .format('DD-MM-YYYY HH:mm')} </p>
+          <p><strong>วันที่ </strong> ${dayjs(data.carBookStartDate).format(
+            'DD-MM-YYYY HH:mm',
+          )}<strong>ถึงวันที่</strong> ${dayjs(data.carBookEndDate).format(
+    'DD-MM-YYYY HH:mm',
+  )} </p>
           <p><strong>สามารถติดต่อได้ที่เบอร์ </strong> ${
             findUsers.phoneNumber
           }</p>
           </div>
           <div style="margin: 30px 0; text-align: center; color: #3498db; font-weight: bold;">
-           จึงเรียนมาเพื่อขอคืนรถครับ
+           แจ้งขอคืนรถทะเบียน ${data.carName}
           </div>
 
           <div style="text-align: center; color: #555;">
               ด้วยความเคารพ<br />
-            ณ วันที่ <strong>${dayjs(new Date())
-              .add(7, 'hour')
-              .format('DD-MM-YYYY')}</strong> เวลา <strong>${dayjs(new Date())
-    .add(7, 'hour')
-    .format('HH:mm')}</strong>
+            ณ วันที่ <strong>${dayjs().format(
+              'DD-MM-YYYY',
+            )}</strong> เวลา <strong>${dayjs().format('HH:mm')}</strong>
           </div>
          <div style="margin-top: 30px; text-align: center;">
   <img src="${footerSrc}" alt="Footer" style="width: 100%; max-width: 600px; display: block; margin: 0 auto;" />
@@ -158,11 +145,9 @@ export const templateCarBooikngApproved = async (
             <img src="${logoSrc}" alt="Logo" style="height: 100px;" />
             <h2 style="color: #2c3e50;">จองรถออนไลน์</h2>
           </div>
-          <div style="text-align: right; color: #555;">วันที่ ${dayjs(
-            data.createdAt,
-          )
-            .add(7, 'hour')
-            .format('DD-MM-YYYY')}</div>
+          <div style="text-align: right; color: #555;">วันที่ ${dayjs().format(
+            'DD-MM-YYYY',
+          )}</div>
           <div><strong>เรียน</strong> ${recipients
             .map((user: any) => `คุณ ${user.firstNameTh} ${user.lastNameTh}`)
             .join(' , ')}</div>
@@ -173,28 +158,23 @@ export const templateCarBooikngApproved = async (
           <p> <strong>จองรถ</strong>${data.carName}</p>  
           <p><strong>เนื่องจาก</strong> ${data.detail}</p>
           <p><strong>สถานที่จอด</strong> ${data.carBookPlace}</p>
-          <p><strong>วันที่ </strong> ${dayjs(data.carBookStartDate)
-            .add(7, 'hour')
-            .format('DD-MM-YYYY HH:mm')}<strong>ถึงวันที่</strong> ${dayjs(
-    data.carBookEndDate,
-  )
-    .add(7, 'hour')
-    .format('DD-MM-YYYY HH:mm')} </p>
+          <p><strong>วันที่ </strong> ${dayjs(data.carBookStartDate).format(
+            'DD-MM-YYYY HH:mm',
+          )}<strong>ถึงวันที่</strong> ${dayjs(data.carBookEndDate).format(
+    'DD-MM-YYYY HH:mm',
+  )} </p>
           <p><strong>สามารถติดต่อได้ที่เบอร์ </strong> ${
             findUsers.phoneNumber
           }</p>
           </div>
           <div style="margin: 30px 0; text-align: center; color: #3498db; font-weight: bold;">
-           ${status} การจองรถยนต์
+           ${status === 'Completed' ? 'รับคืนแล้ว' : 'อนุมัติ'} การจองรถยนต์
           </div>
-
           <div style="text-align: center; color: #555;">
               ด้วยความเคารพ<br />
-            ณ วันที่ <strong>${dayjs(new Date())
-              .add(7, 'hour')
-              .format('DD-MM-YYYY')}</strong> เวลา <strong>${dayjs(new Date())
-    .add(7, 'hour')
-    .format('HH:mm')}</strong>
+            ณ วันที่ <strong>${dayjs().format(
+              'DD-MM-YYYY',
+            )}</strong> เวลา <strong>${dayjs().format('HH:mm')}</strong>
           </div>
          <div style="margin-top: 30px; text-align: center;">
   <img src="${footerSrc}" alt="Footer" style="width: 100%; max-width: 600px; display: block; margin: 0 auto;" />

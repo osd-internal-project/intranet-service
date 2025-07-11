@@ -185,14 +185,14 @@ export class MaCarBookService {
       where: { id: id },
       data: data,
     } as Prisma.maCarBookUpdateArgs;
-    const findUser = await this.maCarBookRepository.findOne({
-      where: { id: id },
+    const findUser = await this.usersRepo.findOne({
+      where: { userId: String(data.createdById) },
     });
     const update = await this.maCarBookRepository.update(condition);
     if (data.createdById) {
       const result = await this.accessServices.getLeadUsersByUserId(
         ModuleTypes.INTRANET_APPROVE_BOOKING_ROOM,
-        findUser.createdById,
+        String(data.createdById),
       );
       if (update && data.carBookApprovedStatus === 'Return') {
         this.sendLeaveReturnEmails(
@@ -237,13 +237,12 @@ export class MaCarBookService {
         pass: 'Internal-support@osd1234.',
       },
     });
-
     for (const event of recipients) {
       transporter
         .sendMail({
           from: '"admin Intranet" <internalsupport@osd.co.th>',
           to: `${event.email}`,
-          subject: 'OSD Intranet จองรถออนไลน์',
+          subject: 'OSD Intranet จองรถยนต์ออนไลน์',
           text: '',
           html,
         })
@@ -251,6 +250,17 @@ export class MaCarBookService {
           console.error(`Failed to send mail to ${event.email}:`, err);
         });
     }
+    // transporter
+    //   .sendMail({
+    //     from: '"admin Intranet" <internalsupport@osd.co.th>',
+    //     to: `wasmeej@osd.co.th`,
+    //     subject: 'OSD Intranet จองรถยนต์ออนไลน์',
+    //     text: '',
+    //     html,
+    //   })
+    //   .catch((err) => {
+    //     console.error(`Failed to send mail to ${event.email}:`, err);
+    //   });
   }
   private async sendLeaveReturnEmails(
     recipients: any[],
@@ -278,7 +288,7 @@ export class MaCarBookService {
         .sendMail({
           from: '"admin Intranet" <internalsupport@osd.co.th>',
           to: `${event.email}`,
-          subject: 'OSD Intranet จองรถออนไลน์',
+          subject: 'OSD Intranet จองรถยนต์ออนไลน์',
           text: '',
           html,
         })
@@ -286,6 +296,17 @@ export class MaCarBookService {
           console.error(`Failed to send mail to ${event.email}:`, err);
         });
     }
+    // transporter
+    //   .sendMail({
+    //     from: '"admin Intranet" <internalsupport@osd.co.th>',
+    //     to: `wasmeej@osd.co.th`,
+    //     subject: 'OSD Intranet จองรถยนต์ออนไลน์',
+    //     text: '',
+    //     html,
+    //   })
+    //   .catch((err) => {
+    //     console.error(`Failed to send mail to wasmeej@osd.co.th:`, err);
+    //   });
   }
 
   private async sendLeaveAprovedEmails(
@@ -313,7 +334,7 @@ export class MaCarBookService {
       .sendMail({
         from: '"admin Intranet" <internalsupport@osd.co.th>',
         to: `${findUsers.email}`,
-        subject: 'OSD Intranet จองห้องประชุมออนไลน์',
+        subject: 'OSD Intranet จองรถยนต์ออนไลน์',
         text: '',
         html,
       })
