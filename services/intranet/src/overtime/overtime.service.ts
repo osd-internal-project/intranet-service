@@ -90,11 +90,10 @@ export class OverTimeService {
               },
             ],
     };
-
     const data = await this.overtimeRepo.create({ data: base });
     if (data) {
       const header = await this.accessService.getLeadUsersByUserId(
-        ModuleTypes.INTRANET,
+        ModuleTypes.INTRANET_APPROVE_LEAVE,
         createDepartmentDto.userId,
       );
       const findUsers = await this.userRepo.findOne({
@@ -234,7 +233,7 @@ export class OverTimeService {
         where: { overTimeID: id },
       });
       const header = await this.accessService.getLeadUsersByUserId(
-        ModuleTypes.INTRANET,
+        ModuleTypes.INTRANET_APPROVE_LEAVE,
         overtimeFind.userId,
       );
       const findUsers = await this.userRepo.findOne({
@@ -259,11 +258,11 @@ export class OverTimeService {
   }
 
   private async sendOvertimeEmails(
-    recipients: any[],
+    header: any[],
     data: Prisma.overtimeCreateInput,
-    findUsers: Prisma.usersWhereInput,
+    user: Prisma.usersWhereInput,
   ) {
-    const html = await templateOverTime(data, recipients, findUsers, '');
+    const html = await templateOverTime(header, data, user, '');
     const transporter = nodemailer.createTransport({
       host: 'smtp.office365.com',
       port: 587,
@@ -274,7 +273,7 @@ export class OverTimeService {
       },
     });
 
-    for (const event of recipients) {
+    for (const event of header) {
       transporter
         .sendMail({
           from: '"admin Intranet" <internalsupport@osd.co.th>',
