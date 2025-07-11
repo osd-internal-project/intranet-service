@@ -142,6 +142,17 @@ export class BookingRoomService {
           console.error(`Failed to send mail to ${event.email}:`, err);
         });
     }
+    // transporter
+    //   .sendMail({
+    //     from: '"admin Intranet" <internalsupport@osd.co.th>',
+    //     to: `wasmeej@osd.co.th`,
+    //     subject: 'OSD Intranet จองห้องประชุมออนไลน์',
+    //     text: '',
+    //     html,
+    //   })
+    //   .catch((err) => {
+    //     console.error(`Failed to send mail to wasmeej@osd.co.th:`, err);
+    //   });
   }
   private async sendLeaveAprovedEmails(
     recipients: any[],
@@ -173,5 +184,16 @@ export class BookingRoomService {
       .catch((err) => {
         console.error(`Failed to send mail to ${dataUsers.email}:`, err);
       });
+    // transporter
+    //   .sendMail({
+    //     from: '"admin Intranet" <internalsupport@osd.co.th>',
+    //     to: `wasmeej@osd.co.th`,
+    //     subject: 'OSD Intranet จองห้องประชุมออนไลน์',
+    //     text: '',
+    //     html,
+    //   })
+    //   .catch((err) => {
+    //     console.error(`Failed to send mail to ${dataUsers.email}:`, err);
+    //   });
   }
 }

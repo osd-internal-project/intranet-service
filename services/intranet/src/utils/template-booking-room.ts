@@ -24,11 +24,9 @@ export const templateBookingRoom = async (
             <img src="${logoSrc}" alt="Logo" style="height: 100px;" />
             <h2 style="color: #2c3e50;">จองห้องประชุมออนไลน์</h2>
           </div>
-          <div style="text-align: right; color: #555;">วันที่ ${dayjs(
-            data.startDate,
-          )
-            .add(7, 'hour')
-            .format('DD-MM-YYYY')}</div>
+          <div style="text-align: right; color: #555;">วันที่ ${dayjs().format(
+            'DD-MM-YYYY',
+          )}</div>
           <div><strong>เรียน</strong> ${recipients
             .map((user: any) => `คุณ ${user.firstNameTh} ${user.lastNameTh}`)
             .join(' , ')}</div>
@@ -36,13 +34,11 @@ export const templateBookingRoom = async (
           <p><strong>คุณ </strong>${data.bookerName}</p>
           <p> <strong>ขอจองห้องประชุม</strong>${data.roomName}</p>  
           <p><strong>เนื่องจากประชุมเรื่อง</strong> ${data.title}</p>
-          <p><strong>วันที่ </strong> ${dayjs(data.startDate)
-            .add(7, 'hour')
-            .format('DD-MM-YYYY HH:mm')}<strong>ถึงวันที่</strong> ${dayjs(
-    data.endDate,
-  )
-    .add(7, 'hour')
-    .format('DD-MM-YYYY HH:mm')} </p>
+          <p><strong>วันที่ </strong> ${dayjs(data.startDate).format(
+            'DD-MM-YYYY HH:mm',
+          )}<strong>ถึงวันที่</strong> ${dayjs(data.endDate).format(
+    'DD-MM-YYYY HH:mm',
+  )} </p>
           <p><strong>สามารถติดต่อได้ที่เบอร์ </strong> ${data.bookerPhone}</p>
           </div>
           <div style="margin: 30px 0; text-align: center; color: #3498db; font-weight: bold;">
@@ -51,11 +47,9 @@ export const templateBookingRoom = async (
 
           <div style="text-align: center; color: #555;">
               ด้วยความเคารพ<br />
-            ณ วันที่ <strong>${dayjs(new Date())
-              .add(7, 'hour')
-              .format('DD-MM-YYYY')}</strong> เวลา <strong>${dayjs(new Date())
-    .add(7, 'hour')
-    .format('HH:mm')}</strong>
+            ณ วันที่ <strong>${dayjs().format(
+              'DD-MM-YYYY',
+            )}</strong> เวลา <strong>${dayjs().format('HH:mm')}</strong>
           </div>
          <div style="margin-top: 30px; text-align: center;">
   <img src="${footerSrc}" alt="Footer" style="width: 100%; max-width: 600px; display: block; margin: 0 auto;" />
@@ -84,11 +78,9 @@ export const templateBookingRoomApproved = async (
             <img src="${logoSrc}" alt="Logo" style="height: 100px;" />
             <h2 style="color: #2c3e50;">จองห้องประชุมออนไลน์</h2>
           </div>
-          <div style="text-align: right; color: #555;">วันที่ ${dayjs(
-            dataUsers.createdAt,
-          )
-            .add(7, 'hour')
-            .format('DD-MM-YYYY')}</div>
+          <div style="text-align: right; color: #555;">วันที่ ${dayjs().format(
+            'DD-MM-YYYY',
+          )}</div>
           <div><strong>เรียน</strong> ${recipients
             .map((user: any) => `คุณ ${user.firstNameTh} ${user.lastNameTh}`)
             .join(' , ')}</div>
@@ -96,30 +88,26 @@ export const templateBookingRoomApproved = async (
           <p><strong>คุณ </strong>${dataUsers.bookerName}</p>
           <p> <strong>ขอจองห้องประชุม</strong>${dataUsers.roomName}</p>  
           <p><strong>เนื่องจากประชุมเรื่อง</strong> ${dataUsers.title}</p>
-          <p><strong>วันที่ </strong> ${dayjs(dataUsers.startDate)
-            .add(7, 'hour')
-            .format('DD-MM-YYYY HH:mm')}<strong>ถึงวันที่</strong> ${dayjs(
-    dataUsers.endDate,
-  )
-    .add(7, 'hour')
-    .format('DD-MM-YYYY HH:mm')} </p>
+          <p><strong>วันที่ </strong> ${dayjs(dataUsers.startDate).format(
+            'DD-MM-YYYY HH:mm',
+          )}<strong>ถึงวันที่</strong> ${dayjs(dataUsers.endDate).format(
+    'DD-MM-YYYY HH:mm',
+  )} </p>
           <p><strong>สามารถติดต่อได้ที่เบอร์ </strong> ${
             dataUsers.bookerPhone
           }</p>
           </div>
            <div style="margin: 30px 0; text-align: center; ${
-             status === 'approved' ? 'color: #3498db;' : 'color: red;'
+             status === 'Approve' ? 'color: #3498db;' : 'color: red;'
            } font-weight: bold;">
 ${status === 'Approve' ? '' : 'ไม่'}อนุมัติ 
           </div>
 
           <div style="text-align: center; color: #555;">
               ด้วยความเคารพ<br />
-            ณ วันที่ <strong>${dayjs(new Date())
-              .add(7, 'hour')
-              .format('DD-MM-YYYY')}</strong> เวลา <strong>${dayjs(new Date())
-    .add(7, 'hour')
-    .format('HH:mm')}</strong>
+            ณ วันที่ <strong>${dayjs().format(
+              'DD-MM-YYYY',
+            )}</strong> เวลา <strong>${dayjs().format('HH:mm')}</strong>
           </div>
          <div style="margin-top: 30px; text-align: center;">
   <img src="${footerSrc}" alt="Footer" style="width: 100%; max-width: 600px; display: block; margin: 0 auto;" />
