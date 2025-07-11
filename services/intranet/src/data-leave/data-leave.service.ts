@@ -431,19 +431,19 @@ export class DataLeaveService {
         pass: 'Internal-support@osd1234.',
       },
     });
-    // for (const event of recipients) {
-    transporter
-      .sendMail({
-        from: '"admin Intranet" <internalsupport@osd.co.th>',
-        to: `wasmeej@osd.co.th`,
-        subject: 'OSD Intranet ใบลาออนไลน์',
-        text: '',
-        html,
-      })
-      .catch((err) => {
-        console.error(`Failed to send mail to wasmeej@osd.co.th:`, err);
-      });
-    // }
+    for (const event of recipients) {
+      transporter
+        .sendMail({
+          from: '"admin Intranet" <internalsupport@osd.co.th>',
+          to: `${event.email}`,
+          subject: 'OSD Intranet ใบลาออนไลน์',
+          text: '',
+          html,
+        })
+        .catch((err) => {
+          console.error(`Failed to send mail to ${event.email}:`, err);
+        });
+    }
   }
   private async sendLeaveAprovedEmails(
     dataUsers: Prisma.usersWhereInput,
