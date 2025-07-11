@@ -22,22 +22,20 @@ export const templateDataLeave = async (data: any): Promise<string> => {
             <h2 style="color: #2c3e50;">ใบลาออนไลน์</h2>
           </div>
           <div style="text-align: right; color: #555;">วันที่ ${dayjs(
-            data.startDate,
-          )
-            .add(7, 'hour')
-            .format('DD-MM-YYYY')}</div>
+            new Date(),
+          ).format('DD-MM-YYYY')}</div>
           <div><strong>เรียน</strong> ${data.ownerName}</div>
           <div style="margin-top: 20px; color: #333;">
           <p><strong>คุณ </strong>${data.firstName} ${data.lastName}</p>
           <p> <strong>จึงขอ</strong>${data.typeName}</p>  
           <p><strong>ขอแจ้งลางานเนื่องจาก</strong> ${data.detail}</p>
-          <p><strong>ตั้งแต่วันที่ </strong> ${dayjs(data.startDate)
-            .add(7, 'hour')
-            .format('DD-MM-YYYY')} เวลา  ${
-    data.startTime ? data.startTime : ''
-  }<strong>ถึงวันที่</strong> ${dayjs(data.endDate).format(
-    'DD-MM-YYYY',
-  )} เวลา  ${data.endTime ? data.endTime : ''}</p>
+          <p><strong>ตั้งแต่วันที่ </strong> ${dayjs(data.startDate).format(
+            'DD-MM-YYYY',
+          )} ${
+    data.startTime ? `เวลา ${data.startTime}` : ''
+  }<strong>ถึงวันที่</strong> ${dayjs(data.endDate).format('DD-MM-YYYY')}   ${
+    data.endTime ? `เวลา ${data.endTime}` : ''
+  }</p>
           <p><strong>สามารถติดต่อได้ที่เบอร์ </strong> ${data.phoneNumber}</p>
           </div>
           <div style="margin: 30px 0; text-align: center; color: #3498db; font-weight: bold;">
@@ -46,11 +44,11 @@ export const templateDataLeave = async (data: any): Promise<string> => {
 
           <div style="text-align: center; color: #555;">
               ขอบคุณครับ<br />
-            ณ วันที่ <strong>${dayjs(new Date())
-              .add(7, 'hour')
-              .format('DD-MM-YYYY')}</strong> เวลา <strong>${dayjs(new Date())
-    .add(7, 'hour')
-    .format('HH:mm')}</strong>
+            ณ วันที่ <strong>${dayjs(new Date()).format(
+              'DD-MM-YYYY',
+            )}</strong> เวลา <strong>${dayjs(new Date()).format(
+    'HH:mm',
+  )}</strong>
           </div>
          <div style="margin-top: 30px; text-align: center;">
   <img src="${footerSrc}" alt="Footer" style="width: 100%; max-width: 600px; display: block; margin: 0 auto;" />
@@ -64,6 +62,7 @@ export const templateDataLeave = async (data: any): Promise<string> => {
 export const templateDataLeaveApproved = async (
   data: any,
   type: string | null,
+  dataLeave: any,
 ): Promise<string> => {
   return `
     <!DOCTYPE html>
@@ -79,37 +78,22 @@ export const templateDataLeaveApproved = async (
             <h2 style="color: #2c3e50;">ใบลาออนไลน์</h2>
           </div>
           <div style="text-align: right; color: #555;">วันที่ ${dayjs(
-            data.startDate,
-          )
-            .add(7, 'hour')
-            .format('DD-MM-YYYY')}</div>
-          <div><strong>เรียน</strong> ${data.ownerName}</div>
-
-          <div style="margin-top: 20px; color: #333;">
-            <p><strong>คุณ </strong>${data.firstName} ${data.lastName}</p>
-          <p> <strong>จึงขอ</strong>${data.typeName}</p>  
-          <p><strong>ขอแจ้งลางานเนื่องจาก</strong> ${data.detail}</p>
-          <p><strong>ตั้งแต่วันที่ </strong> ${dayjs(data.startDate)
-            .add(7, 'hour')
-            .format('DD-MM-YYYY')}   ${
-    data.startTime ? `เวลา ${data.startTime}` : ''
-  }<strong>ถึงวันที่</strong> ${dayjs(data.endDate)
-    .add(7, 'hour')
-    .format('DD-MM-YYYY')} ${data.endTime ? `เวลา  ${data.endTime}` : ''}</p>
-          <p><strong>สามารถติดต่อได้ที่เบอร์ </strong> ${data.phoneNumber}</p>
-          </div>
+            new Date(),
+          ).format('DD-MM-YYYY')}</div>
+          <div><strong>ถึงคุณ</strong>${data.firstNameTh} ${
+    data.lastNameTh
+  }</div>
           <div style="margin: 30px 0; text-align: center; ${
             type === 'approved' ? 'color: #3498db;' : 'color: red;'
           } font-weight: bold;">
-${type === 'approved' ? '' : 'ไม่'}อนุมัติ ${data.typeName}
+${type === 'approved' ? '' : 'ไม่'}อนุมัติ ${dataLeave.typeLeave}
           </div>
-
           <div style="text-align: center; color: #555;">
-            ณ วันที่ <strong>${dayjs(new Date())
-              .add(7, 'hour')
-              .format('DD-MM-YYYY')}</strong> เวลา <strong>${dayjs(new Date())
-    .add(7, 'hour')
-    .format('HH:mm')}</strong>
+            ณ วันที่ <strong>${dayjs(new Date()).format(
+              'DD-MM-YYYY',
+            )}</strong> เวลา <strong>${dayjs(new Date()).format(
+    'HH:mm',
+  )}</strong>
           </div>
          <div style="margin-top: 30px; text-align: center;">
   <img src="${footerSrc}" alt="Footer" style="width: 100%; max-width: 600px; display: block; margin: 0 auto;" />

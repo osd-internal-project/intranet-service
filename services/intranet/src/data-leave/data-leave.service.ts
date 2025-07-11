@@ -5,10 +5,9 @@ import {
   AccessService,
   UserPermissionGroupRepository,
   UserGroupRepository,
-  NotificationLogsRepository,
   ModuleTypes,
 } from '@inventory/share';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import * as dayjs from 'dayjs';
 import * as nodemailer from 'nodemailer';
@@ -396,9 +395,22 @@ export class DataLeaveService {
     const findDetailUser = await this.usersRepo.findOne({
       where: { userId: findDataLeave.userId },
     });
-    const updateData = await this.dataleaveRepo.update(condition);
+    const base = {
+      where: { id: condition.where.id },
+      data: {
+        status: condition.data.status,
+        userApproved: condition.data.userApproved,
+        approvedDate: condition.data.approvedDate,
+        detailApproved: condition.data.detailApproved,
+      },
+    };
+    const updateData = await this.dataleaveRepo.update(base);
     if (updateData && condition.data.status) {
-      this.sendLeaveAprovedEmails(findDetailUser, condition.data.status);
+      this.sendLeaveAprovedEmails(
+        findDetailUser,
+        String(condition.data.status),
+        condition.data,
+      );
     }
     return updateData;
   }
@@ -419,26 +431,26 @@ export class DataLeaveService {
         pass: 'Internal-support@osd1234.',
       },
     });
-
-    for (const event of recipients) {
-      transporter
-        .sendMail({
-          from: '"admin Intranet" <internalsupport@osd.co.th>',
-          to: `${event.email}`,
-          subject: 'OSD Intranet ใบลาออนไลน์',
-          text: '',
-          html,
-        })
-        .catch((err) => {
-          console.error(`Failed to send mail to ${event.email}:`, err);
-        });
-    }
+    // for (const event of recipients) {
+    transporter
+      .sendMail({
+        from: '"admin Intranet" <internalsupport@osd.co.th>',
+        to: `wasmeej@osd.co.th`,
+        subject: 'OSD Intranet ใบลาออนไลน์',
+        text: '',
+        html,
+      })
+      .catch((err) => {
+        console.error(`Failed to send mail to wasmeej@osd.co.th:`, err);
+      });
+    // }
   }
   private async sendLeaveAprovedEmails(
     dataUsers: Prisma.usersWhereInput,
-    status: any,
+    status: string,
+    data: Prisma.dataLeaveUpdateInput,
   ) {
-    const html = await templateDataLeaveApproved(dataUsers, status);
+    const html = await templateDataLeaveApproved(dataUsers, status, data);
     const transporter = nodemailer.createTransport({
       host: 'smtp.office365.com',
       port: 587,
