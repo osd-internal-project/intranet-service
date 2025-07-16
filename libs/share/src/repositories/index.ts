@@ -34,6 +34,7 @@ export * from './maCarType.repository';
 export * from './maCarBook.repository';
 export * from './maCarWrapup.repository';
 export * from './maCarWrapupImage.repository';
+export * from './maCarBookingImage.repository';
 
 // type data leave
 export * from './masterTypeLeave.repository';
