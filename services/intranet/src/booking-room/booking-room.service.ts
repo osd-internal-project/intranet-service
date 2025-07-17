@@ -41,24 +41,19 @@ export class BookingRoomService {
   }
 
   async findMany(skip: number, take: number, token: string, role: string) {
-    const getUser = await this.usersRepo.findOne({ where: { token: token } });
-    const getAccessUser: any[] =
-      await this.accessService.getAccessedUsersByUserId(
-        ModuleTypes.INTRANET_APPROVE_BOOKING_ROOM,
-        getUser.userId,
-      );
+    // const getUser = await this.usersRepo.findOne({ where: { token: token } });
+    // const getAccessUser: any[] =
+    //   await this.accessService.getAccessedUsersByUserId(
+    //     ModuleTypes.INTRANET_APPROVE_BOOKING_ROOM,
+    //     getUser.userId,
+    //   );
     const condition = {
       skip,
       take,
+      orderBy: { createdAt: 'desc' },
     } as Prisma.bookingRoomFindFirstArgsBase;
 
-    const count = await this.bookingRoomRepository.count({
-      where: {
-        ...(role !== 'admin'
-          ? { userId: getUser.userId }
-          : { userId: { in: getAccessUser.map((user) => user.userId) } }),
-      },
-    });
+    const count = await this.bookingRoomRepository.count({});
 
     const result = await this.bookingRoomRepository.findMany(condition);
 
