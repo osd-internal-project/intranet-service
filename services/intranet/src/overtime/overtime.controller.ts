@@ -47,7 +47,12 @@ export class OvetimeController {
     @Query('take') take?: number,
   ) {
     const token = req.body.sub;
-    return await this.overtimeService.findMany(condition, +skip, +take, token);
+    return await this.overtimeService.findManyByHr(
+      condition,
+      +skip,
+      +take,
+      token,
+    );
   }
   @Get('/by-id')
   @UseInterceptors(UserInterceptor)

@@ -41,6 +41,7 @@ import { MasterHolidaysYearModule } from './master-holidays-year/master-holidays
 import { NotiLogsModule } from './noti-logs/noti-logs.module';
 import { MasterConfigOvertimeModule } from './master-config-ot/master-config-ot.module';
 import { OvertimeModule } from './overtime/overtime.module';
+import { MaCarBookingImagesModule } from './ma-car-booking-images/ma-car-booking-images.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
@@ -80,6 +81,7 @@ import { OvertimeModule } from './overtime/overtime.module';
     NotiLogsModule,
     MasterConfigOvertimeModule,
     OvertimeModule,
+    MaCarBookingImagesModule,
   ],
   controllers: [IntranetController, PublicController],
   providers: [IntranetService],

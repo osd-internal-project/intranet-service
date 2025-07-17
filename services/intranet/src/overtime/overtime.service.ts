@@ -212,7 +212,7 @@ export class OverTimeService {
     const count = await this.overtimeRepo.count({
       where: {
         ...filter,
-        userId: { in: userIds },
+        // userId: { in: userIds },
       },
     });
 
