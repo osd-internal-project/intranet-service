@@ -17,8 +17,12 @@ export class MaCarBookingImagesService {
     return `This action returns all maCarBookingImages`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} maCarBookingImage`;
+  findOne(idCarBookImage: number) {
+    return this.macarbookinimagesRepo.findOne({
+      where: {
+        idCarBookImage: idCarBookImage,
+      },
+    });
   }
 
   update(id: number, updateMaCarBookingImageDto: UpdateMaCarBookingImageDto) {

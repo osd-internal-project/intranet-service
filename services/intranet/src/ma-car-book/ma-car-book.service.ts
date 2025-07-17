@@ -85,6 +85,7 @@ export class MaCarBookService {
       const data = await this.maCarBookRepository.findMany({
         include: {
           maCar: true,
+          maCarBookImage: true,
         },
         orderBy: { id: 'desc' },
         skip: skip,
@@ -173,6 +174,7 @@ export class MaCarBookService {
             maCarWrapup: true,
           },
         },
+        maCarBookImage: true,
       },
       orderBy: {
         id: 'desc',
