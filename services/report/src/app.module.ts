@@ -6,10 +6,12 @@ import { ReportService } from './app.service';
 import { RequestLoggerMiddleware } from './middleware/request-logger.middleware';
 import { ReportMaModule } from './report-ma/report-ma.module';
 import { PublicController } from './public/public.controller';
+import { ReportOtModule } from './report-ot/report-ot.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
     ReportMaModule,
+    ReportOtModule,
   ],
   controllers: [ReportController, PublicController],
   providers: [ReportService],
