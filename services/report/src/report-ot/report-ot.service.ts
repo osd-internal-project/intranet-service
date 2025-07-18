@@ -37,7 +37,7 @@ export class ReportOtService {
       'เวลาทำงาน (ชั่วโมง)': data.workingTime,
       'เวลารวม (ชั่วโมง)': data.totalTime,
       รายละเอียดงาน: data.detailWork,
-      ประเภทวัน: data.typeDate === 'day-off' ? 'วันหยุด' : 'วันปกติ',
+      ประเภทวัน: data.typeDate === 'normall' ? 'วันปกติ' : 'วันหยุด',
       ชื่อลูกค้า: data.customerName,
       เดินทางต่างจังหวัด: data.checkTravelUpCountry ? 'ใช่' : 'ไม่ใช่',
       ค้างคืน: data.checkOvernight ? 'ใช่' : 'ไม่ใช่',
