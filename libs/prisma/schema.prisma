@@ -978,6 +978,8 @@ model overtime {
   approvedDate            DateTime? @map("approved_at") @db.Timestamp(6)
   approvedUser            String?   @map("approved_user") @db.VarChar(100)
   approvedDetail          String?   @map("approved_detail") @db.VarChar(250)
+  createdAt               DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt               DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
   calculate               Json?
 }
 

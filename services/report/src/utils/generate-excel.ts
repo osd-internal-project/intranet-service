@@ -99,6 +99,7 @@ export async function OvertimeExcelTemplate(data: any[], sheetName: string) {
   const headers = [
     'ลำดับ',
     'ชื่อ-นามสกุล',
+    'วันที่สร้าง',
     'วันที่เริ่มงาน',
     'ประเภทงาน',
     'เวลาเริ่ม',
@@ -121,10 +122,9 @@ export async function OvertimeExcelTemplate(data: any[], sheetName: string) {
     'วันที่อนุมัติ',
     'ผู้อนุมัติ',
     'รายละเอียดการอนุมัติ',
-    'อัตราเวลาปกติ',
-    'อัตราเวลาปกติ',
-    'อัตราล่วงเวลา',
-    'อัตราล่วงเวลา',
+    'ค่าล่วงเวลา',
+    'ค่าล่วงเวลา',
+    'ค่าล่วงเวลา',
   ];
 
   // เพิ่ม header row หลัก
@@ -156,10 +156,10 @@ export async function OvertimeExcelTemplate(data: any[], sheetName: string) {
     '',
     '',
     '',
-    'อัตรา',
-    'ชั่วโมง',
-    'อัตรา',
-    'ชั่วโมง',
+    '',
+    'อัตรา 1 เท่า',
+    'อัตรา 1.5 เท่า',
+    'อัตรา 3 เท่า',
   ];
   worksheet.addRow(subHeaders);
 
@@ -188,8 +188,7 @@ export async function OvertimeExcelTemplate(data: any[], sheetName: string) {
   });
 
   // merge cells สำหรับ header หลัก
-  worksheet.mergeCells('Y1:Z1'); // อัตราเวลาปกติ
-  worksheet.mergeCells('AA1:AB1'); // อัตราล่วงเวลา
+  worksheet.mergeCells('Z1:AB1'); // อัตราเวลาปกติ
 
   // จัดขนาดของ column ให้เหมาะสม
   worksheet.columns.forEach((column) => {
@@ -272,11 +271,11 @@ export async function OvertimeExcelTemplate(data: any[], sheetName: string) {
       }
     });
   });
-
+  const lastCol = getColumnLetter(headers.length);
   // เพิ่ม autofilter (เริ่มจาก row 2 เพราะมี sub-header)
   worksheet.autoFilter = {
     from: 'A2',
-    to: `${String.fromCharCode(65 + headers.length - 1)}2`,
+    to: `${lastCol}2`,
   };
 
   // freeze panes (freeze 2 rows)
@@ -284,4 +283,15 @@ export async function OvertimeExcelTemplate(data: any[], sheetName: string) {
 
   const bufferArray = await workbook.xlsx.writeBuffer();
   return Buffer.from(bufferArray);
+}
+
+function getColumnLetter(colIndex: number): string {
+  let temp: number;
+  let letter = '';
+  while (colIndex > 0) {
+    temp = (colIndex - 1) % 26;
+    letter = String.fromCharCode(temp + 65) + letter;
+    colIndex = Math.floor((colIndex - temp - 1) / 26);
+  }
+  return letter;
 }

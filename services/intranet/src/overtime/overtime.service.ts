@@ -28,15 +28,27 @@ export class OverTimeService {
   async create(createDepartmentDto: Prisma.overtimeCreateInput) {
     const findConfigTimeOt = await this.masterconfigtimeotRepo.findAll();
     const workTimeValues = Object.values(findConfigTimeOt[0].partTimeCondition);
+    const masterHoliday = await this.masterholidayRepo.findMany({
+      where: {
+        holidaysDate: {
+          gte: dayjs(createDepartmentDto.dateStart).startOf('day').toDate(),
+          lte: dayjs(createDepartmentDto.dateStart).endOf('day').toDate(),
+        },
+      },
+    });
     const result = workTimeValues.find(
       (entry) => entry.index === dayjs(createDepartmentDto.dateStart).day(),
     );
     const startTimeOt = createDepartmentDto.startTime;
     const endTimeOt = createDepartmentDto.endTime;
     const OvertimeTime = result.startOt;
+    const typeDate =
+      result.typeDate === 'dayoff' || masterHoliday.length > 0
+        ? 'dayoff'
+        : 'normall';
 
     const { totalTime, breakTime, workTime, inTime, overtime } =
-      await calculate(startTimeOt, endTimeOt, OvertimeTime);
+      await calculate(startTimeOt, endTimeOt, OvertimeTime, typeDate);
 
     const base = {
       fullname: createDepartmentDto.fullname,
@@ -49,7 +61,10 @@ export class OverTimeService {
       workingTime: String(workTime),
       totalTime: String(totalTime),
       detailWork: createDepartmentDto.detailWork,
-      typeDate: result.typeDate === 'dayoff' ? 'day-off' : 'normall',
+      typeDate:
+        result.typeDate === 'dayoff' || masterHoliday.length > 0
+          ? 'day-off'
+          : 'normall',
       customerName: createDepartmentDto.customerName,
       checkTravelUpCountry: createDepartmentDto.checkTravelUpCountry,
       checkOvernight: createDepartmentDto.checkOvernight,
@@ -60,17 +75,17 @@ export class OverTimeService {
       phoneNumber: createDepartmentDto.phoneNumber,
       status: 'waiting',
       calculate:
-        result.typeDate === 'dayoff'
+        result.typeDate === 'dayoff' || masterHoliday.length > 0
           ? [
               {
                 timeRate: inTime,
-                rate: result.intime,
+                rate: masterHoliday.length > 0 ? 1 : result.intime,
                 typeRate: 'intime',
                 date: 'day-off',
               },
               {
                 timeRate: overtime,
-                rate: result.overtime,
+                rate: masterHoliday.length > 0 ? 3 : result.overtime,
                 typeRate: 'overtime',
                 date: 'day-off',
               },
@@ -79,14 +94,14 @@ export class OverTimeService {
               {
                 timeRate: inTime,
                 rate: result.intime,
-                date: 'normall',
                 typeRate: 'intime',
+                date: 'normall',
               },
               {
                 timeRate: overtime,
                 rate: result.overtime,
-                date: 'normall',
                 typeRate: 'overtime',
+                date: 'normall',
               },
             ],
     };

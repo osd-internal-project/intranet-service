@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { OverTimeRepository } from '@inventory/share';
 import { OvertimeExcelTemplate } from 'src/utils/generate-excel';
 
@@ -21,12 +20,11 @@ export class ReportOtService {
         }),
       },
     });
-    console.log(dataSources[0].calculate);
-    console.log(dataSources[0]);
 
     const transfer = dataSources.map((data: any, index: number) => ({
       ลำดับ: index + 1,
       'ชื่อ-นามสกุล': data.fullname,
+      วันที่สร้าง: new Date(data.createdAt).toLocaleDateString('th-TH'),
       วันที่เริ่มงาน: data.dateStart
         ? new Date(data.dateStart).toLocaleDateString('th-TH')
         : '',
@@ -60,16 +58,21 @@ export class ReportOtService {
         : '',
       ผู้อนุมัติ: data.approvedUser || '',
       รายละเอียดการอนุมัติ: data.approvedDetail || '',
-      อัตราเวลาปกติ:
-        data.calculate?.find((c: any) => c.typeRate === 'intime')?.rate || 0,
-      ชั่วโมงเวลาปกติ:
-        data.calculate?.find((c: any) => c.typeRate === 'intime')?.timeRate ||
-        0,
-      อัตราล่วงเวลา:
-        data.calculate?.find((c: any) => c.typeRate === 'overtime')?.rate || 0,
-      ชั่วโมงล่วงเวลา:
-        data.calculate?.find((c: any) => c.typeRate === 'overtime')?.timeRate ||
-        0,
+      'ชั่วโมง 1 เท่า':
+        data.typeDate === 'day-off'
+          ? data.calculate?.find((c: any) => c.typeRate === 'intime')
+              ?.timeRate || 0
+          : '-',
+      'ชั่วโมง 1.5 เท่า':
+        data.typeDate === 'normall'
+          ? data.calculate?.find((c: any) => c.typeRate === 'overtime')
+              ?.timeRate || 0
+          : '-',
+      'ชั่วโมง 3 เท่า':
+        data.typeDate === 'day-off'
+          ? data.calculate?.find((c: any) => c.typeRate === 'overtime')
+              ?.timeRate || 0
+          : '-',
     }));
     return await OvertimeExcelTemplate(transfer, 'รายงานการทำงานล่วงเวลา');
   }

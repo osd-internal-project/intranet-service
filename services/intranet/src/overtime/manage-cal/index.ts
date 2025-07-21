@@ -2,6 +2,7 @@ export const calculate = async (
   startTimeOt: any,
   endTimeOt: any,
   OvertimeTime: any,
+  typeDate: string,
 ) => {
   const start = parseTimeToHourDecimal(startTimeOt);
   let end = parseTimeToHourDecimal(endTimeOt);
@@ -10,21 +11,31 @@ export const calculate = async (
     end += 24;
   }
   const totalTime = end - start;
+  const duration = end - start;
   const breakTime =
-    end - start >= 5 ? 1 : end - start < 5 && end - start > 4 ? 0.5 : 0;
+    duration >= 8 ? 1.5 : duration >= 5 ? 1 : duration > 4 ? 0.5 : 0;
   const workTime = totalTime - breakTime;
-  const inTime =
-    start < overtimeWork
-      ? overtimeWork - start > 4
-        ? overtimeWork - start - breakTime
-        : overtimeWork - start
-      : 0;
-  const overtime =
-    end >= overtimeWork
-      ? end - overtimeWork > 4
-        ? end - overtimeWork - breakTime
-        : end - overtimeWork
-      : 0;
+  let inTime = 0;
+  let overtime = 0;
+  if (typeDate === 'normall') {
+    inTime = 0;
+    overtime =
+      end >= overtimeWork
+        ? end - overtimeWork > 4
+          ? end - overtimeWork - breakTime
+          : end - overtimeWork
+        : 0;
+  } else {
+    const sum: number = end - start;
+    if (sum > 8) {
+      inTime = 8;
+      overtime = sum - 8 - breakTime;
+    } else {
+      inTime = sum > 4 ? sum - breakTime : sum;
+      overtime = 0;
+    }
+  }
+
   return { totalTime, breakTime, workTime, inTime, overtime };
 };
 
