@@ -61,17 +61,32 @@ export class ReportOtService {
       'ชั่วโมง 1 เท่า':
         data.typeDate === 'day-off'
           ? data.calculate?.find((c: any) => c.typeRate === 'intime')
-              ?.timeRate || 0
+              ?.timeRate &&
+            data.calculate?.find((c: any) => c.typeRate === 'intime')
+              ?.timeRate != 0
+            ? data.calculate?.find((c: any) => c.typeRate === 'intime')
+                ?.timeRate
+            : '-'
           : '-',
       'ชั่วโมง 1.5 เท่า':
         data.typeDate === 'normall'
           ? data.calculate?.find((c: any) => c.typeRate === 'overtime')
-              ?.timeRate || 0
+              ?.timeRate &&
+            data.calculate?.find((c: any) => c.typeRate === 'overtime')
+              ?.timeRate != 0
+            ? data.calculate?.find((c: any) => c.typeRate === 'overtime')
+                ?.timeRate
+            : '-'
           : '-',
       'ชั่วโมง 3 เท่า':
         data.typeDate === 'day-off'
           ? data.calculate?.find((c: any) => c.typeRate === 'overtime')
-              ?.timeRate || 0
+              ?.timeRate &&
+            data.calculate?.find((c: any) => c.typeRate === 'overtime')
+              ?.timeRate != 0
+            ? data.calculate?.find((c: any) => c.typeRate === 'overtime')
+                ?.timeRate
+            : '-'
           : '-',
     }));
     return await OvertimeExcelTemplate(transfer, 'รายงานการทำงานล่วงเวลา');
