@@ -19,6 +19,9 @@ export class ReportOtService {
           },
         }),
       },
+      orderBy: {
+        userId: 'asc',
+      },
     });
 
     const transfer = dataSources.map((data: any, index: number) => ({
