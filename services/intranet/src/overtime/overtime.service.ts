@@ -128,12 +128,16 @@ export class OverTimeService {
     const findUser = await this.userRepo.findOne({
       where: { token: userId },
     });
-    return await this.overtimeRepo.findMany({
+    const data = await this.overtimeRepo.findMany({
       where: { userId: findUser.userId },
       orderBy: { id: 'asc' },
       take,
       skip,
     });
+    const count = await this.overtimeRepo.count({
+      where: { userId: findUser.userId },
+    });
+    return { data, count };
   }
   async findMany(
     condition: Prisma.overtimeCreateInput,
