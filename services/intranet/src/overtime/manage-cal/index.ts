@@ -13,7 +13,7 @@ export const calculate = async (
   const totalTime = end - start;
   const duration = end - start;
   const breakTime =
-    duration >= 8 ? 1.5 : duration >= 5 ? 1 : duration > 4 ? 0.5 : 0;
+    duration > 9 ? 1.5 : duration >= 5 ? 1 : duration > 4 ? 0.5 : 0;
   const workTime = totalTime - breakTime;
   let inTime = 0;
   let overtime = 0;

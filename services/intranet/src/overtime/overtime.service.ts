@@ -46,7 +46,6 @@ export class OverTimeService {
       result.typeDate === 'dayoff' || masterHoliday.length > 0
         ? 'dayoff'
         : 'normall';
-
     const { totalTime, breakTime, workTime, inTime, overtime } =
       await calculate(startTimeOt, endTimeOt, OvertimeTime, typeDate);
 
@@ -105,20 +104,21 @@ export class OverTimeService {
               },
             ],
     };
-    const data = await this.overtimeRepo.create({ data: base });
-    if (data) {
-      const header = await this.accessService.getLeadUsersByUserId(
-        ModuleTypes.INTRANET_APPROVE_LEAVE,
-        createDepartmentDto.userId,
-      );
-      const findUsers = await this.userRepo.findOne({
-        where: {
-          userId: createDepartmentDto.userId,
-        },
-      });
-      this.sendOvertimeEmails(header, base, findUsers);
-    }
-    return { status: 200, data: data };
+    console.log(base);
+    // const data = await this.overtimeRepo.create({ data: base });
+    // if (data) {
+    //   const header = await this.accessService.getLeadUsersByUserId(
+    //     ModuleTypes.INTRANET_APPROVE_LEAVE,
+    //     createDepartmentDto.userId,
+    //   );
+    //   const findUsers = await this.userRepo.findOne({
+    //     where: {
+    //       userId: createDepartmentDto.userId,
+    //     },
+    //   });
+    //   this.sendOvertimeEmails(header, base, findUsers);
+    // }
+    // return { status: 200, data: data };
   }
 
   async findAll() {
