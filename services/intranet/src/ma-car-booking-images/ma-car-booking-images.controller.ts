@@ -14,7 +14,7 @@ import {
 import { MaCarBookingImagesService } from './ma-car-booking-images.service';
 import { CreateMaCarBookingImageDto } from './dto/create-ma-car-booking-image.dto';
 import { UpdateMaCarBookingImageDto } from './dto/update-ma-car-booking-image.dto';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import { extname, join } from 'path';

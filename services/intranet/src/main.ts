@@ -5,8 +5,6 @@ import helmet from 'helmet';
 import config from './configs';
 import { IntranetMainModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as express from 'express';
-import * as cors from 'cors';
 const PORT = config().port;
 
 async function bootstrap() {
