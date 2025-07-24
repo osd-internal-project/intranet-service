@@ -104,21 +104,20 @@ export class OverTimeService {
               },
             ],
     };
-    console.log(base);
-    // const data = await this.overtimeRepo.create({ data: base });
-    // if (data) {
-    //   const header = await this.accessService.getLeadUsersByUserId(
-    //     ModuleTypes.INTRANET_APPROVE_LEAVE,
-    //     createDepartmentDto.userId,
-    //   );
-    //   const findUsers = await this.userRepo.findOne({
-    //     where: {
-    //       userId: createDepartmentDto.userId,
-    //     },
-    //   });
-    //   this.sendOvertimeEmails(header, base, findUsers);
-    // }
-    // return { status: 200, data: data };
+    const data = await this.overtimeRepo.create({ data: base });
+    if (data) {
+      const header = await this.accessService.getLeadUsersByUserId(
+        ModuleTypes.INTRANET_APPROVE_LEAVE,
+        createDepartmentDto.userId,
+      );
+      const findUsers = await this.userRepo.findOne({
+        where: {
+          userId: createDepartmentDto.userId,
+        },
+      });
+      this.sendOvertimeEmails(header, base, findUsers);
+    }
+    return { status: 200, data: data };
   }
 
   async findAll() {
@@ -148,6 +147,9 @@ export class OverTimeService {
     let filter = {};
     if (condition && condition.fullname) {
       filter = { ...filter, fullname: { contains: condition.fullname } };
+    }
+    if (condition && condition.status) {
+      filter = { ...filter, status: { contains: condition.status } };
     }
     if (condition && condition.typeDate) {
       filter = { ...filter, typeDate: { contains: condition.typeDate } };
@@ -198,6 +200,9 @@ export class OverTimeService {
 
     if (condition && condition.fullname) {
       filter = { ...filter, fullname: { contains: condition.fullname } };
+    }
+    if (condition && condition.status) {
+      filter = { ...filter, status: { contains: condition.status } };
     }
     if (condition && condition.typeDate) {
       filter = { ...filter, typeDate: { contains: condition.typeDate } };
