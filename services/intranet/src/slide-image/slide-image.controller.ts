@@ -69,7 +69,7 @@ export class SlideImageController {
 
   @Post('upload-image')
   @UseInterceptors(
-    FilesInterceptor('files', 1, {
+    FilesInterceptor('files', 10, {
       storage: diskStorage({
         destination: `${config.pathMountDirUpload}/slide-image`,
         filename: (req, file, callback) => {
@@ -85,6 +85,7 @@ export class SlideImageController {
     @Body('createdByName') createdByName: string,
     @Body('createdById') createdById: string,
   ) {
+    console.log(files);
     const data = {
       fileId: files[0].filename,
       filePath: files[0].path,
@@ -95,11 +96,6 @@ export class SlideImageController {
     } as Prisma.slideImageCreateInput;
     return await this.slideImageService.createfiles(data);
   }
-
-  // @Post()
-  // create(@Body() data: Prisma.slideImageCreateInput) {
-  //   return this.SlideImageService.create(data);
-  // }
 
   @Patch(':fileId')
   update(

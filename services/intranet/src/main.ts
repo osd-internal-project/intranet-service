@@ -15,17 +15,11 @@ async function bootstrap() {
   };
   const app = await NestFactory.create(IntranetMainModule);
   app.setGlobalPrefix('api');
-  app.use(express.urlencoded({ extended: true }));
-  app.use(express.json({ type: 'application/json' }));
-  app.use((req, res, next) => {
-    req.setEncoding('utf8');
-    next();
-  });
   app.enableCors();
-  app.use(cors());
   app.use(helmet());
   const prismaService = app.get(PrismaService);
   prismaService.enableShutdownHooks(app as any);
+
   app.useGlobalPipes(new ValidationPipe());
 
   const options = new DocumentBuilder()
