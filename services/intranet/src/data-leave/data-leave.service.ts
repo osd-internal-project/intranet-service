@@ -131,10 +131,11 @@ export class DataLeaveService {
     );
     return await this.dataleaveRepo.findMany({
       where: {
-        ...filter, // ✅ สลาย filter เข้าไปใน where
+        ...filter,
         groupId: { in: AccessedGroup.map((event: any) => event.groupId) },
         status: { in: ['approved', 'waiting'] },
       },
+      include: { dataLeaveFiles: true },
       orderBy: { createdAt: 'desc' },
     });
   }
@@ -171,6 +172,7 @@ export class DataLeaveService {
     }
     return await this.dataleaveRepo.findMany({
       where: { ...filter },
+      include: { dataLeaveFiles: true },
       orderBy: { createdAt: 'desc' },
     });
   }
@@ -184,6 +186,7 @@ export class DataLeaveService {
           in: ['approved', 'waiting'],
         },
       },
+      include: { dataLeaveFiles: true },
       orderBy: { createdAt: 'desc' },
     } as Prisma.dataLeaveFindManyArgs;
     return await this.dataleaveRepo.findMany(base);
