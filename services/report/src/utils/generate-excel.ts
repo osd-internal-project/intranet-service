@@ -295,3 +295,152 @@ function getColumnLetter(colIndex: number): string {
   }
   return letter;
 }
+
+export async function DataLeaveExcelTemplate(data: any[], sheetName: string) {
+  const workbook = new Workbook();
+  const worksheet = workbook.addWorksheet(sheetName);
+
+  // กำหนด headers ตามข้อมูลการลา
+  const headers = [
+    'ลำดับ',
+    'ชื่อ - นามสกุล',
+    'ตำแหน่ง',
+    'ประเภทการลา',
+    'วันที่ลา',
+    'สถานะ',
+    'ผู้อนุมัติ',
+    'วันที่อนุมัติ',
+    'รายละเอียด',
+  ];
+
+  // เพิ่ม header row
+  worksheet.addRow(headers);
+
+  // จัดรูปแบบข้อมูล
+  const formattedData = data.map((item, index) => ({
+    ลำดับ: index + 1,
+    'ชื่อ - นามสกุล': item['ชื่อ - นามสกุล'] || '',
+    ตำแหน่ง: item.ตำแหน่ง || '',
+    ประเภทการลา: item.ประเภทการลา || '',
+    วันที่ลา: item.วันที่ลา || '',
+    สถานะ: item.สถานะ || '',
+    ผู้อนุมัติ: item.ผู้อนุมัติ || '',
+    วันที่อนุมัติ: item.วันที่อนุมัติ || '',
+    รายละเอียด: item.รายละเอียด || '',
+  }));
+
+  // จัดการข้อมูลที่เป็น undefined หรือ null
+  for (let i = 0; i < formattedData.length; i++) {
+    for (const key in formattedData[i]) {
+      if (
+        formattedData[i][key] === undefined ||
+        formattedData[i][key] === null
+      ) {
+        if (typeof formattedData[i][key] === 'number') {
+          formattedData[i][key] = 0;
+        } else {
+          formattedData[i][key] = '';
+        }
+      }
+    }
+  }
+
+  // เพิ่มข้อมูลลงใน worksheet
+  formattedData.forEach((row) => {
+    worksheet.addRow(Object.values(row));
+  });
+
+  // จัดขนาดของ column ให้เหมาะสม
+  worksheet.columns.forEach((column) => {
+    let maxLength = 15; // minimum width
+
+    column.eachCell({ includeEmpty: true }, (cell) => {
+      const value = cell.value;
+      let text = '';
+
+      if (
+        typeof value === 'string' ||
+        typeof value === 'number' ||
+        typeof value === 'boolean'
+      ) {
+        text = value.toString();
+      } else if (value instanceof Date) {
+        text = value.toLocaleDateString('th-TH');
+      } else if (value && typeof value === 'object') {
+        if ('richText' in value && Array.isArray(value.richText)) {
+          text = value.richText.map((rt) => rt.text).join('');
+        } else if ('formula' in value && value.result) {
+          text = value.result.toString();
+        } else if ('text' in value) {
+          text = value.text;
+        }
+      }
+
+      // คำนวณความกว้างสำหรับข้อความภาษาไทย
+      const thaiTextLength = text.length * 1.2; // เพิ่มขนาดสำหรับฟอนต์ภาษาไทย
+      if (thaiTextLength > maxLength) {
+        maxLength = thaiTextLength;
+      }
+    });
+
+    column.width = Math.min(maxLength + 2, 50); // จำกัดความกว้างสูงสุด
+  });
+
+  // จัดรูปแบบของ row
+  worksheet.eachRow((row, rowNumber) => {
+    const isHeader = rowNumber === 1;
+    const baseFont = {
+      size: 12,
+      bold: isHeader,
+      name: 'TH SarabunPSK', // ฟอนต์ภาษาไทย
+    };
+
+    row.eachCell((cell, cellNumber) => {
+      cell.font = baseFont;
+      cell.border = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' },
+      };
+      cell.alignment = {
+        wrapText: true,
+        vertical: 'middle',
+        horizontal: 'center',
+      };
+
+      if (isHeader) {
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FF4472C4' }, // สีน้ำเงิน
+        };
+        cell.font = { ...baseFont, color: { argb: 'FFFFFFFF' } }; // ตัวอักษรสีขาว
+      } else {
+        // จัดตำแหน่งข้อมูลตามประเภท
+        if (cellNumber === 1) {
+          // ลำดับ
+          cell.alignment = { ...cell.alignment, horizontal: 'center' };
+        } else if ([6].includes(cellNumber)) {
+          // สถานะ
+          cell.alignment = { ...cell.alignment, horizontal: 'center' };
+        } else {
+          cell.alignment = { ...cell.alignment, horizontal: 'left' };
+        }
+      }
+    });
+  });
+
+  const lastCol = getColumnLetter(headers.length);
+  // เพิ่ม autofilter
+  worksheet.autoFilter = {
+    from: 'A1',
+    to: `${lastCol}1`,
+  };
+
+  // freeze panes (freeze 1 row สำหรับ header)
+  worksheet.views = [{ state: 'frozen', xSplit: 0, ySplit: 1 }];
+
+  const bufferArray = await workbook.xlsx.writeBuffer();
+  return Buffer.from(bufferArray);
+}
