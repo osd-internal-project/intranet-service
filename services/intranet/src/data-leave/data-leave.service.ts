@@ -178,12 +178,19 @@ export class DataLeaveService {
   }
 
   async findManyByCondition(params: any) {
+    const { startDate, ...restParams } = params;
+    const startOfYear = dayjs(startDate).startOf('year').toDate();
+    const endOfYear = dayjs(startDate).endOf('year').toDate();
     const base = {
       where: {
-        ...params,
+        ...restParams,
         ...(params.typeId && { typeId: +params.typeId }),
         status: {
           in: ['approved', 'waiting'],
+        },
+        createdAt: {
+          gte: startOfYear,
+          lte: endOfYear,
         },
       },
       include: { dataLeaveFiles: true },
