@@ -178,6 +178,9 @@ export class OverTimeService {
       },
       take: take,
       skip: skip,
+      orderBy: {
+        status: 'asc',
+      },
     } as Prisma.overtimeFindManyArgs;
     const result = await this.overtimeRepo.findMany(base);
     const count = await this.overtimeRepo.count({
@@ -235,26 +238,20 @@ export class OverTimeService {
       };
     }
 
-    const getUser = await this.userRepo.findOne({ where: { token: token } });
-    const AccessedGroup = await this.accessService.getAccessedUsersByUserId(
-      ModuleTypes.INTRANET_APPROVE_OT,
-      getUser.userId,
-    );
-
-    const userIds = AccessedGroup.map((event: any) => event.userId);
     const base = {
       where: {
         ...filter,
-        // userId: { in: userIds },
       },
       take: take,
       skip: skip,
+      orderBy: {
+        createdAt: 'desc',
+      },
     } as Prisma.overtimeFindManyArgs;
     const result = await this.overtimeRepo.findMany(base);
     const count = await this.overtimeRepo.count({
       where: {
         ...filter,
-        // userId: { in: userIds },
       },
     });
 
