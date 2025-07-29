@@ -41,14 +41,31 @@ export class MaCarBookService {
     return response;
   }
   async findBytoken(token: string) {
-    const module = ModuleTypes.INTRANET;
+    // const module = ModuleTypes.INTRANET;
     const user = await this.accessServices.findUserByToken(token);
     if (user) {
-      const accessUsers = await this.accessServices.getAccessedUsersByUserId(
-        module,
-        user.userId,
-      );
       return await this.maCarBookRepository.findMany({
+        orderBy: { createdAt: 'asc' },
+      });
+    } else {
+      Logger.debug('Not Found User');
+      return [];
+    }
+  }
+  async findCalendarBytoken(
+    token: string,
+    query: { month: Date | dayjs.Dayjs | string },
+  ) {
+    // const module = ModuleTypes.INTRANET;
+    const user = await this.accessServices.findUserByToken(token);
+    if (user) {
+      return await this.maCarBookRepository.findMany({
+        where: {
+          carBookStartDate: {
+            gte: dayjs(query.month).startOf('month').toDate(),
+            lte: dayjs(query.month).endOf('month').toDate(),
+          },
+        },
         orderBy: { createdAt: 'asc' },
       });
     } else {

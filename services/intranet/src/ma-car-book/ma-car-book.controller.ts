@@ -35,6 +35,13 @@ export class MaCarBookController {
     return this.maCarBookService.findBytoken(token);
   }
 
+  @Get('calendar')
+  @UseInterceptors(UserInterceptor)
+  findCalendarBytoken(@Req() req, @Query() query: { month: Date | string }) {
+    const token = req.body.sub;
+    return this.maCarBookService.findCalendarBytoken(token, query);
+  }
+
   @Get('approve/:skip/:take')
   @UseInterceptors(UserInterceptor)
   findManyWithTakeSkipBuApprove(
