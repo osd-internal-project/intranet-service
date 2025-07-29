@@ -42,8 +42,18 @@ export class DataLeaveService {
     return this.dataleaveRepo.findAll();
   }
 
-  findOne(userId: string) {
-    return this.dataleaveRepo.findOne({ where: { userId: userId } });
+  async findOne(userId: string, skip: number, take: number) {
+    const data = await this.dataleaveRepo.findMany({
+      where: { userId: userId },
+      include: { dataLeaveFiles: true },
+      skip,
+      take,
+      orderBy: { createdAt: 'desc' },
+    });
+    const count = await this.dataleaveRepo.count({
+      where: { userId: userId },
+    });
+    return { data, count };
   }
 
   async findMany(params: any) {
@@ -94,7 +104,48 @@ export class DataLeaveService {
     return { count: count, status: count > 0 ? 200 : 404 };
   }
 
-  async findGroup(userId: string, query: any) {
+  async findCalendarGroupByMonth(
+    token: string,
+    query: { month: Date | string },
+  ) {
+    const getUser = await this.usersRepo.findOne({ where: { token: token } });
+    const AccessedGroup = await this.accessService.getAccessedGroupByGroupId(
+      ModuleTypes.INTRANET,
+      getUser.ownerGroupId,
+    );
+    const data = await this.dataleaveRepo.findMany({
+      where: {
+        startDate: {
+          gte: dayjs(query.month).startOf('month').toDate(),
+          lte: dayjs(query.month).endOf('month').toDate(),
+        },
+        groupId: { in: AccessedGroup.map((event: any) => event.groupId) },
+        status: { in: ['approved', 'waiting'] },
+      },
+      include: { dataLeaveFiles: true },
+      orderBy: { createdAt: 'desc' },
+    });
+    return data;
+  }
+  async findCalendarByMonth(token: string, query: { month: Date | string }) {
+    const getUser = await this.usersRepo.findOne({ where: { token: token } });
+    const data = await this.dataleaveRepo.findMany({
+      where: {
+        startDate: {
+          gte: dayjs(query.month).startOf('month').toDate(),
+          lte: dayjs(query.month).endOf('month').toDate(),
+        },
+        userId: getUser.userId,
+        status: { in: ['approved', 'waiting'] },
+      },
+      include: { dataLeaveFiles: true },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return data;
+  }
+
+  async findGroup(userId: string, query: any, skip: number, take: number) {
     let filter = {};
     if (query.type === 'fullname' && query.value) {
       const names = query.value.trim().split(' ').filter(Boolean);
@@ -129,7 +180,7 @@ export class DataLeaveService {
       ModuleTypes.INTRANET,
       getUser.ownerGroupId,
     );
-    return await this.dataleaveRepo.findMany({
+    const data = await this.dataleaveRepo.findMany({
       where: {
         ...filter,
         groupId: { in: AccessedGroup.map((event: any) => event.groupId) },
@@ -137,13 +188,21 @@ export class DataLeaveService {
       },
       include: { dataLeaveFiles: true },
       orderBy: { createdAt: 'desc' },
+      ...(skip && take && { skip, take }),
     });
+    const count = await this.dataleaveRepo.count({
+      where: {
+        ...filter,
+        groupId: { in: AccessedGroup.map((event: any) => event.groupId) },
+        status: { in: ['approved', 'waiting'] },
+      },
+    });
+    return { data, count };
   }
-  async findGroupHr(userId: string, query: any) {
+  async findGroupHr(userId: string, query: any, skip: number, take: number) {
     let filter = {};
     if (query.type === 'fullname' && query.value) {
-      const names = query.value.trim().split(' ').filter(Boolean); // แยกคำ เช่น ["วาสิษฐี", "มหาวรรณศรี"]
-
+      const names = query.value.trim().split(' ').filter(Boolean);
       const orConditions = names.flatMap((word) => [
         {
           firstName: {
@@ -170,11 +229,17 @@ export class DataLeaveService {
         },
       };
     }
-    return await this.dataleaveRepo.findMany({
+    const data = await this.dataleaveRepo.findMany({
       where: { ...filter },
       include: { dataLeaveFiles: true },
       orderBy: { createdAt: 'desc' },
+      ...(skip && take && { skip, take }),
     });
+
+    const count = await this.dataleaveRepo.count({
+      where: { ...filter },
+    });
+    return { data, count };
   }
 
   async findManyByCondition(params: any) {

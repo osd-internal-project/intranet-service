@@ -44,18 +44,44 @@ export class DataLeaveController {
     return this.dataLeaveService.findHeaderId(req.body.sub);
   }
 
+  @Get('calendar-teams')
+  @UseInterceptors(UserInterceptor)
+  findLeaveTeamsByMonth(@Req() req, @Query() query: { month: Date | string }) {
+    return this.dataLeaveService.findCalendarGroupByMonth(req.body.sub, query);
+  }
+
+  @Get('calendar')
+  @UseInterceptors(UserInterceptor)
+  findLeaveByMonth(@Req() req, @Query() query: { month: Date | string }) {
+    return this.dataLeaveService.findCalendarByMonth(req.body.sub, query);
+  }
+
   @Get('findGroup/:userId')
-  findGroup(@Param('userId') userId: string, @Query() query: any) {
-    return this.dataLeaveService.findGroup(userId, query);
+  findGroup(
+    @Param('userId') userId: string,
+    @Query() query: any,
+    @Query('skip') skip?: number,
+    @Query('take') take?: number,
+  ) {
+    return this.dataLeaveService.findGroup(userId, query, +skip, +take);
   }
   @Get('findGroup-hr/:userId')
-  findGroupHr(@Param('userId') userId: string, @Query() query: any) {
-    return this.dataLeaveService.findGroupHr(userId, query);
+  findGroupHr(
+    @Param('userId') userId: string,
+    @Query() query: any,
+    @Query('skip') skip?: number,
+    @Query('take') take?: number,
+  ) {
+    return this.dataLeaveService.findGroupHr(userId, query, +skip, +take);
   }
 
   @Get('/:userId')
-  findOne(@Param('userId') userId: string) {
-    return this.dataLeaveService.findOne(userId);
+  findOne(
+    @Param('userId') userId: string,
+    @Query('skip') skip?: number,
+    @Query('take') take?: number,
+  ) {
+    return this.dataLeaveService.findOne(userId, +skip, +take);
   }
 
   @Get(`find-detail-type-leave-by-userId/:userId`)
