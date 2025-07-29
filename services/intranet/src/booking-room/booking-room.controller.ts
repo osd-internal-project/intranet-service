@@ -13,6 +13,7 @@ import {
 import { BookingRoomService } from './booking-room.service';
 import { Prisma } from '@prisma/client';
 import { UserInterceptor } from '@inventory/share';
+import * as dayjs from 'dayjs';
 
 @Controller('booking-room')
 export class BookingRoomController {
@@ -22,13 +23,6 @@ export class BookingRoomController {
   create(@Body() data: Prisma.bookingRoomCreateInput) {
     return this.bookingRoomService.create(data);
   }
-
-  // @Get()
-  // @UseGuards(AuthGuard)
-  // findAll(@Req() req) {
-  //   const userId = req.user.userId;
-  //   return this.bookingRoomService.findAll(userId);
-  // }
 
   @Get()
   @UseInterceptors(UserInterceptor)
@@ -44,15 +38,13 @@ export class BookingRoomController {
     return this.bookingRoomService.findMany(+skip, +take, req.body.sub, role);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.bookingRoomService.findAll();
-  // }
+  @Get('calendar')
+  @UseInterceptors(UserInterceptor)
+  findCalendar(@Req() req, @Query() query: { month: Date | string }) {
+    const token = req.body.sub;
+    return this.bookingRoomService.findCalendar(token, query);
+  }
 
-  // @Get()
-  // findMany(@Query('skip') skip: number, @Query('take') take: number) {
-  //   return this.bookingRoomService.findMany(+skip, +take);
-  // }
   @Get('count-by-room-and-range')
   countBookingRoomCountByRoomAndRange(
     @Query('roomId') roomId: string,
@@ -65,11 +57,6 @@ export class BookingRoomController {
       endDate,
     );
   }
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.bookingRoomService.findOne(+id);
-  }
-
   @Patch(':id')
   update(@Param('id') id: string, @Body() data: Prisma.masterRoomUpdateInput) {
     return this.bookingRoomService.update(+id, data);

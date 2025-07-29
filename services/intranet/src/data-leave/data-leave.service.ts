@@ -435,21 +435,6 @@ export class DataLeaveService {
     if (accessedUserIds) {
       let currentGroupId = accessedUserIds.groupId;
       while (currentGroupId) {
-        const header = await this.userPermissionGroupRepo.findFirst({
-          where: { userGroupId: currentGroupId },
-        });
-        // if (header && header.leaveUserId.length > 0) {
-        //   const users = await this.usersRepo.findMany({
-        //     where: {
-        //       userId: {
-        //         in: header.leaveUserId,
-        //       },
-        //     },
-        //   });
-        //   if (users && users.length > 0) {
-        //     return users;
-        //   }
-        // }
         const userGroup = await this.userGroupRepo.findOne({
           where: { groupId: currentGroupId },
         });

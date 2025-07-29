@@ -41,12 +41,6 @@ export class BookingRoomService {
   }
 
   async findMany(skip: number, take: number, token: string, role: string) {
-    // const getUser = await this.usersRepo.findOne({ where: { token: token } });
-    // const getAccessUser: any[] =
-    //   await this.accessService.getAccessedUsersByUserId(
-    //     ModuleTypes.INTRANET_APPROVE_BOOKING_ROOM,
-    //     getUser.userId,
-    //   );
     const condition = {
       skip,
       take,
@@ -60,8 +54,22 @@ export class BookingRoomService {
     return { data: result, count: count };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} bookingRoom`;
+  async findCalendar(
+    token: string,
+    query: { month: dayjs.Dayjs | Date | string },
+  ) {
+    const condition = {
+      where: {
+        startDate: {
+          gte: dayjs(query.month).startOf('month').toDate(),
+          lte: dayjs(query.month).endOf('month').toDate(),
+        },
+        bookingStatus: { not: 'Reject' },
+      },
+      orderBy: { createdAt: 'desc' },
+    } as Prisma.bookingRoomFindFirstArgsBase;
+    const result = await this.bookingRoomRepository.findMany(condition);
+    return result;
   }
   countBookingRoomCountByRoomAndRange(
     roomId: string,
