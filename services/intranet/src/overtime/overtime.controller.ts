@@ -13,6 +13,7 @@ import {
 import { OverTimeService } from './overtime.service';
 import { Prisma } from '@prisma/client';
 import { UserInterceptor } from '@inventory/share';
+import { Dayjs } from 'dayjs';
 
 @Controller('overtime')
 export class OvetimeController {
@@ -37,6 +38,15 @@ export class OvetimeController {
   ) {
     const token = req.body.sub;
     return await this.overtimeService.findMany(condition, +skip, +take, token);
+  }
+  @Get('calendar')
+  @UseInterceptors(UserInterceptor)
+  async findByCalendar(
+    @Req() req,
+    @Query() query: { month: Dayjs | Date | string },
+  ) {
+    const token = req.body.sub;
+    return await this.overtimeService.findByCalendar(query, token);
   }
   @Get('find-many-hr')
   @UseInterceptors(UserInterceptor)

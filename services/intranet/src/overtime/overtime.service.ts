@@ -189,6 +189,24 @@ export class OverTimeService {
 
     return { data: result, total: count };
   }
+  async findByCalendar(
+    query: { month: dayjs.Dayjs | Date | string },
+    token: string,
+  ) {
+    const getUser = await this.userRepo.findOne({ where: { token: token } });
+    const base = {
+      where: {
+        dateStart: {
+          gte: dayjs(query.month).startOf('month').toDate(),
+          lte: dayjs(query.month).endOf('month').toDate(),
+        },
+        userId: getUser.userId,
+      },
+    } as Prisma.overtimeFindManyArgs;
+    const result = await this.overtimeRepo.findMany(base);
+
+    return result;
+  }
 
   async findManyByHr(
     condition: Prisma.overtimeCreateInput,
