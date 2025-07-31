@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UnitRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
+import * as dayjs from 'dayjs';
 
 @Injectable()
 export class UnitService {
@@ -10,12 +11,29 @@ export class UnitService {
   }
 
   async findAll(query: Prisma.unitWhereInput, skip: number, take: number) {
+    let filter = {};
+    if (query?.unitName) {
+      filter = { ...filter, unitName: { contains: query?.unitName } };
+    }
+    if (query?.createdAt) {
+      filter = {
+        ...filter,
+        createdAt: {
+          gte: dayjs(query.createdAt as string)
+            .startOf('date')
+            .toDate(),
+          lte: dayjs(query.createdAt as string)
+            .endOf('date')
+            .toDate(),
+        },
+      };
+    }
     const data = await this.unitRepo.findMany({
-      where: { ...query },
+      where: filter,
       skip,
       take,
     });
-    const count = await this.unitRepo.count({ where: { ...query } });
+    const count = await this.unitRepo.count({ where: filter });
     return { data, count };
   }
 

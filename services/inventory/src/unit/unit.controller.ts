@@ -9,8 +9,6 @@ import {
   Query,
 } from '@nestjs/common';
 import { UnitService } from './unit.service';
-import { CreateUnitDto } from './dto/create-unit.dto';
-import { UpdateUnitDto } from './dto/update-unit.dto';
 import { Prisma } from '@prisma/client';
 
 @Controller('unit')
@@ -18,15 +16,15 @@ export class UnitController {
   constructor(private readonly unitService: UnitService) {}
 
   @Post()
-  create(@Body() createUnitDto: CreateUnitDto) {
+  create(@Body() createUnitDto: Prisma.unitCreateInput) {
     return this.unitService.create(createUnitDto);
   }
 
   @Get()
   findAll(
     @Query() query: Prisma.unitWhereInput,
-    @Param('skip') skip: number,
-    @Param('take') take: number,
+    @Query('skip') skip?: number,
+    @Query('take') take?: number,
   ) {
     return this.unitService.findAll(query, +skip, +take);
   }
