@@ -1,26 +1,44 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUnitDto } from './dto/create-unit.dto';
-import { UpdateUnitDto } from './dto/update-unit.dto';
+import { UnitRepository } from '@inventory/share';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class UnitService {
-  create(createUnitDto: CreateUnitDto) {
-    return 'This action adds a new unit';
+  constructor(private readonly unitRepo: UnitRepository) {}
+  create(createUnitDto: Prisma.unitCreateInput) {
+    return this.unitRepo.create({ data: createUnitDto });
   }
 
-  findAll() {
-    return `This action returns all unit`;
+  async findAll(query: Prisma.unitWhereInput, skip: number, take: number) {
+    const data = await this.unitRepo.findMany({
+      where: { ...query },
+      skip,
+      take,
+    });
+    const count = await this.unitRepo.count({ where: { ...query } });
+    return { data, count };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} unit`;
+  async findOne(
+    id: number,
+    query: Prisma.unitWhereInput,
+    skip: number,
+    take: number,
+  ) {
+    const data = await this.unitRepo.findMany({
+      where: { ...query, id },
+      skip,
+      take,
+    });
+    const count = await this.unitRepo.count({ where: { ...query } });
+    return { data, count };
   }
 
-  update(id: number, updateUnitDto: UpdateUnitDto) {
-    return `This action updates a #${id} unit`;
+  update(id: number, updateUnitDto: Prisma.unitUpdateInput) {
+    return this.unitRepo.update({ where: { id }, data: { ...updateUnitDto } });
   }
 
   remove(id: number) {
-    return `This action removes a #${id} unit`;
+    return this.unitRepo.delete({ where: { id } });
   }
 }

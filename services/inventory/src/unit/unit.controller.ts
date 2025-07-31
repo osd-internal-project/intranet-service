@@ -1,7 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { UnitService } from './unit.service';
 import { CreateUnitDto } from './dto/create-unit.dto';
 import { UpdateUnitDto } from './dto/update-unit.dto';
+import { Prisma } from '@prisma/client';
 
 @Controller('unit')
 export class UnitController {
@@ -13,17 +23,29 @@ export class UnitController {
   }
 
   @Get()
-  findAll() {
-    return this.unitService.findAll();
+  findAll(
+    @Query() query: Prisma.unitWhereInput,
+    @Param('skip') skip: number,
+    @Param('take') take: number,
+  ) {
+    return this.unitService.findAll(query, +skip, +take);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.unitService.findOne(+id);
+  findOne(
+    @Query() query: Prisma.unitWhereInput,
+    @Param('skip') skip: number,
+    @Param('take') take: number,
+    @Param('id') id: string,
+  ) {
+    return this.unitService.findOne(+id, query, +skip, +take);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUnitDto: UpdateUnitDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateUnitDto: Prisma.unitUpdateInput,
+  ) {
     return this.unitService.update(+id, updateUnitDto);
   }
 
