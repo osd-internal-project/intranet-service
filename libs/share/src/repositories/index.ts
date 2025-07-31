@@ -76,5 +76,9 @@ export * from './masterDataCompany.repository';
 //vender
 export * from './overtime.repository';
 export * from './masterConfigTimeOt.repository';
-
 export * from './masterRefreshment.repository';
+
+// stock
+export * from './unit.repository';
+export * from './masterProduct.repository';
+export * from './masterProductImage.repository';

@@ -70,6 +70,11 @@ import {
   OverTimeRepository,
   MasterConfigTimeOtRepository,
   UserModuleRepository,
+
+  // stock
+  MasterProductRepository,
+  MasterProductImageRepository,
+  UnitRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -150,6 +155,11 @@ const services = [
   EmergencyContactRepository,
   //Vender
   MasterConfigTimeOtRepository,
+
+  // stock
+  MasterProductRepository,
+  MasterProductImageRepository,
+  UnitRepository,
 ];
 @Module({
   providers: [...services],

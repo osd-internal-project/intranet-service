@@ -9,7 +9,7 @@ export class DataLeaveRepository {
 
   async findAll(option?: { prisma?: TQueryClient }) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.floor.findMany();
+    return prisma.dataLeave.findMany();
   }
   async findMany(
     condition: Prisma.dataLeaveFindFirstArgsBase,
