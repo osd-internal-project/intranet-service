@@ -1,19 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { CreateMasterProductImageDto } from './dto/create-master-product-image.dto';
 import { UpdateMasterProductImageDto } from './dto/update-master-product-image.dto';
+import { MasterProductImageRepository } from '@inventory/share';
 
 @Injectable()
 export class MasterProductImageService {
-  create(createMasterProductImageDto: CreateMasterProductImageDto) {
-    return 'This action adds a new masterProductImage';
+  constructor(
+    private readonly masterproductimageRepo: MasterProductImageRepository,
+  ) {}
+  async create(createMasterProductImageDto: CreateMasterProductImageDto) {
+    const base = { data: createMasterProductImageDto };
+    const response = await this.masterproductimageRepo.create(base);
+    return response;
   }
 
   findAll() {
     return `This action returns all masterProductImage`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} masterProductImage`;
+  findOne(id: string) {
+    return this.masterproductimageRepo.findOne({
+      where: {
+        prdImageId: id,
+      },
+    });
   }
 
   update(id: number, updateMasterProductImageDto: UpdateMasterProductImageDto) {

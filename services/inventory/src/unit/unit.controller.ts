@@ -29,6 +29,11 @@ export class UnitController {
     return this.unitService.findAll(query, +skip, +take);
   }
 
+  @Get('options')
+  findOptions() {
+    return this.unitService.findOptions();
+  }
+
   @Get(':id')
   findOne(
     @Query() query: Prisma.unitWhereInput,

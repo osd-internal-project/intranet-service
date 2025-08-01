@@ -52,6 +52,14 @@ export class UnitService {
     return { data, count };
   }
 
+  async findOptions() {
+    const data = await this.unitRepo.findAll({});
+    const mapdataOptions = data.map((e) => {
+      return { value: e.unitID, label: e.unitName };
+    });
+    return mapdataOptions;
+  }
+
   update(id: number, updateUnitDto: Prisma.unitUpdateInput) {
     return this.unitRepo.update({ where: { id }, data: { ...updateUnitDto } });
   }
