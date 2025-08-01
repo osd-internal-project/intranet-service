@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { MasterProductRepository } from '@inventory/share';
 import dayjs from 'dayjs';
-import { Prisma } from '@prisma/client'; // Replace with your entity
-import * as fs from 'fs/promises'; // For async file operations
-import * as path from 'path';
+import { Prisma } from '@prisma/client';
+import * as fs from 'fs/promises';
 
 @Injectable()
 export class MasterProductService {
@@ -31,6 +30,12 @@ export class MasterProductService {
     take: number,
   ) {
     let filter = {};
+    if (query?.prdName) {
+      filter = { ...filter, prdName: { contains: query?.prdName } };
+    }
+    if (query?.updatedBy) {
+      filter = { ...filter, updatedBy: { contains: query?.updatedBy } };
+    }
     if (query?.createdAt) {
       filter = {
         ...filter,
@@ -54,25 +59,30 @@ export class MasterProductService {
     return { data, count };
   }
 
-  async findOne(
-    id: number,
-    query: Prisma.unitWhereInput,
-    skip: number,
-    take: number,
-  ) {
-    const data = await this.masterproductRepo.findMany({
-      where: { ...query, id },
-      skip,
-      take,
+  async findOne(prdId: string, query: Prisma.masterProductWhereInput) {
+    const data = await this.masterproductRepo.findOne({
+      where: { prdId: prdId },
+      include: { masterProductImage: true, unit: { select: { unitID: true } } },
     });
-    const count = await this.masterproductRepo.count({ where: { ...query } });
-    return { data, count };
+    return data;
   }
 
-  update(id: number, updateUnitDto: Prisma.unitUpdateInput) {
+  update(id: number, updateUnitDto: any) {
+    const data = {
+      prdName: updateUnitDto.prdName,
+      expired: updateUnitDto.expired,
+      description: updateUnitDto.description,
+      responsible: '',
+      unit: {
+        connect: {
+          unitID: updateUnitDto.unitId,
+        },
+      },
+      updatedBy: updateUnitDto.updatedBy,
+    } as Prisma.masterProductUpdateInput;
     return this.masterproductRepo.update({
       where: { id },
-      data: { ...updateUnitDto },
+      data: { ...data },
     });
   }
 

@@ -14,11 +14,11 @@ import { MasterProductImageService } from './master-product-image.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
-import { extname, join } from 'path';
+import { extname } from 'path';
 import { Prisma } from '@prisma/client';
 import configs from 'src/configs';
-const config = configs();
 import { Response } from 'express';
+const config = configs();
 
 @Controller('master-product-image')
 export class MasterProductImageController {

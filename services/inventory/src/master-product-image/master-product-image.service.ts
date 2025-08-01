@@ -1,21 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { CreateMasterProductImageDto } from './dto/create-master-product-image.dto';
-import { UpdateMasterProductImageDto } from './dto/update-master-product-image.dto';
 import { MasterProductImageRepository } from '@inventory/share';
-
+import * as fs from 'fs/promises';
 @Injectable()
 export class MasterProductImageService {
   constructor(
     private readonly masterproductimageRepo: MasterProductImageRepository,
   ) {}
-  async create(createMasterProductImageDto: CreateMasterProductImageDto) {
-    const base = { data: createMasterProductImageDto };
-    const response = await this.masterproductimageRepo.create(base);
-    return response;
-  }
-
-  findAll() {
-    return `This action returns all masterProductImage`;
+  async create(createDto: any) {
+    const { masterProductId } = createDto;
+    const existing = await this.masterproductimageRepo.findOne({
+      where: { masterProductId },
+    });
+    if (existing) {
+      await this.removeImage(existing.id);
+      return this.masterproductimageRepo.update({
+        where: { id: existing.id },
+        data: createDto,
+      });
+    } else {
+      return this.masterproductimageRepo.create({ data: createDto });
+    }
   }
 
   findOne(id: string) {
@@ -26,11 +30,31 @@ export class MasterProductImageService {
     });
   }
 
-  update(id: number, updateMasterProductImageDto: UpdateMasterProductImageDto) {
-    return `This action updates a #${id} masterProductImage`;
+  async remove(id: number) {
+    const image = await this.masterproductimageRepo.findOne({ where: { id } });
+    if (!image) return;
+    try {
+      if (image.filePath) {
+        await fs.unlink(image.filePath);
+        console.log(`Image deleted: ${image.filePath}`);
+      }
+    } catch (err) {
+      console.error(`Failed to delete image:`, err);
+    }
+    return this.masterproductimageRepo.delete({ where: { id } });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} masterProductImage`;
+  async removeImage(id: number) {
+    const image = await this.masterproductimageRepo.findOne({ where: { id } });
+    if (!image) return false;
+    try {
+      if (image.filePath) {
+        console.log(`Image deleted: ${image.filePath}`);
+        await fs.unlink(image.filePath);
+      }
+    } catch (err) {
+      console.error(`Failed to delete image:`, err);
+    }
+    return true;
   }
 }

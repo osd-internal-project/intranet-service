@@ -17,7 +17,6 @@ export class MasterProductController {
 
   @Post()
   create(@Body() data: Prisma.masterProductCreateInput) {
-    console.log(data);
     return this.masterProductService.create(data);
   }
 
@@ -33,11 +32,9 @@ export class MasterProductController {
   @Get(':id')
   findOne(
     @Query() query: Prisma.masterProductWhereInput,
-    @Param('skip') skip: number,
-    @Param('take') take: number,
-    @Param('id') id: string,
+    @Param('prdId') prdId: string,
   ) {
-    return this.masterProductService.findOne(+id, query, +skip, +take);
+    return this.masterProductService.findOne(prdId, query);
   }
 
   @Patch(':id')
