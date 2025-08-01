@@ -129,7 +129,7 @@ export class OverTimeService {
     });
     const data = await this.overtimeRepo.findMany({
       where: { userId: findUser.userId },
-      orderBy: { id: 'asc' },
+      orderBy: { createdAt: 'desc' },
       take,
       skip,
     });
@@ -178,9 +178,7 @@ export class OverTimeService {
       },
       take: take,
       skip: skip,
-      orderBy: {
-        status: 'asc',
-      },
+      orderBy: { createdAt: 'desc' },
     } as Prisma.overtimeFindManyArgs;
     const result = await this.overtimeRepo.findMany(base);
     const count = await this.overtimeRepo.count({
