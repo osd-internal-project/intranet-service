@@ -1006,6 +1006,7 @@ model masterProduct {
   masterProductImage masterProductImage[]
   unit               unit?                @relation(fields: [unitId], references: [id])
   unitId             Int?
+  order              order[]
 
   @@map("master_product")
 }
@@ -1035,18 +1036,21 @@ model unit {
 }
 
 model order {
-  id         Int       @unique @default(autoincrement()) @map("id")
-  oderId     String?   @unique @default(uuid()) @map("order_id") @db.VarChar(50)
-  prdId      String    @map("product_id") @db.VarChar(50)
-  prdName    String    @map("product_name") @db.VarChar(250)
-  price      Float     @default(0.00) @map("price")
-  totalPrice Float     @default(0.00) @map("total_price")
-  totalQty   Float     @default(0.00) @map("total_qty")
-  unit       String?   @map("unit") @db.VarChar(20)
-  expiredAt  DateTime? @map("expired")
-  updatedBy  String    @map("updated_by") @db.VarChar(250)
-  createdAt  DateTime? @default(now()) @map("created_at")
-  updatedAt  DateTime? @default(now()) @map("updated_at")
+  id              Int            @unique @default(autoincrement()) @map("id")
+  oderId          String?        @unique @default(uuid()) @map("order_id") @db.VarChar(50)
+  prdId           String         @map("product_id") @db.VarChar(50)
+  prdName         String         @map("product_name") @db.VarChar(250)
+  price           Float          @default(0.00) @map("price")
+  totalPrice      Float          @default(0.00) @map("total_price")
+  totalQty        Float          @default(0.00) @map("total_qty")
+  unit            String?        @map("unit") @db.VarChar(20)
+  expiredAt       DateTime?      @map("expired")
+  updatedBy       String         @map("updated_by") @db.VarChar(250)
+  createdAt       DateTime?      @default(now()) @map("created_at")
+  updatedAt       DateTime?      @default(now()) @map("updated_at")
+  masterProductId String?        @map("master_product_id")
+  masterProduct   masterProduct? @relation(fields: [masterProductId], references: [prdId], onDelete: Cascade)
+  orderLot        orderLot[]
 }
 
 model orderLot {
@@ -1063,6 +1067,8 @@ model orderLot {
   updatedBy  String    @map("updated_by") @db.VarChar(250)
   createdAt  DateTime? @default(now()) @map("created_at")
   updatedAt  DateTime? @default(now()) @map("updated_at")
+  oderId     String?   @map("order_id")
+  order      order?    @relation(fields: [oderId], references: [oderId], onDelete: Cascade)
 
   @@map("order_lot")
 }

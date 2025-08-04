@@ -51,7 +51,7 @@ export class MasterProductService {
     }
     const data = await this.masterproductRepo.findMany({
       where: filter,
-      include: { masterProductImage: true, unit: true },
+      include: { masterProductImage: true, unit: true, order: true },
       skip,
       take,
     });
@@ -62,7 +62,11 @@ export class MasterProductService {
   async findOne(prdId: string, query: Prisma.masterProductWhereInput) {
     const data = await this.masterproductRepo.findOne({
       where: { prdId: prdId },
-      include: { masterProductImage: true, unit: { select: { unitID: true } } },
+      include: {
+        masterProductImage: true,
+        unit: { select: { unitID: true } },
+        order: true,
+      },
     });
     return data;
   }
