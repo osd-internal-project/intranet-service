@@ -284,7 +284,7 @@ export class DataLeaveService {
         status: {
           in: ['approved', 'waiting'],
         },
-        createdAt: {
+        startDate: {
           gte: startOfYear,
           lte: endOfYear,
         },
@@ -355,18 +355,119 @@ export class DataLeaveService {
     return resUser;
   }
 
+  // countLeavesByTypeIdMap(leaveRecords) {
+  //   const leaveDaysByType = {};
+  //   const leaveSummaryByType = leaveRecords.reduce((acc, item) => {
+  //     const typeId = item.typeId;
+  //     const hours = item.leaveHour || 0;
+  //     if (!acc[typeId]) {
+  //       acc[typeId] = hours;
+  //     } else {
+  //       acc[typeId] += hours;
+  //     }
+  //     return acc;
+  //   }, {});
+  //   for (const typeId in leaveSummaryByType) {
+  //     const totalHours = leaveSummaryByType[typeId];
+  //     if (totalHours >= 8) {
+  //       const fullDays = Math.floor(totalHours / 8);
+  //       const remaining = totalHours % 8;
+  //       const hourRemain = Math.floor(remaining);
+  //       const minuteRemain = Math.round((remaining % 1) * 60) === 30 ? 0.5 : 0;
+  //       leaveDaysByType[typeId] = {
+  //         total: totalHours,
+  //         valueHours: fullDays, // จำนวนวัน
+  //         valueMinute: hourRemain + minuteRemain, // นาทีที่เหลือ
+  //       };
+  //     } else {
+  //       leaveDaysByType[typeId] = {
+  //         total: totalHours,
+  //         valueHours: 0,
+  //         valueMinute: totalHours,
+  //       };
+  //     }
+  //   }
+  //   return leaveDaysByType;
+  // }
+
   countLeavesByTypeIdMap(leaveRecords) {
     const leaveDaysByType = {};
-    const leaveSummaryByType = leaveRecords.reduce((acc, item) => {
+    const targetYear = new Date().getFullYear();
+    // แยกชั่วโมงการลาตามปีก่อน
+    const leaveHoursByYear = leaveRecords.reduce((acc, item) => {
       const typeId = item.typeId;
-      const hours = item.leaveHour || 0;
+      const startDate = new Date(item.startDate);
+      const endDate = new Date(item.endDate);
+      const leaveHour = item.leaveHour || 0;
+
+      const startYear = startDate.getFullYear();
+      const endYear = endDate.getFullYear();
+
       if (!acc[typeId]) {
-        acc[typeId] = hours;
-      } else {
-        acc[typeId] += hours;
+        acc[typeId] = {};
       }
+
+      // กรณีการลาอยู่ในปีเดียวกัน
+      if (startYear === endYear) {
+        const year = startYear;
+        if (!acc[typeId][year]) {
+          acc[typeId][year] = 0;
+        }
+        acc[typeId][year] += leaveHour;
+      }
+      // กรณีการลาคาบเกี่ยว 2 ปี
+      else if (endYear === startYear + 1) {
+        // คำนวณสัดส่วนการลาในแต่ละปี
+        const totalDays =
+          Math.ceil(
+            (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24),
+          ) + 1;
+
+        // หาจำนวนวันในปีแรก (จาก startDate ถึงสิ้นปี)
+        const endOfStartYear = new Date(startYear, 11, 31); // 31 ธันวาคม
+        const daysInStartYear =
+          Math.ceil(
+            (endOfStartYear.getTime() - startDate.getTime()) /
+              (1000 * 60 * 60 * 24),
+          ) + 1;
+
+        // หาจำนวนวันในปีถัดไป (จากต้นปีถึง endDate)
+        const startOfEndYear = new Date(endYear, 0, 1); // 1 มกราคม
+        const daysInEndYear =
+          Math.ceil(
+            (endDate.getTime() - startOfEndYear.getTime()) /
+              (1000 * 60 * 60 * 24),
+          ) + 1;
+
+        // แบ่งชั่วโมงตามสัดส่วน
+        const hoursInStartYear = (leaveHour * daysInStartYear) / totalDays;
+        const hoursInEndYear = (leaveHour * daysInEndYear) / totalDays;
+
+        // เก็บข้อมูลในปีแรก
+        if (!acc[typeId][startYear]) {
+          acc[typeId][startYear] = 0;
+        }
+        acc[typeId][startYear] += hoursInStartYear;
+
+        // เก็บข้อมูลในปีถัดไป
+        if (!acc[typeId][endYear]) {
+          acc[typeId][endYear] = 0;
+        }
+        acc[typeId][endYear] += hoursInEndYear;
+      }
+
       return acc;
     }, {});
+
+    // คำนวณผลลัพธ์สำหรับปีที่ต้องการ
+    const leaveSummaryByType = {};
+    for (const typeId in leaveHoursByYear) {
+      if (leaveHoursByYear[typeId][targetYear]) {
+        leaveSummaryByType[typeId] = leaveHoursByYear[typeId][targetYear];
+      }
+    }
+
+    // แปลงชั่วโมงเป็นวันและชั่วโมง
     for (const typeId in leaveSummaryByType) {
       const totalHours = leaveSummaryByType[typeId];
       if (totalHours >= 8) {
@@ -377,7 +478,7 @@ export class DataLeaveService {
         leaveDaysByType[typeId] = {
           total: totalHours,
           valueHours: fullDays, // จำนวนวัน
-          valueMinute: hourRemain + minuteRemain, // นาทีที่เหลือ
+          valueMinute: hourRemain + minuteRemain, // ชั่วโมงและนาทีที่เหลือ
         };
       } else {
         leaveDaysByType[typeId] = {
@@ -387,7 +488,99 @@ export class DataLeaveService {
         };
       }
     }
+
     return leaveDaysByType;
+  }
+
+  // ฟังก์ชันเสริมสำหรับดูข้อมูลการลาทุกปี
+  countLeavesByTypeIdMapAllYears(leaveRecords) {
+    const leaveDaysByTypeAndYear = {};
+
+    // แยกชั่วโมงการลาตามปี
+    const leaveHoursByYear = leaveRecords.reduce((acc, item) => {
+      const typeId = item.typeId;
+      const startDate = new Date(item.startDate);
+      const endDate = new Date(item.endDate);
+      const leaveHour = item.leaveHour || 0;
+
+      const startYear = startDate.getFullYear();
+      const endYear = endDate.getFullYear();
+
+      if (!acc[typeId]) {
+        acc[typeId] = {};
+      }
+
+      // กรณีการลาอยู่ในปีเดียวกัน
+      if (startYear === endYear) {
+        const year = startYear;
+        if (!acc[typeId][year]) {
+          acc[typeId][year] = 0;
+        }
+        acc[typeId][year] += leaveHour;
+      }
+      // กรณีการลาคาบเกี่ยว 2 ปี
+      else if (endYear === startYear + 1) {
+        const totalDays =
+          Math.ceil(
+            (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24),
+          ) + 1;
+        const endOfStartYear = new Date(startYear, 11, 31);
+        const daysInStartYear =
+          Math.ceil(
+            (endOfStartYear.getTime() - startDate.getTime()) /
+              (1000 * 60 * 60 * 24),
+          ) + 1;
+        const startOfEndYear = new Date(endYear, 0, 1);
+        const daysInEndYear =
+          Math.ceil(
+            (endDate.getTime() - startOfEndYear.getTime()) /
+              (1000 * 60 * 60 * 24),
+          ) + 1;
+
+        const hoursInStartYear = (leaveHour * daysInStartYear) / totalDays;
+        const hoursInEndYear = (leaveHour * daysInEndYear) / totalDays;
+
+        if (!acc[typeId][startYear]) {
+          acc[typeId][startYear] = 0;
+        }
+        acc[typeId][startYear] += hoursInStartYear;
+
+        if (!acc[typeId][endYear]) {
+          acc[typeId][endYear] = 0;
+        }
+        acc[typeId][endYear] += hoursInEndYear;
+      }
+
+      return acc;
+    }, {});
+
+    // แปลงผลลัพธ์สำหรับทุกปี
+    for (const typeId in leaveHoursByYear) {
+      leaveDaysByTypeAndYear[typeId] = {};
+      for (const year in leaveHoursByYear[typeId]) {
+        const totalHours = leaveHoursByYear[typeId][year];
+        if (totalHours >= 8) {
+          const fullDays = Math.floor(totalHours / 8);
+          const remaining = totalHours % 8;
+          const hourRemain = Math.floor(remaining);
+          const minuteRemain =
+            Math.round((remaining % 1) * 60) === 30 ? 0.5 : 0;
+          leaveDaysByTypeAndYear[typeId][year] = {
+            total: totalHours,
+            valueHours: fullDays,
+            valueMinute: hourRemain + minuteRemain,
+          };
+        } else {
+          leaveDaysByTypeAndYear[typeId][year] = {
+            total: totalHours,
+            valueHours: 0,
+            valueMinute: totalHours,
+          };
+        }
+      }
+    }
+
+    return leaveDaysByTypeAndYear;
   }
 
   countlimitLeavesByTypeIdMap(leaveRecords) {
