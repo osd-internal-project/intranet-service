@@ -997,7 +997,7 @@ model masterProduct {
   prdId              String               @unique @default(uuid()) @map("product_id") @db.VarChar(50)
   prdName            String               @map("product_name") @db.VarChar(250)
   prdImageId         String?              @map("product_image_id") @db.VarChar(250)
-  responsible        String               @map("responsible") @db.VarChar(250)
+  price              Float                @default(0.00) @map("price")
   description        String?              @map("description") @db.Text
   updatedBy          String               @map("updated_by") @db.VarChar(250)
   expired            DateTime             @map("expired")
@@ -1032,4 +1032,35 @@ model unit {
   createdAt     DateTime        @default(now()) @map("created_at")
   updatedAt     DateTime        @default(now()) @map("updated_at")
   masterProduct masterProduct[]
+}
+
+model oder {
+  id         Int       @unique @default(autoincrement()) @map("id")
+  oderId     String?   @unique @default(uuid()) @map("order_id") @db.VarChar(50)
+  prdId      String    @map("product_id") @db.VarChar(50)
+  prdName    String    @map("product_name") @db.VarChar(250)
+  price      Float     @default(0.00) @map("price")
+  totalPrice Float     @default(0.00) @map("total_price")
+  totalQty   Float     @default(0.00) @map("total_qty")
+  unit       String?   @map("unit") @db.VarChar(20)
+  expiredAt  DateTime? @map("expired")
+  updatedBy  String    @map("updated_by") @db.VarChar(250)
+  createdAt  DateTime? @default(now()) @map("created_at")
+  updatedAt  DateTime? @default(now()) @map("updated_at")
+}
+
+model oderLot {
+  id         Int       @unique @default(autoincrement()) @map("id")
+  oderLotId  String?   @unique @default(uuid()) @map("order_lot_id") @db.VarChar(50)
+  prdId      String    @map("product_id") @db.VarChar(50)
+  prdName    String    @map("product_name") @db.VarChar(250)
+  price      Float     @default(0.00) @map("price")
+  totalPrice Float     @default(0.00) @map("total_price")
+  totalQty   Float     @default(0.00) @map("total_qty")
+  unit       String?   @map("unit") @db.VarChar(20)
+  barcode    String?   @map("barcode") @db.VarChar(50)
+  expiredAt  DateTime? @map("expired")
+  updatedBy  String    @map("updated_by") @db.VarChar(250)
+  createdAt  DateTime? @default(now()) @map("created_at")
+  updatedAt  DateTime? @default(now()) @map("updated_at")
 }
