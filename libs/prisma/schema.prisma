@@ -1034,7 +1034,7 @@ model unit {
   masterProduct masterProduct[]
 }
 
-model oder {
+model order {
   id         Int       @unique @default(autoincrement()) @map("id")
   oderId     String?   @unique @default(uuid()) @map("order_id") @db.VarChar(50)
   prdId      String    @map("product_id") @db.VarChar(50)
@@ -1049,7 +1049,7 @@ model oder {
   updatedAt  DateTime? @default(now()) @map("updated_at")
 }
 
-model oderLot {
+model orderLot {
   id         Int       @unique @default(autoincrement()) @map("id")
   oderLotId  String?   @unique @default(uuid()) @map("order_lot_id") @db.VarChar(50)
   prdId      String    @map("product_id") @db.VarChar(50)
@@ -1063,4 +1063,6 @@ model oderLot {
   updatedBy  String    @map("updated_by") @db.VarChar(250)
   createdAt  DateTime? @default(now()) @map("created_at")
   updatedAt  DateTime? @default(now()) @map("updated_at")
+
+  @@map("order_lot")
 }

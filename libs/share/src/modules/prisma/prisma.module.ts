@@ -75,6 +75,8 @@ import {
   MasterProductRepository,
   MasterProductImageRepository,
   UnitRepository,
+  OrderRepository,
+  OrderLotRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -160,6 +162,8 @@ const services = [
   MasterProductRepository,
   MasterProductImageRepository,
   UnitRepository,
+  OrderRepository,
+  OrderLotRepository,
 ];
 @Module({
   providers: [...services],
