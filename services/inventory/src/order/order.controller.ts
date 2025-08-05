@@ -10,13 +10,14 @@ import {
 } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { Prisma } from '@prisma/client';
+import { CreateOrderDto } from './dto/create-order.dto';
 
 @Controller('order')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Post()
-  create(@Body() createOrderDto: Prisma.orderCreateInput) {
+  create(@Body() createOrderDto: CreateOrderDto) {
     return this.orderService.create(createOrderDto);
   }
 
@@ -31,7 +32,7 @@ export class OrderController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.orderService.findOne(+id);
+    return this.orderService.findOne(id);
   }
 
   @Patch(':id')

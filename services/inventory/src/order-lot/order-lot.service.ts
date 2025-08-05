@@ -14,12 +14,9 @@ export class OrderLotService {
 
   async findAll(query: Prisma.orderLotWhereInput, skip: number, take: number) {
     let filter = {};
-    // if (query?.prdName) {
-    //   filter = { ...filter, prdName: { contains: query?.prdName } };
-    // }
-    // if (query?.updatedBy) {
-    //   filter = { ...filter, updatedBy: { contains: query?.updatedBy } };
-    // }
+    if (query.oderId) {
+      filter = { ...filter, oderId: query.oderId };
+    }
     if (query?.createdAt) {
       filter = {
         ...filter,

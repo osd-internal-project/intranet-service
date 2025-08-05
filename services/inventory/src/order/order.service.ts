@@ -56,10 +56,14 @@ export class OrderService {
     return { data, count };
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     const data = await this.orderRepo.findOne({
-      where: { id: id },
+      where: { oderId: id },
+      include: {
+        orderLot: true,
+      },
     });
+
     return data;
   }
 
