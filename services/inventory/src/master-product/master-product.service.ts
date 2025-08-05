@@ -64,7 +64,7 @@ export class MasterProductService {
       where: { prdId: prdId },
       include: {
         masterProductImage: true,
-        unit: { select: { unitID: true } },
+        unit: { select: { unitID: true, unitName: true } },
         order: true,
       },
     });
