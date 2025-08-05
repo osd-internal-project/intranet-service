@@ -1,12 +1,48 @@
-import { OrderRepository } from '@inventory/share';
+import { OrderLotRepository, OrderRepository } from '@inventory/share';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { CreateOrderDto } from './dto/create-order.dto';
 
 @Injectable()
 export class OrderService {
-  constructor(private readonly orderRepo: OrderRepository) {}
-  create(createOrderDto: Prisma.orderCreateInput) {
-    return this.orderRepo.create({ data: { ...createOrderDto } });
+  constructor(
+    private readonly orderRepo: OrderRepository,
+    private readonly orderlotRepo: OrderLotRepository,
+  ) {}
+  async create(createOrderDto: CreateOrderDto) {
+    const data = {
+      prdId: createOrderDto.prdId,
+      prdName: createOrderDto.prdName,
+      price: createOrderDto.price,
+      unit: createOrderDto.unit,
+      totalQty: createOrderDto.totalQty,
+      totalPrice: createOrderDto.totalPrice,
+      expiredAt: createOrderDto.expiredAt.toString(),
+      updatedBy: createOrderDto.updatedBy,
+    };
+    const response = await this.orderRepo.create({ data: { ...data } });
+    if (response) {
+      if (createOrderDto.orderLot.length > 0) {
+        createOrderDto.orderLot.map(async (e) => {
+          return await this.orderlotRepo.create({
+            data: {
+              prdId: createOrderDto.prdId,
+              prdName: createOrderDto.prdName,
+              price: e.price,
+              totalPrice: e.qty * e.price,
+              totalQty: createOrderDto.totalQty,
+              unit: e.unit,
+              expiredAt: e.expiredAt,
+              updatedBy: createOrderDto.updatedBy,
+              barcode: e.barcode,
+              oderId: response.oderId,
+            },
+          });
+        });
+      }
+    }
+
+    return response;
   }
 
   async findAll(query: Prisma.orderWhereInput, skip: number, take: number) {
