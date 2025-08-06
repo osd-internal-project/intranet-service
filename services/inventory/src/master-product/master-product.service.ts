@@ -60,8 +60,6 @@ export class MasterProductService {
   }
 
   async findOne(prdId: string, query: Prisma.masterProductWhereInput) {
-    console.log(prdId);
-
     const data = await this.masterproductRepo.findOne({
       where: { prdId: prdId },
       include: {

@@ -44,6 +44,11 @@ export class MasterProductImageController {
     @Param('prdId') prdId: string,
     @Body('type') type,
   ) {
+    // console.log('prdId 🚀', prdId);
+    // console.log('files 🚀', files);
+    // console.log('type 🚀', type);
+    // console.log('Log True or False', prdId && type && files.length > 0);
+
     if (prdId && type && files.length > 0) {
       const data = {
         masterProductId: prdId,

@@ -1,4 +1,8 @@
-import { OrderLotRepository, OrderRepository } from '@inventory/share';
+import {
+  MasterProductRepository,
+  OrderLotRepository,
+  OrderRepository,
+} from '@inventory/share';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -8,8 +12,20 @@ export class OrderService {
   constructor(
     private readonly orderRepo: OrderRepository,
     private readonly orderlotRepo: OrderLotRepository,
+    private readonly masterproductRepo: MasterProductRepository,
   ) {}
   async create(createOrderDto: CreateOrderDto) {
+    const findMasterProduct = await this.masterproductRepo.findOne({
+      where: { prdId: createOrderDto.prdId },
+    });
+    if (findMasterProduct) {
+      await this.masterproductRepo.update({
+        where: { prdId: createOrderDto.prdId },
+        data: {
+          totalQty: createOrderDto.totalQty + findMasterProduct.totalQty,
+        },
+      });
+    }
     const data = {
       prdId: createOrderDto.prdId,
       prdName: createOrderDto.prdName,
@@ -17,10 +33,14 @@ export class OrderService {
       unit: createOrderDto.unit,
       totalQty: createOrderDto.totalQty,
       totalPrice: createOrderDto.totalPrice,
-      expiredAt: createOrderDto.expiredAt.toString(),
       updatedBy: createOrderDto.updatedBy,
       status: 'in-stock',
-    };
+      masterProduct: {
+        connect: {
+          prdId: createOrderDto.prdId,
+        },
+      },
+    } as Prisma.orderCreateInput;
     const response = await this.orderRepo.create({ data: { ...data } });
     if (response) {
       if (createOrderDto.orderLot.length > 0) {
