@@ -1,4 +1,4 @@
-export type CreateOrderDto = {
+export class CreateOrderDto {
   prdId: string;
   prdName: string;
   price: number;
@@ -15,4 +15,4 @@ export type CreateOrderDto = {
     barcode: string;
     expiredAt: Date;
   }[];
-};
+}
