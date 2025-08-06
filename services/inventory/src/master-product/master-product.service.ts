@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { MasterProductRepository } from '@inventory/share';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 import { Prisma } from '@prisma/client';
 import * as fs from 'fs/promises';
 
@@ -40,12 +40,8 @@ export class MasterProductService {
       filter = {
         ...filter,
         createdAt: {
-          gte: dayjs(query.createdAt as string)
-            .startOf('date')
-            .toDate(),
-          lte: dayjs(query.createdAt as string)
-            .endOf('date')
-            .toDate(),
+          gte: dayjs(query.createdAt[0]).startOf('date').toDate(),
+          lte: dayjs(query.createdAt[1]).endOf('date').toDate(),
         },
       };
     }
