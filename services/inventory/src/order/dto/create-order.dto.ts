@@ -7,6 +7,8 @@ export class CreateOrderDto {
   totalPrice: number;
   expiredAt: Date;
   updatedBy: string;
+  cost?: number;
+  avgCost?: number;
   orderLot: {
     prdName: string;
     unit: string;

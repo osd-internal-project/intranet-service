@@ -34,6 +34,8 @@ export class OrderService {
       totalQty: createOrderDto.totalQty,
       totalPrice: createOrderDto.totalPrice,
       updatedBy: createOrderDto.updatedBy,
+      cost: createOrderDto.cost,
+      avgCost: createOrderDto.avgCost,
       status: 'in-stock',
       masterProduct: {
         connect: {
@@ -51,6 +53,8 @@ export class OrderService {
               prdName: createOrderDto.prdName,
               price: e.price,
               unit: e.unit,
+              cost: createOrderDto.cost,
+              avgCost: createOrderDto.avgCost,
               expiredAt: e.expiredAt,
               updatedBy: createOrderDto.updatedBy,
               barcode: e.barcode,
