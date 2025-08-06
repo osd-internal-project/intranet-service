@@ -11,9 +11,9 @@ export class MasterProductService {
   create(createUnitDto: any) {
     const data = {
       prdName: createUnitDto.prdName,
-      expired: createUnitDto.expired,
       description: createUnitDto.description,
-      responsible: '',
+      totalQty: 0.0,
+      price: createUnitDto.price,
       unit: {
         connect: {
           unitID: createUnitDto.unitId,
@@ -60,6 +60,8 @@ export class MasterProductService {
   }
 
   async findOne(prdId: string, query: Prisma.masterProductWhereInput) {
+    console.log(prdId);
+
     const data = await this.masterproductRepo.findOne({
       where: { prdId: prdId },
       include: {
@@ -74,9 +76,9 @@ export class MasterProductService {
   update(id: number, updateUnitDto: any) {
     const data = {
       prdName: updateUnitDto.prdName,
-      expired: updateUnitDto.expired,
       description: updateUnitDto.description,
-      responsible: '',
+      totalQty: updateUnitDto.totalQty,
+      price: updateUnitDto.price,
       unit: {
         connect: {
           unitID: updateUnitDto.unitId,

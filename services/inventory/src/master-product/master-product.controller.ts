@@ -29,7 +29,7 @@ export class MasterProductController {
     return this.masterProductService.findAll(query, +skip, +take);
   }
 
-  @Get(':id')
+  @Get(':prdId')
   findOne(
     @Query() query: Prisma.masterProductWhereInput,
     @Param('prdId') prdId: string,

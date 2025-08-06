@@ -19,6 +19,7 @@ export class OrderService {
       totalPrice: createOrderDto.totalPrice,
       expiredAt: createOrderDto.expiredAt.toString(),
       updatedBy: createOrderDto.updatedBy,
+      status: 'in-stock',
     };
     const response = await this.orderRepo.create({ data: { ...data } });
     if (response) {
@@ -29,13 +30,12 @@ export class OrderService {
               prdId: createOrderDto.prdId,
               prdName: createOrderDto.prdName,
               price: e.price,
-              totalPrice: e.qty * e.price,
-              totalQty: createOrderDto.totalQty,
               unit: e.unit,
               expiredAt: e.expiredAt,
               updatedBy: createOrderDto.updatedBy,
               barcode: e.barcode,
               oderId: response.oderId,
+              status: 'in-stock',
             },
           });
         });
