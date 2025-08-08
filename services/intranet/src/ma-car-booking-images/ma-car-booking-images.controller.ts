@@ -47,7 +47,6 @@ export class MaCarBookingImagesController {
     @Param('id') id: string,
     @Body('type') type,
   ) {
-    console.log(files);
     if (id && type && files.length > 0) {
       const data = {
         carBookingId: +id,

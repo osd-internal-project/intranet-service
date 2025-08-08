@@ -29,9 +29,9 @@ export class OrderLotController {
     return this.orderLotService.findAll(query, +skip, +take);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.orderLotService.findOne(+id);
+  @Get(':barcode')
+  findOne(@Param('barcode') barcode: string) {
+    return this.orderLotService.findOne(barcode);
   }
 
   @Patch(':id')

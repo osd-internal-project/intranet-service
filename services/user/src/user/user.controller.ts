@@ -44,14 +44,6 @@ export class UserController {
     private readonly userRoleService: UserRoleService,
   ) {}
 
-  // @Post()
-  // async create(@Body('data') data: Prisma.userCreateInput) {
-  //   const saltOrRounds = 10;
-  //   const hashedPassword = await bcrypt.hash(data.password, saltOrRounds);
-  //   data.password = hashedPassword;
-  //   return this.userService.create(data);
-  // }
-
   @Post()
   async create(@Body('data') data: Prisma.usersCreateInput) {
     const checkuser = await this.userService.findOneByCondition({
@@ -66,12 +58,6 @@ export class UserController {
         HttpStatus.BAD_REQUEST,
       );
     } else {
-      // const saltOrRounds = 10;
-      // const hashedPassword = await bcrypt.hash(
-      //   data.password.trim(),
-      //   saltOrRounds,
-      // );
-      // data.password = hashedPassword;
       return this.userService.create(data);
     }
   }
@@ -206,7 +192,9 @@ export class UserController {
     @Param('userId') userId: string,
     @UploadedFiles() files: Express.Multer.File[],
   ) {
+    console.log(userId);
     const { imageId } = await this.userService.findByUserId(userId);
+    console.log(imageId);
     const imagePath = join(`${pathMountDirUpload}/users-image`, `${imageId}`);
     if (imageId !== null) {
       fs.unlink(imagePath, (err) => {
