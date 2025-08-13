@@ -1000,6 +1000,7 @@ model masterProduct {
   totalQty           Float?               @default(0.00) @map("total_qty")
   description        String?              @map("description") @db.Text
   updatedBy          String               @map("updated_by") @db.VarChar(250)
+  barcode            String?              @map("barcode") @db.VarChar(100)
   createdAt          DateTime             @default(now()) @map("created_at")
   updatedAt          DateTime             @default(now()) @map("updated_at")
   masterProductImage masterProductImage[]
@@ -1051,26 +1052,52 @@ model order {
   status          String?        @default("in-stock") @map("status") @db.VarChar(50)
   masterProductId String?        @map("master_product_id")
   masterProduct   masterProduct? @relation(fields: [masterProductId], references: [prdId], onDelete: Cascade)
-  orderLot        orderLot[]
+  // orderLot        orderLot[]
 }
 
-model orderLot {
-  id        Int       @unique @default(autoincrement()) @map("id")
-  oderLotId String?   @unique @default(uuid()) @map("order_lot_id") @db.VarChar(50)
-  prdId     String    @map("product_id") @db.VarChar(50)
-  prdName   String    @map("product_name") @db.VarChar(250)
-  price     Float     @default(0.00) @map("price")
-  cost      Float?    @default(0.00) @map("cost")
-  avgCost   Float?    @default(0.00) @map("avg_cost")
-  unit      String?   @map("unit") @db.VarChar(20)
-  barcode   String?   @map("barcode") @db.VarChar(50)
-  expiredAt DateTime? @map("expired")
-  updatedBy String    @map("updated_by") @db.VarChar(250)
-  createdAt DateTime? @default(now()) @map("created_at")
-  updatedAt DateTime? @default(now()) @map("updated_at")
-  status    String?   @default("in-stock") @map("status") @db.VarChar(50)
-  oderId    String?   @map("order_id")
-  order     order?    @relation(fields: [oderId], references: [oderId], onDelete: Cascade)
+model requestOrder {
+  id           Int                @unique @default(autoincrement()) @map("id")
+  requestId    String             @unique @default(uuid()) @map("request_id") @db.VarChar(50)
+  requestPrice Float              @map("request_price")
+  requestQty   Int?               @default(0) @map("request_qty")
+  status       String?            @default("new") @map("status") @db.VarChar(50)
+  remark       String?            @map("remark") @db.Text()
+  createdBy    String             @map("created_by")
+  createdAt    DateTime           @default(now()) @map("created_at")
+  updatedAt    DateTime           @default(now()) @map("updated_at")
+  requestList  requestOrderList[]
 
-  @@map("order_lot")
+  @@map("request_order")
 }
+
+model requestOrderList {
+  id              Int           @unique @default(autoincrement()) @map("id")
+  requestId       String?       @map("request_id")
+  requestOrder    requestOrder? @relation(fields: [requestId], references: [requestId])
+  masterProductId String?       @map("master_product_id")
+  qty             Int?          @map("qty")
+  amount          Int           @map("amount") @db.Integer
+
+  @@map("request_order_list")
+}
+
+// model orderLot {
+//   id        Int       @unique @default(autoincrement()) @map("id")
+//   oderLotId String?   @unique @default(uuid()) @map("order_lot_id") @db.VarChar(50)
+//   prdId     String    @map("product_id") @db.VarChar(50)
+//   prdName   String    @map("product_name") @db.VarChar(250)
+//   price     Float     @default(0.00) @map("price")
+//   cost      Float?    @default(0.00) @map("cost")
+//   avgCost   Float?    @default(0.00) @map("avg_cost")
+//   unit      String?   @map("unit") @db.VarChar(20)
+//   barcode   String?   @map("barcode") @db.VarChar(50)
+//   expiredAt DateTime? @map("expired")
+//   updatedBy String    @map("updated_by") @db.VarChar(250)
+//   createdAt DateTime? @default(now()) @map("created_at")
+//   updatedAt DateTime? @default(now()) @map("updated_at")
+//   status    String?   @default("in-stock") @map("status") @db.VarChar(50)
+//   oderId    String?   @map("order_id")
+//   order     order?    @relation(fields: [oderId], references: [oderId], onDelete: Cascade)
+
+//   @@map("order_lot")
+// }

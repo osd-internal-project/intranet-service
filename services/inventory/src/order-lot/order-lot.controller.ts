@@ -15,35 +15,35 @@ import { Prisma } from '@prisma/client';
 export class OrderLotController {
   constructor(private readonly orderLotService: OrderLotService) {}
 
-  @Post()
-  create(@Body() createOrderLotDto: Prisma.orderLotCreateInput) {
-    return this.orderLotService.create(createOrderLotDto);
-  }
+  // @Post()
+  // create(@Body() createOrderLotDto: Prisma.orderLotCreateInput) {
+  //   return this.orderLotService.create(createOrderLotDto);
+  // }
 
-  @Get()
-  findAll(
-    @Query() query: Prisma.orderLotWhereInput,
-    @Query('skip') skip?: number,
-    @Query('take') take?: number,
-  ) {
-    return this.orderLotService.findAll(query, +skip, +take);
-  }
+  // @Get()
+  // findAll(
+  //   @Query() query: Prisma.orderLotWhereInput,
+  //   @Query('skip') skip?: number,
+  //   @Query('take') take?: number,
+  // ) {
+  //   return this.orderLotService.findAll(query, +skip, +take);
+  // }
 
-  @Get(':barcode')
-  findOne(@Param('barcode') barcode: string) {
-    return this.orderLotService.findOne(barcode);
-  }
+  // @Get(':barcode')
+  // findOne(@Param('barcode') barcode: string) {
+  //   return this.orderLotService.findOne(barcode);
+  // }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateOrderLotDto: Prisma.orderLotUpdateInput,
-  ) {
-    return this.orderLotService.update(+id, updateOrderLotDto);
-  }
+  // @Patch(':id')
+  // update(
+  //   @Param('id') id: string,
+  //   @Body() updateOrderLotDto: Prisma.orderLotUpdateInput,
+  // ) {
+  //   return this.orderLotService.update(+id, updateOrderLotDto);
+  // }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.orderLotService.remove(+id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.orderLotService.remove(+id);
+  // }
 }

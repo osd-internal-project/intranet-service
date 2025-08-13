@@ -1,6 +1,6 @@
 import {
   MasterProductRepository,
-  OrderLotRepository,
+  // OrderLotRepository,
   OrderRepository,
 } from '@inventory/share';
 import { Injectable } from '@nestjs/common';
@@ -11,7 +11,7 @@ import { CreateOrderDto } from './dto/create-order.dto';
 export class OrderService {
   constructor(
     private readonly orderRepo: OrderRepository,
-    private readonly orderlotRepo: OrderLotRepository,
+    // private readonly orderlotRepo: OrderLotRepository,
     private readonly masterproductRepo: MasterProductRepository,
   ) {}
   async create(createOrderDto: CreateOrderDto) {
@@ -44,27 +44,27 @@ export class OrderService {
       },
     } as Prisma.orderCreateInput;
     const response = await this.orderRepo.create({ data: { ...data } });
-    if (response) {
-      if (createOrderDto.orderLot.length > 0) {
-        createOrderDto.orderLot.map(async (e) => {
-          return await this.orderlotRepo.create({
-            data: {
-              prdId: createOrderDto.prdId,
-              prdName: createOrderDto.prdName,
-              price: e.price,
-              unit: e.unit,
-              cost: createOrderDto.cost,
-              avgCost: createOrderDto.avgCost,
-              expiredAt: e.expiredAt,
-              updatedBy: createOrderDto.updatedBy,
-              barcode: e.barcode,
-              oderId: response.oderId,
-              status: 'in-stock',
-            },
-          });
-        });
-      }
-    }
+    // if (response) {
+    //   if (createOrderDto.orderLot.length > 0) {
+    //     createOrderDto.orderLot.map(async (e) => {
+    //       return await this.orderlotRepo.create({
+    //         data: {
+    //           prdId: createOrderDto.prdId,
+    //           prdName: createOrderDto.prdName,
+    //           price: e.price,
+    //           unit: e.unit,
+    //           cost: createOrderDto.cost,
+    //           avgCost: createOrderDto.avgCost,
+    //           expiredAt: e.expiredAt,
+    //           updatedBy: createOrderDto.updatedBy,
+    //           barcode: e.barcode,
+    //           oderId: response.oderId,
+    //           status: 'in-stock',
+    //         },
+    //       });
+    //     });
+    //   }
+    // }
 
     return response;
   }
@@ -83,9 +83,9 @@ export class OrderService {
   async findOne(id: string) {
     const data = await this.orderRepo.findOne({
       where: { oderId: id },
-      include: {
-        orderLot: true,
-      },
+      // include: {
+      //   orderLot: true,
+      // },
     });
 
     return data;
