@@ -1,8 +1,4 @@
-import {
-  MasterProductRepository,
-  // OrderLotRepository,
-  OrderRepository,
-} from '@inventory/share';
+import { MasterProductRepository, OrderRepository } from '@inventory/share';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -11,7 +7,6 @@ import { CreateOrderDto } from './dto/create-order.dto';
 export class OrderService {
   constructor(
     private readonly orderRepo: OrderRepository,
-    // private readonly orderlotRepo: OrderLotRepository,
     private readonly masterproductRepo: MasterProductRepository,
   ) {}
   async create(createOrderDto: CreateOrderDto) {
@@ -83,9 +78,6 @@ export class OrderService {
   async findOne(id: string) {
     const data = await this.orderRepo.findOne({
       where: { oderId: id },
-      // include: {
-      //   orderLot: true,
-      // },
     });
 
     return data;

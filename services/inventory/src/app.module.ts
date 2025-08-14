@@ -10,6 +10,8 @@ import { UnitModule } from './unit/unit.module';
 import { MasterProductImageModule } from './master-product-image/master-product-image.module';
 import { OrderModule } from './order/order.module';
 import { OrderLotModule } from './order-lot/order-lot.module';
+import { RequestOrderModule } from './request-order/request-order.module';
+import { RequestOrderListModule } from './request-order-list/request-order-list.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
@@ -18,6 +20,8 @@ import { OrderLotModule } from './order-lot/order-lot.module';
     MasterProductImageModule,
     OrderModule,
     OrderLotModule,
+    RequestOrderModule,
+    RequestOrderListModule,
   ],
   controllers: [InventoryController, PublicController],
   providers: [InventoryService],

@@ -29,6 +29,11 @@ export class MasterProductController {
     return this.masterProductService.findAll(query, +skip, +take);
   }
 
+  @Get('barcode/:barcode')
+  findOneByBarcode(@Param('barcode') barcode: string) {
+    return this.masterProductService.findOneByBarcode(barcode);
+  }
+
   @Get(':prdId')
   findOne(
     @Query() query: Prisma.masterProductWhereInput,
@@ -43,6 +48,14 @@ export class MasterProductController {
     @Body() updateUnitDto: Prisma.masterProductUpdateInput,
   ) {
     return this.masterProductService.update(+id, updateUnitDto);
+  }
+
+  @Patch('total-qty/:id')
+  updateQty(
+    @Param('id') id: string,
+    @Body() updateUnitDto: { totalQty: number },
+  ) {
+    return this.masterProductService.updateQty(+id, updateUnitDto);
   }
 
   @Delete(':id')

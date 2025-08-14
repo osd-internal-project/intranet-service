@@ -55,6 +55,18 @@ export class MasterProductService {
     return { data, count };
   }
 
+  async findOneByBarcode(barcode: string) {
+    const data = await this.masterproductRepo.findOne({
+      where: { barcode },
+      include: {
+        masterProductImage: true,
+        unit: { select: { unitID: true, unitName: true } },
+        order: true,
+      },
+    });
+    return data;
+  }
+
   async findOne(prdId: string, query: Prisma.masterProductWhereInput) {
     const data = await this.masterproductRepo.findOne({
       where: { prdId: prdId },
@@ -84,6 +96,53 @@ export class MasterProductService {
       where: { id },
       data: { ...data },
     });
+  }
+
+  async updateQty(id: number, updateUnitDto: { totalQty: number }) {
+    const findMasterProduct = await this.masterproductRepo.findOne({
+      where: { id },
+      select: { totalQty: true },
+    });
+    if (!findMasterProduct) {
+      return { text: 'ไม่มีสินค้าในระบบ', status: 404, data: {} };
+    }
+
+    if (updateUnitDto.totalQty <= 0) {
+      return {
+        text: 'จำนวนรวมต้องมากกว่าศูนย์',
+        status: 400,
+        data: {},
+      };
+    }
+
+    if (findMasterProduct.totalQty < updateUnitDto.totalQty) {
+      return {
+        text: 'จำนวนของในสต็อกมีไม่เพียงพอต่อความต้องการ',
+        status: 400,
+        data: {},
+      };
+    }
+
+    if (findMasterProduct.totalQty === updateUnitDto.totalQty) {
+      return {
+        text: 'Total quantity is already equal to the update value',
+        status: 409,
+        data: {},
+      };
+    }
+
+    const updated = await this.masterproductRepo.update({
+      where: { id },
+      data: {
+        totalQty: findMasterProduct.totalQty - updateUnitDto.totalQty,
+      } as Prisma.masterProductUpdateInput,
+    });
+
+    return {
+      text: 'Successfully updated total quantity',
+      status: 200,
+      data: updated,
+    };
   }
 
   async remove(id: number) {
