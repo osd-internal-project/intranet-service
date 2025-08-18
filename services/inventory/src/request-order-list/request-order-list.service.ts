@@ -1,15 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { CreateRequestOrderListDto } from './dto/create-request-order-list.dto';
 import { UpdateRequestOrderListDto } from './dto/update-request-order-list.dto';
+import { RequestOrderListRepository } from '@inventory/share';
 
 @Injectable()
 export class RequestOrderListService {
+  constructor(
+    private readonly requestorderlotRepo: RequestOrderListRepository,
+  ) {}
   create(createRequestOrderListDto: CreateRequestOrderListDto) {
     return 'This action adds a new requestOrderList';
   }
 
   findAll() {
-    return `This action returns all requestOrderList`;
+    return this.requestorderlotRepo.findAll();
   }
 
   findOne(id: number) {

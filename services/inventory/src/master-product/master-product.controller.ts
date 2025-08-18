@@ -29,6 +29,11 @@ export class MasterProductController {
     return this.masterProductService.findAll(query, +skip, +take);
   }
 
+  @Get('options')
+  findOptions() {
+    return this.masterProductService.findOptions();
+  }
+
   @Get('barcode/:barcode')
   findOneByBarcode(@Param('barcode') barcode: string) {
     return this.masterProductService.findOneByBarcode(barcode);

@@ -2,12 +2,34 @@ import { Injectable } from '@nestjs/common';
 import { RequestOrderRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 import dayjs from 'dayjs';
+import { RequestOrderType } from './dto/create-request-order.dto';
 
 @Injectable()
 export class RequestOrderService {
   constructor(private readonly requestorderRepo: RequestOrderRepository) {}
-  create(createRequestOrderDto: Prisma.requestOrderCreateInput) {
-    return this.requestorderRepo.create({ data: { ...createRequestOrderDto } });
+  create(createRequestOrderDto: RequestOrderType) {
+    const totalQty = createRequestOrderDto.requestList?.reduce(
+      (acc, item) => acc + (item.qty ?? 0),
+      0,
+    );
+    const totalPrice = createRequestOrderDto.requestList?.reduce(
+      (acc, item) => acc + (item.amount ?? 0),
+      0,
+    );
+    const data = {
+      requester: createRequestOrderDto.requester,
+      requestDate: createRequestOrderDto.requestDate,
+      object: createRequestOrderDto.object,
+      createdBy: createRequestOrderDto.createdBy,
+      remark: createRequestOrderDto.remark,
+      requestPrice: totalPrice ?? 0,
+      requestQty: totalQty ?? 0,
+      requestList: {
+        create: createRequestOrderDto.requestList,
+      },
+    } as Prisma.requestOrderCreateInput;
+
+    return this.requestorderRepo.create({ data: { ...data } });
   }
 
   async findAll(
@@ -31,6 +53,7 @@ export class RequestOrderService {
     }
     const data = await this.requestorderRepo.findMany({
       where: filter,
+      include: { requestList: { include: { masterProduct: true } } },
       skip,
       take,
     });
@@ -41,6 +64,7 @@ export class RequestOrderService {
   async findOne(requestId: string) {
     const data = await this.requestorderRepo.findOne({
       where: { requestId: requestId },
+      include: { requestList: { include: { masterProduct: true } } },
     });
     return data;
   }

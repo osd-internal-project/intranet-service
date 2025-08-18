@@ -12,52 +12,52 @@ export class RequestOrderListRepository {
     return prisma.requestOrderList.findMany();
   }
   async findMany(
-    condition: Prisma.masterProductFindFirstArgsBase,
+    condition: Prisma.requestOrderListFindManyArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.masterProduct.findMany(condition);
+    return prisma.requestOrderList.findMany(condition);
   }
   async findOne(
-    condition: Prisma.masterProductFindFirstArgsBase,
+    condition: Prisma.requestOrderListFindFirstArgsBase,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.masterProduct.findFirst(condition);
+    return prisma.requestOrderList.findFirst(condition);
   }
   async create(
-    condition: Prisma.masterProductCreateArgs,
+    condition: Prisma.requestOrderListCreateArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.masterProduct.create(condition);
+    return prisma.requestOrderList.create(condition);
   }
   async createMany(
-    data: Prisma.masterProductCreateManyArgs,
+    data: Prisma.requestOrderListCreateManyArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.masterProduct.createMany(data);
+    return prisma.requestOrderList.createMany(data);
   }
   async update(
-    data: Prisma.masterProductUpdateArgs,
+    data: Prisma.requestOrderListUpdateArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.masterProduct.update(data);
+    return prisma.requestOrderList.update(data);
   }
   async delete(
-    condition: Prisma.masterProductDeleteArgs,
+    condition: Prisma.requestOrderListDeleteArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.masterProduct.delete(condition);
+    return prisma.requestOrderList.delete(condition);
   }
   async count(
-    condition: Prisma.masterProductCountArgs,
+    condition: Prisma.requestOrderListCountArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.masterProduct.count(condition);
+    return prisma.requestOrderList.count(condition);
   }
 }

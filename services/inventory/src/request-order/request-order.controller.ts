@@ -9,8 +9,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { RequestOrderService } from './request-order.service';
-import { CreateRequestOrderDto } from './dto/create-request-order.dto';
-import { UpdateRequestOrderDto } from './dto/update-request-order.dto';
+import { RequestOrderType } from './dto/create-request-order.dto';
 import { Prisma } from '@prisma/client';
 
 @Controller('request-order')
@@ -18,7 +17,7 @@ export class RequestOrderController {
   constructor(private readonly requestOrderService: RequestOrderService) {}
 
   @Post()
-  create(@Body() createRequestOrderDto: Prisma.requestOrderCreateInput) {
+  create(@Body() createRequestOrderDto: RequestOrderType) {
     return this.requestOrderService.create(createRequestOrderDto);
   }
 

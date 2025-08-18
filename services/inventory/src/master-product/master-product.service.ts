@@ -3,6 +3,7 @@ import { MasterProductRepository } from '@inventory/share';
 import * as dayjs from 'dayjs';
 import { Prisma } from '@prisma/client';
 import * as fs from 'fs/promises';
+import { ProductOption } from './dto/create-master-product.dto';
 
 @Injectable()
 export class MasterProductService {
@@ -65,6 +66,25 @@ export class MasterProductService {
       },
     });
     return data;
+  }
+
+  async findOptions() {
+    const data = (await this.masterproductRepo.findMany({
+      include: { unit: { select: { unitName: true } } },
+      orderBy: { prdName: 'asc' },
+    })) as unknown as {
+      prdName: string;
+      prdId: string;
+      unit: { unitName: string };
+      totalQty?: number;
+    }[];
+    const mapData = data.map((item) => ({
+      label: item.prdName,
+      value: item.prdId,
+      unit: item.unit ? item.unit?.unitName : 'N/A',
+      balance: item.totalQty ?? 0,
+    })) as ProductOption[];
+    return mapData;
   }
 
   async findOne(prdId: string, query: Prisma.masterProductWhereInput) {
