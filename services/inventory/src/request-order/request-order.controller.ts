@@ -35,12 +35,12 @@ export class RequestOrderController {
     return this.requestOrderService.findOne(requestId);
   }
 
-  @Patch(':id')
+  @Patch(':requestId')
   update(
-    @Param('id') id: string,
+    @Param('requestId') requestId: string,
     @Body() updateRequestOrderDto: Prisma.requestOrderUpdateInput,
   ) {
-    return this.requestOrderService.update(+id, updateRequestOrderDto);
+    return this.requestOrderService.update(requestId, updateRequestOrderDto);
   }
 
   @Delete(':id')

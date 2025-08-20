@@ -1007,6 +1007,7 @@ model masterProduct {
   unit               unit?                @relation(fields: [unitId], references: [id])
   unitId             Int?
   order              order[]
+  requestOrderList   requestOrderList[]
 
   @@map("master_product")
 }
@@ -1056,27 +1057,34 @@ model order {
 }
 
 model requestOrder {
-  id           Int                @unique @default(autoincrement()) @map("id")
-  requestId    String             @unique @default(uuid()) @map("request_id") @db.VarChar(50)
-  requestPrice Float              @map("request_price")
-  requestQty   Int?               @default(0) @map("request_qty")
-  status       String?            @default("new") @map("status") @db.VarChar(50)
-  remark       String?            @map("remark") @db.Text()
-  createdBy    String             @map("created_by")
-  createdAt    DateTime           @default(now()) @map("created_at")
-  updatedAt    DateTime           @default(now()) @map("updated_at")
-  requestList  requestOrderList[]
+  id             Int                @unique @default(autoincrement()) @map("id")
+  requestId      String             @unique @default(uuid()) @map("request_id") @db.VarChar(50)
+  requestPrice   Float              @map("request_price")
+  requestQty     Int?               @default(0) @map("request_qty")
+  requester      String?            @map("requester") @db.VarChar(100)
+  requestDate    DateTime           @map("request_date")
+  object         String?            @map("object") @db.VarChar(250)
+  status         String?            @default("new") @map("status") @db.VarChar(50)
+  remark         String?            @map("remark") @db.Text()
+  approvedBy     String?            @map("approved_by")
+  approvedAt     DateTime?          @map("approved_at")
+  approvedDetail String?            @map("approved_detail") @db.Text()
+  createdBy      String             @map("created_by")
+  createdAt      DateTime           @default(now()) @map("created_at")
+  updatedAt      DateTime           @default(now()) @map("updated_at")
+  requestList    requestOrderList[]
 
   @@map("request_order")
 }
 
 model requestOrderList {
-  id              Int           @unique @default(autoincrement()) @map("id")
-  requestId       String?       @map("request_id")
-  requestOrder    requestOrder? @relation(fields: [requestId], references: [requestId])
-  masterProductId String?       @map("master_product_id")
-  qty             Int?          @map("qty")
-  amount          Int           @map("amount") @db.Integer
+  id              Int            @unique @default(autoincrement()) @map("id")
+  requestId       String?        @map("request_id")
+  requestOrder    requestOrder?  @relation(fields: [requestId], references: [requestId])
+  masterProductId String?        @map("master_product_id")
+  qty             Int?           @map("qty")
+  amount          Int            @map("amount") @db.Integer
+  masterProduct   masterProduct? @relation(fields: [masterProductId], references: [prdId])
 
   @@map("request_order_list")
 }

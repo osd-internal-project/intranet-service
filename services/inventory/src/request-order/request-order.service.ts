@@ -1,12 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { RequestOrderRepository } from '@inventory/share';
+import {
+  MasterProductRepository,
+  RequestOrderRepository,
+} from '@inventory/share';
 import { Prisma } from '@prisma/client';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 import { RequestOrderType } from './dto/create-request-order.dto';
 
 @Injectable()
 export class RequestOrderService {
-  constructor(private readonly requestorderRepo: RequestOrderRepository) {}
+  constructor(
+    private readonly requestorderRepo: RequestOrderRepository,
+    private readonly masterproductRepo: MasterProductRepository,
+  ) {}
   create(createRequestOrderDto: RequestOrderType) {
     const totalQty = createRequestOrderDto.requestList?.reduce(
       (acc, item) => acc + (item.qty ?? 0),
@@ -69,10 +75,30 @@ export class RequestOrderService {
     return data;
   }
 
-  update(id: number, updateRequestOrderDto: Prisma.requestOrderUpdateInput) {
+  update(requestId: string, updateRequestOrderDto: any) {
+    const dataUpdate = {
+      status: updateRequestOrderDto.status,
+      approvedBy: updateRequestOrderDto.approvedBy,
+      approvedAt: dayjs(new Date()).toDate(),
+    } as Prisma.requestOrderUpdateInput;
+
+    if (
+      updateRequestOrderDto.requestList &&
+      updateRequestOrderDto.status === 'approved'
+    ) {
+      updateRequestOrderDto.requestList.map(async (item) => {
+        const sumQty = item.masterProduct.qty - item.qty;
+        await this.masterproductRepo.update({
+          where: { prdId: item.masterProductId },
+          data: { totalQty: sumQty },
+        });
+        return true;
+      });
+    }
+
     return this.requestorderRepo.update({
-      where: { id },
-      data: { ...updateRequestOrderDto },
+      where: { requestId },
+      data: { ...dataUpdate },
     });
   }
 
