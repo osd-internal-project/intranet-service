@@ -92,14 +92,48 @@ export class MaCarBookService {
   }
 
   async findManyWithTakeSkip(
+    params: {
+      carBookApprovedStatus?: string;
+      carBookStartDate?: Date | string;
+      createdByName?: string;
+    },
     token: string,
     module: string,
     skip: number,
     take: number,
   ) {
+    console.log('skip', skip);
+    console.log('take', take);
+    console.log('params', params);
+
+    const { carBookApprovedStatus, carBookStartDate, createdByName } =
+      params || {};
+    let filter = {};
+    if (carBookApprovedStatus) {
+      filter = {
+        ...filter,
+        carBookApprovedStatus: { contains: carBookApprovedStatus },
+      };
+    }
+    if (carBookStartDate) {
+      filter = {
+        ...filter,
+        carBookStartDate: {
+          gte: this.startOfDate(carBookStartDate[0]),
+          lte: this.endOfDate(carBookStartDate[1]),
+        },
+      };
+    }
+    if (createdByName) {
+      filter = {
+        ...filter,
+        createdByName: { contains: createdByName },
+      };
+    }
     const user = await this.accessServices.findUserByToken(token);
     if (user) {
       const data = await this.maCarBookRepository.findMany({
+        where: filter,
         include: {
           maCar: true,
           maCarBookImage: true,
@@ -108,7 +142,7 @@ export class MaCarBookService {
         skip: skip,
         take: take,
       });
-      const count = await this.maCarBookRepository.count({});
+      const count = await this.maCarBookRepository.count({ where: filter });
       return { docs: data, total: count };
     } else {
       Logger.debug('Not Found User');
@@ -239,6 +273,16 @@ export class MaCarBookService {
   remove(id: number) {
     const condition = { where: { id: id } } as Prisma.maCarBookDeleteArgs;
     return this.maCarBookRepository.delete(condition);
+  }
+
+  startOfDate(date: string) {
+    const dateset = new Date(date).setUTCHours(0, 0, 0, 0);
+    return new Date(dateset);
+  }
+
+  endOfDate(date: string) {
+    const dateset = new Date(date).setUTCHours(23, 59, 59, 59);
+    return new Date(dateset);
   }
 
   private async sendLeaveEmails(

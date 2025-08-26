@@ -42,12 +42,21 @@ export class OverTimeService {
     const startTimeOt = createDepartmentDto.startTime;
     const endTimeOt = createDepartmentDto.endTime;
     const OvertimeTime = result.startOt;
+    const startTimeWork = result.startTime;
+    const endTimeWork = result.endTime;
     const typeDate =
       result.typeDate === 'dayoff' || masterHoliday.length > 0
         ? 'dayoff'
         : 'normall';
     const { totalTime, breakTime, workTime, inTime, overtime } =
-      await calculate(startTimeOt, endTimeOt, OvertimeTime, typeDate);
+      await calculate(
+        startTimeOt,
+        endTimeOt,
+        OvertimeTime,
+        typeDate,
+        startTimeWork,
+        endTimeWork,
+      );
 
     const base = {
       fullname: createDepartmentDto.fullname,

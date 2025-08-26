@@ -48,10 +48,20 @@ export class MaCarBookController {
     @Req() req,
     @Param('skip') skip: string,
     @Param('take') take: string,
+    @Query()
+    params: {
+      carBookApprovedStatus?: string;
+      carBookStartDate?: Date | string;
+      createdByName?: string;
+    },
   ) {
+    console.log(skip);
+    console.log(take);
+
     const token = req.body.sub;
     const module = ModuleTypes.INTRANET_APPROVE_BOOKING_CAR;
     return this.maCarBookService.findManyWithTakeSkip(
+      params,
       token,
       module,
       +skip,
@@ -77,10 +87,17 @@ export class MaCarBookController {
     @Req() req,
     @Param('skip') skip: string,
     @Param('take') take: string,
+    @Query()
+    params: {
+      carBookApprovedStatus?: string;
+      carBookStartDate?: Date | string;
+      createdByName?: string;
+    },
   ) {
     const token = req.body.sub;
     const module = ModuleTypes.INTRANET;
     return this.maCarBookService.findManyWithTakeSkip(
+      params,
       token,
       module,
       +skip,
