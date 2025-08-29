@@ -37,12 +37,12 @@ export const templateCarBooikng = async (
     findUsers.lastNameTh
   }</p>
           <p> <strong>จองรถ</strong>${data.carName}</p>  
-          <p><strong>เนื่องจาก</strong> ${data.detail}</p>
+          <p><strong>เนื่องจาก</strong> ${data.carBookTitle}</p>
           <p><strong>สถานที่จอด</strong> ${data.carBookPlace}</p>
           <p><strong>วันที่ </strong> ${dayjs(data.carBookStartDate).format(
-            'DD-MM-YYYY HH:mm',
-          )}<strong>ถึงวันที่</strong> ${dayjs(data.carBookEndDate).format(
-    'DD-MM-YYYY HH:mm',
+            'DD-MM-YYYY HH:mm ',
+          )}<strong> ถึงวันที่ </strong> ${dayjs(data.carBookEndDate).format(
+    'DD-MM-YYYY HH:mm ',
   )} </p>
           <p><strong>สามารถติดต่อได้ที่เบอร์ </strong> ${
             findUsers.phoneNumber
@@ -96,12 +96,12 @@ export const templateCarBooikngReturn = async (
     findUsers.lastNameTh
   }</p>
           <p> <strong>จองรถ</strong>${data.carName}</p>  
-          <p><strong>เนื่องจาก</strong> ${data.detail}</p>
+          <p><strong>เนื่องจาก</strong> ${data.carBookTitle}</p>
           <p><strong>สถานที่จอด</strong> ${data.carBookPlace}</p>
           <p><strong>วันที่ </strong> ${dayjs(data.carBookStartDate).format(
-            'DD-MM-YYYY HH:mm',
-          )}<strong>ถึงวันที่</strong> ${dayjs(data.carBookEndDate).format(
-    'DD-MM-YYYY HH:mm',
+            'DD-MM-YYYY HH:mm ',
+          )}<strong> ถึงวันที่ </strong> ${dayjs(data.carBookEndDate).format(
+    'DD-MM-YYYY HH:mm ',
   )} </p>
           <p><strong>สามารถติดต่อได้ที่เบอร์ </strong> ${
             findUsers.phoneNumber
@@ -156,12 +156,12 @@ export const templateCarBooikngApproved = async (
     findUsers.lastNameTh
   }</p>
           <p> <strong>จองรถ</strong>${data.carName}</p>  
-          <p><strong>เนื่องจาก</strong> ${data.detail}</p>
+          <p><strong>เนื่องจาก</strong> ${data.carBookTitle}</p>
           <p><strong>สถานที่จอด</strong> ${data.carBookPlace}</p>
           <p><strong>วันที่ </strong> ${dayjs(data.carBookStartDate).format(
-            'DD-MM-YYYY HH:mm',
-          )}<strong>ถึงวันที่</strong> ${dayjs(data.carBookEndDate).format(
-    'DD-MM-YYYY HH:mm',
+            'DD-MM-YYYY HH:mm ',
+          )}<strong> ถึงวันที่ </strong> ${dayjs(data.carBookEndDate).format(
+    'DD-MM-YYYY HH:mm ',
   )} </p>
           <p><strong>สามารถติดต่อได้ที่เบอร์ </strong> ${
             findUsers.phoneNumber
