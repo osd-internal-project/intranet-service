@@ -103,6 +103,7 @@ export class UsersService {
           email: createUserDto.email,
           phoneNumber: createUserDto.phoneNumber,
           activeStatus: createUserDto.activeStatus,
+          extension: createUserDto.extension,
           organizedGroupId: '',
           userType: createUserDto.userType,
           token: response.data.id,
@@ -140,52 +141,53 @@ export class UsersService {
 
   async findAll(query: any) {
     let search = {};
-    if (query.userId) {
-      search = { ...search, userId: { contains: query.userId } };
-    }
-    if (query.userName) {
-      search = { ...search, username: { contains: query.userName } };
-    }
-    if (query.phoneNumber) {
-      search = { ...search, phoneNumber: { contains: query.phoneNumber } };
-    }
-    if (query.email) {
-      search = { ...search, email: { contains: query.email } };
-    }
-    if (query.firstNameTh) {
-      search = { ...search, firstNameTh: { contains: query.firstNameTh } };
-    }
-    if (query.lastNameTh) {
-      search = { ...search, lastNameTh: { contains: query.lastNameTh } };
-    }
-    if (query.positionId) {
-      search = { ...search, masterPositionId: query.positionId };
-    }
-    if (query.created) {
+    if (query.positionName) {
       search = {
         ...search,
-        createdAt: {
-          gte: this.dateToStartofDay(query.created[0]),
-          lte: this.dateToEndofDay(query.created[1]),
+        masterPosition: {
+          is: { id: +query.positionName },
         },
       };
     }
-    if (query.activeStatus) {
-      search = {
-        ...search,
-        activeStatus: query.activeStatus,
-      };
+    if (query.empId) {
+      search = { ...search, empId: { contains: query.empId } };
+    }
+    if (query.username) {
+      search = { ...search, username: { contains: query.username } };
+    }
+    if (query.fullname) {
+      const names = query.fullname.trim().split(' ').filter(Boolean);
+      const orConditions = names.flatMap((word) => [
+        {
+          firstNameTh: {
+            contains: word,
+            mode: 'insensitive',
+          },
+        },
+        {
+          lastNameTh: {
+            contains: word,
+            mode: 'insensitive',
+          },
+        },
+      ]);
+      search = { ...search, OR: orConditions };
+    }
+
+    if (query.positionId) {
+      search = { ...search, masterPositionId: query.positionId };
     }
 
     const total = await this.usersRepo.count({ where: search });
     const data = await this.usersRepo.findMany({
-      where: search,
+      where: { ...search, activeStatus: true },
       select: {
         id: true,
         userId: true,
         userType: true,
         username: true,
         email: true,
+        extension: true,
         activeStatus: true,
         departmentId: true,
         firstNameTh: true,
@@ -208,6 +210,9 @@ export class UsersService {
       },
       skip: +query.skip,
       take: +query.take,
+      orderBy: {
+        empId: 'asc',
+      },
     });
     return {
       total: total,
@@ -346,6 +351,7 @@ export class UsersService {
             lastNameEn: createUserDto.lastNameEn,
             email: createUserDto.email,
             phoneNumber: createUserDto.phoneNumber,
+            extension: createUserDto.extension,
             activeStatus: createUserDto.activeStatus,
             organizedGroupId: '',
             userType: createUserDto.userType,

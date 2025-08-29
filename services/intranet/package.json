@@ -108,7 +108,7 @@
     "dev1": "cross-env NODE_ENV=local DATABASE_URL=postgresql://postgres:1010@localhost:5432/dev ts-node-dev --respawn --exit-child --transpile-only -r tsconfig-paths/register ./src/main.ts",
     "dev": "cross-env NODE_ENV=local ts-node-dev --respawn --exit-child --transpile-only -r tsconfig-paths/register ./src/main.ts ",
     "docker:build": "cd ../.. && docker build -t 'd-debt/intranet' -f services/intranet/Dockerfile .",
-    "docker:buildx": "cd ../.. && docker build --no-cache --platform linux/amd64 -t 'intranet-be:v1.1.6' -f services/intranet/Dockerfile .",
+    "docker:buildx": "cd ../.. && docker build --no-cache --platform linux/amd64 -t 'intranet-be:v1.1.7' -f services/intranet/Dockerfile .",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "generate": "prisma generate",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",

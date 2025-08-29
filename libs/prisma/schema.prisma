@@ -371,6 +371,7 @@ model users {
   lastNameEn                String?                     @map("last_name_en") @db.VarChar(100)
   email                     String?                     @db.VarChar(100)
   phoneNumber               String?                     @map("phone_number") @db.VarChar(50)
+  extension                 String?                     @map("extension") @db.VarChar(20)
   activeStatus              Boolean                     @default(true) @map("active_status")
   clientId                  String?                     @map("client_id") @db.VarChar(50)
   createdAt                 DateTime                    @default(now()) @map("created_at")

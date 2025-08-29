@@ -10,6 +10,7 @@ export class CreateUserDto {
   firstNameEn: string;
   lastNameEn: string;
   phoneNumber: string;
+  extension: string;
   masterPositionId: number;
   departmentId: string;
   dataModule: string;
