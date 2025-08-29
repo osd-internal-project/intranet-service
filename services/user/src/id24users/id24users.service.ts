@@ -106,6 +106,7 @@ export class UsersService {
           extension: createUserDto.extension,
           organizedGroupId: '',
           userType: createUserDto.userType,
+          startWork: createUserDto.startWork,
           token: response.data.id,
           dataModule: createUserDto.dataModule,
           empId: createUserDto.empId,
@@ -113,14 +114,6 @@ export class UsersService {
           masterPosition: {
             connect: { posId: createUserDto.masterPositionId },
           },
-          // userMapOrganizeChart: {
-          //   createMany: {
-          //     data: {
-          //       positionId: createUserDto.departmentId,
-          //     },
-          //     skipDuplicates: true,
-          //   },
-          // },
         },
       });
       Logger.debug(`User created successfully on service`, response.data.id);
