@@ -7,16 +7,18 @@ export class MasterProductImageService {
     private readonly masterproductimageRepo: MasterProductImageRepository,
   ) {}
   async create(createDto: any) {
-    const { masterProductId } = createDto;
+    const { masterProductId } = createDto || {};
     const existing = await this.masterproductimageRepo.findOne({
       where: { masterProductId },
     });
     if (existing) {
-      await this.removeImage(existing.id);
-      return this.masterproductimageRepo.update({
-        where: { id: existing.id },
-        data: createDto,
-      });
+      const data = await this.removeImage(existing.id);
+      if (data) {
+        return await this.masterproductimageRepo.update({
+          where: { id: existing.id },
+          data: createDto,
+        });
+      }
     } else {
       return this.masterproductimageRepo.create({ data: createDto });
     }

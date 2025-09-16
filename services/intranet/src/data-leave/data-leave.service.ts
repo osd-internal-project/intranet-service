@@ -264,6 +264,137 @@ export class DataLeaveService {
     return await this.dataleaveRepo.findMany(base);
   }
 
+  async findLeaveTotalByGroup(
+    token: string,
+    query: any,
+    skip: number,
+    take: number,
+  ) {
+    let filter = {};
+    const getUser = await this.usersRepo.findOne({ where: { token: token } });
+    const AccessedGroup = await this.accessService.getAccessedGroupByGroupId(
+      ModuleTypes.INTRANET,
+      getUser.ownerGroupId,
+    );
+    if (query.type === 'fullname' && query.value) {
+      const names = query.value.trim().split(' ').filter(Boolean);
+      const orConditions = names.flatMap((word) => [
+        {
+          firstName: {
+            contains: word,
+            mode: 'insensitive',
+          },
+        },
+        {
+          lastName: {
+            contains: word,
+            mode: 'insensitive',
+          },
+        },
+      ]);
+      filter = { ...filter, OR: orConditions };
+    } else if (query.type === 'status') {
+      filter = { ...filter, status: query.value };
+    } else if (query.type === 'type_name') {
+      filter = {
+        ...filter,
+        typeName: {
+          contains: query.value,
+          mode: 'insensitive',
+        },
+      };
+    }
+    const userGroup = await this.usersRepo.findMany({
+      where: {
+        ownerGroupId: { in: AccessedGroup.map((event: any) => event.groupId) },
+      },
+      select: {
+        userId: true,
+        username: true,
+        firstNameTh: true,
+        lastNameTh: true,
+        email: true,
+        startWork: true,
+      },
+    });
+
+    const masterTypeLave = await this.mastertypeLeaveRepo.findMany({
+      orderBy: { id: 'asc' },
+    });
+
+    const data = await this.dataleaveRepo.findMany({
+      where: {
+        ...filter,
+        groupId: { in: AccessedGroup.map((event: any) => event.groupId) },
+        status: { in: ['approved'] },
+      },
+      include: { dataLeaveFiles: true },
+      orderBy: { createdAt: 'desc' },
+      ...(skip && take && { skip, take }),
+    });
+    const userMap = new Map(
+      userGroup.map((user) => [
+        user.userId,
+        { ...user, leaveSummary: [], totalCount: 0, totalLeaveHour: 0 },
+      ]),
+    );
+    const masterTypeLeaveMap = new Map(
+      masterTypeLave.map((type) => [type.typeId, type]),
+    );
+    data.forEach((leave) => {
+      const user = userMap.get(leave.userId);
+      const typeLeave = masterTypeLeaveMap.get(leave.typeId);
+
+      if (user) {
+        if (!user.leaveSummary) {
+          user.leaveSummary = [];
+          user.totalCount = 0;
+          user.totalLeaveHour = 0;
+        }
+
+        const startDate = new Date(user.startWork);
+        const now = new Date();
+        const diffTime = now.getTime() - startDate.getTime();
+        const diffYears = diffTime / (1000 * 60 * 60 * 24 * 365);
+        const isNewStaff = diffYears < 1;
+        const leaveLimit = isNewStaff
+          ? typeLeave.limitLeaveFour
+          : diffYears < 3
+          ? typeLeave.limitLeaveOne
+          : diffYears < 5
+          ? typeLeave.limitLeaveTwo
+          : typeLeave.limitLeaveThree;
+        const type = leave.typeName;
+        if (!user.leaveSummary[type]) {
+          user.leaveSummary[type] = {
+            count: 0,
+            leaveHour: 0,
+            limit: +leaveLimit * 8,
+          };
+        }
+        user.leaveSummary[type].count += 1;
+        user.leaveSummary[type].leaveHour += leave.leaveHour || 0;
+        user.totalCount += 1;
+        user.totalLeaveHour += leave.leaveHour || 0;
+      }
+    });
+    const result = Array.from(userMap.values()).map((user, index) => ({
+      id: index + 1,
+      ...user,
+      leaveSummary: Object.entries(user.leaveSummary || {}).map(
+        ([type, summary]) => ({
+          id: index + 1,
+          type_leave: type,
+          count: summary.count,
+          leaveHour: summary.leaveHour,
+          limit: +summary.limit,
+          userId: user.userId,
+        }),
+      ),
+    }));
+    return { data: result, count: result.length };
+  }
+
   async findDetailTypeLeaveByUserId(userId: string) {
     const startOfYear = dayjs(new Date()).startOf('year').toDate();
     const endOfYear = dayjs(new Date()).endOf('year').toDate();

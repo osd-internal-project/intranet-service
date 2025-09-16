@@ -65,6 +65,23 @@ export class DataLeaveController {
   ) {
     return this.dataLeaveService.findGroup(userId, query, +skip, +take);
   }
+
+  @Get('find-total-leave-by-group')
+  @UseInterceptors(UserInterceptor)
+  findTotalLeaveDetailByGroup(
+    @Req() req,
+    @Query() query: any,
+    @Query('skip') skip?: number,
+    @Query('take') take?: number,
+  ) {
+    const token = req.body.sub;
+    return this.dataLeaveService.findLeaveTotalByGroup(
+      token,
+      query,
+      +skip,
+      +take,
+    );
+  }
   @Get('findGroup-hr/:userId')
   findGroupHr(
     @Param('userId') userId: string,
