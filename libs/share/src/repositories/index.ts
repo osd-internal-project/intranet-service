@@ -54,6 +54,7 @@ export * from './newsType.repository';
 export * from './newsImage.repository';
 export * from './handbookFile.repository';
 export * from './handbooktype.repository';
+export * from './masterProvinces.repository';
 
 //slide
 export * from './slideImage.repository';

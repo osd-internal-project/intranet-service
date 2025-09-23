@@ -1110,3 +1110,13 @@ model requestOrderList {
 
 //   @@map("order_lot")
 // }
+
+model masterProvinceThailand {
+  id             Int       @unique @default(autoincrement()) @map("id")
+  provinceId     String?    @unique @default(uuid()) @map("province_id") @db.VarChar(50)
+  nameProvinceTH String    @map("name_province_th") @db.VarChar(50)
+  createdAt      DateTime? @default(now()) @map("created_at")
+  updatedAt      DateTime? @default(now()) @map("updated_at")
+
+  @@map("master_province_thailand")
+}

@@ -66,6 +66,7 @@ import {
   ExperienceInformationsRepository,
   MasterDataCompanyRepository,
   EmergencyContactRepository,
+  MasterProvinceRepository,
   //Vender
   OverTimeRepository,
   MasterConfigTimeOtRepository,
@@ -98,6 +99,7 @@ const services = [
   UserPermissionGroupRepository,
   UserModuleRepository,
   OverTimeRepository,
+  MasterProvinceRepository,
   //Auth
   MasterPositionRepository,
   MasterRuleRepository,
