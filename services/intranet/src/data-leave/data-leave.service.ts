@@ -25,7 +25,7 @@ export class DataLeaveService {
     private readonly accessService: AccessService,
     private readonly userPermissionGroupRepo: UserPermissionGroupRepository,
     private userGroupRepo: UserGroupRepository,
-  ) {}
+  ) { }
 
   async create(condition: Prisma.dataLeaveCreateArgs) {
     const result = await this.accessService.getLeadUsersByUserId(
@@ -360,10 +360,10 @@ export class DataLeaveService {
         const leaveLimit = isNewStaff
           ? typeLeave.limitLeaveFour
           : diffYears < 3
-          ? typeLeave.limitLeaveOne
-          : diffYears < 5
-          ? typeLeave.limitLeaveTwo
-          : typeLeave.limitLeaveThree;
+            ? typeLeave.limitLeaveOne
+            : diffYears < 5
+              ? typeLeave.limitLeaveTwo
+              : typeLeave.limitLeaveThree;
         const type = leave.typeName;
         if (!user.leaveSummary[type]) {
           user.leaveSummary[type] = {
@@ -472,6 +472,84 @@ export class DataLeaveService {
     return lastResult;
   }
 
+  async findDetailByTypeLeaveUserId(userId: string, typeId: number) {
+    const startOfYear = dayjs(new Date()).startOf('year').toDate();
+    const endOfYear = dayjs(new Date()).endOf('year').toDate();
+    const condition = {
+      where: {
+        userId: userId,
+      },
+      orderBy: { createdAt: 'desc' },
+    } as Prisma.usersFindFirstArgs;
+    const resUser = await this.usersRepo.findOne(condition);
+    const dateNow = dayjs(new Date());
+    const startwork = dayjs(resUser?.startWork);
+    const yearOfWork = dateNow.diff(startwork, 'years', true);
+    const dataLeaveWrapup = await this.dataleaveRepo.findMany({
+      where: {
+        userId: userId,
+        typeId: +typeId,
+        status: {
+          in: ['approved', 'waiting'],
+        },
+        startDate: {
+          gte: startOfYear,
+          lte: endOfYear,
+        },
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    } as Prisma.dataLeaveFindFirstArgs);
+    const CountLeaveByTypeMap = this.countLeavesByTypeIdMap(dataLeaveWrapup);
+    const dataTypeLeave = await this.mastertypeLeaveRepo.findMany({
+      where: { typeId: +typeId },
+      orderBy: { id: 'asc' },
+    });
+    const lastResult = dataTypeLeave.map((event) => {
+      const leaveCount = CountLeaveByTypeMap[event.typeId] || 0;
+      let limitLeaveLastResult = 0;
+      let limitLeave = 0;
+      const trimmed = leaveCount.total
+        ? Math.floor(leaveCount.total * 10) / 10
+        : 0;
+      if (yearOfWork <= 1) {
+        limitLeaveLastResult = parseFloat(event.limitLeaveFour) * 8 - trimmed;
+        limitLeave = Number(event.limitLeaveFour);
+      } else if (yearOfWork < 3) {
+        limitLeaveLastResult = parseFloat(event.limitLeaveOne) * 8 - trimmed;
+        limitLeave = Number(event.limitLeaveOne);
+      } else if (yearOfWork < 5) {
+        limitLeaveLastResult = parseFloat(event.limitLeaveTwo) * 8 - trimmed;
+        limitLeave = Number(event.limitLeaveTwo);
+      } else {
+        limitLeaveLastResult = parseFloat(event.limitLeaveThree) * 8 - trimmed;
+        limitLeave = Number(event.limitLeaveThree);
+      }
+      if (limitLeaveLastResult < 0) {
+        limitLeaveLastResult = 0;
+      }
+      const mapdata = {
+        id: event.id,
+        typeId: event.typeId,
+        typeName: event.typeName,
+        forwardLeave: event.forwardLeave,
+        haveLeaveDays: leaveCount.valueHours,
+        haveLeaveHours: leaveCount.valueMinute,
+        limitLeave: limitLeave,
+        limitLeaveLastResult: limitLeaveLastResult,
+        descriptionLeave: event.descriptionLeave,
+        typeEveryDay: event.typeEveryDay,
+        typeNameEn: event.typeNameEn,
+        typeNameTh: event.typeNameTh,
+        createdAt: event.createdAt,
+        updatedAt: event.updatedAt,
+      };
+      return mapdata;
+    });
+    return lastResult[0] ?? null;
+  }
+
   async findUserByUserId(userId: string) {
     const condition = {
       where: {
@@ -559,7 +637,7 @@ export class DataLeaveService {
         const daysInStartYear =
           Math.ceil(
             (endOfStartYear.getTime() - startDate.getTime()) /
-              (1000 * 60 * 60 * 24),
+            (1000 * 60 * 60 * 24),
           ) + 1;
 
         // หาจำนวนวันในปีถัดไป (จากต้นปีถึง endDate)
@@ -567,7 +645,7 @@ export class DataLeaveService {
         const daysInEndYear =
           Math.ceil(
             (endDate.getTime() - startOfEndYear.getTime()) /
-              (1000 * 60 * 60 * 24),
+            (1000 * 60 * 60 * 24),
           ) + 1;
 
         // แบ่งชั่วโมงตามสัดส่วน
@@ -659,13 +737,13 @@ export class DataLeaveService {
         const daysInStartYear =
           Math.ceil(
             (endOfStartYear.getTime() - startDate.getTime()) /
-              (1000 * 60 * 60 * 24),
+            (1000 * 60 * 60 * 24),
           ) + 1;
         const startOfEndYear = new Date(endYear, 0, 1);
         const daysInEndYear =
           Math.ceil(
             (endDate.getTime() - startOfEndYear.getTime()) /
-              (1000 * 60 * 60 * 24),
+            (1000 * 60 * 60 * 24),
           ) + 1;
 
         const hoursInStartYear = (leaveHour * daysInStartYear) / totalDays;

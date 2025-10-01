@@ -17,7 +17,7 @@ export class UsersService {
   constructor(
     private usersRepo: UsersRepository,
     private id24Service: Id24Service,
-  ) {}
+  ) { }
 
   dateToStartofDay(data: Date) {
     const date = new Date(data);
@@ -369,7 +369,7 @@ export class UsersService {
   async processAfterLoginAuth(token: string) {
     try {
       const user = await this.usersRepo.findOne({
-        where: { token: token },
+        where: { token: token, activeStatus: true },
         include: { masterPosition: true, ownerGroup: true },
       });
       const id24Users = (await this.id24Service.getId24UsersAll(
@@ -380,7 +380,7 @@ export class UsersService {
         const saltOrRounds = 10;
         const hashedPassword = await bcrypt.hash('osd_P@ssw0rd', saltOrRounds);
         const user = await this.usersRepo.findOne({
-          where: { username: id24.username.toLowerCase() },
+          where: { username: id24.username.toLowerCase(), activeStatus: true },
         });
         if (user.token !== id24.id) {
           await this.sendmailForCreateRolesInId24(user);
