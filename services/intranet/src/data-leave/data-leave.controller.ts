@@ -108,7 +108,7 @@ export class DataLeaveController {
 
   @Get(`find-detail-by-type-leave-userId/:userId/:typeId`)
   findDetailByTypeLeaveUserId(@Param('userId') userId: string, @Param('typeId') typeId: string) {
-    return this.dataLeaveService.findDetailByTypeLeaveUserId(userId, typeId);
+    return this.dataLeaveService.findDetailByTypeLeaveUserId(userId, +typeId);
   }
 
   @Get(`find-user-by-userId/:userId`)
