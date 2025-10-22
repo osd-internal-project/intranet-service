@@ -27,7 +27,7 @@ const config = configs();
 export class maCarWrapupImageController {
   constructor(
     private readonly maCarWrapupImageService: maCarWrapupImageService,
-  ) {}
+  ) { }
 
   @Post(':carWrapupId')
   @UseInterceptors(
@@ -39,6 +39,9 @@ export class maCarWrapupImageController {
           callback(null, `${fileType}`);
         },
       }),
+      limits: {
+        fileSize: 200 * 1024 * 1024, // ✅ เพิ่ม limit เป็น 200MB
+      },
     }),
   )
   uploadFile(
@@ -102,6 +105,9 @@ export class maCarWrapupImageController {
           cb(null, `${randomName}${fileExtName}`);
         },
       }),
+      limits: {
+        fileSize: 200 * 1024 * 1024, // ✅ เพิ่ม limit เป็น 200MB
+      },
     }),
   )
   async updateFile(

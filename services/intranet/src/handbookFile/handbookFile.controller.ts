@@ -25,7 +25,7 @@ import config from '../configs';
 const PORT = config();
 @Controller('handbook-file')
 export class handbookFileController {
-  constructor(private readonly handbookFileService: handbookFileService) {}
+  constructor(private readonly handbookFileService: handbookFileService) { }
 
   @Post()
   @UseInterceptors(
@@ -38,6 +38,9 @@ export class handbookFileController {
           cb(null, `${randomName}${fileExtName}`);
         },
       }),
+      limits: {
+        fileSize: 200 * 1024 * 1024, // ✅ เพิ่ม limit เป็น 200MB
+      },
     }),
   )
   uploadFile(

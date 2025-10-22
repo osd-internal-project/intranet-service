@@ -26,7 +26,7 @@ const PORT = configs();
 
 @Controller('news-image')
 export class NewsImageController {
-  constructor(private readonly newsImageService: NewsImageService) {}
+  constructor(private readonly newsImageService: NewsImageService) { }
 
   @Post(':newsId')
   @UseInterceptors(
@@ -39,6 +39,9 @@ export class NewsImageController {
           cb(null, `${randomName}${fileExtName}`);
         },
       }),
+      limits: {
+        fileSize: 200 * 1024 * 1024, // ✅ เพิ่ม limit เป็น 200MB
+      },
     }),
   )
   uploadFile(
@@ -81,6 +84,9 @@ export class NewsImageController {
           cb(null, `${randomName}${fileExtName}`);
         },
       }),
+      limits: {
+        fileSize: 200 * 1024 * 1024, // ✅ เพิ่ม limit เป็น 200MB
+      },
     }),
   )
   async updateFile(
