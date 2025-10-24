@@ -330,29 +330,30 @@ export class UsersService {
     }
   }
 
-  async update(userId: string, createUserDto: UpdateUserDto) {
+  async update(userId: string, createUserDto: any) {
     try {
       const user = await this.usersRepo.findOne({ where: { userId: userId } });
       if (user) {
         return await this.usersRepo.update({
           where: { userId: user.userId },
           data: {
-            username: createUserDto.username,
-            firstNameTh: createUserDto.firstNameTh,
-            lastNameTh: createUserDto.lastNameTh,
-            firstNameEn: createUserDto.firstNameEn,
-            lastNameEn: createUserDto.lastNameEn,
-            email: createUserDto.email,
-            phoneNumber: createUserDto.phoneNumber,
-            extension: createUserDto.extension,
-            activeStatus: createUserDto.activeStatus,
+            ...createUserDto,
+            // username: createUserDto.username,
+            // firstNameTh: createUserDto.firstNameTh,
+            // lastNameTh: createUserDto.lastNameTh,
+            // firstNameEn: createUserDto.firstNameEn,
+            // lastNameEn: createUserDto.lastNameEn,
+            // email: createUserDto.email,
+            // phoneNumber: createUserDto.phoneNumber,
+            // extension: createUserDto.extension,
+            // activeStatus: createUserDto.activeStatus,
             organizedGroupId: '',
-            userType: createUserDto.userType,
-            dataModule: createUserDto.dataModule,
-            ownerGroupId: createUserDto.ownerGroupId,
-            positionId: createUserDto.masterPositionId,
-            startWork: createUserDto.startWork,
-            empId: createUserDto.empId,
+            // userType: createUserDto.userType,
+            // dataModule: createUserDto.dataModule,
+            // ownerGroupId: createUserDto.ownerGroupId,
+            // positionId: createUserDto.masterPositionId,
+            // startWork: createUserDto.startWork,
+            // empId: createUserDto.empId,
           },
         });
       }
