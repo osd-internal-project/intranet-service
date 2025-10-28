@@ -43,6 +43,7 @@ import { MasterConfigOvertimeModule } from './master-config-ot/master-config-ot.
 import { OvertimeModule } from './overtime/overtime.module';
 import { MaCarBookingImagesModule } from './ma-car-booking-images/ma-car-booking-images.module';
 import { MasterProvinceThailandModule } from './master-province-thailand/master-province-thailand.module';
+import { MaCarFilesModule } from './ma-car-files/ma-car-files.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
@@ -84,6 +85,7 @@ import { MasterProvinceThailandModule } from './master-province-thailand/master-
     OvertimeModule,
     MaCarBookingImagesModule,
     MasterProvinceThailandModule,
+    MaCarFilesModule,
   ],
   controllers: [IntranetController, PublicController],
   providers: [IntranetService],

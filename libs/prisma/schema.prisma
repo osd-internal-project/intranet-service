@@ -565,6 +565,7 @@ model maCar {
   updatedByName String?       @map("updated_by_name") @db.VarChar(255)
   maCarBook     maCarBook[]   @relation("CarBooks")
   maCarWrapup   maCarWrapup[]
+  maCarFiles    maCarFiles[]
 
   @@map("ma_car")
 }
@@ -627,6 +628,18 @@ model maCarBookImage {
   maCarBook      maCarBook? @relation(fields: [carBookingId], references: [id])
 
   @@map("ma_car_booking_image")
+}
+
+model maCarFiles {
+  id        Int       @unique @default(autoincrement())
+  fileName  String?   @map("file_name") @db.VarChar(200)
+  fileType  String?   @map("file_type") @db.VarChar(200)
+  filePath  String?   @db.VarChar(10)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @map("updated_at") @db.Timestamp(6)
+  carId     String?   @map("car_id")
+  maCar     maCar?    @relation(fields: [carId], references: [carId])
+  @@map("ma_car_files")
 }
 
 model maCarWrapup {
@@ -1113,7 +1126,7 @@ model requestOrderList {
 
 model masterProvinceThailand {
   id             Int       @unique @default(autoincrement()) @map("id")
-  provinceId     String?    @unique @default(uuid()) @map("province_id") @db.VarChar(50)
+  provinceId     String?   @unique @default(uuid()) @map("province_id") @db.VarChar(50)
   nameProvinceTH String    @map("name_province_th") @db.VarChar(50)
   createdAt      DateTime? @default(now()) @map("created_at")
   updatedAt      DateTime? @default(now()) @map("updated_at")
