@@ -331,6 +331,7 @@ export class UsersService {
   }
 
   async update(userId: string, createUserDto: any) {
+    console.log(createUserDto);
     try {
       const user = await this.usersRepo.findOne({ where: { userId: userId } });
       if (user) {
