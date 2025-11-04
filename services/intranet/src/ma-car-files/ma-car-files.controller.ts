@@ -8,17 +8,14 @@ import {
   Delete,
   UploadedFile,
   UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
 import { MaCarFilesService } from './ma-car-files.service';
-import { CreateMaCarFileDto } from './dto/create-ma-car-file.dto';
-import { UpdateMaCarFileDto } from './dto/update-ma-car-file.dto';
 import { Prisma } from '@prisma/client';
-import { extname } from 'path'; 
-import { diskStorage } from 'multer';
+import { extname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
-import { createReadStream, promises as fsPromises } from 'fs';
-import { Response } from 'express';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import configs from 'src/configs';
 const config = configs();
 
@@ -43,35 +40,38 @@ export class MaCarFilesController {
 
   @Post(':carId')
   @UseInterceptors(
-    FileInterceptor('file', {
+    FilesInterceptor('files', 10, {
       storage: diskStorage({
         destination: `${config.pathMountDirUpload}/maCarFiles`,
         filename: (req, file, callback) => {
-          const fileType = file.originalname;
-          callback(null, `${fileType}`);
+          const fileCode = `${uuidv4()}`;
+          const fileType = extname(file.originalname);
+          callback(null, `${fileCode}${fileType}`);
         },
       }),
       limits: {
-        fileSize: 200 * 1024 * 1024, // ✅ เพิ่ม limit เป็น 200MB
+        fileSize: 200 * 1024 * 1024, // 200MB limit
       },
     }),
   )
-  uploadFile(
+  async uploadFile(
     @Param('carId') carId: string,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles() files: Express.Multer.File[],
   ) {
-    if (!file) {
+    if (!files) {
       throw new Error('File is undefined');
     }
-    const fileType = extname(file.originalname);
-    const fileName = file.filename;
-    const data = {
+    const createData = files.map((file) => ({
       carId: carId,
-      fileName: fileName,
+      fileName: file.filename,
       filePath: file.path,
-      fileType: fileType,
-    } as Prisma.maCarWrapupImageCreateInput;
-    return this.maCarFilesService.create(data);
+      fileType: extname(file.originalname),
+      name: file.originalname,
+    })) as Prisma.maCarFilesCreateInput[];
+    const results = await Promise.all(
+      createData.map((data) => this.maCarFilesService.create(data)),
+    );
+    return results;
   }
 
   @Patch(':id')

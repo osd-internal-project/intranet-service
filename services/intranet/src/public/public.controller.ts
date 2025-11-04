@@ -55,6 +55,27 @@ export class PublicController {
     file.pipe(res);
   }
 
+  @Get('/car-file/:fileId')
+  getCarFile(
+    @Param('fileId') fileId: string,
+    @Query('fileName') fileName: string,
+    @Res() res: Response,
+  ): void {
+    const filePath = join(`${PORT.pathMountDirUpload}/maCarFiles`, fileId);
+    const file = createReadStream(filePath);
+    const fileNewName = decodeURIComponent(fileName);
+    console.log(fileNewName, filePath);
+    file.on('error', (err) => {
+      console.error('Error:', err);
+      return res.status(404).send('File not found');
+    });
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename="export.pdf"`,
+    });
+    file.pipe(res);
+  }
+
   @Get('/get-image-user/:imageId')
   getUserImages(@Param('fileId') fileId: string, @Res() res: Response): void {
     const filePath = join(`${PORT.pathMountDirUpload}/handbookfile`, fileId);

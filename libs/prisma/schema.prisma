@@ -632,13 +632,15 @@ model maCarBookImage {
 
 model maCarFiles {
   id        Int       @unique @default(autoincrement())
+  name      String?   @map("name") @db.Text
   fileName  String?   @map("file_name") @db.VarChar(200)
   fileType  String?   @map("file_type") @db.VarChar(200)
-  filePath  String?   @db.VarChar(10)
+  filePath  String?   @map("file_path") @db.Text
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime? @map("updated_at") @db.Timestamp(6)
   carId     String?   @map("car_id")
   maCar     maCar?    @relation(fields: [carId], references: [carId])
+
   @@map("ma_car_files")
 }
 
