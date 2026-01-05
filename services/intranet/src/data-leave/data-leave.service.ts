@@ -25,7 +25,7 @@ export class DataLeaveService {
     private readonly accessService: AccessService,
     private readonly userPermissionGroupRepo: UserPermissionGroupRepository,
     private userGroupRepo: UserGroupRepository,
-  ) { }
+  ) {}
 
   async create(condition: Prisma.dataLeaveCreateArgs) {
     const result = await this.accessService.getLeadUsersByUserId(
@@ -327,6 +327,12 @@ export class DataLeaveService {
         ...filter,
         groupId: { in: AccessedGroup.map((event: any) => event.groupId) },
         status: { in: ['approved'] },
+        startDate: {
+          gte: dayjs(new Date()).startOf('year').toDate(),
+        },
+        endDate: {
+          lte: dayjs(new Date()).endOf('year').toDate(),
+        },
       },
       include: { dataLeaveFiles: true },
       orderBy: { createdAt: 'desc' },
@@ -360,10 +366,10 @@ export class DataLeaveService {
         const leaveLimit = isNewStaff
           ? typeLeave.limitLeaveFour
           : diffYears < 3
-            ? typeLeave.limitLeaveOne
-            : diffYears < 5
-              ? typeLeave.limitLeaveTwo
-              : typeLeave.limitLeaveThree;
+          ? typeLeave.limitLeaveOne
+          : diffYears < 5
+          ? typeLeave.limitLeaveTwo
+          : typeLeave.limitLeaveThree;
         const type = leave.typeName;
         if (!user.leaveSummary[type]) {
           user.leaveSummary[type] = {
@@ -413,7 +419,7 @@ export class DataLeaveService {
       where: {
         userId: userId,
         status: {
-          in: ['approved', 'waiting'],
+          in: ['approved'],
         },
         startDate: {
           gte: startOfYear,
@@ -637,7 +643,7 @@ export class DataLeaveService {
         const daysInStartYear =
           Math.ceil(
             (endOfStartYear.getTime() - startDate.getTime()) /
-            (1000 * 60 * 60 * 24),
+              (1000 * 60 * 60 * 24),
           ) + 1;
 
         // หาจำนวนวันในปีถัดไป (จากต้นปีถึง endDate)
@@ -645,7 +651,7 @@ export class DataLeaveService {
         const daysInEndYear =
           Math.ceil(
             (endDate.getTime() - startOfEndYear.getTime()) /
-            (1000 * 60 * 60 * 24),
+              (1000 * 60 * 60 * 24),
           ) + 1;
 
         // แบ่งชั่วโมงตามสัดส่วน
@@ -737,13 +743,13 @@ export class DataLeaveService {
         const daysInStartYear =
           Math.ceil(
             (endOfStartYear.getTime() - startDate.getTime()) /
-            (1000 * 60 * 60 * 24),
+              (1000 * 60 * 60 * 24),
           ) + 1;
         const startOfEndYear = new Date(endYear, 0, 1);
         const daysInEndYear =
           Math.ceil(
             (endDate.getTime() - startOfEndYear.getTime()) /
-            (1000 * 60 * 60 * 24),
+              (1000 * 60 * 60 * 24),
           ) + 1;
 
         const hoursInStartYear = (leaveHour * daysInStartYear) / totalDays;

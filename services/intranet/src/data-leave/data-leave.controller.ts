@@ -16,7 +16,7 @@ import { UserInterceptor } from '@inventory/share';
 
 @Controller('data-leave')
 export class DataLeaveController {
-  constructor(private readonly dataLeaveService: DataLeaveService) { }
+  constructor(private readonly dataLeaveService: DataLeaveService) {}
 
   @Post()
   create(@Body('condition') condition: Prisma.dataLeaveCreateArgs) {
@@ -107,7 +107,10 @@ export class DataLeaveController {
   }
 
   @Get(`find-detail-by-type-leave-userId/:userId/:typeId`)
-  findDetailByTypeLeaveUserId(@Param('userId') userId: string, @Param('typeId') typeId: string) {
+  findDetailByTypeLeaveUserId(
+    @Param('userId') userId: string,
+    @Param('typeId') typeId: string,
+  ) {
     return this.dataLeaveService.findDetailByTypeLeaveUserId(userId, +typeId);
   }
 
