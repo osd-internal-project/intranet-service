@@ -51,7 +51,7 @@ model dataLeave {
   groupId         String?          @default("") @map("group_id") @db.VarChar(100)
   detailApproved  String?          @default("") @map("detail_approved") @db.VarChar(250)
   dataLeaveFiles  dataLeaveFiles[]
-  yaerLeaveHour   Float?           @default(0.00) @map("year_leave_hour")
+  yearLeaveHour   Float?           @default(0.00) @map("year_leave_hour")
   usedLeaveHour   Float?           @default(0.00) @map("used_leave_hour")
   beforeLeaveHour Float?           @default(0.00) @map("before_leave_hour")
   afterLeaveHour  Float?           @default(0.00) @map("after_leave_hour")
