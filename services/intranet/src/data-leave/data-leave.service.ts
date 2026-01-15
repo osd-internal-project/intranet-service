@@ -863,6 +863,10 @@ export class DataLeaveService {
     const findDetailUser = await this.usersRepo.findOne({
       where: { userId: findDataLeave.userId },
     });
+    const findleaveDetail = await this.dataleaveRepo.findOne({
+      where: { id: condition.where.id },
+    });
+
     const base = {
       where: { id: condition.where.id },
       data: {
@@ -878,6 +882,7 @@ export class DataLeaveService {
         findDetailUser,
         String(condition.data.status),
         condition.data,
+        findleaveDetail,
       );
     }
     return updateData;
@@ -917,8 +922,14 @@ export class DataLeaveService {
     dataUsers: Prisma.usersWhereInput,
     status: string,
     data: Prisma.dataLeaveUpdateInput,
+    findleaveDetail: any,
   ) {
-    const html = await templateDataLeaveApproved(dataUsers, status, data);
+    const html = await templateDataLeaveApproved(
+      dataUsers,
+      status,
+      data,
+      findleaveDetail,
+    );
     const transporter = nodemailer.createTransport({
       host: 'smtp.office365.com',
       port: 587,
