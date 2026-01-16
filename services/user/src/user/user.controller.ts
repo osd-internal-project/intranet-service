@@ -277,6 +277,12 @@ export class UserController {
     return this.userService.findUserInOnwerGroupByUserGroupId(userGroupId);
   }
 
+  @Get('dropdown-user-in-owner-group/:userId')
+  findUserIngroups(@Param('userId') userId: string) {
+    console.log(userId);
+    return this.userService.findUserIngroups(userId);
+  }
+
   // @Get('header-user-by-userid/:userid')
   // // @UseInterceptors(UserInterceptor)
   // async findHeaderUserByUserId(@Param('userid') userId: string) {

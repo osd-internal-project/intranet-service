@@ -3,8 +3,6 @@ import { CreateEmailTemplateDto } from './dto/create-email-template.dto';
 import { UpdateEmailTemplateDto } from './dto/update-email-template.dto';
 import { emailTemplateRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
-import * as dayjs from 'dayjs';
-import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class EmailTemplateService {

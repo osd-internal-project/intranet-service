@@ -44,6 +44,7 @@ import { OvertimeModule } from './overtime/overtime.module';
 import { MaCarBookingImagesModule } from './ma-car-booking-images/ma-car-booking-images.module';
 import { MasterProvinceThailandModule } from './master-province-thailand/master-province-thailand.module';
 import { MaCarFilesModule } from './ma-car-files/ma-car-files.module';
+import { EmployeePropertyModule } from './employee-property/employee-property.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
@@ -86,6 +87,7 @@ import { MaCarFilesModule } from './ma-car-files/ma-car-files.module';
     MaCarBookingImagesModule,
     MasterProvinceThailandModule,
     MaCarFilesModule,
+    EmployeePropertyModule,
   ],
   controllers: [IntranetController, PublicController],
   providers: [IntranetService],

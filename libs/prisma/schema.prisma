@@ -401,6 +401,7 @@ model users {
   userMapOrganizeGroup      userMapOrganizeGroup[]
   userMapOrganizeChart      userMapOrganizeChart[]
   userRoleMap               userRoleMap[]
+  employeeProperties        employeeProperty[]
 }
 
 model userMapOrganizeGroup {
@@ -1138,4 +1139,22 @@ model masterProvinceThailand {
   updatedAt      DateTime? @default(now()) @map("updated_at")
 
   @@map("master_province_thailand")
+}
+
+model employeeProperty {
+  id          Int      @unique @default(autoincrement()) @map("id")
+  userId      String   @map("user_id") @db.VarChar(50)
+  type        String   @db.VarChar(100)
+  name        String   @db.VarChar(255)
+  brand       String   @db.VarChar(255)
+  serial      String   @db.VarChar(255)
+  assetNumber String   @map("asset_number") @db.VarChar(255)
+  address     String   @db.VarChar(500)
+  assetStatus String   @map("asset_status") @db.VarChar(50)
+  pathImage   String   @map("path_image") @db.VarChar(255)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @map("updated_at")
+  users       users    @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@map("employee_property")
 }

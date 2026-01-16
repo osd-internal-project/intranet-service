@@ -88,3 +88,6 @@ export * from './order.repository';
 export * from './requestOrder.repository';
 export * from './requestOrderLot.repository';
 // export * from './orderLot.repository';
+
+// employee property
+export * from './employeeProperty.repository';

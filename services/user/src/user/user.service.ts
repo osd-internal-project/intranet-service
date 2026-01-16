@@ -446,4 +446,18 @@ export class UserService {
       where: { usersId: userId },
     });
   }
+
+  async findUserIngroups(userId: string) {
+    const AccessedGroup = await this.accessService.getAccessedUsersByUserId(
+      ModuleTypes.INTRANET,
+      userId,
+    );
+    const userIds = AccessedGroup.map((event: any) => event.userId);
+    return this.usersRepo.findMany({
+      where: {
+        userId: { in: userIds },
+      },
+      orderBy: { userId: 'asc' },
+    });
+  }
 }
