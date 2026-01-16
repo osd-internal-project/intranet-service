@@ -15,9 +15,19 @@ export class EmployeePropertyService {
     private readonly usersRepo: UsersRepository,
     private readonly accessService: AccessService,
   ) {}
-  create(createEmployeePropertyDto: Prisma.employeePropertyCreateInput) {
-    return this.employeePropertyRepo.create({
-      data: createEmployeePropertyDto,
+  create(createEmployeePropertyDto: any) {
+    return this.employeePropertyRepo.createMany({
+      data: createEmployeePropertyDto.map((item) => ({
+        userId: item.userId,
+        type: item.type,
+        name: item.name,
+        brand: item.brand ?? '',
+        serial: item.serial ?? '',
+        assetNumber: item.assetNumber ?? '',
+        address: item.address ?? '',
+        assetStatus: item.assetStatus ?? '',
+        pathImage: item.pathImage ?? '',
+      })),
     });
   }
 
@@ -58,6 +68,7 @@ export class EmployeePropertyService {
           },
         },
       },
+      orderBy: { createdAt: 'asc' },
     });
   }
 
@@ -112,7 +123,7 @@ export class EmployeePropertyService {
           },
         },
       },
-      orderBy: { userId: 'asc' },
+      orderBy: [{ userId: 'asc' }, { createdAt: 'asc' }],
     });
   }
 

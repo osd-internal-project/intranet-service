@@ -1,0 +1,123 @@
+import {
+  employeePropertyRepository,
+  UsersRepository,
+  AccessService,
+  ModuleTypes,
+} from '@inventory/share';
+import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
+import { TemplateExcelEmpAsset } from 'src/utils/generate-excel';
+
+@Injectable()
+export class ReportEmpAssetService {
+  constructor(
+    private readonly employeePropertyRepo: employeePropertyRepository,
+    private readonly usersRepo: UsersRepository,
+    private readonly accessService: AccessService,
+  ) {}
+
+  async export(userId: string, query: { type: string; name: string }) {
+    const { type, name } = query || {};
+    let filters = {};
+    if (type) {
+      filters = { ...filters, type: { equals: type } };
+    }
+    if (name) {
+      filters = { ...filters, name: { contains: name, mode: 'insensitive' } };
+    }
+    const dataSources = await this.employeePropertyRepo.findMany({
+      where: { userId: userId, ...filters },
+    });
+    const transfer = dataSources.map(
+      (data: Prisma.employeePropertyWhereInput, index: number) => ({
+        No: index + 1,
+        ประเภททรัพย์สิน: data.type,
+        ชื่อทรัพย์สิน: data.name,
+        ยี่ห้อ: data.brand,
+        Serial: data.serial,
+        'Asset No.': data.assetNumber,
+        สถานะ: data.assetStatus,
+        ที่ตั้ง: data.address,
+      }),
+    );
+    return await TemplateExcelEmpAsset(transfer, 'report');
+  }
+  async exportTeams(
+    userIdUser: string,
+    query: { type: string; name: string; userId: string },
+  ) {
+    const { type, name, userId } = query || {};
+    let filters = {};
+
+    const getUser = await this.usersRepo.findOne({
+      where: { userId: userIdUser },
+    });
+    const AccessedGroup = await this.accessService.getAccessedGroupByGroupId(
+      ModuleTypes.INTRANET,
+      getUser.ownerGroupId,
+    );
+    const getUsers = await this.usersRepo.findMany({
+      where: {
+        ownerGroupId: { in: AccessedGroup.map((item) => item.groupId) },
+      },
+    });
+    if (type) {
+      filters = { ...filters, type: { equals: type } };
+    }
+    if (name) {
+      filters = { ...filters, name: { contains: name, mode: 'insensitive' } };
+    }
+    if (userId) {
+      filters = { ...filters, userId: { equals: userId } };
+    } else {
+      filters = {
+        ...filters,
+        userId: { in: getUsers.map((item) => item.userId) },
+      };
+    }
+    const dataSources = await this.employeePropertyRepo.findMany({
+      where: {
+        ...filters,
+      },
+      include: {
+        users: {
+          select: {
+            id: true,
+            userId: true,
+            firstNameEn: true,
+            lastNameEn: true,
+            username: true,
+            email: true,
+            department: true,
+          },
+        },
+      },
+      orderBy: [{ userId: 'asc' }, { createdAt: 'asc' }],
+    });
+    const transfer = dataSources.map(
+      (data: Prisma.employeePropertyWhereInput, index: number) => ({
+        No: index + 1,
+        ชื่อ: data.users.firstNameEn + ' ' + data.users.lastNameEn,
+        แผนก: data.users.department.departName,
+        ประเภททรัพย์สิน: data.type,
+        ชื่อทรัพย์สิน: data.name,
+        ยี่ห้อ: data.brand,
+        Serial: data.serial,
+        'Asset No.': data.assetNumber,
+        สถานะ: data.assetStatus,
+        ที่ตั้ง: data.address,
+      }),
+    );
+    return await TemplateExcelEmpAsset(transfer, 'report');
+  }
+
+  startOfDate(date: string) {
+    const dateset = new Date(date).setUTCHours(0, 0, 0, 0);
+    return new Date(dateset);
+  }
+
+  endOfDate(date: string) {
+    const dateset = new Date(date).setUTCHours(23, 59, 59, 59);
+    return new Date(dateset);
+  }
+}

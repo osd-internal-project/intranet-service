@@ -14,6 +14,8 @@ export class ReportDataLeaveController {
     query: { type: string; value: string },
     @Res() res: Response,
   ) {
+    console.log('test');
+
     try {
       const buffer = await this.reportDataLeaveService.export(query);
       res.setHeader(
