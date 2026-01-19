@@ -91,3 +91,4 @@ export * from './requestOrderLot.repository';
 
 // employee property
 export * from './employeeProperty.repository';
+export * from './mistakesType.Repository';

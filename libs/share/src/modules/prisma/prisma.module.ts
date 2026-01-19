@@ -82,6 +82,7 @@ import {
   RequestOrderListRepository,
   // OrderLotRepository,
   employeePropertyRepository,
+  mistakesTypeRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -174,6 +175,7 @@ const services = [
   RequestOrderListRepository,
   // OrderLotRepository,
   employeePropertyRepository,
+  mistakesTypeRepository,
 ];
 @Module({
   providers: [...services],

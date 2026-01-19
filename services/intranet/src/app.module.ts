@@ -45,6 +45,7 @@ import { MaCarBookingImagesModule } from './ma-car-booking-images/ma-car-booking
 import { MasterProvinceThailandModule } from './master-province-thailand/master-province-thailand.module';
 import { MaCarFilesModule } from './ma-car-files/ma-car-files.module';
 import { EmployeePropertyModule } from './employee-property/employee-property.module';
+import { MistakesTypeModule } from './mistakes-type/mistakes-type.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
@@ -88,6 +89,7 @@ import { EmployeePropertyModule } from './employee-property/employee-property.mo
     MasterProvinceThailandModule,
     MaCarFilesModule,
     EmployeePropertyModule,
+    MistakesTypeModule,
   ],
   controllers: [IntranetController, PublicController],
   providers: [IntranetService],

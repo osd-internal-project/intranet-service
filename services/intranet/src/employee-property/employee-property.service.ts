@@ -6,7 +6,6 @@ import {
   UsersRepository,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
-import e from 'express';
 
 @Injectable()
 export class EmployeePropertyService {
@@ -67,6 +66,7 @@ export class EmployeePropertyService {
             department: true,
           },
         },
+        mistakesType: true,
       },
       orderBy: { createdAt: 'asc' },
     });

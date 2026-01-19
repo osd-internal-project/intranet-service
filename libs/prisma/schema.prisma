@@ -1142,19 +1142,34 @@ model masterProvinceThailand {
 }
 
 model employeeProperty {
-  id          Int      @unique @default(autoincrement()) @map("id")
-  userId      String   @map("user_id") @db.VarChar(50)
-  type        String   @db.VarChar(100)
-  name        String   @db.VarChar(255)
-  brand       String   @db.VarChar(255)
-  serial      String   @db.VarChar(255)
-  assetNumber String   @map("asset_number") @db.VarChar(255)
-  address     String   @db.VarChar(500)
-  assetStatus String   @map("asset_status") @db.VarChar(50)
-  pathImage   String   @map("path_image") @db.VarChar(255)
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @default(now()) @map("updated_at")
-  users       users    @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  id           Int            @unique @default(autoincrement()) @map("id")
+  userId       String         @map("user_id") @db.VarChar(50)
+  type         String         @db.VarChar(100)
+  name         String         @db.VarChar(255)
+  brand        String         @db.VarChar(255)
+  serial       String         @db.VarChar(255)
+  assetNumber  String         @map("asset_number") @db.VarChar(255)
+  address      String         @db.VarChar(500)
+  assetStatus  String         @map("asset_status") @db.VarChar(50)
+  pathImage    String         @map("path_image") @db.VarChar(255)
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @default(now()) @map("updated_at")
+  users        users          @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  mistakesType mistakesType[]
 
   @@map("employee_property")
+}
+
+model mistakesType {
+  id                 Int               @unique @default(autoincrement()) @map("id")
+  typeId             String            @unique @default(uuid()) @map("type_id") @db.VarChar(50)
+  typeName           String            @map("type_name") @db.VarChar(255)
+  detail             String            @db.VarChar(500)
+  status             Boolean           @default(true)
+  createdAt          DateTime          @default(now()) @map("created_at")
+  updatedAt          DateTime          @default(now()) @map("updated_at")
+  employeePropertyId Int?              @map("employee_property_id")
+  employeeProperty   employeeProperty? @relation(fields: [employeePropertyId], references: [id])
+
+  @@map("mistakes_type")
 }
