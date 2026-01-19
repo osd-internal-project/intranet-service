@@ -46,6 +46,7 @@ import { MasterProvinceThailandModule } from './master-province-thailand/master-
 import { MaCarFilesModule } from './ma-car-files/ma-car-files.module';
 import { EmployeePropertyModule } from './employee-property/employee-property.module';
 import { MistakesTypeModule } from './mistakes-type/mistakes-type.module';
+import { ComplainProblemModule } from './complain-problem/complain-problem.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
@@ -90,6 +91,7 @@ import { MistakesTypeModule } from './mistakes-type/mistakes-type.module';
     MaCarFilesModule,
     EmployeePropertyModule,
     MistakesTypeModule,
+    ComplainProblemModule,
   ],
   controllers: [IntranetController, PublicController],
   providers: [IntranetService],

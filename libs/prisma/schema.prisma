@@ -402,6 +402,7 @@ model users {
   userMapOrganizeChart      userMapOrganizeChart[]
   userRoleMap               userRoleMap[]
   employeeProperties        employeeProperty[]
+  complainProblems          complainProblem[]
 }
 
 model userMapOrganizeGroup {
@@ -1172,4 +1173,18 @@ model mistakesType {
   employeeProperty   employeeProperty? @relation(fields: [employeePropertyId], references: [id])
 
   @@map("mistakes_type")
+}
+
+model complainProblem {
+  id        Int       @unique @default(autoincrement()) @map("id")
+  name      String    @map("name") @db.VarChar(255)
+  userId    String    @map("user_id") @db.VarChar(50)
+  detail    String    @db.VarChar(500)
+  status    Boolean?  @default(false)
+  createdAt DateTime? @default(now()) @map("created_at")
+  updatedAt DateTime? @default(now()) @map("updated_at")
+  updatedBy String?   @map("updated_by") @db.VarChar(255)
+  users     users?    @relation(fields: [userId], references: [userId])
+
+  @@map("complain_problem")
 }
