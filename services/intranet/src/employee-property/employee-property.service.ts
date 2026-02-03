@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import {
   employeePropertyRepository,
   ModuleTypes,
@@ -82,11 +82,12 @@ export class EmployeePropertyService {
           select: {
             id: true,
             userId: true,
-            firstNameEn: true,
-            lastNameEn: true,
+            firstNameTh: true,
+            lastNameTh: true,
             username: true,
             email: true,
             department: true,
+            masterPosition: true,
           },
         },
         mistakesType: true,
@@ -143,7 +144,7 @@ export class EmployeePropertyService {
       };
     }
 
-    return this.employeePropertyRepo.findMany({
+    const data = await this.employeePropertyRepo.findMany({
       where: {
         ...filters,
       },
@@ -152,29 +153,76 @@ export class EmployeePropertyService {
           select: {
             id: true,
             userId: true,
-            firstNameEn: true,
-            lastNameEn: true,
+            firstNameTh: true,
+            lastNameTh: true,
             username: true,
             email: true,
             department: true,
+            masterPosition: true,
           },
         },
       },
       orderBy: [{ userId: 'asc' }, { createdAt: 'asc' }],
     });
+    const newData = new Map();
+    for (const item of data) {
+      const url = item.pathImage
+        ? await this.minioService.getPresignedUrl(
+            config.minioBucket,
+            item.pathImage,
+          )
+        : '';
+      newData.set(item.id, {
+        ...item,
+        imageUrl: url,
+      });
+    }
+    return Array.from(newData.values());
   }
 
-  update(
+  async update(
     id: number,
     updateEmployeePropertyDto: Prisma.employeePropertyUpdateInput,
+    file: any,
   ) {
+    const oldData = await this.employeePropertyRepo.findOne({
+      where: { id },
+    });
+    if (!oldData) {
+      throw new NotFoundException('Data not found');
+    }
+    let objectNameOld = oldData.pathImage ?? '';
+    let objectName = '';
+    if (file) {
+      if (oldData.pathImage) {
+        await this.minioService.deleteFile(objectNameOld, config.minioBucket);
+      }
+      const ext = getExtensionFromMime(file.mimetype);
+      const uuidName = uuidv4();
+      objectName = `${uuidName}.${ext}`;
+      await this.minioService.uploadFile(
+        file.buffer,
+        file.size,
+        config.minioBucket,
+        objectName,
+      );
+    }
     return this.employeePropertyRepo.update({
       where: { id: id },
-      data: updateEmployeePropertyDto,
+      data: { ...updateEmployeePropertyDto, pathImage: objectName },
     });
   }
 
-  remove(id: number) {
+  async remove(id: number) {
+    const data = await this.employeePropertyRepo.findOne({
+      where: { id },
+    });
+    if (!data) {
+      throw new NotFoundException('Data not found');
+    }
+    if (data.pathImage) {
+      await this.minioService.deleteFile(data.pathImage, config.minioBucket);
+    }
     return this.employeePropertyRepo.delete({
       where: { id: id },
     });

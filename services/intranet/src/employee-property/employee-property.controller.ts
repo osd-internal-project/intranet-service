@@ -9,10 +9,11 @@ import {
   Query,
   UseInterceptors,
   UploadedFiles,
+  UploadedFile,
 } from '@nestjs/common';
 import { EmployeePropertyService } from './employee-property.service';
 import { Prisma } from '@prisma/client';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('employee-property')
 export class EmployeePropertyController {
@@ -59,11 +60,14 @@ export class EmployeePropertyController {
   }
 
   @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateEmployeePropertyDto: Prisma.employeePropertyUpdateInput,
+  @Patch(':id')
+  @UseInterceptors(FileInterceptor('file'))
+  async update(
+    @Param('id') id: number,
+    @Body() dto: Prisma.employeePropertyUpdateInput,
+    @UploadedFile() file?: Express.Multer.File,
   ) {
-    return this.employeePropertyService.update(+id, updateEmployeePropertyDto);
+    return this.employeePropertyService.update(+id, dto, file);
   }
 
   @Delete(':id')

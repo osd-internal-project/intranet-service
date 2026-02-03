@@ -6,7 +6,10 @@ import {
 } from '@inventory/share';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { TemplateExcelEmpAsset } from 'src/utils/generate-excel';
+import {
+  TemplateExcelEmpAsset,
+  TemplateExcelEmpAssetTeams,
+} from 'src/utils/generate-excel';
 
 @Injectable()
 export class ReportEmpAssetService {
@@ -31,7 +34,7 @@ export class ReportEmpAssetService {
     const transfer = dataSources.map(
       (data: Prisma.employeePropertyWhereInput, index: number) => ({
         No: index + 1,
-        ประเภททรัพย์สิน: data.type,
+        ประเภททรัพย์สิน: this.getAssetTypeLabel(data.type as string),
         ชื่อทรัพย์สิน: data.name,
         ยี่ห้อ: data.brand,
         Serial: data.serial,
@@ -89,6 +92,7 @@ export class ReportEmpAssetService {
             username: true,
             email: true,
             department: true,
+            masterPosition: true,
           },
         },
       },
@@ -97,9 +101,9 @@ export class ReportEmpAssetService {
     const transfer = dataSources.map(
       (data: Prisma.employeePropertyWhereInput, index: number) => ({
         No: index + 1,
-        ชื่อ: data.users.firstNameEn + ' ' + data.users.lastNameEn,
-        แผนก: data.users.department.departName,
-        ประเภททรัพย์สิน: data.type,
+        ชื่อ: data.users.firstNameTh + ' ' + data.users.lastNameTh,
+        แผนก: data.users.masterPosition.nameTh,
+        ประเภททรัพย์สิน: this.getAssetTypeLabel(data.type as string),
         ชื่อทรัพย์สิน: data.name,
         ยี่ห้อ: data.brand,
         Serial: data.serial,
@@ -108,7 +112,7 @@ export class ReportEmpAssetService {
         ที่ตั้ง: data.address,
       }),
     );
-    return await TemplateExcelEmpAsset(transfer, 'report');
+    return await TemplateExcelEmpAssetTeams(transfer, 'report');
   }
 
   startOfDate(date: string) {
@@ -119,5 +123,18 @@ export class ReportEmpAssetService {
   endOfDate(date: string) {
     const dateset = new Date(date).setUTCHours(23, 59, 59, 59);
     return new Date(dateset);
+  }
+
+  getAssetTypeLabel(type?: string) {
+    switch (type) {
+      case 'computer_equipment':
+        return 'อุปกรณ์คอมพิวเตอร์';
+      case 'office_equipment':
+        return 'อุปกรณ์สำนักงาน';
+      case 'other_asset':
+        return 'อื่นๆ';
+      default:
+        return type ?? '';
+    }
   }
 }
