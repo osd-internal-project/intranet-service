@@ -6,6 +6,10 @@ import {
   UsersRepository,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
+import appConfig from '../configs';
+import { MinioClientService } from 'src/minio-client/minio-client.service';
+import { v4 as uuidv4 } from 'uuid';
+const config = appConfig();
 
 @Injectable()
 export class EmployeePropertyService {
@@ -13,10 +17,26 @@ export class EmployeePropertyService {
     private readonly employeePropertyRepo: employeePropertyRepository,
     private readonly usersRepo: UsersRepository,
     private readonly accessService: AccessService,
+    private readonly minioService: MinioClientService,
   ) {}
-  create(createEmployeePropertyDto: any) {
-    return this.employeePropertyRepo.createMany({
-      data: createEmployeePropertyDto.map((item) => ({
+  async create(createEmployeePropertyDto: any, attendFiles: any) {
+    const results = [];
+    for (let i = 0; i < createEmployeePropertyDto.length; i++) {
+      const item = createEmployeePropertyDto[i];
+      const file = attendFiles[i];
+      let objectName = '';
+      if (file) {
+        const uuidName = uuidv4();
+        const ext = getExtensionFromMime(file.mimetype);
+        objectName = `${uuidName}.${ext}`;
+        await this.minioService.uploadFile(
+          file.buffer,
+          file.size,
+          config.minioBucket,
+          objectName,
+        );
+      }
+      results.push({
         userId: item.userId,
         type: item.type,
         name: item.name,
@@ -25,8 +45,11 @@ export class EmployeePropertyService {
         assetNumber: item.assetNumber ?? '',
         address: item.address ?? '',
         assetStatus: item.assetStatus ?? '',
-        pathImage: item.pathImage ?? '',
-      })),
+        pathImage: objectName,
+      });
+    }
+    return this.employeePropertyRepo.createMany({
+      data: results,
     });
   }
 
@@ -43,7 +66,7 @@ export class EmployeePropertyService {
     });
   }
 
-  findMany(userId: string, query: { type: string; name: string }) {
+  async findMany(userId: string, query: { type: string; name: string }) {
     const { type, name } = query || {};
     let filters = {};
     if (type) {
@@ -52,7 +75,7 @@ export class EmployeePropertyService {
     if (name) {
       filters = { ...filters, name: { contains: name, mode: 'insensitive' } };
     }
-    return this.employeePropertyRepo.findMany({
+    const data = await this.employeePropertyRepo.findMany({
       where: { userId: userId, ...filters },
       include: {
         users: {
@@ -70,6 +93,20 @@ export class EmployeePropertyService {
       },
       orderBy: { createdAt: 'asc' },
     });
+    const newData = new Map();
+    for (const item of data) {
+      const url = item.pathImage
+        ? await this.minioService.getPresignedUrl(
+            config.minioBucket,
+            item.pathImage,
+          )
+        : '';
+      newData.set(item.id, {
+        ...item,
+        imageUrl: url,
+      });
+    }
+    return Array.from(newData.values());
   }
 
   async findManyTeams(
@@ -142,4 +179,15 @@ export class EmployeePropertyService {
       where: { id: id },
     });
   }
+}
+
+function getExtensionFromMime(mime: string) {
+  const map: Record<string, string> = {
+    'image/jpeg': 'jpg',
+    'image/png': 'png',
+    'image/webp': 'webp',
+    'image/gif': 'gif',
+  };
+
+  return map[mime] || 'jpg';
 }

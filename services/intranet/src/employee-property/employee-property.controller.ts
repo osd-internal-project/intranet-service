@@ -7,9 +7,12 @@ import {
   Param,
   Delete,
   Query,
+  UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
 import { EmployeePropertyService } from './employee-property.service';
 import { Prisma } from '@prisma/client';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('employee-property')
 export class EmployeePropertyController {
@@ -17,11 +20,22 @@ export class EmployeePropertyController {
     private readonly employeePropertyService: EmployeePropertyService,
   ) {}
 
+  // @Post()
+  // create(
+  //   @Body() createEmployeePropertyDto: Prisma.employeePropertyCreateInput,
+  // ) {
+  //   return this.employeePropertyService.create(createEmployeePropertyDto);
+  // }
+
   @Post()
+  @UseInterceptors(FilesInterceptor('files'))
   create(
-    @Body() createEmployeePropertyDto: Prisma.employeePropertyCreateInput,
+    @UploadedFiles() files: Express.Multer.File[],
+    @Body('items') items: string,
   ) {
-    return this.employeePropertyService.create(createEmployeePropertyDto);
+    const parsedItems = JSON.parse(items);
+
+    return this.employeePropertyService.create(parsedItems, files);
   }
 
   @Get()

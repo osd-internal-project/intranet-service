@@ -47,6 +47,7 @@ import { MaCarFilesModule } from './ma-car-files/ma-car-files.module';
 import { EmployeePropertyModule } from './employee-property/employee-property.module';
 import { MistakesTypeModule } from './mistakes-type/mistakes-type.module';
 import { ComplainProblemModule } from './complain-problem/complain-problem.module';
+import { MinioClientModule } from './minio-client/minio-client.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
@@ -92,6 +93,7 @@ import { ComplainProblemModule } from './complain-problem/complain-problem.modul
     EmployeePropertyModule,
     MistakesTypeModule,
     ComplainProblemModule,
+    MinioClientModule,
   ],
   controllers: [IntranetController, PublicController],
   providers: [IntranetService],

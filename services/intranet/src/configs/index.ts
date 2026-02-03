@@ -4,4 +4,11 @@ export default () => ({
   id24Url: process.env.ID24_URL || 'http://192.168.59.191:8815',
   id24TokenPublicKey: process.env.ID24_TOKEN_PUBLIC_KEY,
   pathMountDirUpload: process.env.PATH_MOUNTDIR_UPLOAD,
+  minioPort: process.env.MINIO_PORT,
+  minioAccessKey: process.env.MINIO_ACCESSKEY,
+  minioSecretKey: process.env.MINIO_SECRETKEY,
+  minioEndpoint: process.env.MINIO_ENDPOINT,
+  minioBucket: process.env.MINIO_BUCKET,
+  minioSsl: process.env.MINIO_USE_SSL === 'true',
+  storagePath: process.env.MINIO_STORAGEPATH,
 });
