@@ -18,7 +18,32 @@ export class ReportEmpAssetService {
     private readonly usersRepo: UsersRepository,
     private readonly accessService: AccessService,
   ) {}
-
+  async exportAll(query: { type: string; name: string }) {
+    const { type, name } = query || {};
+    let filters = {};
+    if (type) {
+      filters = { ...filters, type: { equals: type } };
+    }
+    if (name) {
+      filters = { ...filters, name: { contains: name, mode: 'insensitive' } };
+    }
+    const dataSources = await this.employeePropertyRepo.findMany({
+      where: { ...filters },
+    });
+    const transfer = dataSources.map(
+      (data: Prisma.employeePropertyWhereInput, index: number) => ({
+        No: index + 1,
+        ประเภททรัพย์สิน: this.getAssetTypeLabel(data.type as string),
+        ชื่อทรัพย์สิน: data.name,
+        ยี่ห้อ: data.brand,
+        Serial: data.serial,
+        'Asset No.': data.assetNumber,
+        สถานะ: data.assetStatus,
+        ที่ตั้ง: data.address,
+      }),
+    );
+    return await TemplateExcelEmpAsset(transfer, 'report');
+  }
   async export(userId: string, query: { type: string; name: string }) {
     const { type, name } = query || {};
     let filters = {};
@@ -87,8 +112,8 @@ export class ReportEmpAssetService {
           select: {
             id: true,
             userId: true,
-            firstNameEn: true,
-            lastNameEn: true,
+            firstNameTh: true,
+            lastNameTh: true,
             username: true,
             email: true,
             department: true,

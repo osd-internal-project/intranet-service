@@ -53,8 +53,48 @@ export class EmployeePropertyService {
     });
   }
 
-  findAll() {
-    return this.employeePropertyRepo.findMany({});
+  async findAll(query) {
+    const { type, name } = query || {};
+    let filters = {};
+    if (type) {
+      filters = { ...filters, type: { equals: type } };
+    }
+    if (name) {
+      filters = { ...filters, name: { contains: name, mode: 'insensitive' } };
+    }
+    const data = await this.employeePropertyRepo.findMany({
+      where: { ...filters },
+      include: {
+        users: {
+          select: {
+            id: true,
+            userId: true,
+            firstNameTh: true,
+            lastNameTh: true,
+            username: true,
+            email: true,
+            department: true,
+            masterPosition: true,
+          },
+        },
+        mistakesType: true,
+      },
+      orderBy: { createdAt: 'asc' },
+    });
+    const newData = new Map();
+    for (const item of data) {
+      const url = item.pathImage
+        ? await this.minioService.getPresignedUrl(
+            config.minioBucket,
+            item.pathImage,
+          )
+        : '';
+      newData.set(item.id, {
+        ...item,
+        imageUrl: url,
+      });
+    }
+    return Array.from(newData.values());
   }
 
   findOne(id: string) {
@@ -191,7 +231,7 @@ export class EmployeePropertyService {
     if (!oldData) {
       throw new NotFoundException('Data not found');
     }
-    let objectNameOld = oldData.pathImage ?? '';
+    let objectNameOld = oldData.pathImage;
     let objectName = '';
     if (file) {
       if (oldData.pathImage) {
@@ -209,7 +249,10 @@ export class EmployeePropertyService {
     }
     return this.employeePropertyRepo.update({
       where: { id: id },
-      data: { ...updateEmployeePropertyDto, pathImage: objectName },
+      data: {
+        ...updateEmployeePropertyDto,
+        pathImage: file ? objectName : objectNameOld,
+      },
     });
   }
 

@@ -456,6 +456,7 @@ export class UserService {
     return this.usersRepo.findMany({
       where: {
         userId: { in: userIds },
+        activeStatus: true,
       },
       orderBy: { userId: 'asc' },
     });

@@ -40,8 +40,8 @@ export class EmployeePropertyController {
   }
 
   @Get()
-  findAll() {
-    return this.employeePropertyService.findAll();
+  findAll(@Query() query: any) {
+    return this.employeePropertyService.findAll(query);
   }
 
   @Get('find-many/:userId')
@@ -59,7 +59,6 @@ export class EmployeePropertyController {
     return this.employeePropertyService.findOne(id);
   }
 
-  @Patch(':id')
   @Patch(':id')
   @UseInterceptors(FileInterceptor('file'))
   async update(
