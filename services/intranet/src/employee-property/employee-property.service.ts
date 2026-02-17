@@ -41,6 +41,7 @@ export class EmployeePropertyService {
         type: item.type,
         name: item.name,
         brand: item.brand ?? '',
+        nameOther: item.nameOther ?? '',
         serial: item.serial ?? '',
         assetNumber: item.assetNumber ?? '',
         address: item.address ?? '',
@@ -54,13 +55,19 @@ export class EmployeePropertyService {
   }
 
   async findAll(query) {
-    const { type, name } = query || {};
+    const { type, name, userId } = query || {};
     let filters = {};
     if (type) {
       filters = { ...filters, type: { equals: type } };
     }
     if (name) {
       filters = { ...filters, name: { contains: name, mode: 'insensitive' } };
+    }
+    if (userId) {
+      filters = {
+        ...filters,
+        userId,
+      };
     }
     const data = await this.employeePropertyRepo.findMany({
       where: { ...filters },

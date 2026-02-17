@@ -21,13 +21,6 @@ export class EmployeePropertyController {
     private readonly employeePropertyService: EmployeePropertyService,
   ) {}
 
-  // @Post()
-  // create(
-  //   @Body() createEmployeePropertyDto: Prisma.employeePropertyCreateInput,
-  // ) {
-  //   return this.employeePropertyService.create(createEmployeePropertyDto);
-  // }
-
   @Post()
   @UseInterceptors(FilesInterceptor('files'))
   create(

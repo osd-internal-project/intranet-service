@@ -18,23 +18,47 @@ export class ReportEmpAssetService {
     private readonly usersRepo: UsersRepository,
     private readonly accessService: AccessService,
   ) {}
-  async exportAll(query: { type: string; name: string }) {
-    const { type, name } = query || {};
+  async exportAll(query: { type: string; name: string; userId: string }) {
+    const { type, name, userId } = query || {};
     let filters = {};
+
     if (type) {
       filters = { ...filters, type: { equals: type } };
     }
     if (name) {
       filters = { ...filters, name: { contains: name, mode: 'insensitive' } };
     }
+    if (userId) {
+      filters = { ...filters, userId: { equals: userId } };
+    }
     const dataSources = await this.employeePropertyRepo.findMany({
-      where: { ...filters },
+      where: {
+        ...filters,
+      },
+      include: {
+        users: {
+          select: {
+            id: true,
+            userId: true,
+            firstNameTh: true,
+            lastNameTh: true,
+            username: true,
+            email: true,
+            department: true,
+            masterPosition: true,
+          },
+        },
+      },
+      orderBy: [{ userId: 'asc' }, { createdAt: 'asc' }],
     });
     const transfer = dataSources.map(
       (data: Prisma.employeePropertyWhereInput, index: number) => ({
         No: index + 1,
+        ชื่อ: data.users.firstNameTh + ' ' + data.users.lastNameTh,
+        แผนก: data.users.masterPosition.nameTh,
         ประเภททรัพย์สิน: this.getAssetTypeLabel(data.type as string),
         ชื่อทรัพย์สิน: data.name,
+        ประเภททรัพย์สินอื่นๆ: data.nameOther,
         ยี่ห้อ: data.brand,
         Serial: data.serial,
         'Asset No.': data.assetNumber,
@@ -42,7 +66,7 @@ export class ReportEmpAssetService {
         ที่ตั้ง: data.address,
       }),
     );
-    return await TemplateExcelEmpAsset(transfer, 'report');
+    return await TemplateExcelEmpAssetTeams(transfer, 'report');
   }
   async export(userId: string, query: { type: string; name: string }) {
     const { type, name } = query || {};
@@ -61,6 +85,7 @@ export class ReportEmpAssetService {
         No: index + 1,
         ประเภททรัพย์สิน: this.getAssetTypeLabel(data.type as string),
         ชื่อทรัพย์สิน: data.name,
+        ประเภททรัพย์สินอื่นๆ: data.nameOther,
         ยี่ห้อ: data.brand,
         Serial: data.serial,
         'Asset No.': data.assetNumber,
@@ -130,6 +155,7 @@ export class ReportEmpAssetService {
         แผนก: data.users.masterPosition.nameTh,
         ประเภททรัพย์สิน: this.getAssetTypeLabel(data.type as string),
         ชื่อทรัพย์สิน: data.name,
+        ประเภททรัพย์สินอื่นๆ: data.nameOther,
         ยี่ห้อ: data.brand,
         Serial: data.serial,
         'Asset No.': data.assetNumber,

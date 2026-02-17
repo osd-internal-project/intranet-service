@@ -1147,6 +1147,7 @@ model employeeProperty {
   userId       String         @map("user_id") @db.VarChar(50)
   type         String         @db.VarChar(100)
   name         String         @db.VarChar(255)
+  nameOther    String?        @map("name_other") @db.VarChar(255)
   brand        String         @db.VarChar(255)
   serial       String         @db.VarChar(255)
   assetNumber  String         @map("asset_number") @db.VarChar(255)
