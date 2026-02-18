@@ -9,6 +9,7 @@ import { Prisma } from '@prisma/client';
 import appConfig from '../configs';
 import { MinioClientService } from 'src/minio-client/minio-client.service';
 import { v4 as uuidv4 } from 'uuid';
+import type { UpdateEmployeePropertyDto } from './dto/update-employee-property.dto';
 const config = appConfig();
 
 @Injectable()
@@ -230,7 +231,7 @@ export class EmployeePropertyService {
 
   async update(
     id: number,
-    updateEmployeePropertyDto: Prisma.employeePropertyUpdateInput,
+    updateEmployeePropertyDto: UpdateEmployeePropertyDto,
     file: any,
   ) {
     const oldData = await this.employeePropertyRepo.findOne({
@@ -260,6 +261,7 @@ export class EmployeePropertyService {
       data: {
         ...updateEmployeePropertyDto,
         pathImage: file ? objectName : objectNameOld,
+        common: updateEmployeePropertyDto.common === 'true' ? true : false,
       },
     });
   }
