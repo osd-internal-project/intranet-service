@@ -47,6 +47,7 @@ export class EmployeePropertyService {
         address: item.address ?? '',
         assetStatus: item.assetStatus ?? '',
         pathImage: objectName,
+        common: item.common ?? false,
       });
     }
     return this.employeePropertyRepo.createMany({

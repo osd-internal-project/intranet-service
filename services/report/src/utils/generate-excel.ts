@@ -451,6 +451,7 @@ export async function TemplateExcelEmpAsset(data: any[], sheetName: string) {
   const headers = [
     'No',
     'ประเภททรัพย์สิน',
+    'ทรัพย์สินส่วนกลาง',
     'ชื่อทรัพย์สิน',
     'ประเภททรัพย์สินอื่นๆ',
     'ยี่ห้อ',
@@ -549,6 +550,7 @@ export async function TemplateExcelEmpAssetTeams(
     'ชื่อ',
     'แผนก',
     'ประเภททรัพย์สิน',
+    'ทรัพย์สินส่วนกลาง',
     'ชื่อทรัพย์สิน',
     'ประเภททรัพย์สินอื่นๆ',
     'ยี่ห้อ',

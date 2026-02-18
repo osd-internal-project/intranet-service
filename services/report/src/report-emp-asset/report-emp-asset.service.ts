@@ -57,6 +57,7 @@ export class ReportEmpAssetService {
         ชื่อ: data.users.firstNameTh + ' ' + data.users.lastNameTh,
         แผนก: data.users.masterPosition.nameTh,
         ประเภททรัพย์สิน: this.getAssetTypeLabel(data.type as string),
+        common: data.common ? 'ใช่' : 'ไม่ใช่',
         ชื่อทรัพย์สิน: data.name,
         ประเภททรัพย์สินอื่นๆ: data.nameOther,
         ยี่ห้อ: data.brand,
@@ -84,6 +85,7 @@ export class ReportEmpAssetService {
       (data: Prisma.employeePropertyWhereInput, index: number) => ({
         No: index + 1,
         ประเภททรัพย์สิน: this.getAssetTypeLabel(data.type as string),
+        common: data.common ? 'ใช่' : 'ไม่ใช่',
         ชื่อทรัพย์สิน: data.name,
         ประเภททรัพย์สินอื่นๆ: data.nameOther,
         ยี่ห้อ: data.brand,
@@ -154,6 +156,7 @@ export class ReportEmpAssetService {
         ชื่อ: data.users.firstNameTh + ' ' + data.users.lastNameTh,
         แผนก: data.users.masterPosition.nameTh,
         ประเภททรัพย์สิน: this.getAssetTypeLabel(data.type as string),
+        common: data.common ? 'ใช่' : 'ไม่ใช่',
         ชื่อทรัพย์สิน: data.name,
         ประเภททรัพย์สินอื่นๆ: data.nameOther,
         ยี่ห้อ: data.brand,

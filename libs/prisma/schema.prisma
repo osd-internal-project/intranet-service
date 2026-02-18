@@ -1152,6 +1152,7 @@ model employeeProperty {
   serial       String         @db.VarChar(255)
   assetNumber  String         @map("asset_number") @db.VarChar(255)
   address      String         @db.VarChar(500)
+  common       Boolean?       @default(false) @db.Boolean
   assetStatus  String         @map("asset_status") @db.VarChar(50)
   pathImage    String         @map("path_image") @db.VarChar(255)
   createdAt    DateTime       @default(now()) @map("created_at")

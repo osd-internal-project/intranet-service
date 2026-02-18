@@ -122,7 +122,7 @@ export const templateDataLeave = async (data: any): Promise<string> => {
         </div>
 
         <div class="section">
-            <span class="label">ขออนุญาติ</span>
+            <span class="label">ขออนุญาต</span>
             <span class="value">${data.typeName}</span>
         </div>
 
