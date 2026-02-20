@@ -459,6 +459,7 @@ export async function TemplateExcelEmpAsset(data: any[], sheetName: string) {
     'Asset No.',
     'สถานะ',
     'ที่ตั้ง',
+    'รายละเอียดอุปกรณ์',
   ];
   worksheet.addRow(headers);
   for (let i = 0; i < data.length; i++) {
@@ -558,6 +559,7 @@ export async function TemplateExcelEmpAssetTeams(
     'Asset No.',
     'สถานะ',
     'ที่ตั้ง',
+    'รายละเอียดอุปกรณ์',
   ];
   worksheet.addRow(headers);
   for (let i = 0; i < data.length; i++) {

@@ -65,6 +65,7 @@ export class ReportEmpAssetService {
         'Asset No.': data.assetNumber,
         สถานะ: data.assetStatus,
         ที่ตั้ง: data.address,
+        รายละเอียดอุปกรณ์: data.spec,
       }),
     );
     return await TemplateExcelEmpAssetTeams(transfer, 'report');
@@ -93,6 +94,7 @@ export class ReportEmpAssetService {
         'Asset No.': data.assetNumber,
         สถานะ: data.assetStatus,
         ที่ตั้ง: data.address,
+        รายละเอียดอุปกรณ์: data.spec,
       }),
     );
     return await TemplateExcelEmpAsset(transfer, 'report');
@@ -164,6 +166,7 @@ export class ReportEmpAssetService {
         'Asset No.': data.assetNumber,
         สถานะ: data.assetStatus,
         ที่ตั้ง: data.address,
+        รายละเอียดอุปกรณ์: data.spec,
       }),
     );
     return await TemplateExcelEmpAssetTeams(transfer, 'report');
