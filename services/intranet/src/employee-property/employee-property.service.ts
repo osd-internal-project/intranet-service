@@ -38,6 +38,7 @@ export class EmployeePropertyService {
         );
       }
       results.push({
+        createdBy: item.createdBy,
         userId: item.userId,
         type: item.type,
         name: item.name,
@@ -49,6 +50,7 @@ export class EmployeePropertyService {
         assetStatus: item.assetStatus ?? '',
         pathImage: objectName,
         common: item.common ?? false,
+        spec: item.spec ?? '',
       });
     }
     return this.employeePropertyRepo.createMany({
