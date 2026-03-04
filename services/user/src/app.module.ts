@@ -18,6 +18,8 @@ import { MasterPositionModule } from './master-position/master-position.module';
 import { UserPermissionGroupModule } from './user-permission-group/user-permission-group.module';
 import { UsersModule } from './id24users/id24users.module';
 import { UserModuleModule } from './user-module/user-module.module';
+import { PublicController } from './public/public.controller';
+import { PrismaModule } from '@inventory/share';
 
 @Module({
   imports: [
@@ -37,8 +39,9 @@ import { UserModuleModule } from './user-module/user-module.module';
     UserPermissionGroupModule,
     UsersModule,
     UserModuleModule,
+    PrismaModule,
   ],
-  controllers: [EvoteController],
+  controllers: [EvoteController, PublicController],
   providers: [EvoteService],
 })
 export class EvoteMainModule implements NestModule {
