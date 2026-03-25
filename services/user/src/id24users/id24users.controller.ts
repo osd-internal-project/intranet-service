@@ -25,6 +25,7 @@ import { extname, join } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { Response } from 'express';
 import configs from 'src/configs';
+import * as sharp from 'sharp';
 import * as fs from 'fs';
 const config = configs();
 
@@ -122,7 +123,7 @@ export class UsersController {
 
   @Get('/get-image-user/:imageId')
   @Header('Cache-Control', 'public, max-age=86400')
-  getUserImages(@Param('imageId') imageId: string, @Res() res: Response): void {
+  async getUserImages(@Param('imageId') imageId: string, @Res() res: Response) {
     const filePath = join(`${config.pathMountDirUpload}/users-image`, imageId);
     if (!filePath) {
       const base64Data =
@@ -131,9 +132,16 @@ export class UsersController {
       res.set('Content-Type', 'image/png');
       res.send(imgBuffer);
     }
-    const imagePath = filePath;
-    console.log(imagePath);
-    return res.sendFile(imagePath, { root: './' });
+    // const imagePath = filePath;
+    // console.log(imagePath);
+    // return res.sendFile(imagePath, { root: './' });
+    const optimizedImage = await sharp(filePath)
+      .resize(300, 300) // 👈 resize สำหรับ avatar
+      .webp({ quality: 70 }) // 👈 ลด size + convert format
+      .toBuffer();
+
+    res.set('Content-Type', 'image/webp');
+    return res.send(optimizedImage);
   }
 
   @Get('findbytoken')

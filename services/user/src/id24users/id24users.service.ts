@@ -17,7 +17,7 @@ export class UsersService {
   constructor(
     private usersRepo: UsersRepository,
     private id24Service: Id24Service,
-  ) { }
+  ) {}
 
   dateToStartofDay(data: Date) {
     const date = new Date(data);
@@ -171,7 +171,9 @@ export class UsersService {
       search = { ...search, masterPositionId: query.positionId };
     }
 
-    const total = await this.usersRepo.count({ where: search });
+    const total = await this.usersRepo.count({
+      where: { ...search, activeStatus: true },
+    });
     const data = await this.usersRepo.findMany({
       where: { ...search, activeStatus: true },
       select: {
