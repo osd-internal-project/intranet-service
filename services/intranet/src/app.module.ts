@@ -48,6 +48,7 @@ import { EmployeePropertyModule } from './employee-property/employee-property.mo
 import { MistakesTypeModule } from './mistakes-type/mistakes-type.module';
 import { ComplainProblemModule } from './complain-problem/complain-problem.module';
 import { MinioClientModule } from './minio-client/minio-client.module';
+import { ScheduleModule } from '@nestjs/schedule';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
@@ -94,6 +95,7 @@ import { MinioClientModule } from './minio-client/minio-client.module';
     MistakesTypeModule,
     ComplainProblemModule,
     MinioClientModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [IntranetController, PublicController],
   providers: [IntranetService],

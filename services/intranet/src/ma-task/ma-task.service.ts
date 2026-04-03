@@ -3,9 +3,12 @@ import {
   AccessService,
   MaTaskFilesRepository,
   MaTaskRepository,
-  ModuleTypes,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
+import { Cron } from '@nestjs/schedule';
+import * as nodemailer from 'nodemailer';
+import { templateMacar } from 'src/utils/template-booking-car';
+import * as dayjs from 'dayjs';
 @Injectable()
 export class MaTaskService {
   constructor(
@@ -126,5 +129,87 @@ export class MaTaskService {
 
   remove(id: number) {
     return this.maTaskRepo.delete({ where: { id: id } });
+  }
+
+  // ==============================
+  // ✅ 1) ทุกวันจันทร์ (maDate ภายใน 30 วัน)
+  // ==============================
+  @Cron('0 9 * * 1', {
+    timeZone: 'Asia/Bangkok',
+  })
+  async handleMondayAlert() {
+    console.log('Running Monday alert...');
+    const data = await this.maTaskRepo.findAll();
+    const today = dayjs();
+    const filtered = data.filter((item) => {
+      const diff = dayjs(item.maDate).diff(today, 'day');
+      console.log('data', item.maDate, 'diff', diff);
+
+      return diff >= 0 && diff < 30;
+    });
+    if (filtered.length === 0) {
+      console.log('No Monday alert');
+      return;
+    }
+    await this.sendMail(filtered);
+  }
+  // ==============================
+  // ✅ 2) ทุกวัน 10:30 (maDate ยังไม่ถึง)
+  // ==============================
+  @Cron('30 10 * * *', {
+    timeZone: 'Asia/Bangkok',
+  })
+  async handleDailyAlert() {
+    console.log('Running daily alert...');
+    const data = await this.maTaskRepo.findAll();
+    const today = dayjs();
+    const filtered = data.filter((item) => {
+      const diff = today.diff(dayjs(item.maDate), 'day');
+      return diff < 0;
+    });
+    if (filtered.length === 0) {
+      console.log('No daily alert');
+      return;
+    }
+
+    await this.sendMail(filtered);
+  }
+
+  async sendMail(data: any[]) {
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.office365.com',
+      port: 587,
+      secure: false,
+      auth: {
+        user: 'internalsupport@osd.co.th',
+        pass: 'Internal-support@osd1234.',
+      },
+    });
+    const recipients = [
+      {
+        email: 'wasmeej@osd.co.th',
+        firstNameTh: 'วัสมี',
+        lastNameTh: 'จาหลง',
+      },
+      {
+        email: 'jakkitt@osd.co.th',
+        firstNameTh: 'จักรกฤษณ์',
+        lastNameTh: 'ทิพันธ์',
+      },
+    ];
+    const html = await templateMacar(recipients, data);
+    for (const user of recipients) {
+      try {
+        await transporter.sendMail({
+          from: '"admin Intranet" <internalsupport@osd.co.th>',
+          to: user.email,
+          subject: 'OSD Intranet เช็คสภาพรถยนต์',
+          html,
+        });
+        console.log(`✅ Sent to ${user.email}`);
+      } catch (err) {
+        console.error(`❌ Failed: ${user.email}`, err);
+      }
+    }
   }
 }
