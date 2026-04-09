@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CreateUserDto, CreateUserId24Dto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersRepository } from '@inventory/share';
 import { UserType } from './type';
 
@@ -100,6 +99,7 @@ export class UsersService {
           lastNameTh: createUserDto.lastNameTh,
           firstNameEn: createUserDto.firstNameEn,
           lastNameEn: createUserDto.lastNameEn,
+          nickname: createUserDto.nickname,
           email: createUserDto.email,
           phoneNumber: createUserDto.phoneNumber,
           activeStatus: createUserDto.activeStatus,
@@ -148,6 +148,9 @@ export class UsersService {
     if (query.username) {
       search = { ...search, username: { contains: query.username } };
     }
+    if (query.nickname) {
+      search = { ...search, nickname: { contains: query.nickname } };
+    }
     if (query.fullname) {
       const names = query.fullname.trim().split(' ').filter(Boolean);
       const orConditions = names.flatMap((word) => [
@@ -181,6 +184,7 @@ export class UsersService {
         userId: true,
         userType: true,
         username: true,
+        nickname: true,
         email: true,
         extension: true,
         activeStatus: true,
@@ -282,6 +286,7 @@ export class UsersService {
         id: true,
         userId: true,
         username: true,
+        nickname: true,
         firstNameTh: true,
         lastNameTh: true,
         token: true,
@@ -341,22 +346,7 @@ export class UsersService {
           where: { userId: user.userId },
           data: {
             ...createUserDto,
-            // username: createUserDto.username,
-            // firstNameTh: createUserDto.firstNameTh,
-            // lastNameTh: createUserDto.lastNameTh,
-            // firstNameEn: createUserDto.firstNameEn,
-            // lastNameEn: createUserDto.lastNameEn,
-            // email: createUserDto.email,
-            // phoneNumber: createUserDto.phoneNumber,
-            // extension: createUserDto.extension,
-            // activeStatus: createUserDto.activeStatus,
             organizedGroupId: '',
-            // userType: createUserDto.userType,
-            // dataModule: createUserDto.dataModule,
-            // ownerGroupId: createUserDto.ownerGroupId,
-            // positionId: createUserDto.masterPositionId,
-            // startWork: createUserDto.startWork,
-            // empId: createUserDto.empId,
           },
         });
       }

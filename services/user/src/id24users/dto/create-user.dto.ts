@@ -1,6 +1,7 @@
 export class CreateUserDto {
   userType: string;
   username: string;
+  nickname: string;
   email: string;
   password: string;
   cfpassword: string;

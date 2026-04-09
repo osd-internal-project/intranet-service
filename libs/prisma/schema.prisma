@@ -382,6 +382,7 @@ model users {
   updatedAt                 DateTime                    @default(now()) @map("updated_at")
   organizedGroupId          String?                     @map("organized_group_id") @db.VarChar(50)
   refreshToken              String?                     @map("refresh_token")
+  nickname                  String?                     @map("nickname") @db.VarChar(100)
   departmentId              Int?                        @map("department_id")
   ownerGroupId              String?                     @map("owner_group_id") @db.VarChar(50)
   imageId                   String?                     @map("image_id") @db.VarChar(255)
