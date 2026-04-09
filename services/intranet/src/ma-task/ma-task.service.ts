@@ -130,49 +130,40 @@ export class MaTaskService {
   remove(id: number) {
     return this.maTaskRepo.delete({ where: { id: id } });
   }
-
   // ==============================
-  // ✅ 1) ทุกวันจันทร์ (maDate ภายใน 30 วัน)
+  // ✅ 2) ทุกวัน 09:30
   // ==============================
-  @Cron('0 9 * * 1', {
-    timeZone: 'Asia/Bangkok',
-  })
-  async handleMondayAlert() {
-    console.log('Running Monday alert...');
-    const data = await this.maTaskRepo.findAll();
-    const today = dayjs();
-    const filtered = data.filter((item) => {
-      const diff = dayjs(item.maDate).diff(today, 'day');
-      console.log('data', item.maDate, 'diff', diff);
-
-      return diff >= 0 && diff < 30;
-    });
-    if (filtered.length === 0) {
-      console.log('No Monday alert');
-      return;
-    }
-    await this.sendMail(filtered);
-  }
-  // ==============================
-  // ✅ 2) ทุกวัน 10:30 (maDate ยังไม่ถึง)
-  // ==============================
-  @Cron('30 10 * * *', {
+  @Cron('30 9 * * *', {
     timeZone: 'Asia/Bangkok',
   })
   async handleDailyAlert() {
     console.log('Running daily alert...');
-    const data = await this.maTaskRepo.findAll();
-    const today = dayjs();
-    const filtered = data.filter((item) => {
-      const diff = today.diff(dayjs(item.maDate), 'day');
-      return diff < 0;
+    const today = dayjs().startOf('day');
+    const daydiff = [30, 20, 15, 10, 5, 3, 2, 1];
+    const dateConditions = daydiff.map((day) => {
+      const targetDate = today.add(day, 'day');
+      return {
+        maDate: {
+          gte: targetDate.toDate(),
+          lte: targetDate.endOf('day').toDate(),
+        },
+      };
     });
-    if (filtered.length === 0) {
-      console.log('No daily alert');
-      return;
-    }
-
-    await this.sendMail(filtered);
+    const data = await this.maTaskRepo.findMany({
+      where: {
+        maStatus: 'process',
+        OR: [
+          ...dateConditions,
+          {
+            maDate: {
+              lt: today.toDate(),
+            },
+          },
+        ],
+      },
+    });
+    console.log('Tasks found:', data.length);
+    await this.sendMail(data);
   }
 
   async sendMail(data: any[]) {
