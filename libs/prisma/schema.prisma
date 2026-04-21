@@ -61,6 +61,28 @@ model dataLeave {
   @@map("data_leave")
 }
 
+model LogLeaveData {
+  id          Int       @id @default(autoincrement())
+  leaveId     Int?      @map("leave_id")
+  ownerName   String?   @map("owner_name")
+  fullName    String?   @map("full_name")
+  typeId      Int?      @map("type_id")
+  typeName    String?   @map("type_name")
+  startDate   DateTime? @map("start_date")
+  endDate     DateTime? @map("end_date")
+  startTime   String?   @map("start_time")
+  endTime     String?   @map("end_time")
+  leaveHour   Int?      @map("leave_hour")
+  status      String?
+  phoneNumber String?   @map("phone_number")
+  detail      String?
+  remark      String?
+  createdBy   String?   @map("created_by")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  @@map("log_leave_data")
+}
+
 model informationNews {
   newsId      Int         @unique @default(autoincrement()) @map("news_id")
   newsName    String?     @default("") @map("news_name")

@@ -6,6 +6,7 @@ import {
   UserPermissionGroupRepository,
   UserGroupRepository,
   ModuleTypes,
+  LogLeaveDataRepository,
 } from '@inventory/share';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
@@ -24,6 +25,7 @@ export class DataLeaveService {
     private readonly usersRepo: UsersRepository,
     private readonly accessService: AccessService,
     private readonly userPermissionGroupRepo: UserPermissionGroupRepository,
+    private readonly logLeaveDataRepo: LogLeaveDataRepository,
     private userGroupRepo: UserGroupRepository,
   ) {}
 
@@ -918,6 +920,27 @@ export class DataLeaveService {
       },
     };
     const updateData = await this.dataleaveRepo.update(base);
+    if (updateData) {
+      const logs = await this.logLeaveDataRepo.create({
+        data: {
+          leaveId: updateData.id,
+          ownerName: updateData.ownerName,
+          fullName: `${updateData.firstName} ${updateData.lastName}`,
+          typeId: +condition.data.typeId,
+          typeName: updateData.typeName,
+          startDate: updateData.startDate,
+          endDate: updateData.endDate,
+          startTime: updateData.startTime,
+          endTime: updateData.endTime,
+          leaveHour: +condition.data.leaveHour,
+          status: updateData.status,
+          phoneNumber: updateData.phoneNumber,
+          detail: updateData.detail,
+          remark: updateData.commentUpdated,
+          createdBy: updateData.updatedBy,
+        },
+      });
+    }
     return updateData;
   }
 
