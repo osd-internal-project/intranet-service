@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { MaCarWrapupRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
+import { templateCarWrapup } from 'src/utils/template-booking-car';
+import { Cron } from '@nestjs/schedule';
+import * as nodemailer from 'nodemailer';
+import * as dayjs from 'dayjs';
 
 @Injectable()
 export class MaCarWrapupService {
@@ -49,5 +53,80 @@ export class MaCarWrapupService {
         carWrapupId: carWrapupId,
       },
     });
+  }
+
+  // ==============================
+  // ✅ 2) ทุกวัน 09:30
+  // ==============================
+  @Cron('30 9 * * *', {
+    timeZone: 'Asia/Bangkok',
+  })
+  async handleDailyAlert() {
+    console.log('Running daily alert...');
+    const today = dayjs().startOf('day');
+    const daydiff = [30, 20, 15, 10, 5, 3, 2, 1];
+    const dateConditions = daydiff.map((day) => {
+      const targetDate = today.add(day, 'day');
+      return {
+        dateEnd: {
+          gte: targetDate.toDate(),
+          lte: targetDate.endOf('day').toDate(),
+        },
+      };
+    });
+    const data = await this.macarwrapupRepo.findMany({
+      where: {
+        status: false,
+        nextCheckDate: true,
+        OR: [
+          ...dateConditions,
+          {
+            dateEnd: {
+              lt: today.toDate(),
+            },
+          },
+        ],
+      },
+    });
+    console.log('Tasks found:', data.length);
+    await this.sendMail(data);
+  }
+
+  async sendMail(data: any[]) {
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.office365.com',
+      port: 587,
+      secure: false,
+      auth: {
+        user: 'internalsupport@osd.co.th',
+        pass: 'Internal-support@osd1234.',
+      },
+    });
+    const recipients = [
+      {
+        email: 'wasmeej@osd.co.th',
+        firstNameTh: 'วัสมี',
+        lastNameTh: 'จาหลง',
+      },
+      {
+        email: 'jakkitt@osd.co.th',
+        firstNameTh: 'จักรกฤษณ์',
+        lastNameTh: 'ทิพันธ์',
+      },
+    ];
+    const html = await templateCarWrapup(recipients, data);
+    for (const user of recipients) {
+      try {
+        await transporter.sendMail({
+          from: '"admin Intranet" <internalsupport@osd.co.th>',
+          to: user.email,
+          subject: 'OSD Intranet เช็คสภาพรถยนต์',
+          html,
+        });
+        console.log(`✅ Sent to ${user.email}`);
+      } catch (err) {
+        console.error(`❌ Failed: ${user.email}`, err);
+      }
+    }
   }
 }
