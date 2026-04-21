@@ -33,9 +33,9 @@ export class DataLeaveService {
       condition.data.userId,
     );
     const leaveLetter = await this.dataleaveRepo.create(condition);
-    if (leaveLetter) {
-      this.sendLeaveEmails(result, condition.data);
-    }
+    // if (leaveLetter) {
+    //   this.sendLeaveEmails(result, condition.data);
+    // }
     return leaveLetter;
   }
   findAll() {
@@ -885,6 +885,39 @@ export class DataLeaveService {
         findleaveDetail,
       );
     }
+    return updateData;
+  }
+
+  async updatedetailLeave(condition: Prisma.dataLeaveUpdateArgs) {
+    const findDataLeave = await this.dataleaveRepo.findOne({
+      where: { id: condition.where.id },
+    });
+    const findDetailUser = await this.usersRepo.findOne({
+      where: { userId: findDataLeave.userId },
+    });
+    const findleaveDetail = await this.dataleaveRepo.findOne({
+      where: { id: condition.where.id },
+    });
+    console.log('condition', condition);
+    console.log('findleaveDetail', findleaveDetail);
+    const base = {
+      where: { id: condition.where.id },
+      data: {
+        detail: condition.data.detail,
+        leaveHour: condition.data.leaveHour,
+        startDate: condition.data.startDate,
+        endDate: condition.data.endDate,
+        yearLeaveHour: condition.data.yearLeaveHour,
+        usedLeaveHour: condition.data.usedLeaveHour,
+        beforeLeaveHour: condition.data.beforeLeaveHour,
+        afterLeaveHour: condition.data.afterLeaveHour,
+        typeId: condition.data.typeId,
+        typeName: condition.data.typeName,
+        updatedBy: condition.data.updatedBy,
+        commentUpdated: condition.data.commentUpdated,
+      },
+    };
+    const updateData = await this.dataleaveRepo.update(base);
     return updateData;
   }
 

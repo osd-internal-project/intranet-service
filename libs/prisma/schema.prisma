@@ -46,6 +46,8 @@ model dataLeave {
   attrachFile     String?          @map("attrach_file") @db.VarChar(250)
   createdAt       DateTime?        @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt       DateTime?        @default(now()) @map("updated_at") @db.Timestamp(6)
+  updatedBy       String?          @map("updated_by") @db.VarChar(100)
+  commentUpdated  String?          @map("comment_updated") @db.VarChar(250)
   ownerId         String?          @default("") @map("owner_id") @db.VarChar(100)
   ownerName       String?          @default("") @map("owner_name") @db.VarChar(150)
   groupId         String?          @default("") @map("group_id") @db.VarChar(100)

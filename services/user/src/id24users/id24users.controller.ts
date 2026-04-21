@@ -150,6 +150,13 @@ export class UsersController {
     const token = req.body.sub;
     return this.usersService.findByToken(token);
   }
+
+  @Get('findbyUserId/:userId')
+  @UseInterceptors(UserInterceptor)
+  findByUserId(@Param('userId') userId: string) {
+    return this.usersService.findByUserId(userId);
+  }
+
   @Get('process-after-login-auth')
   @UseInterceptors(UserInterceptor)
   async processAfterLoginAuth(@Req() req: any) {

@@ -175,10 +175,10 @@ export class UsersService {
     }
 
     const total = await this.usersRepo.count({
-      where: { ...search, activeStatus: true },
+      where: { ...search, activeStatus: true, token: { not: null } },
     });
     const data = await this.usersRepo.findMany({
-      where: { ...search, activeStatus: true },
+      where: { ...search, activeStatus: true, token: { not: null } },
       select: {
         id: true,
         userId: true,
@@ -206,9 +206,10 @@ export class UsersService {
         imageId: true,
         createdAt: true,
         empId: true,
+        token: true,
       },
-      skip: +query.skip,
-      take: +query.take,
+      ...(query.skip != null && { skip: +query.skip }),
+      ...(query.take != null && { take: +query.take }),
       orderBy: {
         empId: 'asc',
       },
@@ -277,6 +278,45 @@ export class UsersService {
 
   async validatePassword(password: string) {
     return this.id24Service.validatePassword(password);
+  }
+
+  findByUserId(userId: string) {
+    return this.usersRepo.findOne({
+      where: { userId: userId, activeStatus: true },
+      select: {
+        id: true,
+        userId: true,
+        username: true,
+        nickname: true,
+        firstNameTh: true,
+        lastNameTh: true,
+        token: true,
+        phoneNumber: true,
+        email: true,
+        userType: true,
+        createdAt: true,
+        updatedAt: true,
+        ldapQuery: true,
+        departmentId: true,
+        masterPosition: {
+          select: {
+            posId: true,
+            nameEn: true,
+          },
+        },
+        ownerGroupId: true,
+        ownerGroup: {
+          select: {
+            groupId: true,
+            groupName: true,
+          },
+        },
+        startWork: true,
+        dataModule: true,
+        imageId: true,
+      },
+      orderBy: { id: 'asc' },
+    });
   }
 
   findByToken(token: string) {
@@ -351,7 +391,6 @@ export class UsersService {
         });
       }
     } catch (error) {
-      console.log(error.message);
       return {
         success: false,
         message: 'An error occurred while creating the user',

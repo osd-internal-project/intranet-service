@@ -44,6 +44,12 @@ export class DataLeaveController {
     return this.dataLeaveService.findHeaderId(req.body.sub);
   }
 
+  @Get('leave-header-userId/:token')
+  @UseInterceptors(UserInterceptor)
+  findHeader(@Param('token') token: string, @Req() req) {
+    return this.dataLeaveService.findHeaderId(token);
+  }
+
   @Get('calendar-teams')
   @UseInterceptors(UserInterceptor)
   findLeaveTeamsByMonth(@Req() req, @Query() query: { month: Date | string }) {
@@ -117,6 +123,10 @@ export class DataLeaveController {
   @Get(`find-user-by-userId/:userId`)
   findUserByUserId(@Param('userId') userId: string) {
     return this.dataLeaveService.findUserByUserId(userId);
+  }
+  @Patch('update-detail/:id')
+  updatedetailLeave(@Body('condition') condition: Prisma.dataLeaveUpdateArgs) {
+    return this.dataLeaveService.updatedetailLeave(condition);
   }
 
   @Patch(':id')
