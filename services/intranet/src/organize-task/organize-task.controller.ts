@@ -8,8 +8,6 @@ import {
   Delete,
 } from '@nestjs/common';
 import { OrganizeTaskService } from './organize-task.service';
-import { CreateOrganizeTaskDto } from './dto/create-organize-task.dto';
-import { UpdateOrganizeTaskDto } from './dto/update-organize-task.dto';
 import { Prisma } from '@prisma/client';
 
 @Controller('organize-task')

@@ -17,8 +17,21 @@ export class OrganizeManagementService {
     return this.organizemanagementRepo.findMany({});
   }
 
-  findMany(condition: Prisma.organizeManagementFindManyArgs) {
-    return this.organizemanagementRepo.findMany(condition);
+  async findMany(condition: Prisma.organizeManagementFindManyArgs) {
+    const { skip, take, where } = condition || {};
+    const response = await this.organizemanagementRepo.findMany({
+      skip,
+      take,
+      where,
+      orderBy: { id: 'asc' },
+    });
+    const count = await this.organizemanagementRepo.count({
+      where,
+    });
+    return {
+      data: response,
+      count,
+    };
   }
 
   findOne(id: number) {

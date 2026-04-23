@@ -51,6 +51,7 @@ import { MinioClientModule } from './minio-client/minio-client.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { OrganizeManagementModule } from './organize-management/organize-management.module';
 import { OrganizeTaskModule } from './organize-task/organize-task.module';
+import { MasterRestaurantModule } from './master-restaurant/master-restaurant.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
@@ -100,6 +101,7 @@ import { OrganizeTaskModule } from './organize-task/organize-task.module';
     ScheduleModule.forRoot(),
     OrganizeManagementModule,
     OrganizeTaskModule,
+    MasterRestaurantModule,
   ],
   controllers: [IntranetController, PublicController],
   providers: [IntranetService],

@@ -87,6 +87,7 @@ import {
   LogLeaveDataRepository,
   organizeManagementRepository,
   organizeTaskRepository,
+  masterRestaurantRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -184,6 +185,7 @@ const services = [
   LogLeaveDataRepository,
   organizeManagementRepository,
   organizeTaskRepository,
+  masterRestaurantRepository,
 ];
 @Module({
   providers: [...services],

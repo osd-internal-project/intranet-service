@@ -9,6 +9,7 @@ export default () => ({
   minioSecretKey: process.env.MINIO_SECRETKEY,
   minioEndpoint: process.env.MINIO_ENDPOINT,
   minioBucket: process.env.MINIO_BUCKET,
+  minioBucketRes: process.env.MINIO_BUCKET_RES,
   minioSsl: process.env.MINIO_USE_SSL === 'true',
   storagePath: process.env.MINIO_STORAGEPATH,
 });
