@@ -1,26 +1,51 @@
 import { Injectable } from '@nestjs/common';
-import { CreateOrganizeManagementDto } from './dto/create-organize-management.dto';
-import { UpdateOrganizeManagementDto } from './dto/update-organize-management.dto';
+import { organizeManagementRepository } from '@inventory/share';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class OrganizeManagementService {
-  create(createOrganizeManagementDto: CreateOrganizeManagementDto) {
-    return 'This action adds a new organizeManagement';
+  constructor(
+    private readonly organizemanagementRepo: organizeManagementRepository,
+  ) {}
+  create(createOrganizeManagementDto: Prisma.organizeManagementCreateInput) {
+    return this.organizemanagementRepo.create({
+      data: createOrganizeManagementDto,
+    });
   }
 
   findAll() {
-    return `This action returns all organizeManagement`;
+    return this.organizemanagementRepo.findMany({});
+  }
+
+  findMany(condition: Prisma.organizeManagementFindManyArgs) {
+    return this.organizemanagementRepo.findMany(condition);
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} organizeManagement`;
+    return this.organizemanagementRepo.findOne({
+      where: {
+        id,
+      },
+    });
   }
 
-  update(id: number, updateOrganizeManagementDto: UpdateOrganizeManagementDto) {
-    return `This action updates a #${id} organizeManagement`;
+  update(
+    id: number,
+    updateOrganizeManagementDto: Prisma.organizeManagementUpdateInput,
+  ) {
+    return this.organizemanagementRepo.update({
+      where: {
+        id,
+      },
+      data: updateOrganizeManagementDto,
+    });
   }
 
   remove(id: number) {
-    return `This action removes a #${id} organizeManagement`;
+    return this.organizemanagementRepo.delete({
+      where: {
+        id,
+      },
+    });
   }
 }

@@ -1,26 +1,46 @@
 import { Injectable } from '@nestjs/common';
-import { CreateOrganizeTaskDto } from './dto/create-organize-task.dto';
-import { UpdateOrganizeTaskDto } from './dto/update-organize-task.dto';
+import { organizeTaskRepository } from '@inventory/share';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class OrganizeTaskService {
-  create(createOrganizeTaskDto: CreateOrganizeTaskDto) {
-    return 'This action adds a new organizeTask';
+  constructor(private readonly organizetaskRepo: organizeTaskRepository) {}
+  create(createOrganizeTaskDto: Prisma.organizeTaskCreateInput) {
+    return this.organizetaskRepo.create({
+      data: createOrganizeTaskDto,
+    });
   }
 
   findAll() {
-    return `This action returns all organizeTask`;
+    return this.organizetaskRepo.findMany({});
+  }
+
+  findMany(condition: Prisma.organizeTaskFindManyArgs) {
+    return this.organizetaskRepo.findMany(condition);
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} organizeTask`;
+    return this.organizetaskRepo.findOne({
+      where: {
+        id,
+      },
+    });
   }
 
-  update(id: number, updateOrganizeTaskDto: UpdateOrganizeTaskDto) {
-    return `This action updates a #${id} organizeTask`;
+  update(id: number, updateOrganizeTaskDto: Prisma.organizeTaskUpdateInput) {
+    return this.organizetaskRepo.update({
+      where: {
+        id,
+      },
+      data: updateOrganizeTaskDto,
+    });
   }
 
   remove(id: number) {
-    return `This action removes a #${id} organizeTask`;
+    return this.organizetaskRepo.delete({
+      where: {
+        id,
+      },
+    });
   }
 }
