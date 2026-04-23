@@ -94,3 +94,5 @@ export * from './employeeProperty.repository';
 export * from './mistakesType.Repository';
 export * from './complainProblem.repository';
 export * from './logLeaveData.repository';
+export * from './organizeManagement.repository';
+export * from './organizeTask.repository';

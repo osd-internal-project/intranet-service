@@ -1137,27 +1137,6 @@ model requestOrderList {
   @@map("request_order_list")
 }
 
-// model orderLot {
-//   id        Int       @unique @default(autoincrement()) @map("id")
-//   oderLotId String?   @unique @default(uuid()) @map("order_lot_id") @db.VarChar(50)
-//   prdId     String    @map("product_id") @db.VarChar(50)
-//   prdName   String    @map("product_name") @db.VarChar(250)
-//   price     Float     @default(0.00) @map("price")
-//   cost      Float?    @default(0.00) @map("cost")
-//   avgCost   Float?    @default(0.00) @map("avg_cost")
-//   unit      String?   @map("unit") @db.VarChar(20)
-//   barcode   String?   @map("barcode") @db.VarChar(50)
-//   expiredAt DateTime? @map("expired")
-//   updatedBy String    @map("updated_by") @db.VarChar(250)
-//   createdAt DateTime? @default(now()) @map("created_at")
-//   updatedAt DateTime? @default(now()) @map("updated_at")
-//   status    String?   @default("in-stock") @map("status") @db.VarChar(50)
-//   oderId    String?   @map("order_id")
-//   order     order?    @relation(fields: [oderId], references: [oderId], onDelete: Cascade)
-
-//   @@map("order_lot")
-// }
-
 model masterProvinceThailand {
   id             Int       @unique @default(autoincrement()) @map("id")
   provinceId     String?   @unique @default(uuid()) @map("province_id") @db.VarChar(50)
@@ -1217,4 +1196,32 @@ model complainProblem {
   users     users?    @relation(fields: [userId], references: [userId])
 
   @@map("complain_problem")
+}
+
+model organizeManagement {
+  id            Int            @unique @default(autoincrement()) @map("id")
+  name          String         @map("name") @db.VarChar(255)
+  date          DateTime       @default(now()) @map("date")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @default(now()) @map("updated_at")
+  createdBy     String         @map("created_by") @db.VarChar(255)
+  updatedBy     String         @map("updated_by") @db.VarChar(255)
+  status        String?        @default("inprocess") @map("status") @db.VarChar(50)
+  organizeTasks organizeTask[]
+}
+
+model organizeTask {
+  id                   Int                 @unique @default(autoincrement()) @map("id")
+  name                 String              @map("name") @db.VarChar(255)
+  assigned             Int                 @map("assigned")
+  assignedDate         DateTime            @default(now()) @map("assigned_date")
+  status               String?             @default("inprocess") @map("status") @db.VarChar(50)
+  pathFIles            String?             @map("path_files") @db.VarChar(255)
+  remark               String?             @map("remark") @db.VarChar(500)
+  dueDate              DateTime?           @map("due_date")
+  expenses             Float?              @default(0.00) @map("expenses")
+  organizeManagement   organizeManagement? @relation(fields: [organizeManagementId], references: [id])
+  organizeManagementId Int?                @map("organize_management_id")
+
+  @@map("organize_task")
 }
