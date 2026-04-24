@@ -79,13 +79,14 @@ export class MasterRestaurantService {
   }
 
   async update(id: number, updateMasterRestaurantDto: any, attendFiles: any) {
-    const { files, pricing, ...condition } = updateMasterRestaurantDto || {};
+    const { files, pricing, contact, ...condition } =
+      updateMasterRestaurantDto || {};
     const file = attendFiles[0];
     let objectName = '';
     const data = await this.masterrestautantRepo.findOne({
       where: { id },
     });
-    if (data.pathFIles) {
+    if (data.pathFIles && file) {
       await this.minioService.deleteFile(data.pathFIles, config.minioBucketRes);
       const uuidName = uuidv4();
       const ext = path.extname(file.originalname); // ✅ ถูกต้อง
@@ -104,8 +105,9 @@ export class MasterRestaurantService {
       },
       data: {
         ...condition,
+        contact: contact ? contact : [],
         pricing: +pricing,
-        pathFIles: objectName,
+        pathFIles: objectName ? objectName : data.pathFIles,
       },
     });
   }
