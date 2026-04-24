@@ -52,12 +52,12 @@ export class MasterRestaurantController {
   @Get('download/:fileName')
   async download(@Param('fileName') fileName: string, @Res() res: Response) {
     const bucket = 'res-bucket';
-    console.log(fileName);
-
     const stream = await this.masterRestaurantService.getFile(bucket, fileName);
     res.set({
       'Content-Type': 'application/octet-stream',
-      'Content-Disposition': `attachment; filename="${fileName}"`,
+      'Content-Disposition': `attachment; filename="${encodeURIComponent(
+        fileName,
+      )}"`,
     });
 
     stream.pipe(res);
