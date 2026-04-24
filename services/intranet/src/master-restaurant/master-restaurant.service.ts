@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { masterRestaurantRepository } from '@inventory/share';
 import { v4 as uuidv4 } from 'uuid';
 import { Prisma } from '@prisma/client';
@@ -53,8 +53,21 @@ export class MasterRestaurantService {
         id: 'asc',
       },
     });
+    const newData = new Map();
+    for (const item of response) {
+      const url = item.pathFIles
+        ? await this.minioService.getPresignedUrl(
+            config.minioBucketRes,
+            item.pathFIles,
+          )
+        : null;
+      newData.set(item.id, {
+        ...item,
+        fileUrl: url,
+      });
+    }
     const count = await this.masterrestautantRepo.count({ where });
-    return { data: response, count };
+    return { data: Array.from(newData.values()), count };
   }
 
   findOne(id: number) {
@@ -65,19 +78,48 @@ export class MasterRestaurantService {
     });
   }
 
-  update(
-    id: number,
-    updateMasterRestaurantDto: Prisma.masterRestaurantUpdateInput,
-  ) {
+  async update(id: number, updateMasterRestaurantDto: any, attendFiles: any) {
+    const { files, pricing, ...condition } = updateMasterRestaurantDto || {};
+    const file = attendFiles[0];
+    let objectName = '';
+    const data = await this.masterrestautantRepo.findOne({
+      where: { id },
+    });
+    if (data.pathFIles) {
+      await this.minioService.deleteFile(data.pathFIles, config.minioBucketRes);
+      const uuidName = uuidv4();
+      const ext = path.extname(file.originalname); // ✅ ถูกต้อง
+      objectName = `${uuidName}${ext}`;
+      await this.minioService.uploadFile(
+        file.buffer,
+        file.size,
+        config.minioBucketRes,
+        objectName,
+      );
+    }
+
     return this.masterrestautantRepo.update({
       where: {
         id,
       },
-      data: updateMasterRestaurantDto,
+      data: {
+        ...condition,
+        pricing: +pricing,
+        pathFIles: objectName,
+      },
     });
   }
 
-  remove(id: number) {
+  async remove(id: number) {
+    const data = await this.masterrestautantRepo.findOne({
+      where: { id },
+    });
+    if (!data) {
+      throw new NotFoundException('Data not found');
+    }
+    if (data.pathFIles) {
+      await this.minioService.deleteFile(data.pathFIles, config.minioBucketRes);
+    }
     return this.masterrestautantRepo.delete({
       where: {
         id,

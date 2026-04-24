@@ -69,12 +69,23 @@ export class MasterRestaurantController {
   }
 
   @Patch(':id')
+  @UseInterceptors(FilesInterceptor('files'))
   update(
     @Param('id') id: string,
-    @Body() updateMasterRestaurantDto: Prisma.masterRestaurantUpdateInput,
+    @UploadedFiles() files: Express.Multer.File[],
+    @Body('items') items: string,
   ) {
-    return this.masterRestaurantService.update(+id, updateMasterRestaurantDto);
+    const parsedItems = JSON.parse(items);
+    return this.masterRestaurantService.update(+id, parsedItems, files);
   }
+
+  // @Patch(':id')
+  // update(
+  //   @Param('id') id: string,
+  //   @Body() updateMasterRestaurantDto: Prisma.masterRestaurantUpdateInput,
+  // ) {
+  //   return this.masterRestaurantService.update(+id, updateMasterRestaurantDto);
+  // }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
