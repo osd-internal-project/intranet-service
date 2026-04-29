@@ -49,9 +49,10 @@ import { MistakesTypeModule } from './mistakes-type/mistakes-type.module';
 import { ComplainProblemModule } from './complain-problem/complain-problem.module';
 import { MinioClientModule } from './minio-client/minio-client.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { OrganizeManagementModule } from './organize-management/organize-management.module';
+import { OrganizeManagementTaskModule } from './organize-management-task/organize-management-task.module';
 import { OrganizeTaskModule } from './organize-task/organize-task.module';
 import { MasterRestaurantModule } from './master-restaurant/master-restaurant.module';
+import { OrganizeManagementModule } from './organize-management/organize-management.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
@@ -99,9 +100,10 @@ import { MasterRestaurantModule } from './master-restaurant/master-restaurant.mo
     ComplainProblemModule,
     MinioClientModule,
     ScheduleModule.forRoot(),
-    OrganizeManagementModule,
+    OrganizeManagementTaskModule,
     OrganizeTaskModule,
     MasterRestaurantModule,
+    OrganizeManagementModule,
   ],
   controllers: [IntranetController, PublicController],
   providers: [IntranetService],

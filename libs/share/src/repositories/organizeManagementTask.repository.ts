@@ -4,67 +4,67 @@ import { TQueryClient } from '../modules/prisma/types';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
-export class organizeTaskRepository {
+export class organizeManagementTaskRepository {
   constructor(private prisma: PrismaService) {}
 
   async findAll(option?: { prisma?: TQueryClient }) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.organizeTask.findMany();
+    return prisma.organizeManagementTask.findMany();
   }
   async findMany(
-    condition: Prisma.organizeTaskFindFirstArgsBase,
+    condition: Prisma.organizeManagementTaskFindFirstArgsBase,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.organizeTask.findMany(condition);
+    return prisma.organizeManagementTask.findMany(condition);
   }
   async findOne(
-    condition: Prisma.organizeTaskFindFirstArgsBase,
+    condition: Prisma.organizeManagementTaskFindFirstArgsBase,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.organizeTask.findFirst(condition);
+    return prisma.organizeManagementTask.findFirst(condition);
   }
   async create(
-    condition: Prisma.organizeTaskCreateArgs,
+    condition: Prisma.organizeManagementTaskCreateArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.organizeTask.create(condition);
+    return prisma.organizeManagementTask.create(condition);
   }
   async createMany(
-    data: Prisma.organizeTaskCreateManyArgs,
+    data: Prisma.organizeManagementTaskCreateManyArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.organizeTask.createMany(data);
+    return prisma.organizeManagementTask.createMany(data);
   }
   async update(
-    data: Prisma.organizeTaskUpdateArgs,
+    data: Prisma.organizeManagementTaskUpdateArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.organizeTask.update(data);
+    return prisma.organizeManagementTask.update(data);
   }
   async delete(
-    condition: Prisma.organizeTaskDeleteArgs,
+    condition: Prisma.organizeManagementTaskDeleteArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.organizeTask.delete(condition);
+    return prisma.organizeManagementTask.delete(condition);
   }
   async count(
-    condition: Prisma.organizeTaskCountArgs,
+    condition: Prisma.organizeManagementTaskCountArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.organizeTask.count(condition);
+    return prisma.organizeManagementTask.count(condition);
   }
   async aggregate(
-    condition: Prisma.OrganizeTaskAggregateArgs,
+    condition: Prisma.OrganizeManagementTaskAggregateArgs,
     option?: { prisma?: TQueryClient },
   ) {
     const prisma = option?.prisma ?? this.prisma;
-    return prisma.organizeTask.aggregate(condition);
+    return prisma.organizeManagementTask.aggregate(condition);
   }
 }

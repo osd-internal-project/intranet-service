@@ -86,8 +86,9 @@ import {
   ComplainProblemRepository,
   LogLeaveDataRepository,
   organizeManagementRepository,
-  organizeTaskRepository,
+  organizeSubTaskRepository,
   masterRestaurantRepository,
+  organizeManagementTaskRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -184,7 +185,8 @@ const services = [
   ComplainProblemRepository,
   LogLeaveDataRepository,
   organizeManagementRepository,
-  organizeTaskRepository,
+  organizeSubTaskRepository,
+  organizeManagementTaskRepository,
   masterRestaurantRepository,
 ];
 @Module({

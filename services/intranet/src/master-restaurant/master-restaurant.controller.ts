@@ -79,14 +79,6 @@ export class MasterRestaurantController {
     return this.masterRestaurantService.update(+id, parsedItems, files);
   }
 
-  // @Patch(':id')
-  // update(
-  //   @Param('id') id: string,
-  //   @Body() updateMasterRestaurantDto: Prisma.masterRestaurantUpdateInput,
-  // ) {
-  //   return this.masterRestaurantService.update(+id, updateMasterRestaurantDto);
-  // }
-
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.masterRestaurantService.remove(+id);
