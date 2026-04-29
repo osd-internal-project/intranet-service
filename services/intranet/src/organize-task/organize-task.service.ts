@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { organizeSubTaskRepository } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 import { MinioClientService } from 'src/minio-client/minio-client.service';
@@ -14,9 +14,7 @@ export class OrganizeTaskService {
     private readonly minioService: MinioClientService,
   ) {}
   async create(createOrganizeTaskDto: any, files: any) {
-    console.log('files', files);
     const parsedItems = JSON.parse(createOrganizeTaskDto.record);
-    console.log('record', parsedItems);
     const {
       key,
       name,
@@ -66,8 +64,8 @@ export class OrganizeTaskService {
         remark,
         organizeManagementTaskId: +organizeTaskId,
         pathFiles: {
-          objectName: filePath ?? filePath?.objectName,
-          originalName: filePath ?? filePath?.originalName,
+          objectName: filePath?.objectName,
+          originalName: filePath?.originalName,
         },
         expenses: 0,
       },
@@ -90,16 +88,87 @@ export class OrganizeTaskService {
     });
   }
 
-  update(id: number, updateOrganizeTaskDto: Prisma.organizeSubTaskUpdateInput) {
+  async update(createorganizeManagementTaskDto: any, files: any, id: number) {
+    const parsedItems = JSON.parse(createorganizeManagementTaskDto.record);
+    const { name, assigned, dueDate, status, remark, assignedDate } =
+      parsedItems || {};
+
+    const uploadToMinio = async (file: Express.Multer.File) => {
+      if (!file) return null;
+      const data: any = await this.organizesubtaskRepo.findOne({
+        where: { id },
+      });
+      if (data.pathFiles.objectName) {
+        await this.minioService.deleteFile(
+          data.pathFiles.objectName,
+          config.minioBucketOrganize,
+        );
+      }
+      try {
+        const bucket = config.minioBucketOrganize;
+        const uuidName = uuidv4();
+        const ext = path.extname(file.originalname);
+        const originalName = Buffer.from(file.originalname, 'latin1').toString(
+          'utf8',
+        );
+        const objectName = `${uuidName}${ext}`;
+        await this.minioService.uploadFile(
+          file.buffer,
+          file.size,
+          bucket,
+          objectName,
+        );
+
+        return { objectName, originalName };
+      } catch (error) {
+        throw new Error('UPLOAD_FAILED');
+      }
+    };
+
+    let filePath;
+    if (files) {
+      filePath = await uploadToMinio(files[0]);
+    }
     return this.organizesubtaskRepo.update({
-      where: {
-        id,
+      where: { id },
+      data: {
+        name,
+        status,
+        assigned,
+        assignedDate,
+        dueDate,
+        remark,
+        ...(files?.length > 0 && {
+          pathFiles: {
+            objectName: filePath?.objectName,
+            originalName: filePath?.originalName,
+          },
+        }),
+        expenses: 0,
       },
-      data: updateOrganizeTaskDto,
     });
   }
 
-  remove(id: number) {
+  async remove(id: number) {
+    const data: any = await this.organizesubtaskRepo.findOne({
+      where: { id },
+    });
+
+    if (!data) {
+      throw new NotFoundException('Data not found');
+    }
+
+    const file = data.pathFiles as {
+      objectName?: string;
+      originalName?: string;
+    } | null;
+
+    if (file?.objectName) {
+      await this.minioService.deleteFile(
+        file.objectName,
+        config.minioBucketOrganize,
+      );
+    }
     return this.organizesubtaskRepo.delete({
       where: {
         id,

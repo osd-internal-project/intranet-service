@@ -57,16 +57,26 @@ export class OrganizeManagementTaskController {
     return this.organizeManagementtaskService.findMany(base);
   }
 
+  // @Patch(':id')
+  // update(
+  //   @Param('id') id: string,
+  //   @Body()
+  //   updateOrganizeManagementDto: Prisma.organizeManagementTaskUpdateInput,
+  // ) {
+  //   return this.organizeManagementtaskService.update(
+  //     +id,
+  //     updateOrganizeManagementDto,
+  //   );
+  // }
+
   @Patch(':id')
+  @UseInterceptors(AnyFilesInterceptor())
   update(
     @Param('id') id: string,
-    @Body()
-    updateOrganizeManagementDto: Prisma.organizeManagementTaskUpdateInput,
+    @UploadedFiles() files: Express.Multer.File[],
+    @Body() body: any,
   ) {
-    return this.organizeManagementtaskService.update(
-      +id,
-      updateOrganizeManagementDto,
-    );
+    return this.organizeManagementtaskService.update(body, files, +id);
   }
 
   @Delete(':id')

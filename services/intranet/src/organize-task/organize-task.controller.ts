@@ -45,12 +45,22 @@ export class OrganizeTaskController {
   }
 
   @Patch(':id')
+  @UseInterceptors(AnyFilesInterceptor())
   update(
     @Param('id') id: string,
-    @Body() updateOrganizeTaskDto: Prisma.organizeSubTaskUpdateInput,
+    @UploadedFiles() files: Express.Multer.File[],
+    @Body() body: any,
   ) {
-    return this.organizeTaskService.update(+id, updateOrganizeTaskDto);
+    return this.organizeTaskService.update(body, files, +id);
   }
+
+  // @Patch(':id')
+  // update(
+  //   @Param('id') id: string,
+  //   @Body() updateOrganizeTaskDto: Prisma.organizeSubTaskUpdateInput,
+  // ) {
+  //   return this.organizeTaskService.update(+id, updateOrganizeTaskDto);
+  // }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

@@ -53,6 +53,13 @@ export class organizeSubTaskRepository {
     const prisma = option?.prisma ?? this.prisma;
     return prisma.organizeSubTask.delete(condition);
   }
+  async deleteMany(
+    condition: Prisma.organizeSubTaskDeleteManyArgs,
+    option?: { prisma?: TQueryClient },
+  ) {
+    const prisma = option?.prisma ?? this.prisma;
+    return prisma.organizeSubTask.deleteMany(condition);
+  }
   async count(
     condition: Prisma.organizeSubTaskCountArgs,
     option?: { prisma?: TQueryClient },
