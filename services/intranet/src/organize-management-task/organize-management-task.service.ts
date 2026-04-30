@@ -29,6 +29,7 @@ export class organizeManagementTaskService {
       remark,
       assignedDate,
       organizedId,
+      expenses,
     } = parsedItems || {};
     const uploadToMinio = async (file: Express.Multer.File) => {
       if (!file) return null;
@@ -70,7 +71,7 @@ export class organizeManagementTaskService {
           objectName: filePath?.objectName,
           originalName: filePath?.originalName,
         },
-        expenses: 0,
+        expenses: +expenses,
       },
     });
   }
@@ -114,6 +115,7 @@ export class organizeManagementTaskService {
               : null;
             return {
               ...sub,
+              expenses: sub.expenses,
               fileUrl: subUrl,
             };
           }),
@@ -121,6 +123,7 @@ export class organizeManagementTaskService {
         return {
           ...item,
           fileUrl: parentUrl,
+          expenses: item.expenses,
           organizeSubTasks: subTasks,
         };
       }),
@@ -138,7 +141,7 @@ export class organizeManagementTaskService {
 
   async update(createorganizeManagementTaskDto: any, files: any, id: number) {
     const parsedItems = JSON.parse(createorganizeManagementTaskDto.record);
-    const { name, assigned, dueDate, status, remark, assignedDate } =
+    const { name, assigned, dueDate, status, remark, assignedDate, expenses } =
       parsedItems || {};
 
     const uploadToMinio = async (file: Express.Multer.File) => {
@@ -192,7 +195,7 @@ export class organizeManagementTaskService {
             originalName: filePath?.originalName,
           },
         }),
-        expenses: 0,
+        expenses: +expenses,
       },
     });
   }

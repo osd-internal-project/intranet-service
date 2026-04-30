@@ -25,6 +25,7 @@ export class OrganizeTaskService {
       assignedDate,
       organizedId,
       organizeTaskId,
+      expenses,
     } = parsedItems || {};
     const uploadToMinio = async (file: Express.Multer.File) => {
       if (!file) return null;
@@ -67,7 +68,7 @@ export class OrganizeTaskService {
           objectName: filePath?.objectName,
           originalName: filePath?.originalName,
         },
-        expenses: 0,
+        expenses: +expenses,
       },
     });
   }
@@ -90,7 +91,7 @@ export class OrganizeTaskService {
 
   async update(createorganizeManagementTaskDto: any, files: any, id: number) {
     const parsedItems = JSON.parse(createorganizeManagementTaskDto.record);
-    const { name, assigned, dueDate, status, remark, assignedDate } =
+    const { name, assigned, dueDate, status, remark, assignedDate, expenses } =
       parsedItems || {};
 
     const uploadToMinio = async (file: Express.Multer.File) => {
@@ -144,7 +145,7 @@ export class OrganizeTaskService {
             originalName: filePath?.originalName,
           },
         }),
-        expenses: 0,
+        expenses: +expenses,
       },
     });
   }
