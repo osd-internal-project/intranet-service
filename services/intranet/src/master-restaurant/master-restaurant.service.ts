@@ -15,7 +15,7 @@ export class MasterRestaurantService {
     private readonly minioService: MinioClientService,
   ) {}
   async create(createMasterRestaurantDto: any, attendFiles: any) {
-    const { files, pricing, ...condition } = createMasterRestaurantDto || {};
+    const { files, ...condition } = createMasterRestaurantDto || {};
     const file = attendFiles[0];
     let objectName = '';
     if (file) {
@@ -32,7 +32,6 @@ export class MasterRestaurantService {
 
     const base = {
       ...condition,
-      pricing: +pricing,
       pathFIles: `${objectName}`,
     };
     return this.masterrestautantRepo.create({
@@ -80,7 +79,7 @@ export class MasterRestaurantService {
   }
 
   async update(id: number, updateMasterRestaurantDto: any, attendFiles: any) {
-    const { files, pricing, contact, ...condition } =
+    const { files, contact, menu, ...condition } =
       updateMasterRestaurantDto || {};
     const file = attendFiles[0];
     let objectName = '';
@@ -107,7 +106,7 @@ export class MasterRestaurantService {
       data: {
         ...condition,
         contact: contact ? contact : [],
-        pricing: +pricing,
+        menu: menu ? menu : [],
         pathFIles: objectName ? objectName : data.pathFIles,
       },
     });
