@@ -1,6 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { organizeManagementRepository } from '@inventory/share';
+import {
+  organizeManagementRepository,
+  organizeSubTaskRepository,
+  organizeManagementTaskRepository,
+} from '@inventory/share';
 import { MinioClientService } from 'src/minio-client/minio-client.service';
 import { v4 as uuidv4 } from 'uuid';
 import appConfig from '../configs';
@@ -12,6 +16,8 @@ export class OrganizeManagementService {
   constructor(
     private readonly organizeManagementRepo: organizeManagementRepository,
     private readonly minioService: MinioClientService,
+    private readonly organizesubtaskRepo: organizeSubTaskRepository,
+    private readonly organizeManagementtaskRepo: organizeManagementTaskRepository,
   ) {}
   // async create(createorganizeManagementTaskDto: any, ) {
   //   const parsedItems = JSON.parse(
@@ -207,7 +213,59 @@ export class OrganizeManagementService {
     });
   }
 
-  remove(id: number) {
+  async remove(id: number) {
+    const data: any = await this.organizeManagementRepo.findOne({
+      where: { id },
+      include: {
+        organizeManagementTask: {
+          include: {
+            organizeSubTasks: true,
+          },
+        },
+      },
+    });
+
+    if (!data) {
+      throw new NotFoundException('Data not found');
+    }
+
+    await Promise.all(
+      (data.organizeManagementTask || []).map(async (task) => {
+        const taskFile = task.pathFiles as {
+          objectName?: string;
+        } | null;
+
+        if (taskFile?.objectName) {
+          await this.minioService.deleteFile(
+            taskFile.objectName,
+            config.minioBucketOrganize,
+          );
+        }
+        await Promise.all(
+          (task.organizeSubTasks || []).map(async (sub) => {
+            const subFile = sub.pathFiles as {
+              objectName?: string;
+            } | null;
+            if (subFile?.objectName) {
+              await this.minioService.deleteFile(
+                subFile.objectName,
+                config.minioBucketOrganize,
+              );
+            }
+          }),
+        );
+        await this.organizesubtaskRepo.deleteMany({
+          where: {
+            organizeManagementTaskId: task.id,
+          },
+        });
+      }),
+    );
+    await this.organizeManagementtaskRepo.deleteMany({
+      where: {
+        organizeManagementId: id,
+      },
+    });
     return this.organizeManagementRepo.delete({
       where: {
         id,

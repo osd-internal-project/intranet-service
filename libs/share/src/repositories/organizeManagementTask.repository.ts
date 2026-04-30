@@ -53,6 +53,13 @@ export class organizeManagementTaskRepository {
     const prisma = option?.prisma ?? this.prisma;
     return prisma.organizeManagementTask.delete(condition);
   }
+  async deleteMany(
+    condition: Prisma.organizeManagementTaskDeleteManyArgs,
+    option?: { prisma?: TQueryClient },
+  ) {
+    const prisma = option?.prisma ?? this.prisma;
+    return prisma.organizeManagementTask.deleteMany(condition);
+  }
   async count(
     condition: Prisma.organizeManagementTaskCountArgs,
     option?: { prisma?: TQueryClient },
