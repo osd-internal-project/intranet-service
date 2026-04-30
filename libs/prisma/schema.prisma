@@ -1247,7 +1247,6 @@ model masterRestaurant {
   id        Int      @unique @default(autoincrement()) @map("id")
   name      String   @map("name") @db.VarChar(255)
   menu      Json?
-  pricing   Float?   @default(0.00)
   category  Json?
   contact   Json?
   remark    String?  @db.Text()
