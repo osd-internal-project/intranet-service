@@ -81,7 +81,6 @@ export class organizeManagementTaskService {
 
   async findMany(condition: Prisma.organizeManagementTaskFindManyArgs) {
     const { where } = condition || {};
-
     const response = await this.organizeManagementtaskRepo.findMany({
       where,
       include: {
@@ -89,44 +88,36 @@ export class organizeManagementTaskService {
       },
       orderBy: { id: 'asc' },
     });
-
     const result = await Promise.all(
       response.map(async (item: any) => {
-        // 👉 parent file
-        const parentFile = item.pathFIles as {
+        const parentFile = item.pathFiles as {
           objectName: string;
           originalName: string;
         } | null;
-
         const parentUrl = parentFile?.objectName
           ? await this.minioService.getPresignedUrl(
-              config.minioBucketRes,
+              config.minioBucketOrganize,
               parentFile.objectName,
             )
           : null;
-
-        // 👉 subtask files
         const subTasks = await Promise.all(
           (item.organizeSubTasks || []).map(async (sub) => {
             const subFile = sub.pathFiles as {
               objectName: string;
               originalName: string;
             } | null;
-
             const subUrl = subFile?.objectName
               ? await this.minioService.getPresignedUrl(
                   config.minioBucketOrganize,
                   subFile.objectName,
                 )
               : null;
-
             return {
               ...sub,
               fileUrl: subUrl,
             };
           }),
         );
-
         return {
           ...item,
           fileUrl: parentUrl,
@@ -134,7 +125,6 @@ export class organizeManagementTaskService {
         };
       }),
     );
-
     return result;
   }
 
