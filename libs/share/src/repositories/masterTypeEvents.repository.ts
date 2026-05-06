@@ -18,6 +18,7 @@ export class masterTypeEventsRepository {
     const prisma = option?.prisma ?? this.prisma;
     return prisma.masterTypeEvents.findMany(condition);
   }
+  
   async findOne(
     condition: Prisma.masterTypeEventsFindFirstArgsBase,
     option?: { prisma?: TQueryClient },

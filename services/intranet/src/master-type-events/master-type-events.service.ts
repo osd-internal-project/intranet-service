@@ -1,26 +1,52 @@
+import { masterTypeEventsRepository } from '@inventory/share';
 import { Injectable } from '@nestjs/common';
-import { CreateMasterTypeEventDto } from './dto/create-master-type-event.dto';
-import { UpdateMasterTypeEventDto } from './dto/update-master-type-event.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class MasterTypeEventsService {
-  create(createMasterTypeEventDto: CreateMasterTypeEventDto) {
-    return 'This action adds a new masterTypeEvent';
+  constructor(
+    private readonly mastertypeeventsRepo: masterTypeEventsRepository,
+  ) {}
+  create(createMasterTypeEventDto: Prisma.masterTypeEventsCreateInput) {
+    return this.mastertypeeventsRepo.create({ data: createMasterTypeEventDto });
   }
 
-  findAll() {
-    return `This action returns all masterTypeEvents`;
+  async findAll(
+    condition: Prisma.masterTypeEventsCreateInput,
+    take: number,
+    skip: number,
+  ) {
+    const data = await this.mastertypeeventsRepo.findMany({
+      where: condition,
+      take,
+      skip,
+      orderBy: { id: 'asc' },
+    });
+    const count = await this.mastertypeeventsRepo.count({
+      where: condition,
+    });
+    return { data, count };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} masterTypeEvent`;
+  findDropDown() {
+    return this.mastertypeeventsRepo.findAll();
   }
 
-  update(id: number, updateMasterTypeEventDto: UpdateMasterTypeEventDto) {
-    return `This action updates a #${id} masterTypeEvent`;
+  findOne(id: number, condition: Prisma.masterTypeEventsCreateInput) {
+    return this.mastertypeeventsRepo.findOne({ where: { id } });
+  }
+
+  update(
+    id: number,
+    updateMasterTypeEventDto: Prisma.masterTypeEventsCreateInput,
+  ) {
+    return this.mastertypeeventsRepo.update({
+      where: { id },
+      data: { ...updateMasterTypeEventDto },
+    });
   }
 
   remove(id: number) {
-    return `This action removes a #${id} masterTypeEvent`;
+    return this.mastertypeeventsRepo.delete({ where: { id } });
   }
 }
