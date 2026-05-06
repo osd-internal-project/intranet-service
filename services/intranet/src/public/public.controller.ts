@@ -7,7 +7,6 @@ import { Response } from 'express';
 import configs from 'src/configs';
 
 const PORT = configs();
-const { minioBucket } = configs();
 @Controller('public')
 export class PublicController {
   // constructor(private readonly minioService: MinioClientService) {}

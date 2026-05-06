@@ -98,3 +98,4 @@ export * from './organizeManagement.repository';
 export * from './organizeSubTask.repository';
 export * from './masterRestaurant.repository';
 export * from './organizeManagementTask.repository';
+export * from './masterTypeEvents.repository';

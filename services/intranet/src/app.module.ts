@@ -53,6 +53,7 @@ import { OrganizeManagementTaskModule } from './organize-management-task/organiz
 import { OrganizeTaskModule } from './organize-task/organize-task.module';
 import { MasterRestaurantModule } from './master-restaurant/master-restaurant.module';
 import { OrganizeManagementModule } from './organize-management/organize-management.module';
+import { MasterTypeEventsModule } from './master-type-events/master-type-events.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
@@ -104,6 +105,7 @@ import { OrganizeManagementModule } from './organize-management/organize-managem
     OrganizeTaskModule,
     MasterRestaurantModule,
     OrganizeManagementModule,
+    MasterTypeEventsModule,
   ],
   controllers: [IntranetController, PublicController],
   providers: [IntranetService],

@@ -89,6 +89,7 @@ import {
   organizeSubTaskRepository,
   masterRestaurantRepository,
   organizeManagementTaskRepository,
+  masterTypeEventsRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
 
@@ -188,6 +189,7 @@ const services = [
   organizeSubTaskRepository,
   organizeManagementTaskRepository,
   masterRestaurantRepository,
+  masterTypeEventsRepository,
 ];
 @Module({
   providers: [...services],

@@ -1202,6 +1202,7 @@ model organizeManagement {
   id                     Int                      @unique @default(autoincrement()) @map("id")
   name                   String                   @map("name") @db.VarChar(255)
   date                   DateTime                 @default(now()) @map("date")
+  typeId                 String?                  @map("type_id") @db.VarChar(50)
   createdAt              DateTime                 @default(now()) @map("created_at")
   updatedAt              DateTime                 @default(now()) @map("updated_at")
   createdBy              String                   @map("created_by") @db.VarChar(255)
@@ -1254,4 +1255,15 @@ model masterRestaurant {
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("master_restaurant")
+}
+
+model masterTypeEvents {
+  id        Int      @unique @default(autoincrement()) @map("id")
+  typeId    String   @unique @default(uuid()) @map("type_id") @db.VarChar(50)
+  name      String   @map("name") @db.VarChar(255)
+  remark    String?  @db.Text()
+  pathFIles String?  @map("path_files") @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("master_type_events")
 }
