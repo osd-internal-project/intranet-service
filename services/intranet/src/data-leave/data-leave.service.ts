@@ -35,9 +35,9 @@ export class DataLeaveService {
       condition.data.userId,
     );
     const leaveLetter = await this.dataleaveRepo.create(condition);
-    // if (leaveLetter) {
-    //   this.sendLeaveEmails(result, condition.data);
-    // }
+    if (leaveLetter) {
+      this.sendLeaveEmails(result, condition.data);
+    }
     return leaveLetter;
   }
   findAll() {
@@ -420,7 +420,7 @@ export class DataLeaveService {
     const normalLeave = await this.dataleaveRepo.findMany({
       where: {
         userId,
-        status: { in: ['approved'] },
+        status: { in: ['approved', 'waiting'] },
         typeId: { not: 6 },
         AND: [
           { startDate: { lte: endOfYear } },
