@@ -1,0 +1,86 @@
+name: Build, Push & Deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.pkg.outputs.version }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get version from package.json
+        id: pkg
+        run: |
+          echo "version=$(node -p 'require("./package.json").version')" >> $GITHUB_OUTPUT
+
+      - name: Login to Huawei SWR
+        run: |
+          docker login -u ap-southeast-2@HPUAGIPPWFA7YCNYJIGE \
+            -p ${{ secrets.HUAWEI_REGISTRY_PASSWORD }} \
+            swr.ap-southeast-2.myhuaweicloud.com
+
+      - name: Build intranet-be
+        run: |
+          docker build --no-cache --platform linux/amd64 \
+            -t swr.ap-southeast-2.myhuaweicloud.com/osd-internal/intranet-be:v${{ steps.pkg.outputs.version }} \
+            -f services/intranet/Dockerfile .
+
+      - name: Build intranet-user-be
+        run: |
+          docker build --no-cache --platform linux/amd64 \
+            -t swr.ap-southeast-2.myhuaweicloud.com/osd-internal/intranet-user-be:v${{ steps.pkg.outputs.version }} \
+            -f services/user/Dockerfile .
+
+      - name: Push images
+        run: |
+          docker push swr.ap-southeast-2.myhuaweicloud.com/osd-internal/intranet-be:v${{ steps.pkg.outputs.version }}
+          docker push swr.ap-southeast-2.myhuaweicloud.com/osd-internal/intranet-user-be:v${{ steps.pkg.outputs.version }}
+
+  deploy:
+    runs-on: self-hosted
+    needs: build-and-push
+
+    steps:
+      - name: Login to Huawei SWR
+        run: |
+          docker login -u ap-southeast-2@HPUAGIPPWFA7YCNYJIGE \
+            -p ${{ secrets.HUAWEI_REGISTRY_PASSWORD }} \
+            swr.ap-southeast-2.myhuaweicloud.com
+
+      - name: Pull images
+        run: |
+          docker pull swr.ap-southeast-2.myhuaweicloud.com/osd-internal/intranet-be:v${{ needs.build-and-push.outputs.version }}
+          docker pull swr.ap-southeast-2.myhuaweicloud.com/osd-internal/intranet-user-be:v${{ needs.build-and-push.outputs.version }}
+
+      - name: Deploy intranet-be
+        run: |
+          docker stop intranet-be || true
+          docker rm intranet-be || true
+          sudo docker run -d --restart=always --user root:root \
+            -v /etc/localtime:/etc/localtime:ro \
+            -v /etc/timezone:/etc/timezone:ro \
+            -v /var/script/data/Intranet-v2/uploads:/app/services/intranet/uploads \
+            --env-file /var/script/images/.env-intra-intra-be \
+            -e TZ=Asia/Bangkok \
+            -p 8947:4003 \
+            --name intranet-be \
+            swr.ap-southeast-2.myhuaweicloud.com/osd-internal/intranet-be:v${{ needs.build-and-push.outputs.version }}
+
+      - name: Deploy intranet-user-be
+        run: |
+          docker stop intranet-user-be || true
+          docker rm intranet-user-be || true
+          sudo docker run -d --restart=always \
+            --add-host=osd-auth.osd.co.th=192.168.31.140 \
+            --user root:root \
+            -v /var/script/data/Intranet-v2/uploads:/app/services/user/uploads \
+            --env-file /var/script/images/.env-intra-users-be \
+            -p 8945:4000 \
+            --name intranet-user-be \
+            swr.ap-southeast-2.myhuaweicloud.com/osd-internal/intranet-user-be:v${{ needs.build-and-push.outputs.version }}

@@ -1,0 +1,62 @@
+name: Build, Push & Deploy - Intranet BE
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.pkg.outputs.version }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get version from package.json
+        id: pkg
+        run: |
+          echo "version=$(node -p 'require("./package.json").version')" >> $GITHUB_OUTPUT
+
+      - name: Login to Huawei SWR
+        run: |
+          docker login -u ap-southeast-2@HPUAGIPPWFA7YCNYJIGE \
+            -p ${{ secrets.HUAWEI_REGISTRY_PASSWORD }} \
+            swr.ap-southeast-2.myhuaweicloud.com
+
+      - name: Build Docker image
+        run: |
+          docker build --no-cache --platform linux/amd64 \
+            -t swr.ap-southeast-2.myhuaweicloud.com/osd-internal/intranet-be:v${{ steps.pkg.outputs.version }} \
+            -f services/intranet/Dockerfile .
+
+      - name: Push Docker image
+        run: |
+          docker push swr.ap-southeast-2.myhuaweicloud.com/osd-internal/intranet-be:v${{ steps.pkg.outputs.version }}
+
+  deploy:
+    runs-on: self-hosted
+    needs: build-and-push
+
+    steps:
+      - name: Login to Huawei SWR
+        run: |
+          docker login -u ap-southeast-2@HPUAGIPPWFA7YCNYJIGE \
+            -p ${{ secrets.HUAWEI_REGISTRY_PASSWORD }} \
+            swr.ap-southeast-2.myhuaweicloud.com
+
+      - name: Deploy
+        run: |
+          docker pull swr.ap-southeast-2.myhuaweicloud.com/osd-internal/intranet-be:v${{ needs.build-and-push.outputs.version }}
+          # docker stop intranet-be || true
+          # docker rm intranet-be || true
+          # sudo docker run -d --restart=always --user root:root \
+          #   -v /etc/localtime:/etc/localtime:ro \
+          #   -v /etc/timezone:/etc/timezone:ro \
+          #   -v /var/script/data/Intranet-v2/uploads:/app/services/intranet/uploads \
+          #   --env-file /var/script/images/.env-intra-intra-be \
+          #   -e TZ=Asia/Bangkok \
+          #   -p 8947:4003 \
+          #   --name intranet-be \
+          #   swr.ap-southeast-2.myhuaweicloud.com/osd-internal/intranet-be:v${{ needs.build-and-push.outputs.version }}
