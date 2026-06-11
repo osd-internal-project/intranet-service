@@ -17,7 +17,7 @@ jobs:
       - name: Get version from package.json
         id: pkg
         run: |
-          echo "version=$(node -p 'require("./package.json").version')" >> $GITHUB_OUTPUT
+          echo "version=$(node -p 'require("./services/intranet/package.json").version')" >> $GITHUB_OUTPUT
 
       - name: Login to Huawei SWR
         run: |
