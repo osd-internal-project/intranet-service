@@ -49,13 +49,13 @@ jobs:
       - name: Deploy
         run: |
           docker pull swr.ap-southeast-2.myhuaweicloud.com/osd-internal/intranet-user-be:v${{ needs.build-and-push.outputs.version }}
-          # docker stop intranet-user-be || true
-          # docker rm intranet-user-be || true
-          # sudo docker run -d --restart=always \
-          #   --add-host=osd-auth.osd.co.th=192.168.31.140 \
-          #   --user root:root \
-          #   -v /var/script/data/Intranet-v2/uploads:/app/services/user/uploads \
-          #   --env-file /var/script/images/.env-intra-users-be \
-          #   -p 8945:4000 \
-          #   --name intranet-user-be \
-          #   swr.ap-southeast-2.myhuaweicloud.com/osd-internal/intranet-user-be:v${{ needs.build-and-push.outputs.version }}
+          docker stop intranet-user-be || true
+          docker rm intranet-user-be || true
+          sudo docker run -d --restart=always \
+            --add-host=osd-auth.osd.co.th=192.168.31.140 \
+            --user root:root \
+            -v /var/script/data/Intranet-v2/uploads:/app/services/user/uploads \
+            --env-file /var/script/images/.env-intra-users-be \
+            -p 8945:4000 \
+            --name intranet-user-be \
+            swr.ap-southeast-2.myhuaweicloud.com/osd-internal/intranet-user-be:v${{ needs.build-and-push.outputs.version }}
