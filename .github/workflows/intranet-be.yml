@@ -27,7 +27,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build --no-cache --platform linux/amd64 \
+          docker build --platform linux/amd64 \
             -t swr.ap-southeast-2.myhuaweicloud.com/osd-internal/intranet-be:v${{ steps.pkg.outputs.version }} \
             -f services/intranet/Dockerfile .
 
