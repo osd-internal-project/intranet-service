@@ -15,7 +15,7 @@ ENV YARN_CACHE_FOLDER=.yarn-cache
 FROM base AS pruner
 RUN yarn global add turbo@1.5.5
 COPY . .
-RUN turbo prune --scope="@inventory/user" --docker
+RUN turbo prune --scope="intranet-user-be" --docker
 RUN yarn global remove turbo
 
 # ===== Development dependencies =====
@@ -37,7 +37,7 @@ FROM base AS builder
 COPY --from=dev-deps /app/ .
 COPY --from=pruner /app/out/full/ .
 RUN yarn generate
-RUN yarn turbo run build --scope="@inventory/user" --include-dependencies --no-deps
+RUN yarn turbo run build --scope="intranet-user-be" --include-dependencies --no-deps
 RUN find . -name node_modules | xargs rm -rf
 
 # ===== Clean dependencies (reduce size) =====
