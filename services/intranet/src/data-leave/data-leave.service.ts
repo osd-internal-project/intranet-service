@@ -16,6 +16,7 @@ import {
   templateDataLeave,
   templateDataLeaveApproved,
 } from '../utils/template-booking-leave';
+import { json } from 'stream/consumers';
 
 @Injectable()
 export class DataLeaveService {
@@ -148,9 +149,10 @@ export class DataLeaveService {
   }
 
   async findGroup(userId: string, query: any, skip: number, take: number) {
-    let filter = {};
-    if (query.type === 'fullname' && query.value) {
-      const names = query.value.trim().split(' ').filter(Boolean);
+    let filter = {} as Prisma.dataLeaveWhereInput;
+    const { fullname, status, createdAt, leaveAt, typeName } = query;
+    if (fullname) {
+      const names = fullname.trim().split(' ').filter(Boolean);
       const orConditions = names.flatMap((word) => [
         {
           firstName: {
@@ -166,15 +168,33 @@ export class DataLeaveService {
         },
       ]);
       filter = { ...filter, OR: orConditions };
-    } else if (query.type === 'status') {
-      filter = { ...filter, status: query.value };
-    } else if (query.type === 'type_name') {
+    }
+    if (status) {
+      filter = { ...filter, status: status };
+    }
+    if (typeName) {
       filter = {
         ...filter,
         typeName: {
-          contains: query.value,
+          contains: typeName,
           mode: 'insensitive',
         },
+      };
+    }
+    if (createdAt) {
+      filter = {
+        ...filter,
+        createdAt: {
+          gte: dayjs(createdAt[0]).startOf('day').toDate(),
+          lte: dayjs(createdAt[1]).endOf('day').toDate(),
+        },
+      };
+    }
+    if (leaveAt) {
+      filter = {
+        ...filter,
+        startDate: { lte: dayjs(leaveAt[1]).endOf('day').toDate() },
+        endDate: { gte: dayjs(leaveAt[0]).startOf('day').toDate() },
       };
     }
     const getUser = await this.usersRepo.findOne({ where: { userId: userId } });
@@ -202,9 +222,10 @@ export class DataLeaveService {
     return { data, count };
   }
   async findGroupHr(userId: string, query: any, skip: number, take: number) {
-    let filter = {};
-    if (query.type === 'fullname' && query.value) {
-      const names = query.value.trim().split(' ').filter(Boolean);
+    let filter = {} as Prisma.dataLeaveWhereInput;
+    const { fullname, status, createdAt, leaveAt, typeName } = query;
+    if (fullname) {
+      const names = fullname.trim().split(' ').filter(Boolean);
       const orConditions = names.flatMap((word) => [
         {
           firstName: {
@@ -220,15 +241,33 @@ export class DataLeaveService {
         },
       ]);
       filter = { ...filter, OR: orConditions };
-    } else if (query.type === 'status') {
-      filter = { ...filter, status: query.value };
-    } else if (query.type === 'type_name') {
+    }
+    if (status) {
+      filter = { ...filter, status: status };
+    }
+    if (typeName) {
       filter = {
         ...filter,
         typeName: {
-          contains: query.value,
+          contains: typeName,
           mode: 'insensitive',
         },
+      };
+    }
+    if (createdAt) {
+      filter = {
+        ...filter,
+        createdAt: {
+          gte: dayjs(createdAt[0]).startOf('day').toDate(),
+          lte: dayjs(createdAt[1]).endOf('day').toDate(),
+        },
+      };
+    }
+    if (leaveAt) {
+      filter = {
+        ...filter,
+        startDate: { lte: dayjs(leaveAt[1]).endOf('day').toDate() },
+        endDate: { gte: dayjs(leaveAt[0]).startOf('day').toDate() },
       };
     }
     const data = await this.dataleaveRepo.findMany({

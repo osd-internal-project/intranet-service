@@ -71,7 +71,15 @@ export class DataLeaveController {
   ) {
     return this.dataLeaveService.findGroup(userId, query, +skip, +take);
   }
-
+  @Get('findGroup-hr/:userId')
+  findGroupHr(
+    @Param('userId') userId: string,
+    @Query() query: any,
+    @Query('skip') skip?: number,
+    @Query('take') take?: number,
+  ) {
+    return this.dataLeaveService.findGroupHr(userId, query, +skip, +take);
+  }
   @Get('find-total-leave-by-group')
   @UseInterceptors(UserInterceptor)
   findTotalLeaveDetailByGroup(
@@ -87,15 +95,6 @@ export class DataLeaveController {
       +skip,
       +take,
     );
-  }
-  @Get('findGroup-hr/:userId')
-  findGroupHr(
-    @Param('userId') userId: string,
-    @Query() query: any,
-    @Query('skip') skip?: number,
-    @Query('take') take?: number,
-  ) {
-    return this.dataLeaveService.findGroupHr(userId, query, +skip, +take);
   }
 
   @Get('/:userId')
