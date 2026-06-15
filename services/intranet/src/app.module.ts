@@ -54,6 +54,7 @@ import { OrganizeTaskModule } from './organize-task/organize-task.module';
 import { MasterRestaurantModule } from './master-restaurant/master-restaurant.module';
 import { OrganizeManagementModule } from './organize-management/organize-management.module';
 import { MasterTypeEventsModule } from './master-type-events/master-type-events.module';
+import { MaCarFuelTransactionModule } from './ma-car-fuel-transaction/ma-car-fuel-transaction.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
@@ -76,6 +77,7 @@ import { MasterTypeEventsModule } from './master-type-events/master-type-events.
     PublicizeSlideImagesModule,
     DataLeaveFileModule,
     MaCarModule,
+    MaCarFuelTransactionModule,
     MaCarTypeModule,
     MaCarBookModule,
     MaCarWrapupModule,

@@ -29,6 +29,7 @@ import {
   MaTaskRepository,
   MaTypeRepository,
   MaCarFilesRepository,
+  MaCarFuelTransactionRepository,
   // Data Leave
   MasterTypeLeaveRepository,
   MasterHolidaysRepository,
@@ -135,6 +136,7 @@ const services = [
   MaCarWrapupRepository,
   MaCarWrapupImageRepository,
   MaCarFilesRepository,
+  MaCarFuelTransactionRepository,
   // data Leave
   MasterTypeLeaveRepository,
   MasterHolidaysRepository,

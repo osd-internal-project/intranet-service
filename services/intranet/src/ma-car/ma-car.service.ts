@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class MaCarService {
-  constructor(private readonly maCarRepository: MaCarRepository) { }
+  constructor(private readonly maCarRepository: MaCarRepository) {}
 
   create(data: Prisma.maCarCreateInput) {
     const condition = { data: data } as Prisma.maCarCreateArgs;
@@ -45,6 +45,7 @@ export class MaCarService {
       where: { carId: carId },
       data: data,
     } as Prisma.maCarUpdateArgs;
+    console.log('Update Condition:', data);
     return this.maCarRepository.update(condition);
   }
 
