@@ -51,7 +51,7 @@ jobs:
           docker pull swr.ap-southeast-2.myhuaweicloud.com/osd-internal/intranet-be:v${{ needs.build-and-push.outputs.version }}
           docker stop intranet-be || true
           docker rm intranet-be || true
-          sudo docker run -d --restart=always --user root:root \
+          docker run -d --restart=always --user root:root \
             -v /etc/localtime:/etc/localtime:ro \
             -v /etc/timezone:/etc/timezone:ro \
             -v /var/script/data/Intranet-v2/uploads:/app/services/intranet/uploads \
