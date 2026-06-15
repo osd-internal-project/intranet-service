@@ -1,4 +1,4 @@
-name: Build, Push & Deploy - Intranet User BE
+name: Build, Push & Deploy - Intranet Report BE
 
 on:
   workflow_dispatch:
