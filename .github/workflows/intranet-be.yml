@@ -57,6 +57,6 @@ jobs:
             -v /var/script/data/Intranet-v2/uploads:/app/services/intranet/uploads \
             --env-file /var/script/images/.env-intra-intra-be \
             -e TZ=Asia/Bangkok \
-            -p 8947:4003 \
+            -p 8947:4000 \
             --name intranet-be \
             swr.ap-southeast-2.myhuaweicloud.com/osd-internal/intranet-be:v${{ needs.build-and-push.outputs.version }}
