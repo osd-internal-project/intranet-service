@@ -1,7 +1,7 @@
 {
   "name": "intranet-report-be",
   "description": "",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "author": "",
   "dependencies": {
     "@inventory/share": "0.0.1",
