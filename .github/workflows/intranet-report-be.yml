@@ -56,6 +56,6 @@ jobs:
             --user root:root \
             -v /var/script/data/Intranet-v2/uploads:/app/services/report/uploads \
             --env-file /var/script/images/.env-intra-report-be \
-            -p 8948:4000 \
+            -p 8948:4001 \
             --name intranet-report-be \
             swr.ap-southeast-2.myhuaweicloud.com/osd-internal/intranet-report-be:v${{ needs.build-and-push.outputs.version }}
