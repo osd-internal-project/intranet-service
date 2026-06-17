@@ -1,11 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { MaCarFuelTransactionRepository } from '@inventory/share';
+import {
+  MaCarFuelTransactionRepository,
+  MaCarRepository,
+} from '@inventory/share';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class MaCarFuelTransactionService {
   constructor(
     private readonly maCarFuelTransactionRepository: MaCarFuelTransactionRepository,
+    private readonly maCarRepository: MaCarRepository,
   ) {}
 
   create(data: Prisma.maCarFuelTransactionCreateInput) {
