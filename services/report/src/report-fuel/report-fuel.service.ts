@@ -161,21 +161,32 @@ export class ReportFuelService {
   }
 
   /**
-   * Aggregate fuel-usage (`use`) amount per month for the last 6 months.
-   * Respects the optional carId filter; date range does not apply.
-   * @param query Chart filter (carId only).
-   * @returns Six month buckets in ascending chronological order.
+   * Aggregate fuel-usage (`use`) amount per month over the requested range.
+   * Falls back to the last 6 months when no range is supplied. Respects the
+   * optional carId filter.
+   * @param query Chart filter: carId and optional startDate/endDate month range.
+   * @returns Month buckets in ascending chronological order.
    */
   async chart(query: ReportFuelChartQueryDto): Promise<ChartBucket[]> {
-    const carId = query?.carId;
-    const buckets = this.buildSixMonthBuckets();
-    // Earliest bucket start = lower bound for the query.
-    const from = new Date(buckets[0].year, buckets[0].month - 1, 1);
+    const { carId, startDate, endDate } = query || {};
+    const buckets =
+      startDate && endDate
+        ? this.buildMonthBuckets(new Date(startDate), new Date(endDate))
+        : this.buildSixMonthBuckets();
+    if (!buckets.length) return [];
+
+    // Lower bound = first day of the first bucket; upper bound (exclusive) =
+    // first day of the month after the last bucket, so the last month is fully
+    // covered.
+    const first = buckets[0];
+    const last = buckets[buckets.length - 1];
+    const from = new Date(first.year, first.month - 1, 1);
+    const to = new Date(last.year, last.month, 1);
 
     const transactions = await this.fuelTransactionRepo.findMany({
       where: {
         actionStatus: 'use',
-        date: { gte: from },
+        date: { gte: from, lt: to },
         ...(carId && { carId }),
       },
       select: { amount: true, date: true },
@@ -222,16 +233,16 @@ export class ReportFuelService {
 
     const transfer = rows.map((row, index) => ({
       'No.': index + 1,
-      วันที่: row.date,
+      วันที่: this.formatDateTime(row.date),
       ชื่อรถ: row.maCar?.carName ?? '',
-      จำนวนเงิน: row.amount,
-      ยอดคงเหลือ: row.remaining,
+      จำนวนเงิน: Number(row.amount ?? 0),
+      ยอดคงเหลือ: Number(row.remaining ?? 0),
       ประเภท: this.actionLabel(row.actionStatus),
       ผู้จอง: row.maCarBook?.createdByName ?? '',
       ผู้รับรถ: row.maCarBook?.recipientName ?? '',
       ช่วงวันจอง: this.bookingPeriod(
         row.maCarBook?.carBookStartDate,
-        row.maCarBook?.carBookEndDate,
+        row.maCarBook?.carBookEndDate, 
       ),
       รายละเอียด: row.description,
     }));
@@ -250,16 +261,32 @@ export class ReportFuelService {
   }
 
   /**
-   * Format a booking date range as a "dd/mm/yyyy - dd/mm/yyyy" string.
+   * Format a booking date range as a
+   * "dd/mm/yyyy HH:mm - dd/mm/yyyy HH:mm" string (24-hour).
    * @param start Booking start date.
    * @param end Booking end date.
    * @returns Formatted range, or '' when no booking dates exist.
    */
   private bookingPeriod(start?: Date | null, end?: Date | null): string {
     if (!start && !end) return '';
-    const fmt = (d?: Date | null) =>
-      d ? new Date(d).toLocaleDateString('en-GB') : '';
-    return `${fmt(start)} - ${fmt(end)}`;
+    return `${this.formatDateTime(start)} - ${this.formatDateTime(end)}`;
+  }
+
+  /**
+   * Format a date as "dd/mm/yyyy HH:mm" (24-hour, en-GB).
+   * @param date Date value (Date, ISO string, or nullish).
+   * @returns Formatted date-time, or '' when no date is given.
+   */
+  private formatDateTime(date?: Date | string | null): string {
+    if (!date) return '';
+    return new Date(date).toLocaleString('en-GB', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    });
   }
 
   /**
@@ -268,15 +295,33 @@ export class ReportFuelService {
    */
   private buildSixMonthBuckets(): ChartBucket[] {
     const now = new Date();
+    return this.buildMonthBuckets(
+      new Date(now.getFullYear(), now.getMonth() - 5, 1),
+      now,
+    );
+  }
+
+  /**
+   * Build zero-initialised month buckets for every month in the inclusive
+   * range [start, end] (compared by month, ignoring the day).
+   * @param start Any date within the first month.
+   * @param end Any date within the last month.
+   * @returns Buckets ordered oldest → newest; empty when start is after end.
+   */
+  private buildMonthBuckets(start: Date, end: Date): ChartBucket[] {
     const buckets: ChartBucket[] = [];
-    for (let i = 5; i >= 0; i--) {
-      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const cursor = new Date(start.getFullYear(), start.getMonth(), 1);
+    const last = new Date(end.getFullYear(), end.getMonth(), 1);
+    while (cursor <= last) {
       buckets.push({
-        year: d.getFullYear(),
-        month: d.getMonth() + 1,
-        label: `${THAI_SHORT_MONTHS[d.getMonth()]} ${d.getFullYear()}`,
+        year: cursor.getFullYear(),
+        month: cursor.getMonth() + 1,
+        label: `${
+          THAI_SHORT_MONTHS[cursor.getMonth()]
+        } ${cursor.getFullYear()}`,
         amount: 0,
       });
+      cursor.setMonth(cursor.getMonth() + 1);
     }
     return buckets;
   }

@@ -137,6 +137,7 @@ export class MaCarBookService {
         include: {
           maCar: true,
           maCarBookImage: true,
+          fuelTransaction: true,
         },
         orderBy: { id: 'desc' },
         skip: skip,

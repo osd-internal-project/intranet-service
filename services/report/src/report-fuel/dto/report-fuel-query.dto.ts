@@ -20,9 +20,14 @@ export interface ReportFuelQueryDto {
 
 /**
  * Query parameters for the fuel-usage bar chart.
- * The chart always covers the last 6 months and only `use` transactions.
+ * The chart covers the requested month range (defaults to the last 6 months)
+ * and only `use` transactions.
  */
 export interface ReportFuelChartQueryDto {
   /** Filter by a single car (maCar.carId). Empty = all cars. */
   readonly carId?: string;
+  /** Start of the month range (any day within the first month). */
+  readonly startDate?: string;
+  /** End of the month range (any day within the last month). */
+  readonly endDate?: string;
 }
