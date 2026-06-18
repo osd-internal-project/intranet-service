@@ -220,11 +220,13 @@ export class MaCarBookService {
         createdById: createdById,
       },
       include: {
+        fuelTransaction: true,
         maCar: {
           include: {
             maCarWrapup: true,
           },
         },
+
         maCarBookImage: true,
       },
       orderBy: {

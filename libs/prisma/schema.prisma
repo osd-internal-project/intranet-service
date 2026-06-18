@@ -599,28 +599,29 @@ model maCar {
   maCarFiles    maCarFiles[]
 
   //Fuel
-  fuelCardStatus       String?                @default("inactive") @map("fuel_card_status") @db.VarChar(10)
-  fuelCardNumber       String?                @map("fuel_card_number") @db.VarChar(50)
-  fuelCardExpiredDate  DateTime?              @map("fuel_card_expired_date") @db.Timestamptz(6)
-  fuelMonthlyLimit     Decimal?               @map("fuel_monthly_limit") @db.Decimal(10, 2)
-  fuelMonthlyRemaining Decimal?               @map("fuel_monthly_remaining") @db.Decimal(10, 2)
-  fuelResetDayOfMonth  Int?                   @map("fuel_reset_day_of_month") @db.Integer
-  fuelTransaction      maCarFuelTransaction[]
+  fuelCardStatus       String?               @default("inactive") @map("fuel_card_status") @db.VarChar(10)
+  fuelCardNumber       String?               @map("fuel_card_number") @db.VarChar(50)
+  fuelCardExpiredDate  DateTime?             @map("fuel_card_expired_date") @db.Timestamptz(6)
+  fuelMonthlyLimit     Decimal?              @map("fuel_monthly_limit") @db.Decimal(10, 2)
+  fuelMonthlyRemaining Decimal?              @map("fuel_monthly_remaining") @db.Decimal(10, 2)
+  fuelResetDayOfMonth  Int?                  @map("fuel_reset_day_of_month") @db.Integer
+  fuelTransaction maCarFuelTransaction[]
 
   @@map("ma_car")
 }
 
 model maCarFuelTransaction {
-  id           Int        @unique @default(autoincrement())
-  carId        String     @map("car_id") @db.VarChar(50)
-  date         DateTime   @default(now()) @updatedAt @map("date") @db.Timestamptz(6)
-  amount       Decimal    @map("amount") @db.Decimal(10, 2)
-  remaining    Decimal    @map("remaining") @db.Decimal(10, 2) //ก่อนตัดบัตร
-  description  String?    @map("description") @db.VarChar(255)
+  id          Int      @unique @default(autoincrement())
+  date        DateTime @default(now()) @updatedAt @map("date") @db.Timestamptz(6)
+  amount      Decimal  @map("amount") @db.Decimal(10, 2)
+  remaining   Decimal  @map("remaining") @db.Decimal(10, 2) //ก่อนตัดบัตร
+  description String?  @map("description") @db.VarChar(255)
+  
+  carId       String   @map("car_id") @db.VarChar(50)
   maCar        maCar      @relation(fields: [carId], references: [carId])
   actionStatus String?    @map("action_status") @db.VarChar(20) //เติม,ใช้งาน,รอบใหม่ use,reset,adjust
   maCarBook    maCarBook? @relation(fields: [maCarBookId], references: [id])
-  maCarBookId  Int? @map("ma_car_book_id")
+  maCarBookId  Int?       @unique @map("ma_car_book_id")
 
   @@map("ma_car_fuel_transaction")
 }
@@ -668,7 +669,7 @@ model maCarBook {
   remarkCancel          String?                @map("remark_cancel") @db.VarChar(225)
   maCar                 maCar                  @relation("CarBooks", fields: [carId], references: [carId])
   maCarBookImage        maCarBookImage[]
-  fuelTransaction       maCarFuelTransaction[]
+  fuelTransaction       maCarFuelTransaction?
 
   @@map("ma_car_book")
 }
