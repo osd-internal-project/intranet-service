@@ -22,7 +22,7 @@ import appConfig from '../configs';
 const config = appConfig();
 
 /** เอกสาร 1 งวด พร้อมสถานะที่คำนวณแล้ว ส่งให้ frontend ใช้ตรงๆ ไม่ต้องคำนวณซ้ำ */
-interface DocumentWithStatus {
+export interface DocumentWithStatus {
   documentId: string;
   docType: string;
   insuranceType: string | null;
@@ -40,7 +40,7 @@ interface DocumentWithStatus {
 }
 
 /** 1 แถวของตาราง matrix = รถ 1 คัน พร้อมเอกสารปัจจุบันของทั้ง 3 ประเภท */
-interface CarDocMatrixRow {
+export interface CarDocMatrixRow {
   carId: string;
   carName: string;
   licensePlate: string | null;
