@@ -55,6 +55,9 @@ import { MasterRestaurantModule } from './master-restaurant/master-restaurant.mo
 import { OrganizeManagementModule } from './organize-management/organize-management.module';
 import { MasterTypeEventsModule } from './master-type-events/master-type-events.module';
 import { MaCarFuelTransactionModule } from './ma-car-fuel-transaction/ma-car-fuel-transaction.module';
+import { MaCarDocumentModule } from './ma-car-document/ma-car-document.module';
+import { MaVehicleTypeModule } from './ma-vehicle-type/ma-vehicle-type.module';
+import { MaVehicleTypeGroupModule } from './ma-vehicle-type-group/ma-vehicle-type-group.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
@@ -78,6 +81,9 @@ import { MaCarFuelTransactionModule } from './ma-car-fuel-transaction/ma-car-fue
     DataLeaveFileModule,
     MaCarModule,
     MaCarFuelTransactionModule,
+    MaCarDocumentModule,
+    MaVehicleTypeModule,
+    MaVehicleTypeGroupModule,
     MaCarTypeModule,
     MaCarBookModule,
     MaCarWrapupModule,

@@ -598,14 +598,29 @@ model maCar {
   maCarWrapup   maCarWrapup[]
   maCarFiles    maCarFiles[]
 
+  //ทะเบียน/รายละเอียดรถ
+  licensePlate  String? @map("license_plate") @db.VarChar(20) //"2ฒร 424"
+  carType       String? @map("car_type") @db.VarChar(50) //ประเภทรถ - dropdown จาก master maVehicleType (รถ 4 ล้อ/2 ล้อ) แยกจาก carCategory
+  carCategory   String? @map("car_category") @db.VarChar(50) //ลักษณะ/ตัวถัง (free-text) กระบะ, เก๋ง, ตู้
+  brand         String? @db.VarChar(100) //Toyota
+  model         String? @db.VarChar(100) //Revo
+  fuelType      String? @map("fuel_type") @db.VarChar(50) //ดีเซล, เบนซิน - คนละความหมายกับ carPetrol ที่เก็บระดับน้ำมัน high/medium/low
+  ownerName     String? @map("owner_name") @db.VarChar(100) //ผู้ถือกรรมสิทธิ์
+  chassisNumber String? @map("chassis_number") @db.VarChar(50) //เลขตัวถัง
+  color         String? @db.VarChar(50) //สี
+  modelYear     String? @map("model_year") @db.VarChar(10) //ปีรุ่น - string เลี่ยงปัญหา พ.ศ./ค.ศ.
+
+  //เอกสาร ประกัน/พรบ./ภาษี
+  maCarDocument maCarDocument[]
+
   //Fuel
-  fuelCardStatus       String?               @default("inactive") @map("fuel_card_status") @db.VarChar(10)
-  fuelCardNumber       String?               @map("fuel_card_number") @db.VarChar(50)
-  fuelCardExpiredDate  DateTime?             @map("fuel_card_expired_date") @db.Timestamptz(6)
-  fuelMonthlyLimit     Decimal?              @map("fuel_monthly_limit") @db.Decimal(10, 2)
-  fuelMonthlyRemaining Decimal?              @map("fuel_monthly_remaining") @db.Decimal(10, 2)
-  fuelResetDayOfMonth  Int?                  @map("fuel_reset_day_of_month") @db.Integer
-  fuelTransaction maCarFuelTransaction[]
+  fuelCardStatus       String?                @default("inactive") @map("fuel_card_status") @db.VarChar(10)
+  fuelCardNumber       String?                @map("fuel_card_number") @db.VarChar(50)
+  fuelCardExpiredDate  DateTime?              @map("fuel_card_expired_date") @db.Timestamptz(6)
+  fuelMonthlyLimit     Decimal?               @map("fuel_monthly_limit") @db.Decimal(10, 2)
+  fuelMonthlyRemaining Decimal?               @map("fuel_monthly_remaining") @db.Decimal(10, 2)
+  fuelResetDayOfMonth  Int?                   @map("fuel_reset_day_of_month") @db.Integer
+  fuelTransaction      maCarFuelTransaction[]
 
   @@map("ma_car")
 }
@@ -616,8 +631,8 @@ model maCarFuelTransaction {
   amount      Decimal  @map("amount") @db.Decimal(10, 2)
   remaining   Decimal  @map("remaining") @db.Decimal(10, 2) //ก่อนตัดบัตร
   description String?  @map("description") @db.VarChar(255)
-  
-  carId       String   @map("car_id") @db.VarChar(50)
+
+  carId        String     @map("car_id") @db.VarChar(50)
   maCar        maCar      @relation(fields: [carId], references: [carId])
   actionStatus String?    @map("action_status") @db.VarChar(20) //เติม,ใช้งาน,รอบใหม่ use,reset,adjust
   maCarBook    maCarBook? @relation(fields: [maCarBookId], references: [id])
@@ -638,36 +653,69 @@ model maCarType {
   @@map("ma_car_type")
 }
 
+// กลุ่มประเภทรถ (เช่น รถยนต์นั่ง / รถบรรทุก) — ชั้นแม่เหนือ maVehicleType
+model maVehicleTypeGroup {
+  id            Int      @unique @default(autoincrement())
+  groupName     String   @map("group_name") @db.VarChar(150)
+  detail        String?  @db.Text
+  status        Boolean  @default(true)
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  createdById   String?  @map("created_by_id") @db.VarChar(50)
+  createdByName String?  @map("created_by_name") @db.VarChar(255)
+
+  maVehicleType maVehicleType[]
+
+  @@map("ma_vehicle_type_group")
+}
+
+// master "ประเภทรถ" (รถ 4 ล้อ / 2 ล้อ ฯลฯ) — คนละตัวกับ maCarType (ประเภทตรวจสภาพ)
+// เลี้ยง dropdown ช่อง carType ในฟอร์มรถ
+model maVehicleType {
+  id            Int      @unique @default(autoincrement())
+  typeName      String   @map("type_name") @db.VarChar(150)
+  detail        String?  @db.Text
+  status        Boolean  @default(true)
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  createdById   String?  @map("created_by_id") @db.VarChar(50)
+  createdByName String?  @map("created_by_name") @db.VarChar(255)
+
+  //กลุ่มประเภทรถ (optional — แถวเดิมไม่มีกลุ่มได้)
+  maVehicleTypeGroupId Int?                @map("ma_vehicle_type_group_id")
+  maVehicleTypeGroup   maVehicleTypeGroup? @relation(fields: [maVehicleTypeGroupId], references: [id])
+
+  @@map("ma_vehicle_type")
+}
+
 model maCarBook {
-  id                    Int                    @unique @default(autoincrement())
-  carId                 String                 @map("car_id") @db.VarChar(50)
-  carName               String?                @map("car_name") @db.VarChar(150)
-  carBookTitle          String?                @map("car_book_title") @db.VarChar(50)
-  carBookProvince       String?                @map("car_book_province") @db.VarChar(250)
-  carBookPlace          String?                @map("car_book_place") @db.VarChar(250)
-  carBookUsers          Int?                   @map("car_book_users")
-  carBookStartDate      DateTime?              @map("car_book_start_date") @db.Timestamptz(6)
-  carBookEndDate        DateTime?              @map("car_book_end_date") @db.Timestamptz(6)
-  carBookApprovedDate   DateTime?              @map("car_book_approved_date") @db.Timestamptz(6)
-  carBookApprovedById   String?                @map("car_book_approved_by_id") @db.VarChar(50)
-  carBookApprovedByName String?                @map("car_book_approved__by_name") @db.VarChar(255)
-  carBookApprovedStatus String?                @map("car_book_approved_status") @db.VarChar(20)
-  detail                String?                @db.VarChar(225)
-  remark                String?                @db.VarChar(225)
-  status                Boolean?               @default(true) @map("stauts")
-  createdAt             DateTime               @default(now()) @map("created_at") @db.Timestamptz(6)
-  createdById           String?                @map("created_by_id") @db.VarChar(50)
-  createdByName         String?                @map("created_by_name") @db.VarChar(255)
-  updatedAt             DateTime?              @map("updated_at") @db.Timestamptz(6)
-  updatedById           String?                @map("updated_by_id") @db.VarChar(50)
-  updatedByName         String?                @map("updated_by_name") @db.VarChar(255)
-  recipientId           String?                @map("recipient_id") @db.VarChar(50)
-  recipientName         String?                @map("recipient_name") @db.VarChar(255)
-  returnNotifAt         DateTime?              @map("return_notif_at") @db.Timestamptz(6)
-  returnAt              DateTime?              @map("return_at") @db.Timestamptz(6)
-  remarkApproved        String?                @map("remark_approved") @db.VarChar(225)
-  remarkCancel          String?                @map("remark_cancel") @db.VarChar(225)
-  maCar                 maCar                  @relation("CarBooks", fields: [carId], references: [carId])
+  id                    Int                   @unique @default(autoincrement())
+  carId                 String                @map("car_id") @db.VarChar(50)
+  carName               String?               @map("car_name") @db.VarChar(150)
+  carBookTitle          String?               @map("car_book_title") @db.VarChar(50)
+  carBookProvince       String?               @map("car_book_province") @db.VarChar(250)
+  carBookPlace          String?               @map("car_book_place") @db.VarChar(250)
+  carBookUsers          Int?                  @map("car_book_users")
+  carBookStartDate      DateTime?             @map("car_book_start_date") @db.Timestamptz(6)
+  carBookEndDate        DateTime?             @map("car_book_end_date") @db.Timestamptz(6)
+  carBookApprovedDate   DateTime?             @map("car_book_approved_date") @db.Timestamptz(6)
+  carBookApprovedById   String?               @map("car_book_approved_by_id") @db.VarChar(50)
+  carBookApprovedByName String?               @map("car_book_approved__by_name") @db.VarChar(255)
+  carBookApprovedStatus String?               @map("car_book_approved_status") @db.VarChar(20)
+  detail                String?               @db.VarChar(225)
+  remark                String?               @db.VarChar(225)
+  status                Boolean?              @default(true) @map("stauts")
+  createdAt             DateTime              @default(now()) @map("created_at") @db.Timestamptz(6)
+  createdById           String?               @map("created_by_id") @db.VarChar(50)
+  createdByName         String?               @map("created_by_name") @db.VarChar(255)
+  updatedAt             DateTime?             @map("updated_at") @db.Timestamptz(6)
+  updatedById           String?               @map("updated_by_id") @db.VarChar(50)
+  updatedByName         String?               @map("updated_by_name") @db.VarChar(255)
+  recipientId           String?               @map("recipient_id") @db.VarChar(50)
+  recipientName         String?               @map("recipient_name") @db.VarChar(255)
+  returnNotifAt         DateTime?             @map("return_notif_at") @db.Timestamptz(6)
+  returnAt              DateTime?             @map("return_at") @db.Timestamptz(6)
+  remarkApproved        String?               @map("remark_approved") @db.VarChar(225)
+  remarkCancel          String?               @map("remark_cancel") @db.VarChar(225)
+  maCar                 maCar                 @relation("CarBooks", fields: [carId], references: [carId])
   maCarBookImage        maCarBookImage[]
   fuelTransaction       maCarFuelTransaction?
 
@@ -712,6 +760,7 @@ model maCarWrapup {
   cost             Decimal?           @db.Money
   detail           String?
   wrapupMiles      String?            @map("wrapup_miles") @db.VarChar(150)
+  objective        String?            @db.Text //วัตถุประสงค์ (free-text)
   dateStart        DateTime?          @map("date_start") @db.Timestamptz(6)
   nextCheckDate    Boolean?           @default(false) @map("next_check_date")
   dateEnd          DateTime?          @map("date_end") @db.Timestamptz(6)
@@ -737,6 +786,59 @@ model maCarWrapupImage {
   maCarWrapup   maCarWrapup? @relation(fields: [carWrapupId], references: [carWrapupId])
 
   @@map("ma_car_wrapup_image")
+}
+
+// เอกสารตามกฎหมายของรถ: ประกัน / พรบ. / ภาษี
+// เก็บทุกงวดปี - การต่ออายุคือการ insert แถวใหม่ ไม่ใช่ update ทับ
+// "ตัวปัจจุบัน" ของแต่ละ (carId, docType) = แถวที่ expireDate มากที่สุดในกลุ่ม status = true
+model maCarDocument {
+  id         Int    @unique @default(autoincrement())
+  documentId String @unique @default(uuid()) @map("document_id") @db.VarChar(50)
+
+  carId   String  @map("car_id") @db.VarChar(50)
+  carName String? @map("car_name") @db.VarChar(150)
+
+  docType       String  @map("doc_type") @db.VarChar(20) //insurance, act, tax
+  insuranceType String? @map("insurance_type") @db.VarChar(50) //ชั้น 1/2+/3+ - ใช้เฉพาะ docType = insurance
+
+  vender   String?  @db.VarChar(150) //บริษัทประกัน - ภาษีไม่มีคู่สัญญาจึงเว้นว่าง
+  policyNo String?  @map("policy_no") @db.VarChar(100) //เลขกรมธรรม์ / เลขที่ใบเสร็จ
+  cost     Decimal? @db.Decimal(12, 2)
+
+  startDate  DateTime  @map("start_date") @db.Timestamptz(6)
+  expireDate DateTime  @map("expire_date") @db.Timestamptz(6) //สถานะหมดอายุคำนวณจากฟิลด์นี้ ไม่เก็บ STATUS ลง DB
+  paidDate   DateTime? @map("paid_date") @db.Timestamptz(6) //ใช้กับกราฟงบประมาณรายเดือน
+
+  remark String?
+  status Boolean @default(true) //false = ยกเลิก - ไม่นับเป็นตัวปัจจุบัน แต่ยังเห็นในประวัติ
+
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  createdById   String?   @map("created_by_id") @db.VarChar(50)
+  createdByName String?   @map("created_by_name") @db.VarChar(255)
+  updatedAt     DateTime? @map("updated_at") @db.Timestamptz(6)
+  updatedById   String?   @map("updated_by_id") @db.VarChar(50)
+  updatedByName String?   @map("updated_by_name") @db.VarChar(255)
+
+  maCar             maCar               @relation(fields: [carId], references: [carId])
+  maCarDocumentFile maCarDocumentFile[]
+
+  @@index([carId, docType, expireDate])
+  @@index([expireDate])
+  @@map("ma_car_document")
+}
+
+model maCarDocumentFile {
+  id         Int      @unique @default(autoincrement())
+  name       String?  @db.Text //ชื่อไฟล์เดิมที่ผู้ใช้เห็น
+  fileName   String?  @map("file_name") @db.VarChar(200) //uuid บน disk
+  fileType   String?  @map("file_type") @db.VarChar(200)
+  filePath   String?  @map("file_path") @db.Text
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  documentId String?  @map("document_id") @db.VarChar(50)
+
+  maCarDocument maCarDocument? @relation(fields: [documentId], references: [documentId])
+
+  @@map("ma_car_document_file")
 }
 
 model maTask {

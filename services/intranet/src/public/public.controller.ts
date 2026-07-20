@@ -1,15 +1,84 @@
 import { Controller, Get, Param, Query, Res } from '@nestjs/common';
-import { join } from 'path';
+import { extname, isAbsolute, join } from 'path';
 import { createReadStream } from 'fs';
 
-// import { MinioClientService } from 'src/minio-client/minio-client.service';
+import { MinioClientService } from 'src/minio-client/minio-client.service';
 import { Response } from 'express';
 import configs from 'src/configs';
 
 const PORT = configs();
+
+/** Content-Type ตามนามสกุลไฟล์ — ใช้แสดง thumbnail/preview ให้ถูกชนิด */
+const MIME_BY_EXT: Record<string, string> = {
+  '.pdf': 'application/pdf',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.png': 'image/png',
+  '.gif': 'image/gif',
+  '.webp': 'image/webp',
+};
+
 @Controller('public')
 export class PublicController {
-  // constructor(private readonly minioService: MinioClientService) {}
+  constructor(private readonly minioService: MinioClientService) {}
+
+  /**
+   * สตรีมไฟล์ของโมดูล macar จาก MinIO ด้วย object key
+   * - mode=inline (default) สำหรับ thumbnail/preview, mode=attachment สำหรับดาวน์โหลด
+   * - ดาวน์โหลดใช้ชื่อไฟล์เดิม (name) แม้ object จริงจะเป็น uuid
+   * @param key object key ใน bucket (เช่น macar/car/{carId}/ma/{uuid}.jpg)
+   * @param name ชื่อไฟล์เดิมสำหรับตั้งชื่อตอนดาวน์โหลด
+   * @param mode inline | attachment
+   */
+  @Get('macar-file')
+  async getMacarFile(
+    @Query('key') key: string,
+    @Query('name') name: string,
+    @Query('mode') mode: string,
+    @Res() res: Response,
+  ): Promise<void> {
+    if (!key) {
+      res.status(404).send('File not found');
+      return;
+    }
+    const contentType =
+      MIME_BY_EXT[extname(key).toLowerCase()] ?? 'application/octet-stream';
+    const downloadName = name ? decodeURIComponent(name) : key.split('/').pop();
+    const disposition =
+      mode === 'attachment'
+        ? `attachment; filename="${encodeURIComponent(downloadName)}"`
+        : 'inline';
+    res.set({
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': contentType,
+      'Content-Disposition': disposition,
+    });
+
+    // ไฟล์เก่า (ก่อนย้ายมา MinIO) เก็บ filePath เป็น path บนดิสก์ ไม่ได้ขึ้นต้นด้วย macar/
+    // จึงอ่านจากดิสก์แทน เพื่อให้ไฟล์เดิมยังเปิดได้
+    if (!key.startsWith('macar/')) {
+      const diskPath = isAbsolute(key) ? key : join(process.cwd(), key);
+      const file = createReadStream(diskPath);
+      file.on('error', () => {
+        if (!res.headersSent) res.status(404).send('File not found');
+      });
+      file.pipe(res);
+      return;
+    }
+
+    try {
+      const stream = await this.minioService.downloadFile(
+        configs().minioBucket,
+        key,
+      );
+      stream.on('error', () => {
+        if (!res.headersSent) res.status(404).send('File not found');
+      });
+      stream.pipe(res);
+    } catch {
+      if (!res.headersSent) res.status(404).send('File not found');
+    }
+  }
   @Get('news-image/:filename')
   getNewsImageFile(
     @Param('filename') filename: string,
@@ -63,6 +132,48 @@ export class PublicController {
     res.set({
       'Content-Type': 'application/pdf',
       'Content-Disposition': `attachment; filename="export.pdf"`,
+    });
+    file.pipe(res);
+  }
+
+  /**
+   * ไฟล์แนบของเอกสารรถ (ประกัน/พรบ./ภาษี)
+   * ต่างจาก /car-file ตรงที่หา Content-Type จากนามสกุลไฟล์จริง ไม่ fix เป็น application/pdf
+   * เพราะผู้ใช้แนบรูปถ่ายป้ายภาษี/สลิป พรบ. เป็น .jpg/.png ได้ ไม่ใช่ PDF อย่างเดียว
+   */
+  @Get('/car-document-file/:fileId')
+  getCarDocumentFile(
+    @Param('fileId') fileId: string,
+    @Query('fileName') fileName: string,
+    @Res() res: Response,
+  ): void {
+    const filePath = join(
+      `${PORT.pathMountDirUpload}/maCarDocumentFiles`,
+      fileId,
+    );
+    const file = createReadStream(filePath);
+    file.on('error', (err) => {
+      console.error('Error:', err);
+      return res.status(404).send('File not found');
+    });
+
+    const mimeTypes: Record<string, string> = {
+      '.pdf': 'application/pdf',
+      '.jpg': 'image/jpeg',
+      '.jpeg': 'image/jpeg',
+      '.png': 'image/png',
+    };
+    const contentType =
+      mimeTypes[extname(fileId).toLowerCase()] ?? 'application/octet-stream';
+
+    // ถ้าไม่ส่ง fileName มา ใช้ชื่อไฟล์บน disk แทน จะได้ไม่ตั้งชื่อเป็น "undefined"
+    const downloadName = fileName ? decodeURIComponent(fileName) : fileId;
+
+    res.set({
+      'Content-Type': contentType,
+      'Content-Disposition': `attachment; filename="${encodeURIComponent(
+        downloadName,
+      )}"`,
     });
     file.pipe(res);
   }

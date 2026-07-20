@@ -35,6 +35,27 @@ export class MaCarWrapupService {
     return await this.macarwrapupRepo.findOne(findone);
   }
 
+  /**
+   * ประวัติตรวจสภาพของรถ 1 คัน แบบแบ่งหน้า
+   * ไม่ส่ง take = คืนทุกแถว (เผื่อ export) — ส่ง skip/take เพื่อแบ่งหน้า
+   * @param carId รหัสรถ
+   * @param skip จำนวนแถวที่ข้าม
+   * @param take จำนวนแถวต่อหน้า
+   * @returns { data, count } — data = แถวหน้าปัจจุบัน, count = จำนวนทั้งหมดของรถคันนี้
+   */
+  async findManyByCarId(carId: string, skip?: number, take?: number) {
+    const where: Prisma.maCarWrapupWhereInput = { carId };
+    const data = await this.macarwrapupRepo.findMany({
+      where,
+      include: { maCarWrapupImage: true },
+      orderBy: { id: 'desc' },
+      skip,
+      take,
+    });
+    const count = await this.macarwrapupRepo.count({ where });
+    return { data, count };
+  }
+
   async update(carWrapupId: string, condition: Prisma.maCarWrapupUpdateArgs) {
     const base = {
       where: {

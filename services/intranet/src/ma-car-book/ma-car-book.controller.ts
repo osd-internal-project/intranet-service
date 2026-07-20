@@ -68,12 +68,34 @@ export class MaCarBookController {
       +take,
     );
   }
-  @Get('carId/:carId')
-  findOne(
+  /** รถที่ว่างในช่วงเวลา (literal ต้องมาก่อน :id) */
+  @Get('available')
+  getAvailable(
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ) {
+    return this.maCarBookService.getAvailable(startDate, endDate);
+  }
+
+  @Get('carId/:id')
+  findByCarId(
     @Param('carId') carId: string,
     @Query() query: Prisma.maCarBookWhereInput,
   ) {
     return this.maCarBookService.findOne(carId, query);
+  }
+
+  /** รายการจองของรถ 1 คัน แบบแบ่งหน้า — ต้องมาก่อน :skip/:take และ :id */
+  @Get('car/:carId')
+  findManyByCarId(
+    @Param('carId') carId: string,
+    @Query() query: { skip?: string; take?: string },
+  ) {
+    return this.maCarBookService.findManyByCarId(
+      carId,
+      query.skip !== undefined ? +query.skip : undefined,
+      query.take !== undefined ? +query.take : undefined,
+    );
   }
 
   @Get('car-booking/:userId')

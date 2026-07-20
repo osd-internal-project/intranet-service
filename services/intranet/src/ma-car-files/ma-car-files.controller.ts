@@ -6,18 +6,12 @@ import {
   Patch,
   Param,
   Delete,
-  UploadedFile,
   UseInterceptors,
   UploadedFiles,
 } from '@nestjs/common';
 import { MaCarFilesService } from './ma-car-files.service';
 import { Prisma } from '@prisma/client';
-import { extname } from 'path';
-import { v4 as uuidv4 } from 'uuid';
-import { diskStorage } from 'multer';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import configs from 'src/configs';
-const config = configs();
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('ma-car-files')
 export class MaCarFilesController {
@@ -38,20 +32,11 @@ export class MaCarFilesController {
     return this.maCarFilesService.findOne(+id);
   }
 
+  /** อัปโหลดไฟล์แนบของรถขึ้น MinIO — memory storage (ไม่ใช้ diskStorage) */
   @Post(':carId')
   @UseInterceptors(
     FilesInterceptor('files', 10, {
-      storage: diskStorage({
-        destination: `${config.pathMountDirUpload}/maCarFiles`,
-        filename: (req, file, callback) => {
-          const fileCode = `${uuidv4()}`;
-          const fileType = extname(file.originalname);
-          callback(null, `${fileCode}${fileType}`);
-        },
-      }),
-      limits: {
-        fileSize: 200 * 1024 * 1024, // 200MB limit
-      },
+      limits: { fileSize: 200 * 1024 * 1024 },
     }),
   )
   async uploadFile(
@@ -61,17 +46,7 @@ export class MaCarFilesController {
     if (!files) {
       throw new Error('File is undefined');
     }
-    const createData = files.map((file) => ({
-      carId: carId,
-      fileName: file.filename,
-      filePath: file.path,
-      fileType: extname(file.originalname),
-      name: file.originalname,
-    })) as Prisma.maCarFilesCreateInput[];
-    const results = await Promise.all(
-      createData.map((data) => this.maCarFilesService.create(data)),
-    );
-    return results;
+    return this.maCarFilesService.uploadFiles(carId, files);
   }
 
   @Patch(':id')

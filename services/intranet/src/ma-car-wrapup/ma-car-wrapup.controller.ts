@@ -25,6 +25,19 @@ export class MaCarWrapupController {
     return this.maCarWrapupService.findAll(query);
   }
 
+  /** ประวัติตรวจสภาพของรถ 1 คัน แบบแบ่งหน้า — ต้องมาก่อน :carWrapupId */
+  @Get('car/:carId')
+  findManyByCarId(
+    @Param('carId') carId: string,
+    @Query() query: { skip?: string; take?: string },
+  ) {
+    return this.maCarWrapupService.findManyByCarId(
+      carId,
+      query.skip !== undefined ? +query.skip : undefined,
+      query.take !== undefined ? +query.take : undefined,
+    );
+  }
+
   @Get(':carWrapupId')
   findOne(@Param('carWrapupId') carWrapupId: string) {
     return this.maCarWrapupService.findOne(carWrapupId);

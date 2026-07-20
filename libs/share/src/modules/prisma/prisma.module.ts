@@ -30,6 +30,8 @@ import {
   MaTypeRepository,
   MaCarFilesRepository,
   MaCarFuelTransactionRepository,
+  MaCarDocumentRepository,
+  MaCarDocumentFileRepository,
   // Data Leave
   MasterTypeLeaveRepository,
   MasterHolidaysRepository,
@@ -46,6 +48,8 @@ import {
   //CRM
   MaCarRepository,
   MaCarTypeRepository,
+  MaVehicleTypeRepository,
+  MaVehicleTypeGroupRepository,
   MaCarBookRepository,
   MaCarBookingImageRepository,
   MaCarWrapupRepository,
@@ -132,11 +136,15 @@ const services = [
   MaCarRepository,
   MaCarBookingImageRepository,
   MaCarTypeRepository,
+  MaVehicleTypeRepository,
+  MaVehicleTypeGroupRepository,
   MaCarBookRepository,
   MaCarWrapupRepository,
   MaCarWrapupImageRepository,
   MaCarFilesRepository,
   MaCarFuelTransactionRepository,
+  MaCarDocumentRepository,
+  MaCarDocumentFileRepository,
   // data Leave
   MasterTypeLeaveRepository,
   MasterHolidaysRepository,

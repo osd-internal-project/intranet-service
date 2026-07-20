@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import {
   AccessService,
   MaCarBookRepository,
+  MaCarRepository,
   ModuleTypes,
   UsersRepository,
 } from '@inventory/share';
@@ -18,9 +19,34 @@ import {
 export class MaCarBookService {
   constructor(
     private readonly maCarBookRepository: MaCarBookRepository,
+    private readonly maCarRepository: MaCarRepository,
     private readonly accessServices: AccessService,
     private usersRepo: UsersRepository,
   ) {}
+
+  /**
+   * รถที่ว่างในช่วงเวลาที่เลือก
+   * 2 ช่วงทับกันเมื่อ existing.start <= newEnd AND existing.end >= newStart
+   * นับเฉพาะการจองที่ยัง "ถือครองรถ" (Process/Approve/Return) — ไม่นับ Cancel/DisapProved/Completed
+   */
+  async getAvailable(startDate: string, endDate: string) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    return this.maCarRepository.findMany({
+      where: {
+        status: true,
+        maCarBook: {
+          none: {
+            carBookApprovedStatus: { in: ['Process', 'Approve', 'Return'] },
+            carBookStartDate: { lte: end },
+            carBookEndDate: { gte: start },
+          },
+        },
+      },
+      orderBy: { id: 'asc' },
+      include: { maCarFiles: true },
+    } as Prisma.maCarFindManyArgs);
+  }
 
   async create(data: Prisma.maCarBookCreateInput) {
     const result = await this.accessServices.getLeadUsersByUserId(
@@ -150,6 +176,27 @@ export class MaCarBookService {
       return { docs: [], total: 0 };
     }
   }
+  /**
+   * รายการจองของรถ 1 คัน แบบแบ่งหน้า
+   * ไม่ส่ง take = คืนทุกแถว — ส่ง skip/take เพื่อแบ่งหน้า
+   * @param carId รหัสรถ
+   * @param skip จำนวนแถวที่ข้าม
+   * @param take จำนวนแถวต่อหน้า
+   * @returns { docs, total } — docs = แถวหน้าปัจจุบัน, total = จำนวนทั้งหมดของรถคันนี้
+   */
+  async findManyByCarId(carId: string, skip?: number, take?: number) {
+    const where: Prisma.maCarBookWhereInput = { carId };
+    const data = await this.maCarBookRepository.findMany({
+      where,
+      include: { maCar: true },
+      orderBy: { id: 'desc' },
+      skip,
+      take,
+    });
+    const count = await this.maCarBookRepository.count({ where });
+    return { docs: data, total: count };
+  }
+
   async findManyId(id: string, skip: number, take: number) {
     const data = await this.maCarBookRepository.findMany({
       where: {
@@ -408,4 +455,5 @@ export class MaCarBookService {
         console.error(`Failed to send mail to ${findUsers.email}:`, err);
       });
   }
+  
 }

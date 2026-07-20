@@ -31,12 +31,16 @@ export * from './maTaskFiles.repository';
 export * from './maType.repository';
 export * from './maCar.repository';
 export * from './maCarType.repository';
+export * from './maVehicleType.repository';
+export * from './maVehicleTypeGroup.repository';
 export * from './maCarBook.repository';
 export * from './maCarWrapup.repository';
 export * from './maCarWrapupImage.repository';
 export * from './maCarBookingImage.repository';
 export * from './maCarFiles.repository';
 export * from './maCarFuelTransaction.repository';
+export * from './maCarDocument.repository';
+export * from './maCarDocumentFile.repository';
 
 // type data leave
 export * from './masterTypeLeave.repository';

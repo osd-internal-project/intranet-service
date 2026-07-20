@@ -15,12 +15,6 @@ import { MaCarBookingImagesService } from './ma-car-booking-images.service';
 import { CreateMaCarBookingImageDto } from './dto/create-ma-car-booking-image.dto';
 import { UpdateMaCarBookingImageDto } from './dto/update-ma-car-booking-image.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { v4 as uuidv4 } from 'uuid';
-import { extname, join } from 'path';
-import { Prisma } from '@prisma/client';
-import configs from 'src/configs';
-const config = configs();
 import { Response } from 'express';
 
 @Controller('ma-car-booking-images')
@@ -29,32 +23,15 @@ export class MaCarBookingImagesController {
     private readonly maCarBookingImagesService: MaCarBookingImagesService,
   ) {}
 
+  /** อัปโหลดรูปการรับ-คืนรถขึ้น MinIO — memory storage (ไม่ใช้ diskStorage) */
   @Post('upload-images/:id')
-  @UseInterceptors(
-    FilesInterceptor('files', 1, {
-      storage: diskStorage({
-        destination: `${config.pathMountDirUpload}/booking-car-images`,
-        filename: (req, file, callback) => {
-          const fileCode = `${uuidv4()}`;
-          const fileType = extname(file.originalname);
-          callback(null, `${fileCode}${fileType}`);
-        },
-      }),
-    }),
-  )
+  @UseInterceptors(FilesInterceptor('files', 1))
   async uploadImage(
     @UploadedFiles() files: Express.Multer.File[],
     @Param('id') id: string,
-    @Body('type') type,
   ) {
-    if (id && type && files.length > 0) {
-      const data = {
-        carBookingId: +id,
-        filePath: `${config.pathMountDirUpload}/booking-car-images/${files[0].filename}`,
-        fileType: files[0].mimetype,
-        fileName: Buffer.from(files[0].filename, 'latin1').toString('utf8'),
-      } as Prisma.maCarBookImageCreateInput;
-      return this.maCarBookingImagesService.create(data);
+    if (id && files?.length > 0) {
+      return this.maCarBookingImagesService.uploadImage(+id, files[0]);
     }
   }
 

@@ -1,19 +1,55 @@
-import { Injectable } from '@nestjs/common';
-import { MaCarWrapupImageRepository, PrismaService } from '@inventory/share';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  MaCarWrapupImageRepository,
+  MaCarWrapupRepository,
+} from '@inventory/share';
 import { Prisma } from '@prisma/client';
-import { promises as fsPromises } from 'fs';
+import { v4 as uuidv4 } from 'uuid';
+import { extname } from 'path';
+import { MinioClientService } from '../minio-client/minio-client.service';
+import appConfig from '../configs';
+
+const config = appConfig();
 
 @Injectable()
 export class maCarWrapupImageService {
-  findMany(arg0: {
-    where: { idwarpupImage: number };
-    orderBy: { createdAt: string };
-  }) {
-    throw new Error('Method not implemented.');
-  }
   constructor(
     private readonly maCarWrapupImageNewsRepo: MaCarWrapupImageRepository,
+    private readonly maCarWrapupRepo: MaCarWrapupRepository,
+    private readonly minioService: MinioClientService,
   ) {}
+
+  /**
+   * อัปโหลดรูปตรวจสภาพขึ้น MinIO แล้วบันทึกลง DB
+   * - เก็บ object key (uuid) ไว้ที่ filePath ส่วน fileName เก็บชื่อไฟล์เดิมไว้แสดงผล
+   * - จัด key เป็น "โฟลเดอร์" ตามรถ: macar/car/{carId}/ma/{uuid}{ext}
+   * @param carWrapupId รหัสรายการตรวจสภาพ
+   * @param file ไฟล์ที่อัปโหลด (memory storage — ต้องมี buffer/size)
+   */
+  async uploadImage(carWrapupId: string, file: Express.Multer.File) {
+    if (!file) {
+      throw new BadRequestException('File is undefined');
+    }
+    const wrapup = await this.maCarWrapupRepo.findOne({
+      where: { carWrapupId },
+    });
+    const carId = wrapup?.carId ?? 'unknown';
+    const ext = extname(file.originalname);
+    const objectKey = `macar/car/${carId}/ma/${uuidv4()}${ext}`;
+    await this.minioService.uploadFile(
+      file.buffer,
+      file.size,
+      config.minioBucket,
+      objectKey,
+    );
+    const data = {
+      carWrapupId: carWrapupId,
+      fileName: file.originalname,
+      filePath: objectKey,
+      fileType: ext,
+    } as Prisma.maCarWrapupImageCreateInput;
+    return this.maCarWrapupImageNewsRepo.create({ data });
+  }
 
   create(data: Prisma.maCarWrapupImageCreateArgs) {
     return this.maCarWrapupImageNewsRepo.create(data);
@@ -38,35 +74,19 @@ export class maCarWrapupImageService {
     return this.maCarWrapupImageNewsRepo.findOne(base);
   }
 
-  update(carWrapupId: string, condition: Prisma.maCarWrapupImageUpdateArgs) {
-    const base = {
-      where: {
-        carWrapupId: carWrapupId,
-      },
-      data: { ...condition },
-    } as Prisma.maCarWrapupImageUpdateArgs;
-    return this.maCarWrapupImageNewsRepo.update(base);
-  }
-
+  /**
+   * ลบรูป — ลบ object ออกจาก MinIO ก่อน แล้วค่อยลบแถวใน DB
+   * @param idwarpupImage รหัสรูป
+   */
   async remove(idwarpupImage: number) {
-    const condition = {
-      where: {
-        idwarpupImage: idwarpupImage,
-      },
-    };
-    const images = await this.maCarWrapupImageNewsRepo.findMany(condition);
-    images.map((image) => {
-      this.deleteFile(image.filePath);
+    const image = await this.maCarWrapupImageNewsRepo.findOne({
+      where: { idwarpupImage },
     });
-    return await this.maCarWrapupImageNewsRepo.delete(condition);
-  }
-  async deleteFile(filePath: string) {
-    const filepart = `${filePath}`;
-    try {
-      await fsPromises.unlink(filePath);
-      console.log(`File ${filepart} has been deleted successfully.`);
-    } catch (err) {
-      console.error(`Error deleting file ${filepart}: ${err.message}`);
+    if (image?.filePath) {
+      await this.minioService.deleteFile(image.filePath, config.minioBucket);
     }
+    return this.maCarWrapupImageNewsRepo.delete({
+      where: { idwarpupImage },
+    });
   }
 }
