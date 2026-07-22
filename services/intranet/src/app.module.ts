@@ -59,6 +59,7 @@ import { MaCarDocumentModule } from './ma-car-document/ma-car-document.module';
 import { MaVehicleTypeModule } from './ma-vehicle-type/ma-vehicle-type.module';
 import { MaVehicleTypeGroupModule } from './ma-vehicle-type-group/ma-vehicle-type-group.module';
 import { CarActivityLogModule } from './car-activity-log/car-activity-log.module';
+import { MaCarDashboardModule } from './ma-car-dashboard/ma-car-dashboard.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
@@ -86,6 +87,7 @@ import { CarActivityLogModule } from './car-activity-log/car-activity-log.module
     MaVehicleTypeModule,
     MaVehicleTypeGroupModule,
     CarActivityLogModule,
+    MaCarDashboardModule,
     MaCarTypeModule,
     MaCarBookModule,
     MaCarWrapupModule,

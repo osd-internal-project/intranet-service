@@ -30,16 +30,6 @@ export class NotificationController {
   }
 
   // ----- ฟีดรายผู้ใช้ -----
-
-  /** รายการแจ้งเตือนของผู้ใช้ — ?unread=true เพื่อเอาเฉพาะที่ยังไม่อ่าน */
-  @Get('user/:userId')
-  findByUser(
-    @Param('userId') userId: string,
-    @Query('unread') unread?: string,
-  ) {
-    return this.notificationService.findByUser(userId, unread === 'true');
-  }
-
   /** จำนวนที่ยังไม่อ่าน (สำหรับ badge) */
   @Get('user/:userId/unread-count')
   unreadCount(@Param('userId') userId: string) {
@@ -49,6 +39,14 @@ export class NotificationController {
   @Patch('user/:userId/read-all')
   markAllRead(@Param('userId') userId: string) {
     return this.notificationService.markAllRead(userId);
+  }
+  /** รายการแจ้งเตือนของผู้ใช้ — ?unread=true เพื่อเอาเฉพาะที่ยังไม่อ่าน */
+  @Get('user/:userId')
+  findByUser(
+    @Param('userId') userId: string,
+    @Query('unread') unread?: string,
+  ) {
+    return this.notificationService.findByUser(userId, unread === 'true');
   }
 
   @Patch(':id/read')
@@ -87,7 +85,12 @@ export class NotificationController {
   @Post('recipient')
   addRecipient(
     @Body()
-    body: { userId: string; email: string; name?: string; alertType?: string },
+    body: {
+      userId: string;
+      email: string;
+      name?: string;
+      alertType?: string;
+    },
   ) {
     return this.notificationService.addRecipient(body);
   }
