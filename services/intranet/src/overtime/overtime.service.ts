@@ -7,10 +7,12 @@ import {
   ModuleTypes,
   OverTimeRepository,
   UsersRepository,
+  NotificationEmitterService,
+  fmtThaiDate,
+  approvalLabel,
 } from '@inventory/share';
 import * as dayjs from 'dayjs';
 import { calculate } from './manage-cal';
-import * as nodemailer from 'nodemailer';
 import {
   templateOverTime,
   templateOverTimeApproved,
@@ -24,6 +26,7 @@ export class OverTimeService {
     private readonly masterholidayRepo: MasterHolidaysRepository,
     private readonly userRepo: UsersRepository,
     private readonly accessService: AccessService,
+    private readonly emitter: NotificationEmitterService,
   ) {}
   async create(createDepartmentDto: Prisma.overtimeCreateInput) {
     const findConfigTimeOt = await this.masterconfigtimeotRepo.findAll();
@@ -119,12 +122,23 @@ export class OverTimeService {
         ModuleTypes.INTRANET_APPROVE_LEAVE,
         createDepartmentDto.userId,
       );
-      const findUsers = await this.userRepo.findOne({
+      const findUsers: any = await this.userRepo.findOne({
         where: {
           userId: createDepartmentDto.userId,
         },
       });
-      this.sendOvertimeEmails(header, base, findUsers);
+      const html = await templateOverTime(header, base, findUsers, '');
+      await this.emitter.dispatch('ot-request', {
+        requesterUserId: createDepartmentDto.userId,
+        refId: (data as any).overTimeID ?? (data as any).id,
+        event: 'created',
+        title: `คำขอ OT รออนุมัติ: ${findUsers?.firstNameTh ?? ''} ${
+          findUsers?.lastNameTh ?? ''
+        }`.trim(),
+        message: `OT ${fmtThaiDate((base as any).dateStart)}`,
+        path: '/page/overtime/overtime-history',
+        mail: { subject: 'OSD Intranet เบิกทำงานล่วงเวลา', html },
+      });
     }
     return { status: 200, data: data };
   }
@@ -282,17 +296,27 @@ export class OverTimeService {
         ModuleTypes.INTRANET_APPROVE_LEAVE,
         overtimeFind.userId,
       );
-      const findUsers = await this.userRepo.findOne({
+      const findUsers: any = await this.userRepo.findOne({
         where: {
           userId: overtimeFind.userId,
         },
       });
-      this.sendLeaveAprovedEmails(
-        header,
+      const status = String(condition.status);
+      const html = await templateOverTimeApproved(
         overtimeFind,
+        header,
         findUsers,
-        String(condition.status),
+        status,
       );
+      await this.emitter.dispatch('ot-result', {
+        requesterUserId: overtimeFind.userId,
+        refId: id,
+        event: status,
+        title: `คำขอ OT ของคุณ${approvalLabel(status)}`,
+        message: `OT ${fmtThaiDate((overtimeFind as any).dateStart)}`,
+        path: '/page/overtime/overtime-calendar',
+        mail: { subject: 'OSD Intranet เบิกทำงานล่วงเวลา', html },
+      });
     }
     return res;
   }
@@ -303,67 +327,4 @@ export class OverTimeService {
     });
   }
 
-  private async sendOvertimeEmails(
-    header: any[],
-    data: Prisma.overtimeCreateInput,
-    user: Prisma.usersWhereInput,
-  ) {
-    const html = await templateOverTime(header, data, user, '');
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.office365.com',
-      port: 587,
-      secure: false,
-      auth: {
-        user: 'internalsupport@osd.co.th',
-        pass: 'Internal-support@osd1234.',
-      },
-    });
-
-    for (const event of header) {
-      transporter
-        .sendMail({
-          from: '"admin Intranet" <internalsupport@osd.co.th>',
-          to: `${event.email}`,
-          subject: 'OSD Intranet เบิกทำงานล่วงเวลา',
-          text: '',
-          html,
-        })
-        .catch((err) => {
-          console.error(`Failed to send mail to ${event.email}:`, err);
-        });
-    }
-  }
-  private async sendLeaveAprovedEmails(
-    recipients: Prisma.usersWhereInput[],
-    data: Prisma.overtimeCreateInput,
-    findUsers: Prisma.usersWhereInput,
-    status: string,
-  ) {
-    const html = await templateOverTimeApproved(
-      data,
-      recipients,
-      findUsers,
-      status,
-    );
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.office365.com',
-      port: 587,
-      secure: false,
-      auth: {
-        user: 'internalsupport@osd.co.th',
-        pass: 'Internal-support@osd1234.',
-      },
-    });
-    transporter
-      .sendMail({
-        from: '"admin Intranet" <internalsupport@osd.co.th>',
-        to: `${findUsers.email}`,
-        subject: 'OSD Intranet เบิกทำงานล่วงเวลา',
-        text: '',
-        html,
-      })
-      .catch((err) => {
-        console.error(`Failed to send mail to ${findUsers.email}:`, err);
-      });
-  }
 }

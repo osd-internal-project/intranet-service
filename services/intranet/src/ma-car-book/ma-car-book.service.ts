@@ -5,10 +5,13 @@ import {
   MaCarRepository,
   ModuleTypes,
   UsersRepository,
+  NotificationEmitterService,
+  fmtThaiDate,
+  CarActivityLogService,
+  CarActivityAction,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 import * as dayjs from 'dayjs';
-import * as nodemailer from 'nodemailer';
 import {
   templateCarBooikng,
   templateCarBooikngApproved,
@@ -22,7 +25,27 @@ export class MaCarBookService {
     private readonly maCarRepository: MaCarRepository,
     private readonly accessServices: AccessService,
     private usersRepo: UsersRepository,
+    private readonly emitter: NotificationEmitterService,
+    private readonly activityLog: CarActivityLogService,
   ) {}
+
+  /** map สถานะอนุมัติ → action ของ activity log */
+  private bookingActionFromStatus(status?: string): string {
+    switch (status) {
+      case 'Approve':
+        return CarActivityAction.BOOKING_APPROVE;
+      case 'DisapProved':
+        return CarActivityAction.BOOKING_REJECT;
+      case 'Completed':
+        return CarActivityAction.BOOKING_COMPLETE;
+      case 'Cancel':
+        return CarActivityAction.BOOKING_CANCEL;
+      case 'Return':
+        return CarActivityAction.BOOKING_RETURN;
+      default:
+        return CarActivityAction.BOOKING_APPROVE;
+    }
+  }
 
   /**
    * รถที่ว่างในช่วงเวลาที่เลือก
@@ -49,8 +72,9 @@ export class MaCarBookService {
   }
 
   async create(data: Prisma.maCarBookCreateInput) {
+    // ใช้ module code ของ "จองรถ" (เดิมใช้ของห้องประชุมโดยพลาด) เพื่อให้ตรงกับคิวอนุมัติจริง
     const result = await this.accessServices.getLeadUsersByUserId(
-      ModuleTypes.INTRANET_APPROVE_BOOKING_ROOM,
+      ModuleTypes.INTRANET_APPROVE_BOOKING_CAR,
       data.createdById,
     );
     const findUsers = await this.usersRepo.findOne({
@@ -62,7 +86,35 @@ export class MaCarBookService {
       data: data,
     });
     if (response) {
-      this.sendLeaveEmails(result, response, findUsers);
+      const html = await templateCarBooikng(response, result, findUsers);
+      await this.emitter.dispatch('car-request', {
+        requesterUserId: String(data.createdById),
+        refId: (response as any).id,
+        event: 'created',
+        title: `การจองรถรออนุมัติ: ${findUsers?.firstNameTh ?? ''} ${
+          findUsers?.lastNameTh ?? ''
+        }`.trim(),
+        message: `${(response as any).carName ?? 'จองรถ'} ${fmtThaiDate(
+          (response as any).carBookStartDate,
+        )}`,
+        path: '/page/macar/ma-car-management',
+        mail: { subject: 'OSD Intranet จองรถยนต์ออนไลน์', html },
+      });
+      await this.activityLog.log({
+        carId: response.carId,
+        carName: (response as any).carName,
+        action: CarActivityAction.BOOKING_CREATE,
+        refId: (response as any).id,
+        actorId: String(data.createdById ?? ''),
+        actorName: `${findUsers?.firstNameTh ?? ''} ${
+          findUsers?.lastNameTh ?? ''
+        }`.trim(),
+        detail: {
+          startDate: (response as any).carBookStartDate,
+          endDate: (response as any).carBookEndDate,
+          place: (response as any).carBookPlace,
+        },
+      });
     }
     return response;
   }
@@ -294,35 +346,96 @@ export class MaCarBookService {
     const update = await this.maCarBookRepository.update(condition);
     if (data.createdById) {
       const result = await this.accessServices.getLeadUsersByUserId(
-        ModuleTypes.INTRANET_APPROVE_BOOKING_ROOM,
+        ModuleTypes.INTRANET_APPROVE_BOOKING_CAR,
         String(data.createdById),
       );
+      const status = String(data.carBookApprovedStatus);
       if (update && data.carBookApprovedStatus === 'Return') {
-        this.sendLeaveReturnEmails(
-          result,
+        // แจ้งกลับผู้อนุมัติ (พฤติกรรมเดิม) — เมลคืนรถ
+        const html = await templateCarBooikngReturn(
           update,
+          result,
           findUser,
-          String(data.carBookApprovedStatus),
+          status,
         );
+        await this.emitter.dispatch('car-return', {
+          requesterUserId: String(data.createdById),
+          refId: id,
+          event: status,
+          title: `แจ้งการรับคืนรถ`,
+          message: `${(update as any).carName ?? 'รถ'}`,
+          path: '/page/macar/ma-car-management',
+          mail: { subject: 'OSD Intranet จองรถยนต์ออนไลน์', html },
+        });
       } else if (
         update &&
         data.carBookApprovedStatus &&
         data.carBookApprovedStatus !== 'Return'
       ) {
-        this.sendLeaveAprovedEmails(
-          result,
+        // แจ้งเจ้าของคำขอ — ผลอนุมัติ/ปฏิเสธ/ยกเลิก/รับคืน
+        const html = await templateCarBooikngApproved(
           update,
+          result,
           findUser,
-          String(data.carBookApprovedStatus),
+          status,
         );
+        await this.emitter.dispatch('car-result', {
+          requesterUserId: String(data.createdById),
+          refId: id,
+          event: status,
+          title: `การจองรถของคุณ${this.carStatusLabel(status)}`,
+          message: `${(update as any).carName ?? 'จองรถ'}`,
+          path: '/page/macar/ma-car',
+          mail: { subject: 'OSD Intranet จองรถยนต์ออนไลน์', html },
+        });
       }
+    }
+    // บันทึกกิจกรรมทุกครั้งที่มีการเปลี่ยนสถานะ (ไม่ผูกกับการแจ้งเตือน)
+    if (update && data.carBookApprovedStatus) {
+      await this.activityLog.log({
+        carId: update.carId,
+        carName: (update as any).carName,
+        action: this.bookingActionFromStatus(
+          String(data.carBookApprovedStatus),
+        ),
+        refId: id,
+        actorId: (data as any).carBookApprovedById ?? undefined,
+        actorName: (data as any).carBookApprovedByName ?? undefined,
+        detail: { status: data.carBookApprovedStatus },
+      });
     }
     return update;
   }
 
-  remove(id: number) {
+  /** แปลงสถานะการจองรถเป็นข้อความไทยสำหรับหัวข้อแจ้งเตือน */
+  private carStatusLabel(status: string): string {
+    switch (status) {
+      case 'Approve':
+        return 'ได้รับการอนุมัติ';
+      case 'DisapProved':
+        return 'ถูกปฏิเสธ';
+      case 'Completed':
+        return ' - รับคืนแล้ว';
+      case 'Cancel':
+        return 'ถูกยกเลิก';
+      default:
+        return `: ${status}`;
+    }
+  }
+
+  async remove(id: number) {
+    const existing = await this.maCarBookRepository.findOne({ where: { id } });
     const condition = { where: { id: id } } as Prisma.maCarBookDeleteArgs;
-    return this.maCarBookRepository.delete(condition);
+    const res = await this.maCarBookRepository.delete(condition);
+    if (existing?.carId) {
+      await this.activityLog.log({
+        carId: existing.carId,
+        carName: (existing as any).carName,
+        action: CarActivityAction.BOOKING_DELETE,
+        refId: id,
+      });
+    }
+    return res;
   }
 
   startOfDate(date: string) {
@@ -335,125 +448,4 @@ export class MaCarBookService {
     return new Date(dateset);
   }
 
-  private async sendLeaveEmails(
-    recipients: any[],
-    data: any,
-    findUsers: Prisma.usersWhereInput,
-  ) {
-    const html = await templateCarBooikng(data, recipients, findUsers);
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.office365.com',
-      port: 587,
-      secure: false,
-      auth: {
-        user: 'internalsupport@osd.co.th',
-        pass: 'Internal-support@osd1234.',
-      },
-    });
-    for (const event of recipients) {
-      transporter
-        .sendMail({
-          from: '"admin Intranet" <internalsupport@osd.co.th>',
-          to: `${event.email}`,
-          subject: 'OSD Intranet จองรถยนต์ออนไลน์',
-          text: '',
-          html,
-        })
-        .catch((err) => {
-          console.error(`Failed to send mail to ${event.email}:`, err);
-        });
-    }
-    // transporter
-    //   .sendMail({
-    //     from: '"admin Intranet" <internalsupport@osd.co.th>',
-    //     to: `wasmeej@osd.co.th`,
-    //     subject: 'OSD Intranet จองรถยนต์ออนไลน์',
-    //     text: '',
-    //     html,
-    //   })
-    //   .catch((err) => {
-    //     console.error(`Failed to send mail to ${event.email}:`, err);
-    //   });
-  }
-  private async sendLeaveReturnEmails(
-    recipients: any[],
-    data: any,
-    findUsers: Prisma.usersWhereInput,
-    status: string,
-  ) {
-    const html = await templateCarBooikngReturn(
-      data,
-      recipients,
-      findUsers,
-      status,
-    );
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.office365.com',
-      port: 587,
-      secure: false,
-      auth: {
-        user: 'internalsupport@osd.co.th',
-        pass: 'Internal-support@osd1234.',
-      },
-    });
-    for (const event of recipients) {
-      transporter
-        .sendMail({
-          from: '"admin Intranet" <internalsupport@osd.co.th>',
-          to: `${event.email}`,
-          subject: 'OSD Intranet จองรถยนต์ออนไลน์',
-          text: '',
-          html,
-        })
-        .catch((err) => {
-          console.error(`Failed to send mail to ${event.email}:`, err);
-        });
-    }
-    // transporter
-    //   .sendMail({
-    //     from: '"admin Intranet" <internalsupport@osd.co.th>',
-    //     to: `wasmeej@osd.co.th`,
-    //     subject: 'OSD Intranet จองรถยนต์ออนไลน์',
-    //     text: '',
-    //     html,
-    //   })
-    //   .catch((err) => {
-    //     console.error(`Failed to send mail to wasmeej@osd.co.th:`, err);
-    //   });
-  }
-
-  private async sendLeaveAprovedEmails(
-    recipients: any[],
-    data: any,
-    findUsers: Prisma.usersWhereInput,
-    status: string,
-  ) {
-    const html = await templateCarBooikngApproved(
-      data,
-      recipients,
-      findUsers,
-      status,
-    );
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.office365.com',
-      port: 587,
-      secure: false,
-      auth: {
-        user: 'internalsupport@osd.co.th',
-        pass: 'Internal-support@osd1234.',
-      },
-    });
-    transporter
-      .sendMail({
-        from: '"admin Intranet" <internalsupport@osd.co.th>',
-        to: `${findUsers.email}`,
-        subject: 'OSD Intranet จองรถยนต์ออนไลน์',
-        text: '',
-        html,
-      })
-      .catch((err) => {
-        console.error(`Failed to send mail to ${findUsers.email}:`, err);
-      });
-  }
-  
 }

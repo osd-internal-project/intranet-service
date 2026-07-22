@@ -3,6 +3,8 @@ import {
   MaCarDocumentFileRepository,
   MaCarDocumentRepository,
   MaCarRepository,
+  CarActivityLogService,
+  CarActivityAction,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
@@ -71,6 +73,7 @@ export class MaCarDocumentService {
     private readonly maCarDocumentRepository: MaCarDocumentRepository,
     private readonly maCarDocumentFileRepository: MaCarDocumentFileRepository,
     private readonly minioService: MinioClientService,
+    private readonly activityLog: CarActivityLogService,
   ) {}
 
   /**
@@ -469,27 +472,63 @@ export class MaCarDocumentService {
   }
 
   /** สร้างเอกสารงวดใหม่ — ใช้ทั้งตอนเพิ่มครั้งแรกและตอนต่ออายุ (ต่ออายุ = insert ไม่ใช่ update) */
-  create(data: Prisma.maCarDocumentCreateInput) {
-    return this.maCarDocumentRepository.create({ data });
+  async create(data: Prisma.maCarDocumentCreateInput) {
+    const doc = await this.maCarDocumentRepository.create({ data });
+    if (doc?.carId) {
+      await this.activityLog.log({
+        carId: doc.carId,
+        carName: doc.carName ?? undefined,
+        action: CarActivityAction.DOCUMENT_CREATE,
+        refId: doc.documentId,
+        actorId: doc.createdById ?? undefined,
+        actorName: doc.createdByName ?? undefined,
+        detail: { docType: doc.docType, expireDate: doc.expireDate },
+      });
+    }
+    return doc;
   }
 
   /** แก้ไขเอกสารงวดเดิม (กรณีกรอกผิด) — ไม่ใช่การต่ออายุ */
-  update(documentId: string, data: Prisma.maCarDocumentUpdateInput) {
-    return this.maCarDocumentRepository.update({
+  async update(documentId: string, data: Prisma.maCarDocumentUpdateInput) {
+    const doc = await this.maCarDocumentRepository.update({
       where: { documentId },
       data: { ...data, updatedAt: new Date() },
     });
+    if (doc?.carId) {
+      await this.activityLog.log({
+        carId: doc.carId,
+        carName: doc.carName ?? undefined,
+        action: CarActivityAction.DOCUMENT_UPDATE,
+        refId: documentId,
+        actorId: (data as any).updatedById,
+        actorName: (data as any).updatedByName,
+        detail: { docType: doc.docType },
+      });
+    }
+    return doc;
   }
 
   /**
    * ยกเลิกเอกสาร (soft-void) — ไม่ลบจริง
    * แถวที่ยกเลิกจะหายจาก matrix แต่ยังเห็นในประวัติ ทำให้ตามรอยย้อนหลังได้
    */
-  void(documentId: string, updatedById?: string, updatedByName?: string) {
-    return this.maCarDocumentRepository.update({
+  async void(documentId: string, updatedById?: string, updatedByName?: string) {
+    const doc = await this.maCarDocumentRepository.update({
       where: { documentId },
       data: { status: false, updatedAt: new Date(), updatedById, updatedByName },
     });
+    if (doc?.carId) {
+      await this.activityLog.log({
+        carId: doc.carId,
+        carName: doc.carName ?? undefined,
+        action: CarActivityAction.DOCUMENT_VOID,
+        refId: documentId,
+        actorId: updatedById,
+        actorName: updatedByName,
+        detail: { docType: doc.docType },
+      });
+    }
+    return doc;
   }
 
   /** ค่าที่เคยบันทึกไว้แล้ว ใช้เป็นตัวเลือกใน combobox เพื่อลดการพิมพ์ซ้ำตอนกรอกมือ */
@@ -542,6 +581,15 @@ export class MaCarDocumentService {
       });
       results.push(created);
     }
+    if (carId && carId !== 'unknown' && results.length) {
+      await this.activityLog.log({
+        carId,
+        carName: document?.carName ?? undefined,
+        action: CarActivityAction.DOCUMENT_FILE_UPLOAD,
+        refId: documentId,
+        detail: { count: results.length },
+      });
+    }
     return results;
   }
 
@@ -553,6 +601,22 @@ export class MaCarDocumentService {
     if (file?.filePath) {
       await this.minioService.deleteFile(file.filePath, config.minioBucket);
     }
-    return this.maCarDocumentFileRepository.delete({ where: { id } });
+    const res = await this.maCarDocumentFileRepository.delete({ where: { id } });
+    // หา carId จากเอกสารแม่เพื่อผูก log
+    const doc = file?.documentId
+      ? await this.maCarDocumentRepository.findOne({
+          where: { documentId: file.documentId },
+        })
+      : null;
+    if (doc?.carId) {
+      await this.activityLog.log({
+        carId: doc.carId,
+        carName: doc.carName ?? undefined,
+        action: CarActivityAction.DOCUMENT_FILE_DELETE,
+        refId: file?.documentId,
+        detail: { fileName: file?.name },
+      });
+    }
+    return res;
   }
 }

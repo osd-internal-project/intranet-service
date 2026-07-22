@@ -622,7 +622,30 @@ model maCar {
   fuelResetDayOfMonth  Int?                   @map("fuel_reset_day_of_month") @db.Integer
   fuelTransaction      maCarFuelTransaction[]
 
+  carActivityLog carActivityLog[]
+
   @@map("ma_car")
+}
+
+// บันทึกกิจกรรมทั้งหมดของรถ 1 คัน (สร้าง/แก้/ลบ/จอง/อนุมัติ/ตรวจสภาพ/เอกสาร/น้ำมัน/ไฟล์)
+// type = prefix ของ action (car|booking|wrapup|document|fuel|file) — actor เก็บเท่าที่มีในคำขอ
+model carActivityLog {
+  id          Int      @unique @default(autoincrement())
+  carId       String   @map("car_id") @db.VarChar(50)
+  carName     String?  @map("car_name") @db.VarChar(150)
+  type        String   @db.VarChar(20)
+  action      String   @db.VarChar(50)
+  refId       String?  @map("ref_id") @db.VarChar(50)
+  description String?  @db.Text
+  detail      Json?
+  actorId     String?  @map("actor_id") @db.VarChar(50)
+  actorName   String?  @map("actor_name") @db.VarChar(255)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  maCar maCar @relation(fields: [carId], references: [carId])
+
+  @@index([carId, createdAt])
+  @@map("car_activity_log")
 }
 
 model maCarFuelTransaction {
@@ -1395,4 +1418,55 @@ model masterTypeEvents {
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("master_type_events")
+}
+
+// ===== ระบบแจ้งเตือน (Notification) =====
+// ฟีดแจ้งเตือนรายผู้ใช้ (เว็บ) — 1 แถว = 1 การแจ้งเตือนที่ยิงให้ผู้รับ 1 คน
+// ไม่ผูก FK กับ users/maCar เพื่อให้โมดูลนี้เป็นอิสระ (service แยก) — เก็บ userId/carId เป็นค่าตรง ๆ
+model notification {
+  id        Int     @unique @default(autoincrement())
+  userId    String  @map("user_id") @db.VarChar(50) //ผู้รับ
+  title     String  @db.VarChar(255)
+  message   String  @db.Text
+  type      String  @db.VarChar(30) //insurance-expiry | ma-due
+  refId     String? @map("ref_id") @db.VarChar(50) //documentId หรือ carWrapupId
+  carId     String? @map("car_id") @db.VarChar(50)
+  path      String? @db.VarChar(255) //ลิงก์ปลายทางเมื่อคลิก
+  level     String? @db.VarChar(20) //warning | expired
+  isRead    Boolean @default(false) @map("is_read")
+
+  // กันยิงซ้ำเมื่อ cron รันซ้ำในวันเดียว — milestone แทรกครั้งเดียวตลอด, expired แทรกวันละครั้ง
+  dedupKey  String   @unique @map("dedup_key") @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([userId, isRead])
+}
+
+// ตั้งค่าการแจ้งเตือนแบบ global (แอดมิน) — 1 แถวต่อ 1 ประเภทการแจ้งเตือน
+model notificationSetting {
+  id                     Int      @unique @default(autoincrement())
+  alertType              String   @unique @map("alert_type") @db.VarChar(40) //key ใน catalog เช่น leave-request
+  enabled                Boolean  @default(true)
+  emailEnabled           Boolean  @default(true) @map("email_enabled")
+  webEnabled             Boolean  @default(true) @map("web_enabled")
+  targetStrategy         String   @default("REQUESTER") @map("target_strategy") @db.VarChar(20) //REQUESTER | APPROVER | FIXED_LIST (override ค่า default ใน catalog)
+  moduleCode             String?  @map("module_code") @db.VarChar(50) //ใช้ตอน APPROVER
+  thresholds             Int[]    @default([60, 30]) //จำนวนวันก่อนหมดอายุที่เตือนล่วงหน้า
+  notifyWhenExpiredDaily Boolean  @default(true) @map("notify_when_expired_daily")
+  updatedAt              DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("notification_setting")
+}
+
+// รายชื่อผู้รับการแจ้งเตือนที่แอดมินจัดการ — 1 ลิสต์ใช้กับทุกประเภท
+model notificationRecipient {
+  id        Int      @unique @default(autoincrement())
+  userId    String   @map("user_id") @db.VarChar(50)
+  email     String   @db.VarChar(255)
+  name      String?  @db.VarChar(255)
+  alertType String?  @map("alert_type") @db.VarChar(40) //ผูกกับประเภทใด (null = ใช้กับทุกประเภทที่เป็น FIXED_LIST — ของเดิม)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@unique([userId, alertType])
+  @@map("notification_recipient")
 }

@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import {
   MaCarFuelTransactionRepository,
   MaCarRepository,
+  CarActivityLogService,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 
@@ -10,12 +11,27 @@ export class MaCarFuelTransactionService {
   constructor(
     private readonly maCarFuelTransactionRepository: MaCarFuelTransactionRepository,
     private readonly maCarRepository: MaCarRepository,
+    private readonly activityLog: CarActivityLogService,
   ) {}
 
-  create(data: Prisma.maCarFuelTransactionCreateInput) {
-    console.log('Create Data:', data);
+  async create(data: Prisma.maCarFuelTransactionCreateInput) {
     const condition = { data: data } as Prisma.maCarFuelTransactionCreateArgs;
-    return this.maCarFuelTransactionRepository.create(condition);
+    const txn = await this.maCarFuelTransactionRepository.create(condition);
+    if (txn?.carId) {
+      // actionStatus: use | adjust | reset → action fuel.<status>
+      const action = `fuel.${txn.actionStatus ?? 'use'}`;
+      await this.activityLog.log({
+        carId: txn.carId,
+        action,
+        refId: txn.id,
+        detail: {
+          amount: txn.amount,
+          remaining: txn.remaining,
+          description: txn.description,
+        },
+      });
+    }
+    return txn;
   }
 
   findAll() {

@@ -1,0 +1,61 @@
+name: Build, Push & Deploy - Intranet Notification BE
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.pkg.outputs.version }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get version from package.json
+        id: pkg
+        run: |
+          echo "version=$(node -p 'require("./services/notification/package.json").version')" >> $GITHUB_OUTPUT
+
+      - name: Login to Huawei SWR
+        run: |
+          docker login -u ap-southeast-2@HPUAGIPPWFA7YCNYJIGE \
+            -p ${{ secrets.HUAWEI_REGISTRY_PASSWORD }} \
+            swr.ap-southeast-2.myhuaweicloud.com
+
+      - name: Build Docker image
+        run: |
+          docker build --platform linux/amd64 \
+            -t swr.ap-southeast-2.myhuaweicloud.com/osd-internal/intranet-notification-be:v${{ steps.pkg.outputs.version }} \
+            -f services/notification/Dockerfile .
+
+      - name: Push Docker image
+        run: |
+          docker push swr.ap-southeast-2.myhuaweicloud.com/osd-internal/intranet-notification-be:v${{ steps.pkg.outputs.version }}
+
+  deploy:
+    runs-on: self-hosted
+    needs: build-and-push
+
+    steps:
+      - name: Login to Huawei SWR
+        run: |
+          docker login -u ap-southeast-2@HPUAGIPPWFA7YCNYJIGE \
+            -p ${{ secrets.HUAWEI_REGISTRY_PASSWORD }} \
+            swr.ap-southeast-2.myhuaweicloud.com
+
+      - name: Deploy
+        run: |
+          docker pull swr.ap-southeast-2.myhuaweicloud.com/osd-internal/intranet-notification-be:v${{ needs.build-and-push.outputs.version }}
+          docker stop intranet-notification-be || true
+          docker rm intranet-notification-be || true
+          docker run -d --restart=always --user root:root \
+            -v /etc/localtime:/etc/localtime:ro \
+            -v /etc/timezone:/etc/timezone:ro \
+            --env-file /var/script/images/.env-intra-notification-be \
+            -e TZ=Asia/Bangkok \
+            -p 8949:4010 \
+            --name intranet-notification-be \
+            swr.ap-southeast-2.myhuaweicloud.com/osd-internal/intranet-notification-be:v${{ needs.build-and-push.outputs.version }}

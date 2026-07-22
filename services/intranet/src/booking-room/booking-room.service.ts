@@ -4,10 +4,12 @@ import {
   BookingRoomRepository,
   ModuleTypes,
   UsersRepository,
+  NotificationEmitterService,
+  fmtThaiDate,
+  approvalLabel,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 import * as dayjs from 'dayjs';
-import * as nodemailer from 'nodemailer';
 import {
   templateBookingRoom,
   templateBookingRoomApproved,
@@ -19,6 +21,7 @@ export class BookingRoomService {
     private bookingRoomRepository: BookingRoomRepository,
     private usersRepo: UsersRepository,
     private accessService: AccessService,
+    private readonly emitter: NotificationEmitterService,
   ) {}
   async create(data: Prisma.bookingRoomCreateInput) {
     const result = await this.accessService.getLeadUsersByUserId(
@@ -26,10 +29,22 @@ export class BookingRoomService {
       data.userId,
     );
     const condition = { data: data } as Prisma.bookingRoomCreateArgs;
-    if (condition) {
-      this.sendLeaveEmails(result, condition.data);
+    const created = await this.bookingRoomRepository.create(condition);
+    if (created) {
+      const html = await templateBookingRoom(condition.data, result);
+      await this.emitter.dispatch('room-request', {
+        requesterUserId: data.userId,
+        refId: (created as any).id,
+        event: 'created',
+        title: `จองห้องประชุมรออนุมัติ`,
+        message: `${(data as any).roomName ?? 'จองห้องประชุม'} ${fmtThaiDate(
+          (data as any).startDate,
+        )}`,
+        path: '/page/bookingroom/booking-room-management',
+        mail: { subject: 'OSD Intranet จองห้องประชุมออนไลน์', html },
+      });
     }
-    return this.bookingRoomRepository.create(condition);
+    return created;
   }
 
   async findAll(token: string) {
@@ -103,14 +118,25 @@ export class BookingRoomService {
       where: { id: id },
       data: data,
     } as Prisma.bookingRoomUpdateArgs;
-    if (condition && condition.data.bookingStatus) {
-      this.sendLeaveAprovedEmails(
+    const updated = await this.bookingRoomRepository.update(condition);
+    if (updated && condition.data.bookingStatus) {
+      const status = String(condition.data.bookingStatus);
+      const html = await templateBookingRoomApproved(
         result,
         condition.data,
-        String(condition.data.bookingStatus),
+        status,
       );
+      await this.emitter.dispatch('room-result', {
+        requesterUserId: findBooking.userId,
+        refId: id,
+        event: status,
+        title: `การจองห้องประชุมของคุณ${approvalLabel(status)}`,
+        message: `${(updated as any).roomName ?? 'จองห้องประชุม'}`,
+        path: '/page/bookingroom/booking-room',
+        mail: { subject: 'OSD Intranet จองห้องประชุมออนไลน์', html },
+      });
     }
-    return await this.bookingRoomRepository.update(condition);
+    return updated;
   }
 
   async remove(id: number) {
@@ -120,83 +146,4 @@ export class BookingRoomService {
     return await this.bookingRoomRepository.delete(condition);
   }
 
-  private async sendLeaveEmails(recipients: any[], data: any) {
-    const html = await templateBookingRoom(data, recipients);
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.office365.com',
-      port: 587,
-      secure: false,
-      auth: {
-        user: 'internalsupport@osd.co.th',
-        pass: 'Internal-support@osd1234.',
-      },
-    });
-
-    for (const event of recipients) {
-      transporter
-        .sendMail({
-          from: '"admin Intranet" <internalsupport@osd.co.th>',
-          to: `${event.email}`,
-          subject: 'OSD Intranet จองห้องประชุมออนไลน์',
-          text: '',
-          html,
-        })
-        .catch((err) => {
-          console.error(`Failed to send mail to ${event.email}:`, err);
-        });
-    }
-    // transporter
-    //   .sendMail({
-    //     from: '"admin Intranet" <internalsupport@osd.co.th>',
-    //     to: `wasmeej@osd.co.th`,
-    //     subject: 'OSD Intranet จองห้องประชุมออนไลน์',
-    //     text: '',
-    //     html,
-    //   })
-    //   .catch((err) => {
-    //     console.error(`Failed to send mail to wasmeej@osd.co.th:`, err);
-    //   });
-  }
-  private async sendLeaveAprovedEmails(
-    recipients: any[],
-    dataUsers: any,
-    status: string,
-  ) {
-    const html = await templateBookingRoomApproved(
-      recipients,
-      dataUsers,
-      status,
-    );
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.office365.com',
-      port: 587,
-      secure: false,
-      auth: {
-        user: 'internalsupport@osd.co.th',
-        pass: 'Internal-support@osd1234.',
-      },
-    });
-    transporter
-      .sendMail({
-        from: '"admin Intranet" <internalsupport@osd.co.th>',
-        to: `${dataUsers.email}`,
-        subject: 'OSD Intranet จองห้องประชุมออนไลน์',
-        text: '',
-        html,
-      })
-      .catch((err) => {
-        console.error(`Failed to send mail to ${dataUsers.email}:`, err);
-      });
-    // transporter
-    //   .sendMail({
-    //     from: '"admin Intranet" <internalsupport@osd.co.th>',
-    //     to: `wasmeej@osd.co.th`,
-    //     subject: 'OSD Intranet จองห้องประชุมออนไลน์',
-    //     text: '',
-    //     html,
-    //   })
-    //   .catch((err) => {
-    //     console.error(`Failed to send mail to ${dataUsers.email}:`, err);
-    //   });
-  }
 }

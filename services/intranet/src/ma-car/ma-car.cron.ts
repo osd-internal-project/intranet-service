@@ -3,6 +3,8 @@ import { Cron } from '@nestjs/schedule';
 import {
   MaCarFuelTransactionRepository,
   MaCarRepository,
+  CarActivityLogService,
+  CarActivityAction,
 } from '@inventory/share';
 import dayjs from 'dayjs';
 
@@ -13,6 +15,7 @@ export class MaCarCronService {
   constructor(
     private readonly maCarRepository: MaCarRepository,
     private readonly maCarFuelTransactionRepository: MaCarFuelTransactionRepository,
+    private readonly activityLog: CarActivityLogService,
   ) {}
 
   // ==============================
@@ -45,13 +48,22 @@ export class MaCarCronService {
         data: { fuelMonthlyRemaining, updatedAt: new Date() },
       });
 
-      await this.maCarFuelTransactionRepository.create({
+      const txn = await this.maCarFuelTransactionRepository.create({
         data: {
           carId: car.carId,
           amount: 0,
           remaining: fuelMonthlyRemaining,
           actionStatus: 'reset',
         },
+      });
+
+      await this.activityLog.log({
+        carId: car.carId,
+        carName: car.carName,
+        action: CarActivityAction.FUEL_RESET,
+        refId: txn.id,
+        actorName: 'SYSTEM',
+        detail: { remaining: fuelMonthlyRemaining },
       });
 
       this.logger.log(`✅ Reset fuel for carId: ${car.carId}`);

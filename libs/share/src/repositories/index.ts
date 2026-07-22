@@ -72,6 +72,14 @@ export * from './emailTemplateFields.repository';
 
 export * from './notificationLogs.repository';
 
+// notification system (แจ้งเตือน insurance/MA)
+export * from './notification.repository';
+export * from './notificationSetting.repository';
+export * from './notificationRecipient.repository';
+
+// car activity log
+export * from './carActivityLog.repository';
+
 // hr-management
 export * from './employeeProfile.repository';
 export * from './personalInformations.repository';

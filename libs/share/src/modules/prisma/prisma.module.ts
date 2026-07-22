@@ -65,6 +65,10 @@ import {
   emailTemplateFieldsRepository,
   MasterHolidaysYearRepository,
   NotificationLogsRepository,
+  NotificationRepository,
+  NotificationSettingRepository,
+  NotificationRecipientRepository,
+  CarActivityLogRepository,
   EmployeeProfileRepository,
   PersonalInformationsRepository,
   FamilyInformationsRepository,
@@ -97,6 +101,11 @@ import {
   masterTypeEventsRepository,
 } from 'src/repositories';
 import { AccessService } from 'src/access';
+import {
+  SharedMailerService,
+  NotificationEmitterService,
+} from 'src/notification';
+import { CarActivityLogService } from 'src/car-activity';
 
 const services = [
   PrismaService,
@@ -161,6 +170,15 @@ const services = [
   PublicizeSlideImagesRepository,
   //CRM
   NotificationLogsRepository,
+  //notification system
+  NotificationRepository,
+  NotificationSettingRepository,
+  NotificationRecipientRepository,
+  SharedMailerService,
+  NotificationEmitterService,
+  //car activity log
+  CarActivityLogRepository,
+  CarActivityLogService,
   //access
   AccessService,
   InformationRepository,

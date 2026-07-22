@@ -2,6 +2,8 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import {
   MaCarWrapupImageRepository,
   MaCarWrapupRepository,
+  CarActivityLogService,
+  CarActivityAction,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
@@ -17,6 +19,7 @@ export class maCarWrapupImageService {
     private readonly maCarWrapupImageNewsRepo: MaCarWrapupImageRepository,
     private readonly maCarWrapupRepo: MaCarWrapupRepository,
     private readonly minioService: MinioClientService,
+    private readonly activityLog: CarActivityLogService,
   ) {}
 
   /**
@@ -48,7 +51,17 @@ export class maCarWrapupImageService {
       filePath: objectKey,
       fileType: ext,
     } as Prisma.maCarWrapupImageCreateInput;
-    return this.maCarWrapupImageNewsRepo.create({ data });
+    const created = await this.maCarWrapupImageNewsRepo.create({ data });
+    if (wrapup?.carId) {
+      await this.activityLog.log({
+        carId: wrapup.carId,
+        carName: wrapup.carName ?? undefined,
+        action: CarActivityAction.FILE_WRAPUP_UPLOAD,
+        refId: carWrapupId,
+        detail: { fileName: file.originalname },
+      });
+    }
+    return created;
   }
 
   create(data: Prisma.maCarWrapupImageCreateArgs) {
@@ -85,8 +98,23 @@ export class maCarWrapupImageService {
     if (image?.filePath) {
       await this.minioService.deleteFile(image.filePath, config.minioBucket);
     }
-    return this.maCarWrapupImageNewsRepo.delete({
+    const res = await this.maCarWrapupImageNewsRepo.delete({
       where: { idwarpupImage },
     });
+    const wrapup = image?.carWrapupId
+      ? await this.maCarWrapupRepo.findOne({
+          where: { carWrapupId: image.carWrapupId },
+        })
+      : null;
+    if (wrapup?.carId) {
+      await this.activityLog.log({
+        carId: wrapup.carId,
+        carName: wrapup.carName ?? undefined,
+        action: CarActivityAction.FILE_WRAPUP_DELETE,
+        refId: image?.carWrapupId,
+        detail: { fileName: image?.fileName },
+      });
+    }
+    return res;
   }
 }

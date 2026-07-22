@@ -1,5 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { MaCarFilesRepository } from '@inventory/share';
+import {
+  MaCarFilesRepository,
+  CarActivityLogService,
+  CarActivityAction,
+} from '@inventory/share';
 import { Prisma } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
 import { extname } from 'path';
@@ -13,6 +17,7 @@ export class MaCarFilesService {
   constructor(
     private readonly MaCarFilesRepo: MaCarFilesRepository,
     private readonly minioService: MinioClientService,
+    private readonly activityLog: CarActivityLogService,
   ) {}
   async create(createMaCarFileDto: Prisma.maCarFilesCreateInput) {
     return await this.MaCarFilesRepo.create({
@@ -46,6 +51,13 @@ export class MaCarFilesService {
       });
       results.push(created);
     }
+    if (carId && results.length) {
+      await this.activityLog.log({
+        carId,
+        action: CarActivityAction.FILE_CAR_UPLOAD,
+        detail: { count: results.length },
+      });
+    }
     return results;
   }
 
@@ -70,6 +82,14 @@ export class MaCarFilesService {
     if (file?.filePath) {
       await this.minioService.deleteFile(file.filePath, config.minioBucket);
     }
-    return this.MaCarFilesRepo.delete({ where: { id } });
+    const res = await this.MaCarFilesRepo.delete({ where: { id } });
+    if (file?.carId) {
+      await this.activityLog.log({
+        carId: file.carId,
+        action: CarActivityAction.FILE_CAR_DELETE,
+        detail: { fileName: file.name },
+      });
+    }
+    return res;
   }
 }

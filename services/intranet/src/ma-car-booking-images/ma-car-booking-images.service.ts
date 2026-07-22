@@ -4,6 +4,8 @@ import { UpdateMaCarBookingImageDto } from './dto/update-ma-car-booking-image.dt
 import {
   MaCarBookRepository,
   MaCarBookingImageRepository,
+  CarActivityLogService,
+  CarActivityAction,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
@@ -19,6 +21,7 @@ export class MaCarBookingImagesService {
     private readonly macarbookinimagesRepo: MaCarBookingImageRepository,
     private readonly maCarBookRepo: MaCarBookRepository,
     private readonly minioService: MinioClientService,
+    private readonly activityLog: CarActivityLogService,
   ) {}
   create(createMaCarBookingImageDto: CreateMaCarBookingImageDto) {
     const base = { data: createMaCarBookingImageDto };
@@ -53,7 +56,17 @@ export class MaCarBookingImagesService {
       fileName: file.originalname,
       fileType: file.mimetype,
     } as Prisma.maCarBookImageCreateInput;
-    return this.macarbookinimagesRepo.create({ data });
+    const created = await this.macarbookinimagesRepo.create({ data });
+    if (booking?.carId) {
+      await this.activityLog.log({
+        carId: booking.carId,
+        carName: booking.carName ?? undefined,
+        action: CarActivityAction.FILE_BOOKING_UPLOAD,
+        refId: bookId,
+        detail: { fileName: file.originalname },
+      });
+    }
+    return created;
   }
 
   findAll() {
@@ -83,8 +96,22 @@ export class MaCarBookingImagesService {
     if (image?.filePath && image.filePath.startsWith('macar/')) {
       await this.minioService.deleteFile(image.filePath, config.minioBucket);
     }
-    return this.macarbookinimagesRepo.delete({
+    const res = await this.macarbookinimagesRepo.delete({
       where: { idCarBookImage: id },
     });
+    // หา carId จากการจองแม่
+    const booking = image?.carBookingId
+      ? await this.maCarBookRepo.findOne({ where: { id: image.carBookingId } })
+      : null;
+    if (booking?.carId) {
+      await this.activityLog.log({
+        carId: booking.carId,
+        carName: booking.carName ?? undefined,
+        action: CarActivityAction.FILE_BOOKING_DELETE,
+        refId: image?.carBookingId,
+        detail: { fileName: image?.fileName },
+      });
+    }
+    return res;
   }
 }

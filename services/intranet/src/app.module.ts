@@ -58,6 +58,7 @@ import { MaCarFuelTransactionModule } from './ma-car-fuel-transaction/ma-car-fue
 import { MaCarDocumentModule } from './ma-car-document/ma-car-document.module';
 import { MaVehicleTypeModule } from './ma-vehicle-type/ma-vehicle-type.module';
 import { MaVehicleTypeGroupModule } from './ma-vehicle-type-group/ma-vehicle-type-group.module';
+import { CarActivityLogModule } from './car-activity-log/car-activity-log.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
@@ -84,6 +85,7 @@ import { MaVehicleTypeGroupModule } from './ma-vehicle-type-group/ma-vehicle-typ
     MaCarDocumentModule,
     MaVehicleTypeModule,
     MaVehicleTypeGroupModule,
+    CarActivityLogModule,
     MaCarTypeModule,
     MaCarBookModule,
     MaCarWrapupModule,

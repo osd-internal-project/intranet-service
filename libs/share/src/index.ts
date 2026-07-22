@@ -4,6 +4,8 @@ export * from './modules';
 export * from './pipe';
 export * from './repositories';
 export * from './access';
+export * from './notification';
+export * from './car-activity';
 // export * from './types';
 export * from './utils';
 export * from './interceptor';

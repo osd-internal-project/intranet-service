@@ -7,11 +7,12 @@ import {
   UserGroupRepository,
   ModuleTypes,
   LogLeaveDataRepository,
+  NotificationEmitterService,
+  fmtThaiDate,
 } from '@inventory/share';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import * as dayjs from 'dayjs';
-import * as nodemailer from 'nodemailer';
 import {
   templateDataLeave,
   templateDataLeaveApproved,
@@ -28,16 +29,34 @@ export class DataLeaveService {
     private readonly userPermissionGroupRepo: UserPermissionGroupRepository,
     private readonly logLeaveDataRepo: LogLeaveDataRepository,
     private userGroupRepo: UserGroupRepository,
+    private readonly emitter: NotificationEmitterService,
   ) {}
 
+  /** แปลงสถานะอนุมัติเป็นข้อความไทยสำหรับหัวข้อแจ้งเตือน */
+  private approvalLabel(status: string): string {
+    const s = status.toLowerCase();
+    if (s.includes('approve')) return 'ได้รับการอนุมัติ';
+    if (s.includes('reject') || s.includes('disap') || s.includes('not'))
+      return 'ถูกปฏิเสธ';
+    return `: ${status}`;
+  }
+
   async create(condition: Prisma.dataLeaveCreateArgs) {
-    const result = await this.accessService.getLeadUsersByUserId(
-      ModuleTypes.INTRANET_APPROVE_LEAVE,
-      condition.data.userId,
-    );
     const leaveLetter = await this.dataleaveRepo.create(condition);
     if (leaveLetter) {
-      this.sendLeaveEmails(result, condition.data);
+      const d: any = condition.data;
+      await this.emitter.dispatch('leave-request', {
+        requesterUserId: d.userId,
+        refId: leaveLetter.id,
+        event: 'created',
+        title: `ใบลารออนุมัติ: ${d.firstName ?? ''} ${d.lastName ?? ''}`.trim(),
+        message: `${d.typeName ?? 'ลางาน'} ${fmtThaiDate(d.startDate)}`,
+        path: '/page/leave-control-management/leave-history-admin',
+        mail: {
+          subject: 'OSD Intranet ใบลาออนไลน์',
+          html: await templateDataLeave(d),
+        },
+      });
     }
     return leaveLetter;
   }
@@ -1011,12 +1030,24 @@ export class DataLeaveService {
     };
     const updateData = await this.dataleaveRepo.update(base);
     if (updateData && condition.data.status) {
-      this.sendLeaveAprovedEmails(
-        findDetailUser,
-        String(condition.data.status),
-        condition.data,
-        findleaveDetail,
-      );
+      const status = String(condition.data.status);
+      await this.emitter.dispatch('leave-result', {
+        requesterUserId: findDataLeave.userId,
+        refId: findDataLeave.id,
+        event: status,
+        title: `ใบลาของคุณ${this.approvalLabel(status)}`,
+        message: `${findleaveDetail?.typeName ?? 'ลางาน'}`,
+        path: '/page/leave-control-management/leave-history',
+        mail: {
+          subject: 'OSD Intranet ใบลาออนไลน์',
+          html: await templateDataLeaveApproved(
+            findDetailUser,
+            status,
+            condition.data,
+            findleaveDetail,
+          ),
+        },
+      });
     }
     return updateData;
   }
@@ -1080,62 +1111,4 @@ export class DataLeaveService {
     return this.dataleaveRepo.delete(dataLeaveid);
   }
 
-  private async sendLeaveEmails(recipients: any[], data: any) {
-    const html = await templateDataLeave(data);
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.office365.com',
-      port: 587,
-      secure: false,
-      auth: {
-        user: 'internalsupport@osd.co.th',
-        pass: 'Internal-support@osd1234.',
-      },
-    });
-    for (const event of recipients) {
-      transporter
-        .sendMail({
-          from: '"admin Intranet" <internalsupport@osd.co.th>',
-          to: `${event.email}`,
-          subject: 'OSD Intranet ใบลาออนไลน์',
-          text: '',
-          html,
-        })
-        .catch((err) => {
-          console.error(`Failed to send mail to ${event.email}:`, err);
-        });
-    }
-  }
-  private async sendLeaveAprovedEmails(
-    dataUsers: Prisma.usersWhereInput,
-    status: string,
-    data: Prisma.dataLeaveUpdateInput,
-    findleaveDetail: any,
-  ) {
-    const html = await templateDataLeaveApproved(
-      dataUsers,
-      status,
-      data,
-      findleaveDetail,
-    );
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.office365.com',
-      port: 587,
-      secure: false,
-      auth: {
-        user: 'internalsupport@osd.co.th',
-        pass: 'Internal-support@osd1234.',
-      },
-    });
-    transporter
-      .sendMail({
-        from: '"admin Intranet" <internalsupport@osd.co.th>',
-        to: `${dataUsers.email}`,
-        subject: 'OSD Intranet ใบลาออนไลน์',
-        text: '',
-        html,
-      })
-      .catch((err) => {
-        console.error(`Failed to send mail to ${dataUsers.email}:`, err);
-      });
-  }
 }
