@@ -56,6 +56,7 @@ jobs:
             -v /etc/timezone:/etc/timezone:ro \
             --env-file /var/script/images/.env-intra-notification-be \
             -e TZ=Asia/Bangkok \
+            -e PORT=4010 \
             -p 8949:4010 \
             --name intranet-notification-be \
             swr.ap-southeast-2.myhuaweicloud.com/osd-internal/intranet-notification-be:v${{ needs.build-and-push.outputs.version }}
