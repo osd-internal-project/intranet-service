@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -12,12 +13,18 @@ import {
 import { Prisma } from '@prisma/client';
 import { NotificationService } from './notification.service';
 import { NotificationCronService } from './notification.cron';
+import { NotificationMailer } from './notification.mailer';
+import {
+  NOTIFICATION_TEST_TEMPLATES,
+  toTemplateMeta,
+} from './test-mail.registry';
 
 @Controller('notification')
 export class NotificationController {
   constructor(
     private readonly notificationService: NotificationService,
     private readonly notificationCron: NotificationCronService,
+    private readonly mailer: NotificationMailer,
   ) {}
 
   /**
@@ -27,6 +34,28 @@ export class NotificationController {
   @Post('run-now')
   runNow(@Query('force') force?: string) {
     return this.notificationCron.runNow(force === 'true');
+  }
+
+  // ----- ทดสอบส่งอีเมล (แอดมิน) -----
+
+  /** รายการ template อีเมลที่ทดสอบส่งได้จาก service นี้ (พร้อม field metadata) */
+  @Get('test-templates')
+  getTestTemplates() {
+    return toTemplateMeta(NOTIFICATION_TEST_TEMPLATES);
+  }
+
+  /** ทดสอบยิงอีเมล 1 ฉบับตาม template + ข้อมูลที่กรอก */
+  @Post('test-send')
+  async testSend(
+    @Body() body: { key: string; to: string; data: Record<string, unknown> },
+  ) {
+    const { key, to, data } = body ?? ({} as typeof body);
+    if (!to) throw new BadRequestException('กรุณาระบุอีเมลผู้รับ (to)');
+    const entry = NOTIFICATION_TEST_TEMPLATES.find((t) => t.key === key);
+    if (!entry) throw new BadRequestException(`ไม่พบ template '${key}'`);
+    const html = await entry.build(data ?? {});
+    await this.mailer.sendHtml(to, entry.subject, html);
+    return { success: true, to, key };
   }
 
   // ----- ฟีดรายผู้ใช้ -----

@@ -50,4 +50,21 @@ export class NotificationMailer {
       this.logger.error(`❌ Failed to send to ${to}`, err as Error);
     }
   }
+
+  /**
+   * ส่งอีเมล HTML แบบทั่วไป (ใช้กับการทดสอบส่ง template ต่าง ๆ)
+   * @param to อีเมลผู้รับ
+   * @param subject หัวข้ออีเมล
+   * @param html เนื้อหา HTML ที่ render มาแล้ว
+   */
+  async sendHtml(to: string, subject: string, html: string) {
+    const cfg = config();
+    await this.buildTransporter().sendMail({
+      from: cfg.smtpFrom,
+      to,
+      subject,
+      html,
+    });
+    this.logger.log(`✅ Sent test email "${subject}" to ${to}`);
+  }
 }

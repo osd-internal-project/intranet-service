@@ -60,6 +60,7 @@ import { MaVehicleTypeModule } from './ma-vehicle-type/ma-vehicle-type.module';
 import { MaVehicleTypeGroupModule } from './ma-vehicle-type-group/ma-vehicle-type-group.module';
 import { CarActivityLogModule } from './car-activity-log/car-activity-log.module';
 import { MaCarDashboardModule } from './ma-car-dashboard/ma-car-dashboard.module';
+import { MailTestModule } from './mail-test/mail-test.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
@@ -118,6 +119,7 @@ import { MaCarDashboardModule } from './ma-car-dashboard/ma-car-dashboard.module
     MasterRestaurantModule,
     OrganizeManagementModule,
     MasterTypeEventsModule,
+    MailTestModule,
   ],
   controllers: [IntranetController, PublicController],
   providers: [IntranetService],
