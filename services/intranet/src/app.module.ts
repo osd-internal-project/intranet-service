@@ -60,6 +60,7 @@ import { MaVehicleTypeModule } from './ma-vehicle-type/ma-vehicle-type.module';
 import { MaVehicleTypeGroupModule } from './ma-vehicle-type-group/ma-vehicle-type-group.module';
 import { CarActivityLogModule } from './car-activity-log/car-activity-log.module';
 import { MaCarDashboardModule } from './ma-car-dashboard/ma-car-dashboard.module';
+import { MaCarReportModule } from './ma-car-report/ma-car-report.module';
 import { MailTestModule } from './mail-test/mail-test.module';
 @Module({
   imports: [
@@ -89,6 +90,7 @@ import { MailTestModule } from './mail-test/mail-test.module';
     MaVehicleTypeGroupModule,
     CarActivityLogModule,
     MaCarDashboardModule,
+    MaCarReportModule,
     MaCarTypeModule,
     MaCarBookModule,
     MaCarWrapupModule,
