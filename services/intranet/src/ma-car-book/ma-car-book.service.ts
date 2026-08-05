@@ -20,6 +20,8 @@ import {
 
 @Injectable()
 export class MaCarBookService {
+  private readonly logger = new Logger(MaCarBookService.name);
+
   constructor(
     private readonly maCarBookRepository: MaCarBookRepository,
     private readonly maCarRepository: MaCarRepository,
@@ -82,6 +84,8 @@ export class MaCarBookService {
         userId: data.createdById,
       },
     });
+    // log payload ที่รับมาก่อนบันทึกลง DB เพื่อใช้ตรวจสอบเมื่อข้อมูลผิดพลาด
+    this.logger.log(`[create] payload=${JSON.stringify(data)}`);
     const response = await await this.maCarBookRepository.create({
       data: data,
     });

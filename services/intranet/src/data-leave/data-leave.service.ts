@@ -10,7 +10,7 @@ import {
   NotificationEmitterService,
   fmtThaiDate,
 } from '@inventory/share';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import * as dayjs from 'dayjs';
 import {
@@ -21,6 +21,8 @@ import { json } from 'stream/consumers';
 
 @Injectable()
 export class DataLeaveService {
+  private readonly logger = new Logger(DataLeaveService.name);
+
   constructor(
     private readonly dataleaveRepo: DataLeaveRepository,
     private readonly mastertypeLeaveRepo: MasterTypeLeaveRepository,
@@ -42,6 +44,8 @@ export class DataLeaveService {
   }
 
   async create(condition: Prisma.dataLeaveCreateArgs) {
+    // log payload ที่รับมาก่อนบันทึกลง DB เพื่อใช้ตรวจสอบเมื่อข้อมูลผิดพลาด
+    this.logger.log(`[create] payload=${JSON.stringify(condition?.data)}`);
     const leaveLetter = await this.dataleaveRepo.create(condition);
     if (leaveLetter) {
       const d: any = condition.data;

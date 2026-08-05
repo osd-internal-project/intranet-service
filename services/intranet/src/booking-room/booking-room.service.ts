@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   AccessService,
   BookingRoomRepository,
@@ -17,6 +17,8 @@ import {
 
 @Injectable()
 export class BookingRoomService {
+  private readonly logger = new Logger(BookingRoomService.name);
+
   constructor(
     private bookingRoomRepository: BookingRoomRepository,
     private usersRepo: UsersRepository,
@@ -29,6 +31,8 @@ export class BookingRoomService {
       data.userId,
     );
     const condition = { data: data } as Prisma.bookingRoomCreateArgs;
+    // log payload ที่รับมาก่อนบันทึกลง DB เพื่อใช้ตรวจสอบเมื่อข้อมูลผิดพลาด
+    this.logger.log(`[create] payload=${JSON.stringify(condition.data)}`);
     const created = await this.bookingRoomRepository.create(condition);
     if (created) {
       const html = await templateBookingRoom(condition.data, result);

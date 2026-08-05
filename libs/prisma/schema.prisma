@@ -713,7 +713,7 @@ model maCarBook {
   id                    Int                   @unique @default(autoincrement())
   carId                 String                @map("car_id") @db.VarChar(50)
   carName               String?               @map("car_name") @db.VarChar(150)
-  carBookTitle          String?               @map("car_book_title") @db.VarChar(50)
+  carBookTitle          String?               @map("car_book_title") @db.VarChar(150)
   carBookProvince       String?               @map("car_book_province") @db.VarChar(250)
   carBookPlace          String?               @map("car_book_place") @db.VarChar(250)
   carBookUsers          Int?                  @map("car_book_users")
@@ -723,8 +723,8 @@ model maCarBook {
   carBookApprovedById   String?               @map("car_book_approved_by_id") @db.VarChar(50)
   carBookApprovedByName String?               @map("car_book_approved__by_name") @db.VarChar(255)
   carBookApprovedStatus String?               @map("car_book_approved_status") @db.VarChar(20)
-  detail                String?               @db.VarChar(225)
-  remark                String?               @db.VarChar(225)
+  detail                String?               @db.Text 
+  remark                String?               @db.Text
   status                Boolean?              @default(true) @map("stauts")
   createdAt             DateTime              @default(now()) @map("created_at") @db.Timestamptz(6)
   createdById           String?               @map("created_by_id") @db.VarChar(50)
