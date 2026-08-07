@@ -87,8 +87,30 @@ const formatToNormalType = (obj: object) => {
   });
   return obj;
 };
+/**
+ * แก้ชื่อไฟล์ภาษาไทยที่เพี้ยน (mojibake) จากการอัปโหลดแบบ multipart
+ * busboy/multer จะ decode header filename เป็น latin1 ทำให้ byte ของ utf8 ถูกอ่านผิด
+ * เช่น "ใบเสร็จ.pdf" กลายเป็น "à¹ƒà¸šà¹€à¸ªà¸£à¹‡à¸ˆ.pdf"
+ *
+ * ฟังก์ชันนี้ idempotent — เรียกซ้ำได้ ใช้กับ backfill ข้อมูลเก่าได้ด้วย
+ *
+ * @param raw ชื่อไฟล์จาก file.originalname (หรือค่าที่เก็บใน DB สำหรับ backfill)
+ * @returns ชื่อไฟล์ที่ decode ถูกต้อง — ถ้าเป็น utf8 ที่ถูกอยู่แล้วจะคืนค่าเดิม
+ */
+const decodeUploadFilename = (raw: string): string => {
+  if (!raw) return raw;
+  // มีอักขระนอกช่วง latin1 → เป็น utf8 ที่ถูกต้องอยู่แล้ว ไม่ต้องแปลงซ้ำ
+  if (/[^\x00-\xff]/.test(raw)) return raw;
+  const decoded = Buffer.from(raw, 'latin1').toString('utf8');
+  // decode แล้วได้ replacement char แปลว่า byte เดิมไม่ใช่ utf8 จริง → คืนค่าเดิม
+  return decoded.includes('�') ? raw : decoded;
+};
+
+export { decodeUploadFilename };
+
 export const utils = {
   createReadableId,
+  decodeUploadFilename,
   getIPFromRequest,
   generateOtp,
   randStrReadable,

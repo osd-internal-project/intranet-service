@@ -6,6 +6,7 @@ import {
   MaCarBookingImageRepository,
   CarActivityLogService,
   CarActivityAction,
+  decodeUploadFilename,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
@@ -43,6 +44,7 @@ export class MaCarBookingImagesService {
     });
     const carId = booking?.carId ?? 'unknown';
     const ext = extname(file.originalname);
+    const originalName = decodeUploadFilename(file.originalname);
     const objectKey = `macar/car/${carId}/booking/${uuidv4()}${ext}`;
     await this.minioService.uploadFile(
       file.buffer,
@@ -53,7 +55,7 @@ export class MaCarBookingImagesService {
     const data = {
       carBookingId: bookId,
       filePath: objectKey,
-      fileName: file.originalname,
+      fileName: originalName,
       fileType: file.mimetype,
     } as Prisma.maCarBookImageCreateInput;
     const created = await this.macarbookinimagesRepo.create({ data });
@@ -63,7 +65,7 @@ export class MaCarBookingImagesService {
         carName: booking.carName ?? undefined,
         action: CarActivityAction.FILE_BOOKING_UPLOAD,
         refId: bookId,
-        detail: { fileName: file.originalname },
+        detail: { fileName: originalName },
       });
     }
     return created;

@@ -1,7 +1,7 @@
 {
   "name": "intranet-be",
   "description": "",
-  "version": "1.1.40",
+  "version": "1.1.41",
   "author": "",
   "dependencies": {
     "@inventory/share": "0.0.1",
@@ -107,6 +107,7 @@
     "db:pull": "yarn prisma db pull",
     "db:push": "yarn prisma db push",
     "db:seed": "yarn prisma db seed",
+    "fix:macar-filenames": "ts-node --transpile-only -r tsconfig-paths/register ./scripts/fix-macar-filenames.ts",
     "dev1": "cross-env NODE_ENV=local DATABASE_URL=postgresql://postgres:1010@localhost:5432/dev ts-node-dev --respawn --exit-child --transpile-only -r tsconfig-paths/register ./src/main.ts",
     "dev": "cross-env NODE_ENV=local ts-node-dev --respawn --exit-child --transpile-only -r tsconfig-paths/register ./src/main.ts ",
     "docker:build": "cd ../.. && docker build -t 'd-debt/intranet' -f services/intranet/Dockerfile .",

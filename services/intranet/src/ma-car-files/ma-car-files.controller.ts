@@ -15,7 +15,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('ma-car-files')
 export class MaCarFilesController {
-  constructor(private readonly maCarFilesService: MaCarFilesService) { }
+  constructor(private readonly maCarFilesService: MaCarFilesService) {}
 
   @Post()
   create(@Body() createMaCarFileDto: Prisma.maCarFilesCreateInput) {
@@ -26,7 +26,10 @@ export class MaCarFilesController {
   findAll() {
     return this.maCarFilesService.findAll();
   }
-
+  @Get('car/:id')
+  findByCar(@Param('id') id: string) {
+    return this.maCarFilesService.findByCar(id);
+  }
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.maCarFilesService.findOne(+id);

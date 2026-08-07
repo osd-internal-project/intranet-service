@@ -3,6 +3,7 @@ import {
   MaCarFilesRepository,
   CarActivityLogService,
   CarActivityAction,
+  decodeUploadFilename,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
@@ -33,6 +34,7 @@ export class MaCarFilesService {
     const results = [];
     for (const file of files) {
       const ext = extname(file.originalname);
+      const originalName = decodeUploadFilename(file.originalname);
       const objectKey = `macar/car/${carId}/detail/${uuidv4()}${ext}`;
       await this.minioService.uploadFile(
         file.buffer,
@@ -43,7 +45,7 @@ export class MaCarFilesService {
       const created = await this.MaCarFilesRepo.create({
         data: {
           carId,
-          name: file.originalname,
+          name: originalName,
           fileName: objectKey.split('/').pop(),
           filePath: objectKey,
           fileType: ext,
@@ -68,7 +70,9 @@ export class MaCarFilesService {
   findOne(id: number) {
     return this.MaCarFilesRepo.findOne({ where: { id } });
   }
-
+  findByCar(carId: string) {
+    return this.MaCarFilesRepo.findMany({ where: { carId } });
+  }
   async update(id: number, updateMaCarFileDto: Prisma.maCarFilesUpdateInput) {
     return await this.MaCarFilesRepo.update({
       where: { id },

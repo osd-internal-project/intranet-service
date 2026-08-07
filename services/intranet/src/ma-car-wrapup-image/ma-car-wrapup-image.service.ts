@@ -4,6 +4,7 @@ import {
   MaCarWrapupRepository,
   CarActivityLogService,
   CarActivityAction,
+  decodeUploadFilename,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
@@ -38,6 +39,7 @@ export class maCarWrapupImageService {
     });
     const carId = wrapup?.carId ?? 'unknown';
     const ext = extname(file.originalname);
+    const originalName = decodeUploadFilename(file.originalname);
     const objectKey = `macar/car/${carId}/ma/${uuidv4()}${ext}`;
     await this.minioService.uploadFile(
       file.buffer,
@@ -47,7 +49,7 @@ export class maCarWrapupImageService {
     );
     const data = {
       carWrapupId: carWrapupId,
-      fileName: file.originalname,
+      fileName: originalName,
       filePath: objectKey,
       fileType: ext,
     } as Prisma.maCarWrapupImageCreateInput;
@@ -58,7 +60,7 @@ export class maCarWrapupImageService {
         carName: wrapup.carName ?? undefined,
         action: CarActivityAction.FILE_WRAPUP_UPLOAD,
         refId: carWrapupId,
-        detail: { fileName: file.originalname },
+        detail: { fileName: originalName },
       });
     }
     return created;

@@ -5,6 +5,7 @@ import {
   MaCarRepository,
   CarActivityLogService,
   CarActivityAction,
+  decodeUploadFilename,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
@@ -563,6 +564,7 @@ export class MaCarDocumentService {
     const results = [];
     for (const file of files) {
       const ext = extname(file.originalname);
+      const originalName = decodeUploadFilename(file.originalname);
       const objectKey = `macar/car/${carId}/document/${uuidv4()}${ext}`;
       await this.minioService.uploadFile(
         file.buffer,
@@ -573,7 +575,7 @@ export class MaCarDocumentService {
       const created = await this.maCarDocumentFileRepository.create({
         data: {
           documentId,
-          name: file.originalname,
+          name: originalName,
           fileName: objectKey.split('/').pop(),
           filePath: objectKey,
           fileType: ext,

@@ -18,6 +18,26 @@ const MIME_BY_EXT: Record<string, string> = {
   '.webp': 'image/webp',
 };
 
+/**
+ * สร้างค่า Content-Disposition สำหรับดาวน์โหลดที่รองรับชื่อไฟล์ภาษาไทย
+ * ตาม RFC 6266: พารามิเตอร์ filename= รับได้เฉพาะ ascii จึงต้องส่งชื่อ utf8
+ * ผ่าน filename* (RFC 5987) ควบคู่กัน — เบราว์เซอร์จะเลือกใช้ filename* ก่อน
+ * @param downloadName ชื่อไฟล์ที่ต้องการให้ผู้ใช้ได้รับ (utf8)
+ * @returns ค่า header เช่น: attachment; filename="___.pdf"; filename*=UTF-8''%E0%B8%97.pdf
+ */
+const buildAttachmentDisposition = (downloadName: string): string => {
+  // แทนอักขระที่ไม่ใช่ ascii printable และตัวที่ทำให้ quoted-string พัง (" กับ \)
+  const asciiFallback = downloadName
+    .replace(/[^\x20-\x7e]/g, '_')
+    .replace(/["\\]/g, '_');
+  // encodeURIComponent ไม่ encode ' ( ) * ! ซึ่งไม่ใช่ attr-char ตาม RFC 5987 จึงต้อง encode เพิ่มเอง
+  const encoded = encodeURIComponent(downloadName).replace(
+    /['()*!]/g,
+    (c) => `%${c.charCodeAt(0).toString(16).toUpperCase()}`,
+  );
+  return `attachment; filename="${asciiFallback}"; filename*=UTF-8''${encoded}`;
+};
+
 @Controller('public')
 export class PublicController {
   constructor(private readonly minioService: MinioClientService) {}
@@ -43,10 +63,12 @@ export class PublicController {
     }
     const contentType =
       MIME_BY_EXT[extname(key).toLowerCase()] ?? 'application/octet-stream';
-    const downloadName = name ? decodeURIComponent(name) : key.split('/').pop();
+    // express decode query string ให้แล้ว — decodeURIComponent ซ้ำจะพังกับชื่อที่มี %
+    // (เช่น "ส่วนลด100%.pdf" จะ throw URIError ทำให้ request 500)
+    const downloadName = name || key.split('/').pop();
     const disposition =
       mode === 'attachment'
-        ? `attachment; filename="${encodeURIComponent(downloadName)}"`
+        ? buildAttachmentDisposition(downloadName)
         : 'inline';
     res.set({
       'Access-Control-Allow-Origin': '*',
@@ -167,13 +189,11 @@ export class PublicController {
       mimeTypes[extname(fileId).toLowerCase()] ?? 'application/octet-stream';
 
     // ถ้าไม่ส่ง fileName มา ใช้ชื่อไฟล์บน disk แทน จะได้ไม่ตั้งชื่อเป็น "undefined"
-    const downloadName = fileName ? decodeURIComponent(fileName) : fileId;
+    const downloadName = fileName || fileId;
 
     res.set({
       'Content-Type': contentType,
-      'Content-Disposition': `attachment; filename="${encodeURIComponent(
-        downloadName,
-      )}"`,
+      'Content-Disposition': buildAttachmentDisposition(downloadName),
     });
     file.pipe(res);
   }
