@@ -72,6 +72,10 @@ export class PublicController {
         : 'inline';
     res.set({
       'Access-Control-Allow-Origin': '*',
+      // helmet() ตั้ง CORP เป็น same-origin ทำให้ <img> จากคนละ origin (เช่น dev ที่รัน
+      // console บน localhost) ถูกบล็อก แม้จะเปิด URL ตรง ๆ ได้ (navigation ไม่ติด CORP)
+      // route นี้เป็น public อยู่แล้ว จึงอนุญาตให้ embed ข้าม origin ได้
+      'Cross-Origin-Resource-Policy': 'cross-origin',
       'Content-Type': contentType,
       'Content-Disposition': disposition,
     });
