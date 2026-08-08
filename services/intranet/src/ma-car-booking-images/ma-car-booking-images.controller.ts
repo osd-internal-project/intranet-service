@@ -63,8 +63,14 @@ export class MaCarBookingImagesController {
     return this.maCarBookingImagesService.findAll();
   }
 
+  /** รูปทั้งหมดของการจอง — ใช้ในหน้าคืนรถ (ต้องประกาศก่อน route แบบ param) */
+  @Get('booking/:carBookingId')
+  findByBookingId(@Param('carBookingId') carBookingId: string) {
+    return this.maCarBookingImagesService.findByBookingId(+carBookingId);
+  }
+
   @Get(':idCarBookImage')
-  findOne(@Param('carBookingId') idCarBookImage: string) {
+  findOne(@Param('idCarBookImage') idCarBookImage: string) {
     return this.maCarBookingImagesService.findOne(+idCarBookImage);
   }
 

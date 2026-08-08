@@ -83,6 +83,18 @@ export class MaCarBookingImagesService {
     });
   }
 
+  /**
+   * รูปทั้งหมดของการจอง 1 รายการ เรียงตามเวลาที่อัปโหลด
+   * @param carBookingId รหัสการจอง (maCarBook.id)
+   * @returns รายการรูปของการจองนั้น (ว่างถ้าไม่มี)
+   */
+  findByBookingId(carBookingId: number) {
+    return this.macarbookinimagesRepo.findMany({
+      where: { carBookingId },
+      orderBy: { createdAt: 'asc' },
+    });
+  }
+
   update(id: number, updateMaCarBookingImageDto: UpdateMaCarBookingImageDto) {
     return this.macarbookinimagesRepo.update({
       where: { idCarBookImage: id },
