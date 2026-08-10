@@ -482,9 +482,20 @@ model userGroup {
   userGroupUserRoleMap      userGroupUserRoleMap[]
   userMapOrganizeGroup      userMapOrganizeGroup[]
   userPermissionGroup       userPermissionGroup[]
+  userMapRoleGroup          userMapRoleGroup[]
   user                      users[]
 
   @@map("user_group")
+}
+
+model userMapRoleGroup {
+  id        Int       @unique @default(autoincrement())
+  groupId   String    @map("group_id") @db.VarChar(50)
+  userGroup userGroup @relation(fields: [groupId], references: [groupId], onDelete: Cascade)
+  roleCode  String    @map("role_code") @db.VarChar(50)
+
+  @@unique([groupId, roleCode])
+  @@map("user_map_group_role")
 }
 
 model userPermissionGroup {
@@ -723,7 +734,7 @@ model maCarBook {
   carBookApprovedById   String?               @map("car_book_approved_by_id") @db.VarChar(50)
   carBookApprovedByName String?               @map("car_book_approved__by_name") @db.VarChar(255)
   carBookApprovedStatus String?               @map("car_book_approved_status") @db.VarChar(20)
-  detail                String?               @db.Text 
+  detail                String?               @db.Text
   remark                String?               @db.Text
   status                Boolean?              @default(true) @map("stauts")
   createdAt             DateTime              @default(now()) @map("created_at") @db.Timestamptz(6)
@@ -1424,16 +1435,16 @@ model masterTypeEvents {
 // ฟีดแจ้งเตือนรายผู้ใช้ (เว็บ) — 1 แถว = 1 การแจ้งเตือนที่ยิงให้ผู้รับ 1 คน
 // ไม่ผูก FK กับ users/maCar เพื่อให้โมดูลนี้เป็นอิสระ (service แยก) — เก็บ userId/carId เป็นค่าตรง ๆ
 model notification {
-  id        Int     @unique @default(autoincrement())
-  userId    String  @map("user_id") @db.VarChar(50) //ผู้รับ
-  title     String  @db.VarChar(255)
-  message   String  @db.Text
-  type      String  @db.VarChar(30) //insurance-expiry | ma-due
-  refId     String? @map("ref_id") @db.VarChar(50) //documentId หรือ carWrapupId
-  carId     String? @map("car_id") @db.VarChar(50)
-  path      String? @db.VarChar(255) //ลิงก์ปลายทางเมื่อคลิก
-  level     String? @db.VarChar(20) //warning | expired
-  isRead    Boolean @default(false) @map("is_read")
+  id      Int     @unique @default(autoincrement())
+  userId  String  @map("user_id") @db.VarChar(50) //ผู้รับ
+  title   String  @db.VarChar(255)
+  message String  @db.Text
+  type    String  @db.VarChar(30) //insurance-expiry | ma-due
+  refId   String? @map("ref_id") @db.VarChar(50) //documentId หรือ carWrapupId
+  carId   String? @map("car_id") @db.VarChar(50)
+  path    String? @db.VarChar(255) //ลิงก์ปลายทางเมื่อคลิก
+  level   String? @db.VarChar(20) //warning | expired
+  isRead  Boolean @default(false) @map("is_read")
 
   // กันยิงซ้ำเมื่อ cron รันซ้ำในวันเดียว — milestone แทรกครั้งเดียวตลอด, expired แทรกวันละครั้ง
   dedupKey  String   @unique @map("dedup_key") @db.VarChar(255)

@@ -222,7 +222,7 @@ export class DataLeaveService {
     }
     const getUser = await this.usersRepo.findOne({ where: { userId: userId } });
     const AccessedGroup = await this.accessService.getAccessedGroupByGroupId(
-      ModuleTypes.INTRANET_APPROVE_LEAVE,
+      ModuleTypes.INTRANET,
       getUser.ownerGroupId,
     );
     const data = await this.dataleaveRepo.findMany({
@@ -985,7 +985,7 @@ export class DataLeaveService {
   async findHeaderId(token: string) {
     const getUser = await this.usersRepo.findOne({ where: { token: token } });
     const result = await this.accessService.getLeadUsersByUserId(
-      ModuleTypes.INTRANET_APPROVE_LEAVE,
+      ModuleTypes.INTRANET,
       getUser.userId,
     );
     return result;

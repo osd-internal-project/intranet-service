@@ -16,6 +16,7 @@ import { UserRoleModule } from './user-role/user-role.module';
 import { MasterRuleModule } from './master-rule/master-rule.module';
 import { MasterPositionModule } from './master-position/master-position.module';
 import { UserPermissionGroupModule } from './user-permission-group/user-permission-group.module';
+import { UserMapRoleGroupModule } from './user-map-role-group/user-map-role-group.module';
 import { UsersModule } from './id24users/id24users.module';
 import { UserModuleModule } from './user-module/user-module.module';
 import { PublicController } from './public/public.controller';
@@ -37,6 +38,7 @@ import { PrismaModule } from '@inventory/share';
     UserGroupModule,
     // UserGroupMapModule,
     UserPermissionGroupModule,
+    UserMapRoleGroupModule,
     UsersModule,
     UserModuleModule,
     PrismaModule,

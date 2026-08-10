@@ -13,7 +13,14 @@ export class UserModuleService {
   }
 
   findAll() {
-    return this.userModuleRepo.findMany({});
+    return this.userModuleRepo.findMany({
+      where: { status: true },
+      orderBy: [
+        {
+          code: 'asc',
+        },
+      ],
+    });
   }
 
   findMany(condition: Prisma.userModuleFindManyArgs) {

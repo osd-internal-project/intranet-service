@@ -18,6 +18,7 @@ import {
   RoleProfileMapRepository,
   UserGroupRepository,
   UserGroupMapRepository,
+  UserMapRoleGroupRepository,
   UsersRepository,
   UserRoleRepository,
   UserRoleMapRepository,
@@ -138,6 +139,7 @@ const services = [
   UserGroupRepository,
   UserGroupMapRepository,
   UserGroupUserRoleMapRepository,
+  UserMapRoleGroupRepository,
   //MA
   MaTaskRepository,
   MaTaskFilesRepository,
