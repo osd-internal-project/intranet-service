@@ -1,9 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import {
   AccessService,
   OrganizedRepository,
   UserGroupRepository,
-  UserGroupUserRoleMapRepository,
   UsersRepository,
 } from '@inventory/share';
 import { Prisma } from '@prisma/client';
@@ -14,7 +13,6 @@ export class UserGroupService {
     private userGroupRepo: UserGroupRepository,
     private usersRepo: UsersRepository,
     private organizedRepo: OrganizedRepository,
-    private userGroupUserRoleMapRepo: UserGroupUserRoleMapRepository,
     private accessServices: AccessService,
   ) {}
 
@@ -94,35 +92,28 @@ export class UserGroupService {
     return this.usersRepo.findByCondition({ where: { ownerGroupId: groupId } });
   }
 
+  /**
+   * แก้ไขข้อมูลของกลุ่มผู้ใช้งาน (ชื่อและคำอธิบายเท่านั้น)
+   * การผูกสิทธิ์ของกลุ่มไม่ได้จัดการที่นี่ — ใช้ /user-map-role-group แทน
+   * @param groupId groupId ของกลุ่มที่ต้องการแก้ไข
+   * @param data ข้อมูลที่ต้องการแก้ไข
+   * @returns ข้อมูลกลุ่มหลังแก้ไข
+   */
   async update(
     groupId: string,
     data: {
-      groupId: string;
-      headId: string;
       groupName: string;
       description?: string;
-      userRole: string[];
     },
   ) {
-    await this.userGroupUserRoleMapRepo.deleteMany({
-      where: { userGroupId: groupId },
-    });
-    await this.userGroupUserRoleMapRepo.createMany({
-      data: data.userRole.map((item: string) => ({
-        userGroupId: groupId,
-        roleId: item,
-      })),
-    });
-
-    const condition = {
+    const condition: Prisma.userGroupUpdateArgs = {
       where: { groupId: groupId },
       data: {
         groupName: data.groupName,
         description: data.description,
-        headId: data.headId,
         updatedAt: new Date(),
       },
-    } as Prisma.userGroupUpdateArgs;
+    };
     return await this.userGroupRepo.update(condition);
   }
   async updatePermission(groupId: string, data) {

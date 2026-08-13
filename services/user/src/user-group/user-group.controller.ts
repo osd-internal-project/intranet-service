@@ -6,7 +6,6 @@ import {
   Patch,
   Delete,
   Param,
-  Logger,
   Query,
 } from '@nestjs/common';
 import { UserGroupService } from './user-group.service';
@@ -54,14 +53,10 @@ export class UserGroupController {
     @Param('groupId') groupId: string,
     @Body()
     data: {
-      groupId: string;
       groupName: string;
-      headId: string;
       description?: string;
-      userRole: string[];
     },
   ) {
-    Logger.debug(data);
     return this.userGroupService.update(groupId, data);
   }
   @Patch('permission/:groupId')
