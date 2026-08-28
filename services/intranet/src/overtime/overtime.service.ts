@@ -50,7 +50,7 @@ export class OverTimeService {
     const typeDate =
       result.typeDate === 'dayoff' || masterHoliday.length > 0
         ? 'dayoff'
-        : 'normall';
+        : 'normal';
     const { totalTime, breakTime, workTime, inTime, overtime } =
       await calculate(
         startTimeOt,
@@ -75,7 +75,7 @@ export class OverTimeService {
       typeDate:
         result.typeDate === 'dayoff' || masterHoliday.length > 0
           ? 'day-off'
-          : 'normall',
+          : 'normal',
       customerName: createDepartmentDto.customerName,
       checkTravelUpCountry: createDepartmentDto.checkTravelUpCountry,
       checkOvernight: createDepartmentDto.checkOvernight,
@@ -106,13 +106,13 @@ export class OverTimeService {
                 timeRate: inTime,
                 rate: result.intime,
                 typeRate: 'intime',
-                date: 'normall',
+                date: 'normal',
               },
               {
                 timeRate: overtime,
                 rate: result.overtime,
                 typeRate: 'overtime',
-                date: 'normall',
+                date: 'normal',
               },
             ],
     };

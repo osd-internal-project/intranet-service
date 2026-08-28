@@ -28,7 +28,7 @@ export const calculate = async (
   let inTime = 0;
   let overtime = 0;
 
-  if (typeDate === 'normall') {
+  if (typeDate === 'normal') {
     // คำนวณเวลาที่อยู่ในช่วงปกติ
     const actualStart = Math.max(start, timestartwork);
     const actualEnd = Math.min(end, timeendwork);

@@ -38,7 +38,7 @@ export class ReportOtService {
       'เวลาทำงาน (ชั่วโมง)': data.workingTime,
       'เวลารวม (ชั่วโมง)': data.totalTime,
       รายละเอียดงาน: data.detailWork,
-      ประเภทวัน: data.typeDate === 'normall' ? 'วันปกติ' : 'วันหยุด',
+      ประเภทวัน: data.typeDate === 'normal' ? 'วันปกติ' : 'วันหยุด',
       ชื่อลูกค้า: data.customerName,
       เดินทางต่างจังหวัด: data.checkTravelUpCountry ? 'ใช่' : 'ไม่ใช่',
       ค้างคืน: data.checkOvernight ? 'ใช่' : 'ไม่ใช่',
@@ -72,7 +72,7 @@ export class ReportOtService {
             : '-'
           : '-',
       'ชั่วโมง 1.5 เท่า':
-        data.typeDate === 'normall'
+        data.typeDate === 'normal'
           ? data.calculate?.find((c: any) => c.typeRate === 'overtime')
               ?.timeRate &&
             data.calculate?.find((c: any) => c.typeRate === 'overtime')
