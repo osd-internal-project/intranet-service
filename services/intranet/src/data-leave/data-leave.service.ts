@@ -985,7 +985,7 @@ export class DataLeaveService {
   async findHeaderId(token: string) {
     const getUser = await this.usersRepo.findOne({ where: { token: token } });
     const result = await this.accessService.getLeadUsersByUserId(
-      ModuleTypes.INTRANET,
+      ModuleTypes.INTRANET_APPROVE_LEAVE,
       getUser.userId,
     );
     return result;

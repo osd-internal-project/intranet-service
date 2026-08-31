@@ -119,7 +119,7 @@ export class OverTimeService {
     const data = await this.overtimeRepo.create({ data: base });
     if (data) {
       const header = await this.accessService.getLeadUsersByUserId(
-        ModuleTypes.INTRANET,
+        ModuleTypes.INTRANET_APPROVE_LEAVE,
         createDepartmentDto.userId,
       );
       const findUsers: any = await this.userRepo.findOne({
@@ -293,7 +293,7 @@ export class OverTimeService {
         where: { overTimeID: id },
       });
       const header = await this.accessService.getLeadUsersByUserId(
-        ModuleTypes.INTRANET,
+        ModuleTypes.INTRANET_APPROVE_LEAVE,
         overtimeFind.userId,
       );
       const findUsers: any = await this.userRepo.findOne({
