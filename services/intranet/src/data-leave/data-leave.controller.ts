@@ -7,12 +7,13 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
   UseInterceptors,
   Req,
 } from '@nestjs/common';
 import { DataLeaveService } from './data-leave.service';
 import { Prisma } from '@prisma/client';
-import { UserInterceptor } from '@inventory/share';
+import { Roles, RolesGuard, UserInterceptor } from '@inventory/share';
 
 @Controller('data-leave')
 export class DataLeaveController {
@@ -62,23 +63,28 @@ export class DataLeaveController {
     return this.dataLeaveService.findCalendarByMonth(req.body.sub, query);
   }
 
-  @Get('findGroup/:userId')
+  @Get('findGroup')
+  @UseGuards(RolesGuard)
+  @Roles('admin', 'header', 'hr')
+  @UseInterceptors(UserInterceptor)
   findGroup(
-    @Param('userId') userId: string,
+    @Req() req,
     @Query() query: any,
     @Query('skip') skip?: number,
     @Query('take') take?: number,
   ) {
-    return this.dataLeaveService.findGroup(userId, query, +skip, +take);
+    return this.dataLeaveService.findGroup(req.body.sub, query, +skip, +take);
   }
-  @Get('findGroup-hr/:userId')
+  @Get('findGroup-hr')
+  @UseGuards(RolesGuard)
+  @Roles('admin', 'hr')
+  @UseInterceptors(UserInterceptor)
   findGroupHr(
-    @Param('userId') userId: string,
     @Query() query: any,
     @Query('skip') skip?: number,
     @Query('take') take?: number,
   ) {
-    return this.dataLeaveService.findGroupHr(userId, query, +skip, +take);
+    return this.dataLeaveService.findGroupHr(query, +skip, +take);
   }
   @Get('find-total-leave-by-group')
   @UseInterceptors(UserInterceptor)

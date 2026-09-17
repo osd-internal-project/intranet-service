@@ -1,16 +1,37 @@
 import { Injectable } from '@nestjs/common';
-import { OverTimeRepository } from '@inventory/share';
+import {
+  AccessService,
+  ModuleTypes,
+  OverTimeRepository,
+  UsersRepository,
+} from '@inventory/share';
 import { OvertimeExcelTemplate } from 'src/utils/generate-excel';
+
+/** สิทธิ์ที่เห็น OT ได้ทั้งบริษัท — ตรงกับ find-many-hr ใน intranet service */
+const FULL_ACCESS_ROLES = ['hr', 'admin'];
 
 @Injectable()
 export class ReportOtService {
-  constructor(private readonly mataskRepository: OverTimeRepository) {}
+  constructor(
+    private readonly mataskRepository: OverTimeRepository,
+    private readonly usersRepo: UsersRepository,
+    private readonly accessService: AccessService,
+  ) {}
 
-  async export(params: any) {
-    const { fullname, typeDate, dateStart } = params;
+  /**
+   * สร้างไฟล์รายงาน OT ตามสิทธิ์ของผู้เรียก
+   * @param params เงื่อนไขการค้นหาเดียวกับที่ตารางบนหน้าจอใช้
+   * @param token ค่า sub จาก token (ตรงกับ users.token)
+   * @param roleCodes role code ที่ RolesGuard คำนวณไว้แล้ว
+   */
+  async export(params: any, token: string, roleCodes: string[]) {
+    const { fullname, status, typeDate, dateStart } = params;
+    const scope = await this.buildUserScope(token, roleCodes);
     const dataSources = await this.mataskRepository.findMany({
       where: {
+        ...scope,
         ...(fullname && { fullname: { contains: fullname } }),
+        ...(status && { status: { contains: status } }),
         ...(typeDate && { typeDate: { contains: typeDate } }),
         ...(dateStart && {
           dateStart: {
@@ -93,6 +114,22 @@ export class ReportOtService {
           : '-',
     }));
     return await OvertimeExcelTemplate(transfer, 'รายงานการทำงานล่วงเวลา');
+  }
+
+  /** จำกัดขอบเขตให้เท่ากับตารางที่ผู้เรียกเห็นบนหน้าจอ — hr/admin เห็นทั้งหมด */
+  private async buildUserScope(token: string, roleCodes: string[]) {
+    if (roleCodes.some((code) => FULL_ACCESS_ROLES.includes(code))) {
+      return {};
+    }
+    const getUser = await this.usersRepo.findOne({ where: { token: token } });
+    if (!getUser) {
+      return { userId: { in: [] as string[] } };
+    }
+    const accessedUsers = await this.accessService.getAccessedUsersByUserId(
+      ModuleTypes.INTRANET,
+      getUser.userId,
+    );
+    return { userId: { in: accessedUsers.map((event: any) => event.userId) } };
   }
 
   startOfDate(date: string) {

@@ -90,6 +90,25 @@ export class AccessService {
     }
   }
 
+  /**
+   * ดึง role code ของกลุ่มต้นสังกัดของผู้ใช้ (ตั้งค่าที่หน้า "สิทธิ์การเข้าถึง")
+   * @param userId รหัสผู้ใช้
+   * @returns รายการ role code เช่น ["hr", "header"] คืน [] เมื่อไม่มีกลุ่มต้นสังกัด
+   */
+  async getRoleCodesByUserId(userId: string): Promise<string[]> {
+    const userdetaill = await this.prisma.users.findFirst({
+      where: { userId: userId },
+    });
+    if (!userdetaill?.ownerGroupId) {
+      return [];
+    }
+    const records = await this.prisma.userMapRoleGroup.findMany({
+      where: { groupId: userdetaill.ownerGroupId },
+      orderBy: { id: 'asc' },
+    });
+    return records.map((item) => item.roleCode);
+  }
+
   //ดึง Group ที่เข้าถึงได้โดย User Id
   async getAccessedGroupByUserId(moduleCode: string, userId: string) {
     const userdetaill = await this.prisma.users.findFirst({
@@ -120,7 +139,7 @@ export class AccessService {
         where: { userId: userId },
       });
 
-      if (userdetaill.ownerGroupId !== null) {
+      if (userdetaill?.ownerGroupId) {
         const permissionGroup = await this.prisma.userPermissionGroup.findFirst(
           {
             where: {
@@ -133,10 +152,9 @@ export class AccessService {
           return await this.prisma.users.findMany({
             where: { ownerGroupId: { in: permissionGroup.permissionGroupIds } },
           });
-        } else {
-          return [];
         }
       }
+      return [];
     } catch (error) {
       console.error('Error in getAccessedUsersByUserId:', error);
       return [];

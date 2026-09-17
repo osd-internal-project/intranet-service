@@ -1,4 +1,13 @@
-import { Controller, Get, Query, Res } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Query,
+  Req,
+  Res,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
+import { Roles, RolesGuard, UserInterceptor } from '@inventory/share';
 import { ReportDataLeaveService } from './report-data-leave.service';
 import { Response } from 'express';
 
@@ -9,15 +18,21 @@ export class ReportDataLeaveController {
   ) {}
 
   @Get('export')
+  @UseGuards(RolesGuard)
+  @Roles('admin', 'header', 'hr')
+  @UseInterceptors(UserInterceptor)
   async export(
+    @Req() req,
     @Query()
     query: { type: string; value: string },
     @Res() res: Response,
   ) {
-    console.log('test');
-
     try {
-      const buffer = await this.reportDataLeaveService.export(query);
+      const buffer = await this.reportDataLeaveService.export(
+        query,
+        req.body.sub,
+        req.roleCodes ?? [],
+      );
       res.setHeader(
         'Content-Type',
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',

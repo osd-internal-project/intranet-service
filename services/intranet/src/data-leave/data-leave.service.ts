@@ -171,7 +171,7 @@ export class DataLeaveService {
     return data;
   }
 
-  async findGroup(userId: string, query: any, skip: number, take: number) {
+  async findGroup(token: string, query: any, skip: number, take: number) {
     let filter = {} as Prisma.dataLeaveWhereInput;
     const { fullname, status, createdAt, leaveAt, typeName } = query;
     if (fullname) {
@@ -220,7 +220,7 @@ export class DataLeaveService {
         endDate: { gte: dayjs(leaveAt[0]).startOf('day').toDate() },
       };
     }
-    const getUser = await this.usersRepo.findOne({ where: { userId: userId } });
+    const getUser = await this.usersRepo.findOne({ where: { token: token } });
     const AccessedGroup = await this.accessService.getAccessedGroupByGroupId(
       ModuleTypes.INTRANET,
       getUser.ownerGroupId,
@@ -244,7 +244,8 @@ export class DataLeaveService {
     });
     return { data, count };
   }
-  async findGroupHr(userId: string, query: any, skip: number, take: number) {
+  /** มุมมองของ HR — เห็นทุกกลุ่มและทุกสถานะ (รวมที่ยกเลิก) ต่างจาก findGroup ที่จำกัดตามกลุ่มและสถานะ */
+  async findGroupHr(query: any, skip: number, take: number) {
     let filter = {} as Prisma.dataLeaveWhereInput;
     const { fullname, status, createdAt, leaveAt, typeName } = query;
     if (fullname) {
