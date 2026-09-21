@@ -6,13 +6,13 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AccessService } from '../access/access.service';
-import { verifyToken } from '../interceptor/user.interceptor';
+import { decodeToken } from '../interceptor/user.interceptor';
 import { ROLES_KEY, RoleCode } from './roles.decorator';
 
 /**
  * ตรวจสิทธิ์จาก role code ของผู้เรียก
  *
- * Guard ทำงานก่อน interceptor จึงตรวจลายเซ็น token เองไม่พึ่ง UserInterceptor
+ * Guard ทำงานก่อน interceptor จึงถอด payload เองไม่พึ่ง UserInterceptor
  * สิทธิ์ที่ใช้ตัดสิน = สิทธิ์จาก ID24 token รวมกับสิทธิ์ของกลุ่มต้นสังกัด (union)
  * ให้ตรงกับ mergedRoleCodes ใน intranet-console/app/page/layout.tsx
  */
@@ -38,7 +38,7 @@ export class RolesGuard implements CanActivate {
       throw new ForbiddenException('No Auth');
     }
 
-    const payload = verifyToken(authorization);
+    const payload = decodeToken(authorization);
     const tokenRoles = (payload.access?.userAccess ?? []).flatMap(
       (item) => item.roles ?? [],
     );

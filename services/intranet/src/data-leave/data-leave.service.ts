@@ -989,6 +989,7 @@ export class DataLeaveService {
       ModuleTypes.INTRANET_APPROVE_LEAVE,
       getUser.userId,
     );
+    console.log('result', result);
     return result;
   }
 

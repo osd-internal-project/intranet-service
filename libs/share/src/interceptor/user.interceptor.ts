@@ -5,7 +5,6 @@ import {
   CallHandler,
   ForbiddenException,
 } from '@nestjs/common';
-import * as JWT from 'jsonwebtoken';
 import { Observable } from 'rxjs';
 
 /** payload ของ ID24 token ส่วนที่ระบบนี้ใช้ */
@@ -25,7 +24,7 @@ export class UserInterceptor implements NestInterceptor {
     if (!token) {
       throw new ForbiddenException('No Auth');
     }
-    const payload = verifyToken(token);
+    const payload = decodeToken(token);
     request.body['sub'] = payload.sub;
     // RolesGuard อ่าน role จาก payload ก้อนนี้ต่อ
     request['user'] = payload;
@@ -34,26 +33,19 @@ export class UserInterceptor implements NestInterceptor {
 }
 
 /**
- * ตรวจลายเซ็น ID24 token แล้วคืน payload
+ * อ่าน payload ของ ID24 token โดยไม่ตรวจลายเซ็น
+ * ID24 ไม่มีช่องทางให้ดึง public key ออกมาได้ จึงตรวจลายเซ็นฝั่งนี้ไม่ได้
  * @param bearerToken ค่าดิบของ header Authorization
- * @returns payload ที่ผ่านการตรวจลายเซ็นแล้ว
+ * @returns payload ที่ถอดจากส่วนกลางของ token
  */
-export function verifyToken(bearerToken: string): Id24TokenPayload {
-  const id24TokenPublicKeyBase64 = process.env['ID24_TOKEN_PUBLIC_KEY'];
-  if (!id24TokenPublicKeyBase64) {
-    throw new ForbiddenException('ID24_TOKEN_PUBLIC_KEY is not configured');
-  }
-  const id24TokenPublicKey = Buffer.from(
-    id24TokenPublicKeyBase64,
-    'base64',
-  ).toString('ascii');
+export function decodeToken(bearerToken: string): Id24TokenPayload {
   const [type, rawToken] = bearerToken.split(' ');
   const token = type === 'Bearer' ? rawToken : bearerToken;
   try {
-    return JWT.verify(token, id24TokenPublicKey, {
-      algorithms: ['RS256'],
-    }) as Id24TokenPayload;
+    return JSON.parse(
+      Buffer.from(token.split('.')[1], 'base64').toString(),
+    ) as Id24TokenPayload;
   } catch (e) {
-    throw new ForbiddenException(e.message);
+    throw new ForbiddenException('Invalid token');
   }
 }
