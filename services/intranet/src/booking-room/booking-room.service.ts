@@ -119,12 +119,12 @@ export class BookingRoomService {
   async update(
     id: number,
     data: Prisma.bookingRoomUpdateInput,
-    actorUserId?: string,
+    actorToken?: string,
   ) {
     const findBooking = await this.bookingRoomRepository.findOne({
       where: { id: id },
     });
-    this.assertCancelAllowed(findBooking, data, actorUserId);
+    await this.assertCancelAllowed(findBooking, data, actorToken);
     const result = await this.accessService.getLeadUsersByUserId(
       ModuleTypes.INTRANET_APPROVE_BOOKING_ROOM,
       findBooking.userId,
@@ -158,16 +158,20 @@ export class BookingRoomService {
    * ยกเลิกใบจองได้เฉพาะเจ้าของใบจอง และเฉพาะใบที่ยังรออนุมัติ
    * สถานะอื่นเป็นเส้นทางของผู้อนุมัติ ยังไม่ตรวจในรอบนี้
    */
-  private assertCancelAllowed(
+  private async assertCancelAllowed(
     existing: { userId: string; bookingStatus: string } | null,
     data: Prisma.bookingRoomUpdateInput,
-    actorUserId?: string,
+    actorToken?: string,
   ) {
     if (!existing) {
       throw new NotFoundException('ไม่พบใบจองห้องประชุมที่ต้องการแก้ไข');
     }
     if (data.bookingStatus !== 'cancel') return;
-    if (!actorUserId || existing.userId !== actorUserId) {
+    // sub จาก UserInterceptor เป็น token ของ ID24 ต้อง resolve เป็น userId ก่อนเทียบเจ้าของ
+    const actor = actorToken
+      ? await this.accessService.findUserByToken(actorToken)
+      : null;
+    if (!actor || existing.userId !== actor.userId) {
       throw new ForbiddenException('ยกเลิกได้เฉพาะใบจองของตนเอง');
     }
     if (existing.bookingStatus !== 'process') {

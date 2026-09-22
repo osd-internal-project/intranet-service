@@ -348,9 +348,9 @@ export class MaCarBookService {
   async update(
     id: number,
     data: Prisma.maCarBookUpdateInput,
-    actorUserId?: string,
+    actorToken?: string,
   ) {
-    await this.assertCancelAllowed(id, data, actorUserId);
+    await this.assertCancelAllowed(id, data, actorToken);
     const condition = {
       where: { id: id },
       data: data,
@@ -429,14 +429,18 @@ export class MaCarBookService {
   private async assertCancelAllowed(
     id: number,
     data: Prisma.maCarBookUpdateInput,
-    actorUserId?: string,
+    actorToken?: string,
   ) {
     if (data.carBookApprovedStatus !== 'Cancel') return;
     const existing = await this.maCarBookRepository.findOne({ where: { id } });
     if (!existing) {
       throw new NotFoundException('ไม่พบใบจองรถที่ต้องการยกเลิก');
     }
-    if (!actorUserId || existing.createdById !== actorUserId) {
+    // sub จาก UserInterceptor เป็น token ของ ID24 ต้อง resolve เป็น userId ก่อนเทียบเจ้าของ
+    const actor = actorToken
+      ? await this.accessServices.findUserByToken(actorToken)
+      : null;
+    if (!actor || existing.createdById !== actor.userId) {
       throw new ForbiddenException('ยกเลิกได้เฉพาะใบจองของตนเอง');
     }
     if (existing.carBookApprovedStatus !== 'Process') {
