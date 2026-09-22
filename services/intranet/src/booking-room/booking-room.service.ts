@@ -1,4 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import {
   AccessService,
   BookingRoomRepository,
@@ -110,10 +116,15 @@ export class BookingRoomService {
       },
     });
   }
-  async update(id: number, data: Prisma.bookingRoomUpdateInput) {
+  async update(
+    id: number,
+    data: Prisma.bookingRoomUpdateInput,
+    actorUserId?: string,
+  ) {
     const findBooking = await this.bookingRoomRepository.findOne({
       where: { id: id },
     });
+    this.assertCancelAllowed(findBooking, data, actorUserId);
     const result = await this.accessService.getLeadUsersByUserId(
       ModuleTypes.INTRANET_APPROVE_BOOKING_ROOM,
       findBooking.userId,
@@ -141,6 +152,27 @@ export class BookingRoomService {
       });
     }
     return updated;
+  }
+
+  /**
+   * ยกเลิกใบจองได้เฉพาะเจ้าของใบจอง และเฉพาะใบที่ยังรออนุมัติ
+   * สถานะอื่นเป็นเส้นทางของผู้อนุมัติ ยังไม่ตรวจในรอบนี้
+   */
+  private assertCancelAllowed(
+    existing: { userId: string; bookingStatus: string } | null,
+    data: Prisma.bookingRoomUpdateInput,
+    actorUserId?: string,
+  ) {
+    if (!existing) {
+      throw new NotFoundException('ไม่พบใบจองห้องประชุมที่ต้องการแก้ไข');
+    }
+    if (data.bookingStatus !== 'cancel') return;
+    if (!actorUserId || existing.userId !== actorUserId) {
+      throw new ForbiddenException('ยกเลิกได้เฉพาะใบจองของตนเอง');
+    }
+    if (existing.bookingStatus !== 'process') {
+      throw new BadRequestException('ยกเลิกได้เฉพาะใบจองที่ยังรออนุมัติ');
+    }
   }
 
   async remove(id: number) {

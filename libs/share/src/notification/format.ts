@@ -20,5 +20,6 @@ export const approvalLabel = (status: string): string => {
   if (s.includes('approve')) return 'ได้รับการอนุมัติ';
   if (s.includes('reject') || s.includes('disap') || s.includes('not'))
     return 'ถูกปฏิเสธ';
+  if (s.includes('cancel')) return 'ถูกยกเลิก';
   return `: ${status}`;
 };

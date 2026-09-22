@@ -1,4 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import {
   AccessService,
   MaCarBookRepository,
@@ -339,7 +345,12 @@ export class MaCarBookService {
     });
   }
 
-  async update(id: number, data: Prisma.maCarBookUpdateInput) {
+  async update(
+    id: number,
+    data: Prisma.maCarBookUpdateInput,
+    actorUserId?: string,
+  ) {
+    await this.assertCancelAllowed(id, data, actorUserId);
     const condition = {
       where: { id: id },
       data: data,
@@ -409,6 +420,28 @@ export class MaCarBookService {
       });
     }
     return update;
+  }
+
+  /**
+   * ยกเลิกใบจองได้เฉพาะเจ้าของใบจอง และเฉพาะใบที่ยังรออนุมัติ
+   * สถานะอื่นเป็นเส้นทางของผู้อนุมัติ ยังไม่ตรวจในรอบนี้
+   */
+  private async assertCancelAllowed(
+    id: number,
+    data: Prisma.maCarBookUpdateInput,
+    actorUserId?: string,
+  ) {
+    if (data.carBookApprovedStatus !== 'Cancel') return;
+    const existing = await this.maCarBookRepository.findOne({ where: { id } });
+    if (!existing) {
+      throw new NotFoundException('ไม่พบใบจองรถที่ต้องการยกเลิก');
+    }
+    if (!actorUserId || existing.createdById !== actorUserId) {
+      throw new ForbiddenException('ยกเลิกได้เฉพาะใบจองของตนเอง');
+    }
+    if (existing.carBookApprovedStatus !== 'Process') {
+      throw new BadRequestException('ยกเลิกได้เฉพาะใบจองที่ยังรออนุมัติ');
+    }
   }
 
   /** แปลงสถานะการจองรถเป็นข้อความไทยสำหรับหัวข้อแจ้งเตือน */

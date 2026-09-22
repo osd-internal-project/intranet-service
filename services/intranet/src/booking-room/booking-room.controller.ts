@@ -58,8 +58,15 @@ export class BookingRoomController {
     );
   }
   @Patch(':id')
-  update(@Param('id') id: string, @Body() data: Prisma.masterRoomUpdateInput) {
-    return this.bookingRoomService.update(+id, data);
+  @UseInterceptors(UserInterceptor)
+  update(@Req() req, @Param('id') id: string) {
+    // UserInterceptor ยัด sub ลง body — ต้องแยกออกก่อนส่งให้ Prisma
+    const { sub, ...data } = req.body;
+    return this.bookingRoomService.update(
+      +id,
+      data as Prisma.bookingRoomUpdateInput,
+      sub,
+    );
   }
 
   @Delete(':id')

@@ -142,8 +142,15 @@ export class MaCarBookController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() data: Prisma.maCarBookUpdateInput) {
-    return this.maCarBookService.update(+id, data);
+  @UseInterceptors(UserInterceptor)
+  update(@Req() req, @Param('id') id: string) {
+    // UserInterceptor ยัด sub ลง body — ต้องแยกออกก่อนส่งให้ Prisma
+    const { sub, ...data } = req.body;
+    return this.maCarBookService.update(
+      +id,
+      data as Prisma.maCarBookUpdateInput,
+      sub,
+    );
   }
 
   @Delete(':id')
