@@ -1,7 +1,7 @@
 {
   "name": "intranet-be",
   "description": "",
-  "version": "1.2.03",
+  "version": "1.2.04",
   "author": "",
   "dependencies": {
     "@inventory/share": "0.0.1",
