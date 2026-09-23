@@ -161,7 +161,7 @@ export class ReportDataLeaveService {
       return { groupId: { in: [] }, status: { in: ['approved', 'waiting'] } };
     }
     const accessedGroup = await this.accessService.getAccessedGroupByGroupId(
-      ModuleTypes.INTRANET,
+      ModuleTypes.INTRANET_APPROVE_LEAVE,
       getUser.ownerGroupId,
     );
     return {

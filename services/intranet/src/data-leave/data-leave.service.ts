@@ -221,8 +221,9 @@ export class DataLeaveService {
       };
     }
     const getUser = await this.usersRepo.findOne({ where: { token: token } });
+    // ใช้สิทธิ์ผู้อนุมัติ ไม่ใช่สิทธิ์มองเห็น — กลุ่มตนเองจึงไม่ติดมาถ้าไม่ได้ตั้งไว้
     const AccessedGroup = await this.accessService.getAccessedGroupByGroupId(
-      ModuleTypes.INTRANET,
+      ModuleTypes.INTRANET_APPROVE_LEAVE,
       getUser.ownerGroupId,
     );
     const data = await this.dataleaveRepo.findMany({
