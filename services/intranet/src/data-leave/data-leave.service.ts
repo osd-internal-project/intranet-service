@@ -335,44 +335,39 @@ export class DataLeaveService {
     skip: number,
     take: number,
   ) {
-    let filter = {};
     const getUser = await this.usersRepo.findOne({ where: { token: token } });
     const AccessedGroup = await this.accessService.getAccessedGroupByGroupId(
       ModuleTypes.INTRANET,
       getUser.ownerGroupId,
     );
-    if (query.type === 'fullname' && query.value) {
-      const names = query.value.trim().split(' ').filter(Boolean);
-      const orConditions = names.flatMap((word) => [
-        {
-          firstName: {
-            contains: word,
-            mode: 'insensitive',
-          },
-        },
-        {
-          lastName: {
-            contains: word,
-            mode: 'insensitive',
-          },
-        },
-      ]);
-      filter = { ...filter, OR: orConditions };
-    } else if (query.type === 'status') {
-      filter = { ...filter, status: query.value };
-    } else if (query.type === 'type_name') {
-      filter = {
-        ...filter,
-        typeName: {
-          contains: query.value,
-          mode: 'insensitive',
-        },
+    const groupIds = AccessedGroup.map((event: any) => event.groupId);
+
+    const { fullname, typeId, startDate, endDate } = query;
+    let userFilter = {} as Prisma.usersWhereInput;
+    if (fullname) {
+      const names = String(fullname).trim().split(' ').filter(Boolean);
+      userFilter = {
+        OR: names.flatMap((word: string) => [
+          { firstNameTh: { contains: word, mode: 'insensitive' } },
+          { lastNameTh: { contains: word, mode: 'insensitive' } },
+        ]),
       };
     }
+    const typeFilter: Prisma.masterTypeleaveWhereInput = Number(typeId)
+      ? { typeId: Number(typeId) }
+      : {};
+    // Default range: start of this year → today
+    const rangeStart =
+      startDate && dayjs(startDate).isValid()
+        ? dayjs(startDate).startOf('day')
+        : dayjs().startOf('year');
+    const rangeEnd =
+      endDate && dayjs(endDate).isValid()
+        ? dayjs(endDate).endOf('day')
+        : dayjs().endOf('day');
+
     const userGroup = await this.usersRepo.findMany({
-      where: {
-        ownerGroupId: { in: AccessedGroup.map((event: any) => event.groupId) },
-      },
+      where: { ...userFilter, ownerGroupId: { in: groupIds } },
       select: {
         userId: true,
         username: true,
@@ -381,89 +376,85 @@ export class DataLeaveService {
         email: true,
         startWork: true,
       },
+      orderBy: [{ firstNameTh: 'asc' }, { lastNameTh: 'asc' }],
     });
 
-    const masterTypeLave = await this.mastertypeLeaveRepo.findMany({
+    const masterTypeLeave = await this.mastertypeLeaveRepo.findMany({
+      where: typeFilter,
       orderBy: { id: 'asc' },
     });
 
-    const data = await this.dataleaveRepo.findMany({
+    const leaves = await this.dataleaveRepo.findMany({
       where: {
-        ...filter,
-        groupId: { in: AccessedGroup.map((event: any) => event.groupId) },
+        userId: { in: userGroup.map((user) => user.userId) },
+        typeId: { in: masterTypeLeave.map((type) => type.typeId) },
         status: { in: ['approved'] },
-        startDate: {
-          gte: dayjs(new Date()).startOf('year').toDate(),
-        },
-        endDate: {
-          lte: dayjs(new Date()).endOf('year').toDate(),
-        },
+        startDate: { lte: rangeEnd.toDate() },
+        endDate: { gte: rangeStart.toDate() },
       },
-      include: { dataLeaveFiles: true },
-      orderBy: { createdAt: 'desc' },
-      ...(skip && take && { skip, take }),
+      select: { userId: true, typeId: true, leaveHour: true },
     });
-    const userMap = new Map(
-      userGroup.map((user) => [
-        user.userId,
-        { ...user, leaveSummary: [], totalCount: 0, totalLeaveHour: 0 },
-      ]),
-    );
-    const masterTypeLeaveMap = new Map(
-      masterTypeLave.map((type) => [type.typeId, type]),
-    );
-    data.forEach((leave) => {
-      const user = userMap.get(leave.userId);
-      const typeLeave = masterTypeLeaveMap.get(leave.typeId);
 
-      if (user) {
-        if (!user.leaveSummary) {
-          user.leaveSummary = [];
-          user.totalCount = 0;
-          user.totalLeaveHour = 0;
-        }
-
-        const startDate = new Date(user.startWork);
-        const now = new Date();
-        const diffTime = now.getTime() - startDate.getTime();
-        const diffYears = diffTime / (1000 * 60 * 60 * 24 * 365);
-        const isNewStaff = diffYears < 1;
-        const leaveLimit = isNewStaff
-          ? typeLeave.limitLeaveFour
-          : diffYears < 3
-          ? typeLeave.limitLeaveOne
-          : diffYears < 5
-          ? typeLeave.limitLeaveTwo
-          : typeLeave.limitLeaveThree;
-        const type = leave.typeName;
-        if (!user.leaveSummary[type]) {
-          user.leaveSummary[type] = {
-            count: 0,
-            leaveHour: 0,
-            limit: +leaveLimit * 8,
-          };
-        }
-        user.leaveSummary[type].count += 1;
-        user.leaveSummary[type].leaveHour += leave.leaveHour || 0;
-        user.totalCount += 1;
-        user.totalLeaveHour += leave.leaveHour || 0;
-      }
+    const usageByUserType = new Map<
+      string,
+      { count: number; leaveHour: number }
+    >();
+    leaves.forEach((leave) => {
+      const key = `${leave.userId}:${leave.typeId}`;
+      const usage = usageByUserType.get(key) ?? { count: 0, leaveHour: 0 };
+      usage.count += 1;
+      usage.leaveHour += leave.leaveHour || 0;
+      usageByUserType.set(key, usage);
     });
-    const result = Array.from(userMap.values()).map((user, index) => ({
-      id: index + 1,
-      ...user,
-      leaveSummary: Object.entries(user.leaveSummary || {}).map(
-        ([type, summary]) => ({
-          id: index + 1,
-          type_leave: type,
-          count: summary.count,
-          leaveHour: summary.leaveHour,
-          limit: +summary.limit,
-          userId: user.userId,
-        }),
-      ),
-    }));
-    return { data: result, count: result.length };
+
+    const rows = userGroup.flatMap((user) =>
+      masterTypeLeave.map((type) => {
+        const usage = usageByUserType.get(`${user.userId}:${type.typeId}`);
+        return {
+          ...user,
+          typeId: type.typeId,
+          type_leave: type.typeName,
+          count: usage?.count ?? 0,
+          leaveHour: usage?.leaveHour ?? 0,
+          limit: this.leaveLimitByWorkYears(type, user.startWork) * 8,
+        };
+      }),
+    );
+    const paged =
+      Number.isFinite(take) && take > 0
+        ? rows.slice(skip || 0, (skip || 0) + take)
+        : rows;
+    return {
+      data: paged.map((row, index) => ({
+        id: (skip || 0) + index + 1,
+        ...row,
+      })),
+      count: rows.length,
+    };
+  }
+
+  /** โควตาวันลาตามอายุงาน: <1 ปี = limitLeaveFour, <3 = One, <5 = Two, นอกนั้น Three */
+  private leaveLimitByWorkYears(
+    type: {
+      limitLeaveOne: string | null;
+      limitLeaveTwo: string | null;
+      limitLeaveThree: string | null;
+      limitLeaveFour: string | null;
+    },
+    startWork: Date | null,
+  ) {
+    const workYears = startWork
+      ? dayjs().diff(dayjs(startWork), 'year', true)
+      : 0;
+    const limit =
+      workYears < 1
+        ? type.limitLeaveFour
+        : workYears < 3
+        ? type.limitLeaveOne
+        : workYears < 5
+        ? type.limitLeaveTwo
+        : type.limitLeaveThree;
+    return Number(limit) || 0;
   }
 
   async findDetailTypeLeaveByUserId(userId: string) {
@@ -1116,5 +1107,4 @@ export class DataLeaveService {
     const dataLeaveid = { where: { id: id } } as Prisma.dataLeaveDeleteArgs;
     return this.dataleaveRepo.delete(dataLeaveid);
   }
-
 }
