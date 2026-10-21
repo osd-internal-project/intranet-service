@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import {
   AccessService,
@@ -18,6 +18,35 @@ import {
   templateOverTimeApproved,
 } from 'src/utils/template-booking-overtime';
 
+// Must mirror the @db.VarChar(n) sizes on model overtime in schema.prisma —
+// Prisma 4 on Postgres reports P2000 with "Column: (not available)", so we name the field ourselves.
+const OVERTIME_FIELD_LIMITS: Record<string, { max: number; label: string }> = {
+  fullname: { max: 250, label: 'ชื่อ - สกุล' },
+  userId: { max: 50, label: 'รหัสผู้ใช้' },
+  partTimeType: { max: 50, label: 'ประเภท' },
+  startTime: { max: 50, label: 'เวลาเข้า' },
+  endTime: { max: 50, label: 'เวลาออก' },
+  customerName: { max: 250, label: 'ชื่อลูกค้า' },
+  carName: { max: 250, label: 'ชื่อรถ' },
+  carId: { max: 250, label: 'รหัสรถ' },
+  other: { max: 250, label: 'อื่น ๆ' },
+  phoneNumber: { max: 10, label: 'เบอร์โทรศัพท์' },
+  approvedUser: { max: 100, label: 'ผู้อนุมัติ' },
+  approvedDetail: { max: 250, label: 'รายละเอียดการอนุมัติ' },
+};
+
+function assertOvertimeFieldLengths(data: object) {
+  const errors = Object.entries(OVERTIME_FIELD_LIMITS).flatMap(
+    ([field, { max, label }]) => {
+      const value: unknown = (data as Record<string, unknown>)[field];
+      return typeof value === 'string' && value.length > max
+        ? [`${label} (${field}) ยาว ${value.length} ตัวอักษร เกินกำหนด ${max}`]
+        : [];
+    },
+  );
+  if (errors.length > 0) throw new BadRequestException(errors.join(', '));
+}
+
 @Injectable()
 export class OverTimeService {
   constructor(
@@ -29,6 +58,7 @@ export class OverTimeService {
     private readonly emitter: NotificationEmitterService,
   ) {}
   async create(createDepartmentDto: Prisma.overtimeCreateInput) {
+    assertOvertimeFieldLengths(createDepartmentDto);
     const findConfigTimeOt = await this.masterconfigtimeotRepo.findAll();
     const workTimeValues = Object.values(findConfigTimeOt[0].partTimeCondition);
     const masterHoliday = await this.masterholidayRepo.findMany({
@@ -188,8 +218,9 @@ export class OverTimeService {
     }
 
     const getUser = await this.userRepo.findOne({ where: { token: token } });
+    // ใช้สิทธิ์ผู้อนุมัติชุดเดียวกับการลา (data-leave findGroup) ไม่ใช่สิทธิ์มองเห็น
     const AccessedGroup = await this.accessService.getAccessedUsersByUserId(
-      ModuleTypes.INTRANET,
+      ModuleTypes.INTRANET_APPROVE_LEAVE,
       getUser.userId,
     );
 
@@ -284,6 +315,7 @@ export class OverTimeService {
   }
 
   async update(id: string, condition: Prisma.overtimeUpdateInput) {
+    assertOvertimeFieldLengths(condition);
     const res = await this.overtimeRepo.update({
       where: { overTimeID: id },
       data: condition,

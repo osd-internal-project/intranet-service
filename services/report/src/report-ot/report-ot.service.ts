@@ -125,8 +125,9 @@ export class ReportOtService {
     if (!getUser) {
       return { userId: { in: [] as string[] } };
     }
+    // ต้องตรงกับ overtime findMany — สิทธิ์ผู้อนุมัติชุดเดียวกับการลา
     const accessedUsers = await this.accessService.getAccessedUsersByUserId(
-      ModuleTypes.INTRANET,
+      ModuleTypes.INTRANET_APPROVE_LEAVE,
       getUser.userId,
     );
     return { userId: { in: accessedUsers.map((event: any) => event.userId) } };
