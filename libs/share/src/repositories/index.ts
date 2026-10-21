@@ -39,6 +39,7 @@ export * from './maCarWrapup.repository';
 export * from './maCarWrapupImage.repository';
 export * from './maCarBookingImage.repository';
 export * from './maCarFiles.repository';
+export * from './maCarImage.repository';
 export * from './maCarFuelTransaction.repository';
 export * from './maCarDocument.repository';
 export * from './maCarDocumentFile.repository';

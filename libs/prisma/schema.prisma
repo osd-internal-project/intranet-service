@@ -608,6 +608,7 @@ model maCar {
   maCarBook     maCarBook[]   @relation("CarBooks")
   maCarWrapup   maCarWrapup[]
   maCarFiles    maCarFiles[]
+  maCarImage    maCarImage[]
 
   //ทะเบียน/รายละเอียดรถ
   licensePlate  String? @map("license_plate") @db.VarChar(20) //"2ฒร 424"
@@ -781,6 +782,20 @@ model maCarFiles {
   maCar     maCar?    @relation(fields: [carId], references: [carId])
 
   @@map("ma_car_files")
+}
+
+// รูปรถ — profile (1 รูป/คัน) หรือ gallery (รูปรายละเอียด) เก็บไฟล์บน MinIO
+model maCarImage {
+  id        Int      @unique @default(autoincrement())
+  carId     String   @map("car_id") @db.VarChar(50)
+  type      String   @db.VarChar(10) // profile | gallery
+  name      String?  @db.Text // ชื่อไฟล์เดิม
+  filePath  String   @map("file_path") @db.Text // MinIO object key
+  fileType  String?  @map("file_type") @db.VarChar(20)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  maCar     maCar    @relation(fields: [carId], references: [carId])
+
+  @@map("ma_car_image")
 }
 
 model maCarWrapup {
@@ -1173,7 +1188,7 @@ model overtime {
   breakTime               String?   @map("break_time") @db.VarChar(50)
   workingTime             String?   @map("working_time") @db.VarChar(50)
   totalTime               String?   @map("total_time") @db.VarChar(50)
-  detailWork              String?   @map("detail_work") @db.VarChar(250)
+  detailWork              String?   @map("detail_work") @db.Text()
   typeDate                String?   @map("type_date") @db.VarChar(50)
   customerName            String?   @map("customer_name") @db.VarChar(250)
   checkTravelUpCountry    Boolean?  @default(false) @map("check_travel_upcountry")

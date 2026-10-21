@@ -53,6 +53,7 @@ export class MaCarService {
       include: {
         maCarWrapup: true,
         maCarBook: true,
+        maCarImage: { orderBy: { id: 'asc' } },
       },
     });
   }

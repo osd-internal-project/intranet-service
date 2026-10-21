@@ -31,6 +31,8 @@ export const CarActivityAction = {
 
   FILE_CAR_UPLOAD: 'file.car-upload',
   FILE_CAR_DELETE: 'file.car-delete',
+  FILE_IMAGE_UPLOAD: 'file.image-upload',
+  FILE_IMAGE_DELETE: 'file.image-delete',
   FILE_BOOKING_UPLOAD: 'file.booking-upload',
   FILE_BOOKING_DELETE: 'file.booking-delete',
   FILE_WRAPUP_UPLOAD: 'file.wrapup-upload',
@@ -67,6 +69,8 @@ export const ACTION_LABEL: Record<string, string> = {
 
   'file.car-upload': 'อัปโหลดไฟล์รถ',
   'file.car-delete': 'ลบไฟล์รถ',
+  'file.image-upload': 'อัปโหลดรูปรถ',
+  'file.image-delete': 'ลบรูปรถ',
   'file.booking-upload': 'อัปโหลดรูปการจอง',
   'file.booking-delete': 'ลบรูปการจอง',
   'file.wrapup-upload': 'อัปโหลดรูปตรวจสภาพ',

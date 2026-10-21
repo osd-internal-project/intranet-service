@@ -75,7 +75,7 @@ export class MaCarBookService {
         },
       },
       orderBy: { id: 'asc' },
-      include: { maCarFiles: true },
+      include: { maCarFiles: true, maCarImage: { orderBy: { id: 'asc' } } },
     } as Prisma.maCarFindManyArgs);
   }
 
