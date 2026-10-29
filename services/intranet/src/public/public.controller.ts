@@ -61,8 +61,11 @@ export class PublicController {
       res.status(404).send('File not found');
       return;
     }
+    // ไฟล์ "blob" เก่า key ไม่มีนามสกุล — ใช้นามสกุลจาก name ที่แก้แล้วแทน
     const contentType =
-      MIME_BY_EXT[extname(key).toLowerCase()] ?? 'application/octet-stream';
+      MIME_BY_EXT[extname(key).toLowerCase()] ??
+      MIME_BY_EXT[extname(name ?? '').toLowerCase()] ??
+      'application/octet-stream';
     // express decode query string ให้แล้ว — decodeURIComponent ซ้ำจะพังกับชื่อที่มี %
     // (เช่น "ส่วนลด100%.pdf" จะ throw URIError ทำให้ request 500)
     const downloadName = name || key.split('/').pop();
